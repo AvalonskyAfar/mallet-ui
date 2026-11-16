@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SancaiIconView">
+        <attr name="sancaiIcon" />
+        <attr name="sancaiTone" />
+        <!-- Stroke width at the drawn size. Defaults to 2dp. -->
+        <attr name="sancaiIconStroke" format="dimension" />
+    </declare-styleable>
+</resources>
