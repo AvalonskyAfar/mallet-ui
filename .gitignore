@@ -1,0 +1,27 @@
+# Gradle / Android build output
+.gradle/
+build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+*.apk
+*.aab
+*.aar
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+.kotlin/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local release staging (attached to GitHub Releases, never committed)
+/dist/
+
+# Agent scratch
+.claude/

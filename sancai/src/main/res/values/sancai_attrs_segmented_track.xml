@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SancaiSegmentedTrack">
+        <attr name="sancaiOptions" />
+        <attr name="sancaiSelectedIndex" />
+        <!--
+            How options are glazed. "scale" reads the options as an ordinal scale (off, gentle,
+            standard, strict). "uniform" pours the single glaze named by sancaiGlaze under
+            every option, for plain choices.
+        -->
+        <attr name="sancaiGlazeMode" format="enum">
+            <enum name="scale" value="0" />
+            <enum name="uniform" value="1" />
+        </attr>
+        <attr name="sancaiGlaze" />
+        <attr name="android:enabled" />
+    </declare-styleable>
+</resources>

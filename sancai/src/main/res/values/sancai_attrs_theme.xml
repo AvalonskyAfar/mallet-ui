@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Theme-level attributes. Every one of them is optional: a Sancai view placed in an
+        app that sets none of these uses the built-in light or dark palette, chosen by the
+        current night mode.
+    -->
+    <declare-styleable name="SancaiTheme">
+        <!-- Forces the dark (true) or light (false) palette instead of following night mode. -->
+        <attr name="sancaiIsDark" format="boolean" />
+        <!-- Stronger hairlines, dividers and secondary text. -->
+        <attr name="sancaiHighContrast" format="boolean" />
+        <!-- Extra text scale on top of the system font scale, e.g. 1.13. -->
+        <attr name="sancaiTextScale" format="float" />
+        <!-- Whether animations are shortened to a brief settle. -->
+        <attr name="sancaiReduceMotion" format="enum">
+            <enum name="system" value="0" />
+            <enum name="always" value="1" />
+            <enum name="never" value="2" />
+        </attr>
+        <!-- Whether confirmed state changes tick. -->
+        <attr name="sancaiHaptics" format="boolean" />
+        <!-- How much glaze colour stays visible in the recessed tracks of a dark theme (0..1). -->
+        <attr name="sancaiNightGlaze" format="float" />
+
+        <attr name="sancaiColorCanvas" format="color" />
+        <attr name="sancaiColorSurface" format="color" />
+        <attr name="sancaiColorRaised" format="color" />
+        <attr name="sancaiColorInk" format="color" />
+        <attr name="sancaiColorMuted" format="color" />
+        <attr name="sancaiColorHairline" format="color" />
+        <attr name="sancaiColorDivider" format="color" />
+        <attr name="sancaiColorAccent" format="color" />
+        <attr name="sancaiColorDanger" format="color" />
+        <attr name="sancaiColorWarning" format="color" />
+        <attr name="sancaiColorSuccess" format="color" />
+        <attr name="sancaiColorShadow" format="color" />
+
+        <attr name="sancaiGlazeTerracotta" format="color" />
+        <attr name="sancaiGlazeTerracottaEdge" format="color" />
+        <attr name="sancaiGlazeOnTerracotta" format="color" />
+        <attr name="sancaiGlazeOchre" format="color" />
+        <attr name="sancaiGlazeOchreEdge" format="color" />
+        <attr name="sancaiGlazeOnOchre" format="color" />
+        <attr name="sancaiGlazeCobalt" format="color" />
+        <attr name="sancaiGlazeCobaltEdge" format="color" />
+        <attr name="sancaiGlazeOnCobalt" format="color" />
+        <attr name="sancaiGlazeCeladon" format="color" />
+        <attr name="sancaiGlazeCeladonEdge" format="color" />
+        <attr name="sancaiGlazeOnCeladon" format="color" />
+        <attr name="sancaiGlazeMist" format="color" />
+        <attr name="sancaiGlazeMistEdge" format="color" />
+        <attr name="sancaiGlazeOnMist" format="color" />
+    </declare-styleable>
+</resources>

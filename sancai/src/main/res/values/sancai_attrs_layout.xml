@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SancaiText">
+        <attr name="sancaiTextRole" />
+        <attr name="sancaiTone" />
+    </declare-styleable>
+
+    <declare-styleable name="SancaiDivider">
+        <!--
+            Whether the divider runs from rim to rim of the SancaiSurface it sits in, ignoring
+            the padding of that surface. Defaults to true.
+        -->
+        <attr name="sancaiFullBleed" format="boolean" />
+        <attr name="android:orientation" />
+    </declare-styleable>
+
+    <declare-styleable name="SancaiSurface">
+        <attr name="sancaiCornerRadius" />
+        <attr name="sancaiElevated" />
+        <!-- Which corners are rounded; top and bottom are the two halves of a split card. -->
+        <attr name="sancaiSurfaceCorners" format="enum">
+            <enum name="all" value="0" />
+            <enum name="top" value="1" />
+            <enum name="bottom" value="2" />
+        </attr>
+        <!-- Padding between the view bounds and the content. Defaults to 9dp. -->
+        <attr name="sancaiContentPadding" format="dimension" />
+        <attr name="android:orientation" />
+    </declare-styleable>
+
+    <declare-styleable name="SancaiButton">
+        <attr name="sancaiButtonVariant" format="enum">
+            <!-- Neutral porcelain capsule. -->
+            <enum name="neutral" value="0" />
+            <!-- Capsule glazed in the accent colour: the one main action of a screen. -->
+            <enum name="primary" value="1" />
+            <!-- Capsule glazed in the danger colour: destructive actions. -->
+            <enum name="danger" value="2" />
+            <!-- No body, coloured text only: dialog actions and inline links. -->
+            <enum name="text" value="3" />
+        </attr>
+        <!-- Text colour of the text variant. Defaults to accent. -->
+        <attr name="sancaiTone" />
+        <!-- Icon drawn before the label. -->
+        <attr name="sancaiIcon" />
+        <!-- Replaces the label with a spinner and ignores clicks. -->
+        <attr name="sancaiLoading" format="boolean" />
+    </declare-styleable>
+</resources>

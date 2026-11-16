@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sancai_action_ok">OK</string>
+    <string name="sancai_action_cancel">Cancel</string>
+    <string name="sancai_action_save">Save</string>
+    <string name="sancai_action_add">Add</string>
+    <string name="sancai_action_delete">Delete</string>
+    <string name="sancai_action_retry">Retry</string>
+    <string name="sancai_action_close">Close</string>
+    <string name="sancai_action_back">Back</string>
+    <string name="sancai_state_on">On</string>
+    <string name="sancai_state_off">Off</string>
+    <string name="sancai_state_loading">Loading</string>
+</resources>

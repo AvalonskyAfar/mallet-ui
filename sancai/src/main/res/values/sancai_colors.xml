@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Window-level colours for the Theme.Sancai styles. Widgets take their colours from SancaiTheme. -->
+    <color name="sancai_canvas_light">#FFFFFF</color>
+    <color name="sancai_canvas_dark">#181D24</color>
+    <color name="sancai_accent_light">#315A9B</color>
+    <color name="sancai_accent_dark">#5B7EA4</color>
+    <color name="sancai_ink_light">#1A1C1F</color>
+    <color name="sancai_ink_dark">#EBEFF4</color>
+</resources>

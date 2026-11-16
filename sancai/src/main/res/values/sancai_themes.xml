@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Optional activity themes. Sancai widgets do not need them: without any sancai*
+        attribute a widget follows the night mode of its context. Use these when you want the
+        window (background and system bars) to match, or to pin an activity to one palette.
+
+        Theme.Sancai follows the system night mode, Theme.Sancai.Light and Theme.Sancai.Dark
+        are fixed.
+    -->
+    <style name="Theme.Sancai" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/sancai_canvas_light</item>
+        <item name="android:statusBarColor">@color/sancai_canvas_light</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:colorAccent">@color/sancai_accent_light</item>
+        <item name="android:textColorPrimary">@color/sancai_ink_light</item>
+    </style>
+
+    <style name="Theme.Sancai.Light" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/sancai_canvas_light</item>
+        <item name="android:statusBarColor">@color/sancai_canvas_light</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:colorAccent">@color/sancai_accent_light</item>
+        <item name="android:textColorPrimary">@color/sancai_ink_light</item>
+        <item name="sancaiIsDark">false</item>
+    </style>
+
+    <style name="Theme.Sancai.Dark" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/sancai_canvas_dark</item>
+        <item name="android:statusBarColor">@color/sancai_canvas_dark</item>
+        <item name="android:navigationBarColor">@color/sancai_canvas_dark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:colorAccent">@color/sancai_accent_dark</item>
+        <item name="android:textColorPrimary">@color/sancai_ink_dark</item>
+        <item name="sancaiIsDark">true</item>
+    </style>
+</resources>

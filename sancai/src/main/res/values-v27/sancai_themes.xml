@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- A light navigation bar needs dark navigation icons, which exist from API 27. -->
+    <style name="Theme.Sancai" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/sancai_canvas_light</item>
+        <item name="android:statusBarColor">@color/sancai_canvas_light</item>
+        <item name="android:navigationBarColor">@color/sancai_canvas_light</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:colorAccent">@color/sancai_accent_light</item>
+        <item name="android:textColorPrimary">@color/sancai_ink_light</item>
+    </style>
+
+    <style name="Theme.Sancai.Light" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/sancai_canvas_light</item>
+        <item name="android:statusBarColor">@color/sancai_canvas_light</item>
+        <item name="android:navigationBarColor">@color/sancai_canvas_light</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:colorAccent">@color/sancai_accent_light</item>
+        <item name="android:textColorPrimary">@color/sancai_ink_light</item>
+        <item name="sancaiIsDark">false</item>
+    </style>
+</resources>
