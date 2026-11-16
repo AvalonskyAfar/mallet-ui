@@ -18,6 +18,7 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
 import androidx.customview.widget.ExploreByTouchHelper
 import io.github.avalonskyafar.sancai.R
 import io.github.avalonskyafar.sancai.interaction.SancaiHaptics
+import io.github.avalonskyafar.sancai.interaction.SancaiHorizontalDragOwner
 import io.github.avalonskyafar.sancai.internal.HorizontalDragGate
 import io.github.avalonskyafar.sancai.theme.SancaiColors
 import io.github.avalonskyafar.sancai.theme.SancaiGlaze
@@ -52,7 +53,7 @@ public class SancaiSegmentedTrack @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,
-) : SancaiControl(context, attrs, defStyleAttr) {
+) : SancaiControl(context, attrs, defStyleAttr), SancaiHorizontalDragOwner {
 
     /** Called when the user moves the selection to another option. */
     public fun interface OnSelectionChangedListener {

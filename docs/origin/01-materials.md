@@ -147,6 +147,7 @@ Edge hex values are confirmed by UI_FROZEN_IMPLEMENTATION_MAP.md:46-50.
 | `CompactToggle` | Same two blends as `PowerSwitch` | UiKit.java:568-574 |
 | `PreciseValueControl` | Fixed `TRACK_STANDARD` / `TRACK_STANDARD_EDGE` | UiKit.java:719-723 |
 | Half-way example | `blend(TRACK_OFF, TRACK_STANDARD, 0.5)` = `rgb(170,152,165)` `#AA98A5`; edge `rgb(148,125,140)` `#947D8C` | computed |
+| Mapping is positional, not semantic | `semantic(index)` looks only at the label count and index (plus the exact theme-selector strings). The label arrays the app passes: 2 labels `{"关闭", "开启"}` and `{"抖音", "快手"}`; 3 labels `{"关闭", "提醒", "划走"}`, `{"跟随系统", "浅色", "深色"}` and `{"MAX", "AVERAGE", "LATEST"}`; 4 labels `{"关闭", "轻度", "标准", "严格"}`. The developer row `"证据聚合"` (`MAX / AVERAGE / LATEST`) and the platform picker (`抖音 / 快手`) therefore get orange / yellow / blue and orange / blue beds although their options are not off / on levels | MainActivity.java:86-88, 1047; DeveloperOptionsActivity.java:38, 195-196; WhitelistAccountsPage.java:101 |
 
 ### 3.2 Dark theme: one neutral bed for every state
 
@@ -185,7 +186,15 @@ In dark the selected state is carried only by thumb position and by label tint (
 | `guard_background_native` | `#FFFFFF` | colors.xml:6 | `Theme.Gravekeeper.Light` window background and bars (styles.xml:14-16) |
 | `guard_background_dark` | `#181D24` | colors.xml:7 | `Theme.Gravekeeper.Dark` window background and bars (styles.xml:24-26). Equals dark `p.bg` |
 | `guard_text_dark` | `#EBEFF4` | colors.xml:8 | `android:textColorPrimary` of the dark theme (styles.xml:29). Equals dark `p.ink` |
-| `icon_background` | `#FFFFFF` | icon_colors.xml:3 | Adaptive launcher icon background (mipmap-anydpi-v26/ic_gravekeeper_launcher.xml:3) |
+| `icon_background` | `#FFFFFF` | icon_colors.xml:3 | Launcher icon background in all three variants: legacy layer-list `<solid>` (mipmap-anydpi/ic_gravekeeper_launcher.xml:6), adaptive `<background>` (mipmap-anydpi-v26/ic_gravekeeper_launcher.xml:3) and adaptive + monochrome (mipmap-anydpi-v33/ic_gravekeeper_launcher.xml:3) |
+
+Literal colours in `res/drawable/*.xml` (not routed through `colors.xml`; no Java code reads `R.color.*`, the only resource colour used from Java is `android.R.color.transparent` at UiKit.java:1603):
+
+| File | Value | Cite | Role |
+|---|---|---|---|
+| `ic_gravekeeper_launcher_monochrome.xml` | `#FF000000` (both paths) | ic_gravekeeper_launcher_monochrome.xml:10, 13 | Themed-icon silhouette, 108 x 108dp viewport 108 |
+| `ic_notification.xml` | `#FFFFFFFF` (both paths) | ic_notification.xml:8, 11 | Status-bar small icon, 24 x 24dp, viewport 108 |
+| `ic_gravekeeper_launcher_foreground.xml` | no colour; `<inset>` of `@drawable/ic_launcher_art` with `android:inset="9%"` | ic_gravekeeper_launcher_foreground.xml:2-5 | Adaptive foreground |
 
 ### 4.2 `res/values/styles.xml`
 
@@ -207,7 +216,7 @@ In dark the selected state is carried only by thumb position and by label tint (
 | All other activities | `UiKit.applyPreferredTheme()` before `super.onCreate`: dark -> `Theme_Gravekeeper_Dark`, otherwise `Theme_Gravekeeper_Light` | UiKit.java:126-130; MainActivity.java:112; DeveloperOptionsActivity.java:64; ConfigEditorActivity.java:39; RecoveryActivity.java:12 |
 | Dark resolution | `theme()==THEME_DARK(2)` -> dark; `THEME_LIGHT(1)` -> light; `THEME_SYSTEM(0)`, the default, follows `uiMode & UI_MODE_NIGHT_MASK == UI_MODE_NIGHT_YES` | AppPreferences.java:8-10, 24, 41-47 |
 | Spatial themes | `applySpatialOverlayTheme()` exists but has no caller; the two `Spatial` themes are never applied at runtime | UiKit.java:133-137 (definition only) |
-| XML vs Java | Themes only fix the first frame (window background, bar colours, accent). All component colour comes from `Palette` in Java; no view reads a theme attribute | UiKit.java:205-212 |
+| XML vs Java | Themes only fix the first frame (window background, bar colours, accent). All component colour set by app code comes from `Palette` in Java; no app code reads a theme attribute. INFERRED from platform behaviour: framework-drawn parts of stock widgets still take the theme's `colorAccent` (`#315A9B` in every theme), i.e. the `EditText` cursor, selection handles and selection highlight of the five input fields in §13.1, because the app replaces only their background and text/hint colours | UiKit.java:205-212, 1490-1502; styles.xml:5, 13, 23, 50 |
 | Theme switch | Activity recreation with a bitmap of the old palette cross-faded out over the new one: alpha 1 -> 0, 300 ms, `PathInterpolator(0.2f, 0f, 0f, 1f)`. No reduced-motion branch. Details belong to the motion slice | UiKit.java:145-184; MainActivity.java:143, 1286 |
 
 ### 4.4 `applyWindow()` — UiKit.java:214-247 (runs in every `UiKit` constructor, UiKit.java:211)
@@ -346,6 +355,7 @@ The `compact=false` pressed row is unreachable: both callers pass `pressed=false
 | Innermost shell | `factor` never reaches 0; the smallest shell still exceeds the body by reach/18 | UiKit.java:1701 |
 | Gutter wins on the sides and bottom at rest | For every track and surface host at rest the nominal side and bottom reach is larger than the gutter (§6.4), so the visible shadow size is the gutter size, not the CSS blur. Only some pressed states and the top reach fall below the gutter | derived |
 | The clip is the host view | `getClipBounds()` of a view's own display list is the view rect. INFERRED from platform behaviour; consistent with OBSERVED S1 shading starting exactly at the view edge (x=33 = `dp(12)` page padding at density 2.75) and reaching the border at x=37 = `+dp(1.4)` in screenshot_settings.png row 1300 | UiKit.java:1677 |
+| The clip is not always the host view | INFERRED from platform behaviour, not verified on device: the reach depends on whatever `getClipBounds()` returns for the canvas in use. The app also draws the whole content tree into a software `Canvas(bitmap)` for the spatial parent snapshot and the theme cross-fade. On a software canvas a child of a parent with `setClipChildren(false)` is not clipped to its own bounds, so tracks hosted in a control row (row and S1 both disable child clipping) and the power switch (its column disables child clipping) can receive a larger clip and paint up to their nominal reach in those bitmaps. A re-implementation that wants the gutter-sized shadow everywhere must clamp to the host bounds explicitly | UiKit.java:186-194, 374, 485, 1677-1685; MainActivity.java:270 |
 | OBSERVED S1 bottom shadow | screenshot_settings.png, column 540, rows 603-615 (13 px = `dp(4.8)` at density 2.75): `#EDEDED` directly under the body (white minus 18 levels = 18 shells x 1 level; the same value as the border colour), then `#EFEFEF` fading by about one level per pixel to `#FEFEFE`; white from row 616 | sampled |
 | OBSERVED UI-001 bottom shadow | screenshot_main.png, column 900, rows 1196-1221: `#DDDDDD` fading to `#FDFDFD`, white from row 1222; inside the `dp(10)` = 28 px gutter | sampled |
 
@@ -656,7 +666,7 @@ Doc comment: "K10/dialog input well: a true recessed field with soft internal ed
 | Fact | Detail | Cite |
 |---|---|---|
 | No outer shadow, no inner-depth call | The recess is the darker top of the body gradient plus an edge that is dark at the top and light at the bottom | UiKit.java:2199-2229 |
-| Body ramp scales with height | The mid stop is a fraction (`0.48f`) of the field height, so the `#F5F5F5 -> #FFFFFF` ramp covers 48% of any field (73dp of the 152dp media well, and most of a 24-line editor). This is the proportional behaviour the `drawInnerDepth` comment says was removed from S1 | UiKit.java:2210-2212, 1765-1772 |
+| Body ramp scales with height | The mid stop is a fraction (`0.48f`) of the field height, so the `#F5F5F5 -> #FFFFFF` ramp covers 48% of the inset rect of any field (nominally `0.48 x (152 - 2 x 0.5)` = 72.48dp of the 152dp media well, and the same 48% of the config editor, whose height is set by its 24 minimum lines). This is the proportional behaviour the `drawInnerDepth` comment says was removed from S1 | UiKit.java:2210-2212, 1765-1772 |
 | Blend collapse | Light `fill` and `bottom` are pure white because bg = surface = raised. Dark `bottom` rounds back to `fill` (`#1A1F26`), so the dark body has no lighter lower half | computed from UiKit.java:2204-2206 |
 | No state | The class does not override `isStateful` / `onStateChange`; focus, error and disabled look identical | UiKit.java:2186-2242 |
 | Text colours on it (set by callers) | text `p.ink`, hint `p.muted` | UiKit.java:1492-1493; WhitelistAccountsPage.java:93-94 |
@@ -737,7 +747,9 @@ Source comment on layer 5: "The shared D1 owns the joining edge between sections
 | Dark branch is unreachable in the app | Both factories are used only by `FirstLaunchActivity`, whose `UiKit` is created with `forFirstLaunch()` (`forceLight`). The dark values above have never been rendered by the shipped app | FirstLaunchActivity.java:52, 92, 214; UiKit.java:139-142, 201-208 |
 | Light halves add up to one S1 | The top half carries only the S1 top inner shade (10 / 4), the bottom half only the S1 bottom inner shade (5 / 13) and the S1 outer shadow | UiKit.java:2387-2403, 1815-1816 |
 | Inner-depth copies differ from `drawInnerDepth` | Depth is capped by the full rect height (not half) and the mid stops are not clamped | UiKit.java:2388, 2392, 2395, 2399 |
-| Media inside the top half | `onboardingMediaImage`: `ClippedImageView`, radius `dp(7f)` (`FIRST_LAUNCH_MEDIA_RADIUS_DP`), top corners only, margins `dp(1)` left / top / right and `0` bottom (`FIRST_LAUNCH_MEDIA_EDGE_INSET_DP`), min height `dp(220)`. INFERRED: 7 = 8 - 1 keeps the image corner concentric with the section corner | UiKit.java:430-438; FirstLaunchActivity.java:157-162; ReadingLayoutSpec.java:18-20 |
+| Media inside the top half | `onboardingMediaImage`: `ClippedImageView`, radius `dp(7f)` (`FIRST_LAUNCH_MEDIA_RADIUS_DP`), top corners only, margins `dp(1)` left / top / right and `0` bottom (`FIRST_LAUNCH_MEDIA_EDGE_INSET_DP`), layout height `dp(220)` (`FIRST_LAUNCH_MEDIA_MIN_HEIGHT_DP`) with weight `1f`, so 220dp is the floor and the image takes the spare height of the fill-viewport scroll column. INFERRED: 7 = 8 - 1 keeps the image corner concentric with the section corner | UiKit.java:430-438; FirstLaunchActivity.java:157-162, 172-174; ReadingLayoutSpec.java:18-20 |
+| Image overlaps the section edge | INFERRED from the two insets: the section stroke occupies 0.7dp to 1.55dp from the panel edge (rect inset `dp(0.7f)`, stroke `dp(0.85f)` centred on a further `dp(0.45f)` inset) while the image, a child drawn above the background, starts at `dp(1)`. At density 2.75 that is stroke px 2-3 and image from px 3, so only the outer 1 px of the 2 px border stays visible beside and above the image | UiKit.java:2355-2356, 2409-2412; FirstLaunchActivity.java:160-161 |
+| Side shadow exists only beside the action section | The top section never calls `drawSoftLift`, so the sliding content half has no outer shadow on any side. The bottom section passes the full `rect` and `radius` to the shadow painter, whose shells are ordinary round rects (all four corners), although the body path has square top corners; the side shading therefore tapers off over the top `dp(8)` of the action section, towards the join. Top reach is 0 because the rect starts at the view top | UiKit.java:2373-2377, 1702-1708, 2345-2348 |
 | Action row vs visible material | The `dp(67)` action row covers the `dp(4.8)` shadow gutter, so its centred label sits 2.4dp below the centre of the visible white area. INFERRED from the two sizes | FirstLaunchActivity.java:116-118; UiKit.java:2357 |
 
 ## 17. `ClippedImageView` — UiKit.java:1162-1196
@@ -814,7 +826,7 @@ The approved HTML/CSS samples named in UI_FROZEN_IMPLEMENTATION_MAP.md:9-25 are 
 
 ## 20. Screenshot cross-check (OBSERVED)
 
-Files: `Gravekeeper-master/screenshots/screenshot_main.png` and `screenshot_settings.png` (1080 x 2247, light theme, default text scale). The S1 view starts at x=33 = `dp(12)` page padding, the D1 is 3 px thick and the S1 gutter is 4 px, which matches density 2.75 with the UiKit.java:250 rounding. `screenshot_more.png` and `screenshot_tutorial.png` are downscaled (about 323 px wide) and were used for layout confirmation only. No dark or high-contrast screenshot exists in the repository.
+Files: `Gravekeeper-master/screenshots/screenshot_main.png` and `screenshot_settings.png` (1080 x 2247, light theme, default text scale). The S1 view starts at x=33 = `dp(12)` page padding, the D1 is 3 px thick and the S1 gutter is 4 px, which matches density 2.75 with the UiKit.java:250 rounding. `screenshot_more.png` and `screenshot_tutorial.png` are downscaled (324 x 666) and were used for layout confirmation only. No dark or high-contrast screenshot exists in the repository.
 
 | Element | Sampled | Code value | Agreement |
 |---|---|---|---|
@@ -863,10 +875,10 @@ High-contrast deltas (everything not listed is identical with high contrast on):
 
 | Token | Readers | Cite |
 |---|---|---|
-| `bg` | L1 fills (§4.5); system bars; blend base for D1, dark track bed and edge, inset field fill, edge bases, onboarding dark fills | UiKit.java:237-238, 332, 362, 463, 570, 573, 1903, 1982, 2009, 2204, 2300, 2364-2368 |
-| `surface` | S1 / dialog / toast / K4 body; embedded row fill; blend partner for the dark track bed and the inset field fill | UiKit.java:1974-1983, 2204, 2261-2268, 2364-2368, 570 |
+| `bg` | L1 fills (§4.5); system bars; blend base for D1, dark track bed and edge (all four controls), light K3 edge, inset field fill, edge bases, onboarding dark fills; blend partner for the dark `bottom` stops of K3, S1 and the embedded row and for the dark destructive base; kept by the overlay drawable | UiKit.java:237-238, 332, 362, 463, 570, 573, 720, 722, 1228, 1233, 1903, 1932, 1982, 2009, 2067, 2204, 2262, 2300, 2364-2368, 2582, 2589, 2781, 2783; MainActivity.java:266, 1658; DeveloperOptionsActivity.java:70; FirstLaunchActivity.java:69 |
+| `surface` | S1 / dialog / toast / K4 body; embedded row fill; onboarding section fills; overlay body; blend partner for the dark track bed and the inset field fill | UiKit.java:1974-1983, 2068, 2204, 2261-2268, 2364-2368, 570, 720, 2582, 2781 |
 | `raised` | K3 body; inset field `bottom` blend | UiKit.java:1901-1905, 2206 |
-| `ink` | Primary text; shadow shells; S1 / K3 inner depth; light K3 edge blend; D1 blend; left chevron of `"←"` entries; power glyph | UiKit.java:1706, 1786-1801, 1932, 463, 827, 2802 |
+| `ink` | Primary text; shadow shells; S1 / K3 / onboarding inner depth; light K3 edge blend; D1 blend; left chevron of `"←"` entries; power glyph and thumb text; on-thumb segment label and stepper value; blend partner for the dark track edge, the dark `top` stops (K3, S1, embedded row), both `edgeBase` values, the inset field `top`, the destructive `top`, the dark segment label tints and the power-switch hint text; overlay text | UiKit.java:1706, 1786-1801, 1932, 463, 827, 2802, 2808, 2536, 749, 573, 722, 2589, 2783, 1901, 1977, 2261, 2008-2009, 2205, 2301, 2390, 2397-2398, 2601, 2816-2817; StatusOverlayController.java:152 |
 | `muted` | Secondary text; default chevron; page-link text; main-nav icons and labels; inactive pager dot; dark stepper glyphs | UiKit.java:857, 938, 964, 741; MainActivity.java:340; FirstLaunchActivity.java:269 |
 | `border` | Light solid edges (S1, overlay, onboarding); gradient mid stop of the dark K3 edge, the inset field edge and the dark onboarding edge; D1 in high contrast | UiKit.java:2020, 2154, 2420, 1928, 2223, 2416, 463 |
 | `blue` | Dialog positive action text; first-launch action text and arrow, privacy headings, active pager dot; tutorial accent bars, eyebrow, section titles, `"→"` arrow | UiKit.java:1551; FirstLaunchActivity.java:101-105, 256, 269, 541; MainActivity.java:775, 865, 909, 917, 966, 1011 |
