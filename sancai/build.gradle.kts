@@ -30,7 +30,7 @@ android {
         unitTests {
             isIncludeAndroidResources = true
             all { test ->
-                test.maxHeapSize = "1g"
+                test.maxHeapSize = "768m"
                 // Robolectric downloads its Android runtime jars itself and does not read the
                 // JVM proxy settings, so forward them when the build runs behind a proxy.
                 System.getProperty("https.proxyHost")?.let {
