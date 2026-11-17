@@ -23,7 +23,6 @@ private const val BUTTON_GAP = 10
 private const val ROW_GAP = 10
 private const val BLOCK_GAP = 12
 private const val DIVIDER_GAP = 14f
-private const val TAG_GAP = 8
 private const val BADGE_STEP = 5
 private const val BELL_BOX = 44
 
@@ -106,6 +105,7 @@ private fun buttons(page: PageScope) {
         val row = SancaiControlRow(context).apply {
             title = page.str(R.string.buttons_loading_title)
             detail = page.str(R.string.buttons_loading_detail)
+            alignment = SancaiControlRow.Alignment.START
             setControl(toggle)
         }
         addView(row, match())
@@ -217,22 +217,19 @@ private fun chips(page: PageScope) {
 private fun tagsAndBadges(page: PageScope) {
     val context = page.context
 
-    val tags = LinearLayout(context).apply {
-        orientation = LinearLayout.HORIZONTAL
+    // A chip group wraps whatever it holds, so the tags move to a second line when they must.
+    val tags = SancaiChipGroup(context).apply {
         listOf(
             R.string.buttons_tag_positive to SancaiTag.Tone.POSITIVE,
             R.string.buttons_tag_caution to SancaiTag.Tone.CAUTION,
             R.string.buttons_tag_negative to SancaiTag.Tone.NEGATIVE,
             R.string.buttons_tag_info to SancaiTag.Tone.INFO,
             R.string.buttons_tag_neutral to SancaiTag.Tone.NEUTRAL,
-        ).forEachIndexed { index, (res, look) ->
-            val tag = SancaiTag(context).apply {
+        ).forEach { (res, look) ->
+            addView(SancaiTag(context).apply {
                 text = page.str(res)
                 tone = look
-            }
-            val params = LinearLayout.LayoutParams(PageScope.WRAP, PageScope.WRAP)
-            if (index > 0) params.marginStart = page.dp(TAG_GAP)
-            addView(tag, params)
+            })
         }
     }
 

@@ -119,34 +119,37 @@ public object SancaiIconPainter {
                 polyline(12f, 3f, 12f, 13.5f)
                 stroke(canvas)
             }
+            // The three glyphs of the original navigation row. Their geometry is the original's,
+            // which was drawn 24 dp wide, at three quarters: on this grid they are as large as
+            // every other icon, and a 32 dp box gives them their first size back.
             SancaiIcon.BOOK -> {
-                path.moveTo(12f, 6.2f)
-                path.cubicTo(8.5f, 3.5f, 1.5f, 3.5f, 1.5f, 3.5f)
-                path.lineTo(1.5f, 17.9f)
-                path.cubicTo(6.75f, 17f, 10.25f, 19.6f, 12f, 20.5f)
+                path.moveTo(12f, 6.75f)
+                path.cubicTo(9f, 4.5f, 3f, 4.5f, 3f, 4.5f)
+                path.lineTo(3f, 17.25f)
+                path.cubicTo(7.5f, 16.5f, 10.5f, 18.75f, 12f, 19.5f)
                 path.close()
-                path.moveTo(12f, 6.2f)
-                path.cubicTo(15.5f, 3.5f, 22.5f, 3.5f, 22.5f, 3.5f)
-                path.lineTo(22.5f, 17.9f)
-                path.cubicTo(17.25f, 17f, 13.75f, 19.6f, 12f, 20.5f)
+                path.moveTo(12f, 6.75f)
+                path.cubicTo(15f, 4.5f, 21f, 4.5f, 21f, 4.5f)
+                path.lineTo(21f, 17.25f)
+                path.cubicTo(16.5f, 16.5f, 13.5f, 18.75f, 12f, 19.5f)
                 path.close()
                 stroke(canvas)
             }
             SancaiIcon.SLIDERS -> {
-                polyline(2f, 5f, 22f, 5f)
-                polyline(2f, 12f, 22f, 12f)
-                polyline(2f, 19f, 22f, 19f)
+                polyline(3f, 6f, 21f, 6f)
+                polyline(3f, 12f, 21f, 12f)
+                polyline(3f, 18f, 21f, 18f)
                 stroke(canvas)
-                dot(canvas, 7.6f, 5f, 2.2f)
-                dot(canvas, 17.2f, 12f, 2.2f)
-                dot(canvas, 11.1f, 19f, 2.2f)
+                dot(canvas, 8.25f, 6f, 1.8f)
+                dot(canvas, 16.5f, 12f, 1.8f)
+                dot(canvas, 11.25f, 18f, 1.8f)
             }
             SancaiIcon.MORE_CIRCLE -> {
-                path.addCircle(12f, 12f, 10f, Path.Direction.CW)
+                ring()
                 stroke(canvas)
-                dot(canvas, 7.8f, 12f, 1.2f)
-                dot(canvas, 12f, 12f, 1.2f)
-                dot(canvas, 16.2f, 12f, 1.2f)
+                dot(canvas, 8.25f, 12f, 1f)
+                dot(canvas, 12f, 12f, 1f)
+                dot(canvas, 15.75f, 12f, 1f)
             }
             SancaiIcon.SEARCH -> {
                 path.addCircle(10.5f, 10.5f, 6.5f, Path.Direction.CW)

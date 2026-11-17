@@ -297,10 +297,10 @@ class SancaiIconGlyphTest {
             SancaiIcon.CHEVRON_LEFT, SancaiIcon.CHEVRON_RIGHT, SancaiIcon.CHEVRON_UP, SancaiIcon.CHEVRON_DOWN,
             SancaiIcon.ARROW_LEFT, SancaiIcon.ARROW_RIGHT, SancaiIcon.ARROW_UP, SancaiIcon.ARROW_DOWN,
             SancaiIcon.CHECK, SancaiIcon.CLOSE, SancaiIcon.PLUS, SancaiIcon.MINUS,
-            SancaiIcon.POWER, SancaiIcon.BOOK, SancaiIcon.SLIDERS, SancaiIcon.MORE_CIRCLE,
+            SancaiIcon.POWER,
         )
 
-        /** The 34 glyphs drawn to the "ink inside 2..22" rule. */
+        /** The 37 glyphs held to the "ink inside 2..22" rule by this test. */
         val LATER: List<SancaiIcon> = SancaiIcon.values().filter { it !in EARLY }
     }
 }

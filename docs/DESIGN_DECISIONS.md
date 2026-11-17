@@ -204,7 +204,10 @@ pales, shape and layout stay, and no separate grey palette is needed.
 Six glyphs existed. A toolkit needs more, and importing an icon set would add a second
 visual voice and a licence. The forty-four new icons follow the originals: 24-unit grid,
 one stroke weight, round caps and joins, no fills. Chevrons and arrows mirror in
-right-to-left layouts.
+right-to-left layouts. The three marks of the original navigation row were drawn 24 dp wide,
+where every other glyph keeps its ink inside 20 units; they are scaled to three quarters so
+that one grid holds for all fifty, and the navigation row draws icons in a 32 dp box to give
+them their first size back.
 
 ### D-11
 **No product copy inside components.**

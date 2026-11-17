@@ -24,6 +24,10 @@ import kotlin.math.roundToInt
  * whatever the count. Any other view (a switch, a stepper, a slider) goes in through
  * [setControl], or as the single child in XML.
  *
+ * The text is centred in its column, which suits a short label beside a wide track. For a
+ * list of switches or steppers set [alignment] to [Alignment.START]: the text then stands at
+ * the start edge, in line with the text of start-aligned entry rows.
+ *
  * The row is 64 dp high, or 72 dp with a detail line, and grows with large text. It is not
  * focusable itself: focus and keys go to the control. The control is announced with the title
  * and detail of the row, unless it brings a content description of its own. Disabling the row
@@ -67,6 +71,15 @@ public class SancaiControlRow @JvmOverloads constructor(
         UTILITY,
     }
 
+    /** How the title and the detail stand in the text column. */
+    public enum class Alignment {
+        /** Centred in the column: a short label beside a wide track. The default. */
+        CENTER,
+
+        /** At the start edge, inset like the text of an entry row: a list of switches or steppers. */
+        START,
+    }
+
     private val theme: SancaiTheme = SancaiTheme.of(context)
     private val copy = LinearLayout(context)
     private val titleView = SancaiText.create(context, null, SancaiTextRole.SUBHEAD, SancaiTextTone.INK)
@@ -105,6 +118,14 @@ public class SancaiControlRow @JvmOverloads constructor(
                 val (text, control) = weightsFor(track.options.size)
                 applyWeights(text, control)
             }
+        }
+
+    /** Whether the text is centred in its column (the default) or aligned to the start. */
+    public var alignment: Alignment = Alignment.CENTER
+        set(value) {
+            if (field == value) return
+            field = value
+            placeText()
         }
 
     /** The control of the row, or `null` while there is none. */
@@ -150,6 +171,9 @@ public class SancaiControlRow @JvmOverloads constructor(
                 title = a.getText(R.styleable.SancaiControlRow_sancaiTitle)
                 detail = a.getText(R.styleable.SancaiControlRow_sancaiDetail)
                 layout = LAYOUTS.getOrElse(a.getInt(R.styleable.SancaiControlRow_sancaiControlRowLayout, 0)) { Layout.AUTO }
+                alignment = ALIGNMENTS.getOrElse(a.getInt(R.styleable.SancaiControlRow_sancaiControlRowAlignment, 0)) {
+                    Alignment.CENTER
+                }
                 xmlTextWeight = a.getFloat(R.styleable.SancaiControlRow_sancaiControlRowTextWeight, 1f)
                 xmlControlWeight = a.getFloat(R.styleable.SancaiControlRow_sancaiControlRowControlWeight, 0f)
                 val options = a.getTextArray(R.styleable.SancaiControlRow_sancaiOptions)
@@ -263,10 +287,7 @@ public class SancaiControlRow @JvmOverloads constructor(
             weight = text
             marginEnd = if (view == null) 0 else dp(TEXT_GAP_DP)
         }
-        // A segmented track keeps a deeper shadow gutter below its capsule than above it, so
-        // the capsule sits above the middle of the track's view. The text follows the capsule.
-        val lift = SancaiSegmentedTrack.GUTTER_BOTTOM_DP - SancaiSegmentedTrack.GUTTER_TOP_DP
-        copy.setPadding(0, 0, 0, if (view is SancaiSegmentedTrack) dp(lift) else 0)
+        placeText()
         if (view != null) {
             (view.layoutParams as LayoutParams).apply {
                 weight = control
@@ -274,6 +295,22 @@ public class SancaiControlRow @JvmOverloads constructor(
             }
         }
         requestLayout()
+    }
+
+    /** Alignment and padding of the text column. */
+    private fun placeText() {
+        val start = alignment == Alignment.START
+        copy.gravity = if (start) Gravity.CENTER_VERTICAL or Gravity.START else Gravity.CENTER
+        for (line in arrayOf(titleView, detailView)) {
+            line.gravity = if (start) Gravity.START else Gravity.CENTER
+            line.textAlignment = if (start) TEXT_ALIGNMENT_VIEW_START else TEXT_ALIGNMENT_GRAVITY
+        }
+        // A segmented track keeps a deeper shadow gutter below its capsule than above it, so
+        // the capsule sits above the middle of the track's view. The text follows the capsule.
+        val lift = SancaiSegmentedTrack.GUTTER_BOTTOM_DP - SancaiSegmentedTrack.GUTTER_TOP_DP
+        copy.setPaddingRelative(
+            if (start) dp(START_INSET_DP) else 0, 0, 0, if (control is SancaiSegmentedTrack) dp(lift) else 0,
+        )
     }
 
     private fun weightsFor(optionCount: Int): Pair<Float, Float> = when {
@@ -357,10 +394,14 @@ public class SancaiControlRow @JvmOverloads constructor(
         public const val UTILITY_CONTROL_WEIGHT: Float = 1.35f
 
         private const val TEXT_GAP_DP = 10f
+
+        /** Inset of start-aligned text, the same as in an entry row. */
+        private const val START_INSET_DP = 12f
         private const val DETAIL_GAP_DP = 3f
 
         private const val STATE_SUPER = "sancai:super"
         private const val STATE_SELECTED = "sancai:selected"
         private val LAYOUTS = Layout.values()
+        private val ALIGNMENTS = Alignment.values()
     }
 }

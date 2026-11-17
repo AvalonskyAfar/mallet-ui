@@ -344,7 +344,6 @@ public class SancaiTextField @JvmOverloads constructor(
 
         actionView.scaleType = ImageView.ScaleType.CENTER
         val actionParams = LayoutParams(px(ACTION_DP), px(ACTION_DP))
-        actionParams.marginEnd = px(ACTION_INSET_DP)
         well.addView(actionView, actionParams)
         SancaiPress.attach(actionView, actionView)
         // An action: tick first, then act.
@@ -732,6 +731,7 @@ public class SancaiTextField @JvmOverloads constructor(
         override fun draw(canvas: Canvas) {
             if (!actionView.isFocused || actionView.isInTouchMode) return
             body.set(bounds)
+            body.inset(px(ACTION_RIM_INSET_DP).toFloat(), px(ACTION_RIM_INSET_DP).toFloat())
             material.drawFocusRim(canvas, body, body.height() / 2f)
         }
 
@@ -766,8 +766,9 @@ public class SancaiTextField @JvmOverloads constructor(
         const val MIN_HEIGHT_DP = 44f
         const val ICON_DP = 18f
         const val ICON_GAP_DP = 9f
-        const val ACTION_DP = 40f
-        const val ACTION_INSET_DP = 2f
+        /** Side of the end action: a 44 dp target whose focus rim is drawn 2 dp inside it. */
+        const val ACTION_DP = 44f
+        const val ACTION_RIM_INSET_DP = 2f
         const val SUPPORT_GAP_DP = 6f
         const val COUNTER_GAP_DP = 12f
         const val CURSOR_DP = 2f

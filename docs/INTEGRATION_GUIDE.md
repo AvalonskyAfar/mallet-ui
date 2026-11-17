@@ -184,6 +184,11 @@ The complete list of components, with their XML attributes and code APIs, is in 
   1.4 dp at the sides, 1 dp above, 4.8 dp below. Leave vertical gaps as margins on the card,
   as in the example; the page rhythm is listed in
   [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md#5-space-and-layout).
+- A card does not clip its children, so the shadows of the controls inside it can fade out
+  around them. A child that scrolls (`ScrollView`, a list, a `RecyclerView`) is the
+  exception and ends at its own edge. Plain content of your own, a line of text for
+  instance, sits about 5 dp closer to the lower rim than to the upper one, because the
+  lower gutter is the deeper; give it a bottom margin if that shows.
 - Give every view whose state should survive rotation an `android:id`, as with any Android
   view.
 - The layout editor preview draws the views, since they need nothing but their own code.
@@ -454,6 +459,8 @@ with the default optimising configuration and no extra rules.
 |---|---|
 | A card's shadow looks cut off at the bottom | Something sets a fixed height smaller than the content plus the 4.8 dp gutter. Use `wrap_content`, or add the gutter to the height. |
 | Two cards touch | The gap between cards is a margin on the card (22 dp between sections); the gutter alone is not a gap. |
+| Something inside a card draws over the row below it | Cards do not clip their children. Scrolling views are clipped for you; for any other view that draws outside its bounds, set `clipBounds` on it or mark it with `isScrollContainer = true`. |
+| The text of some rows is centred and of others not | Entry rows and control rows are centred by default. Set `alignment = Alignment.START` (`app:sancaiEntryAlignment`, `app:sancaiControlRowAlignment`) on every row of a card that should read from the edge. |
 | The theme did not change after a setting changed | Views read the theme at construction. Recreate the activity (section 7.3) or rebuild the views. |
 | A listener is not called after `select()` or `setChecked()` | By design: listeners are for user input. Call your own handler after setting the value. |
 | A track inside a `ViewPager2` swallows page swipes | Swipes that start on the track belong to the track. Start the swipe outside it, or disable the track while paging. |

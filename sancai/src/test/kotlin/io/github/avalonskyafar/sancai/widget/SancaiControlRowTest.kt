@@ -271,6 +271,46 @@ class SancaiControlRowTest {
     }
 
     @Test
+    fun `start alignment puts the text at the start edge with the inset of an entry row`() {
+        val row = SancaiControlRow(context)
+        row.title = "Quiet hours"
+        row.detail = "From ten to seven"
+        row.setControl(SancaiSwitch(context))
+        Snapshots.layout(row, 340)
+        val title = (copyOf(row) as LinearLayout).getChildAt(0) as TextView
+        // Centred by default: the line starts well inside its column.
+        assertThat(title.layout.getLineLeft(0)).isGreaterThan(px(30f).toFloat())
+
+        row.alignment = SancaiControlRow.Alignment.START
+        Snapshots.layout(row, 340)
+        assertThat(copyOf(row).paddingStart).isEqualTo(px(12f))
+        assertThat(title.layout.getLineLeft(0)).isWithin(1f).of(0f)
+        assertThat(title.left).isEqualTo(px(12f))
+        // The control stays at the end edge and the row keeps its height.
+        assertThat(row.control!!.right).isEqualTo(row.width)
+        assertThat(row.height).isEqualTo(px(72f))
+
+        row.alignment = SancaiControlRow.Alignment.CENTER
+        Snapshots.layout(row, 340)
+        assertThat(copyOf(row).paddingStart).isEqualTo(0)
+        assertThat(title.layout.getLineLeft(0)).isGreaterThan(px(30f).toFloat())
+    }
+
+    @Test
+    fun `start alignment keeps the lift beside a track and comes from xml`() {
+        val attrs = Robolectric.buildAttributeSet()
+            .addAttribute(R.attr.sancaiTitle, "Level")
+            .addAttribute(R.attr.sancaiControlRowAlignment, "start")
+            .build()
+        val row = SancaiControlRow(context, attrs)
+        assertThat(row.alignment).isEqualTo(SancaiControlRow.Alignment.START)
+        row.setSegmented(LABELS.take(3), 0, null)
+        Snapshots.layout(row, 340)
+        assertThat(copyOf(row).paddingStart).isEqualTo(px(12f))
+        assertThat(copyOf(row).paddingBottom).isEqualTo(px(5f))
+    }
+
+    @Test
     fun `xml attributes set the text the layout and the enabled state`() {
         val attrs = Robolectric.buildAttributeSet()
             .addAttribute(R.attr.sancaiTitle, "Cleanup")

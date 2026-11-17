@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.Canvas
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
@@ -159,11 +160,18 @@ public class SancaiPager @JvmOverloads constructor(
         val a = context.obtainStyledAttributes(attrs, R.styleable.SancaiPager, defStyleAttr, 0)
         offscreenPageLimit = a.getInt(R.styleable.SancaiPager_sancaiPagerOffscreenPageLimit, 1)
         a.recycle()
-        // Pages slide inside the pager and never over its neighbours.
         clipChildren = true
         if (importantForAccessibility == IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
             importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_YES
         }
+    }
+
+    /** Pages slide inside the pager and never over its neighbours, whatever the parent clips. */
+    override fun dispatchDraw(canvas: Canvas) {
+        val save = canvas.save()
+        canvas.clipRect(0, 0, width, height)
+        super.dispatchDraw(canvas)
+        canvas.restoreToCount(save)
     }
 
     /**

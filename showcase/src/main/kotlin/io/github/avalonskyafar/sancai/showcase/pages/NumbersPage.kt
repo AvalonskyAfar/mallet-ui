@@ -273,6 +273,7 @@ private fun spinners(page: PageScope) {
         val row = SancaiControlRow(context).apply {
             title = page.str(R.string.numbers_spinner_busy)
             detail = page.str(R.string.numbers_spinner_busy_detail)
+            alignment = SancaiControlRow.Alignment.START
             setControl(busy)
         }
         addView(row, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))

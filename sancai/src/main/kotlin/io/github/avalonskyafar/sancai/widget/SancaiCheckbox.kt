@@ -242,7 +242,7 @@ public class SancaiCheckbox @JvmOverloads constructor(
             // A full rim: the well's own lower edge is a highlight that vanishes on pale ground,
             // and an empty box still has to read as a box.
             val rim = SancaiColors.blend(theme.colors.hairline, theme.colors.ink, WELL_RIM_INK)
-            material.drawWell(canvas, boxBounds, radius, rim)
+            material.drawWell(canvas, boxBounds, radius, rim, pressed = down)
         }
         if (fade > 0f) {
             // The glaze fades in as one body, shadow and rim included.

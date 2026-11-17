@@ -270,7 +270,7 @@ public class SancaiRadioButton @JvmOverloads constructor(
             // An even rim: the default well rim fades out at the bottom, which is right for a
             // wide field but leaves so small a circle looking open.
             val rim = SancaiColors.blend(theme.colors.hairline, theme.colors.ink, WELL_RIM_INK)
-            material.drawWell(canvas, bedBounds, radius, rim)
+            material.drawWell(canvas, bedBounds, radius, rim, pressed = down)
         }
         if (progress > 0f) {
             val fade = if (progress < 1f) {

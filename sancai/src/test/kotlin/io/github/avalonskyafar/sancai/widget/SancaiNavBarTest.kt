@@ -114,9 +114,8 @@ class SancaiNavBarTest {
         // Slot 2 is the circle icon: its outline is symmetric around its centre.
         val (iconTop, iconBottom) = view.inkRows(bitmap, 2, 0f, 40f)
         assertThat((iconTop + iconBottom + 1) / 2f).isWithin(1.5f).of(21f * view.density)
-        // The glyph lives inside the 24 dp icon box.
-        assertThat((iconBottom + 1 - iconTop) / view.density).isAtMost(24.5f)
-        assertThat((iconBottom + 1 - iconTop) / view.density).isAtLeast(20f)
+        // As in the original app the circle is 24 dp across, plus its 1.7 dp stroke.
+        assertThat((iconBottom + 1 - iconTop) / view.density).isWithin(0.8f).of(25.7f)
         // "HHH" has no descender: its lowest row sits on the baseline.
         val (_, labelBottom) = view.inkRows(bitmap, 2, 40f, 72f)
         assertThat((labelBottom + 1).toFloat()).isWithin(1.5f).of(57f * view.density)
@@ -446,7 +445,7 @@ class SancaiNavBarTest {
         view.onApplyWindowInsets(insets.toWindowInsets()!!)
         Snapshots.layout(view, WIDTH_DP)
         assertThat(view.height).isEqualTo(bare + 40)
-        view.fitsNavigationBar = false
+        view.fitNavigationBar = false
         Snapshots.layout(view, WIDTH_DP)
         assertThat(view.height).isEqualTo(bare)
     }
@@ -576,8 +575,10 @@ class SancaiNavBarTest {
             .addAttribute(R.attr.sancaiOptions, "@android:array/emailAddressTypes")
             .addAttribute(R.attr.sancaiSelectedIndex, "1")
             .addAttribute(R.attr.sancaiElevated, "true")
+            .addAttribute(R.attr.sancaiNavBarFitNavigationBar, "false")
             .build()
         val view = SancaiNavBar(Snapshots.context(), attrs)
+        assertThat(view.fitNavigationBar).isFalse()
         assertThat(view.mode).isEqualTo(SancaiNavBar.Mode.TABS)
         assertThat(view.items.size).isAtLeast(2)
         assertThat(view.items[0].icon).isEqualTo(SancaiIcon.MORE_CIRCLE)

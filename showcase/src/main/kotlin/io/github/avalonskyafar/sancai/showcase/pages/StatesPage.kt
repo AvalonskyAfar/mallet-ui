@@ -65,6 +65,8 @@ object StatesPage : DemoPage("c_states", R.string.page_c_states_title, R.string.
                 page.str(R.string.states_kind_offline), page.str(R.string.states_kind_success),
                 page.str(R.string.states_kind_info),
             )
+            // The options are equals, not levels: one glaze under all of them.
+            track.setGlazes(page.theme.glazes.uniform(5, page.theme.glazes.mist))
             track.setOnSelectionChangeListener { _, index -> show(index) }
             addView(track, match())
             // A fixed height keeps the card still while the message changes length.
@@ -122,6 +124,7 @@ object StatesPage : DemoPage("c_states", R.string.page_c_states_title, R.string.
                 page.str(R.string.states_layout_content), page.str(R.string.states_layout_loading),
                 page.str(R.string.states_layout_empty), page.str(R.string.states_layout_error),
             )
+            track.setGlazes(page.theme.glazes.uniform(4, page.theme.glazes.mist))
             val layout = SancaiStateLayout(context)
             layout.minimumLoadingMs = 400L
             layout.addView(backupList(page))
@@ -289,12 +292,8 @@ object StatesPage : DemoPage("c_states", R.string.page_c_states_title, R.string.
                 }
             }
             all += banner
-            // The gap above a banner is padding of a slot that stays, not a margin of the banner:
-            // a margin would vanish in one step when the collapsed banner turns GONE.
-            val slot = FrameLayout(page.context)
-            slot.setPadding(0, page.dp(if (i == 0) 14 else 10), 0, 0)
-            slot.addView(banner, FrameLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))
-            page.loose(slot)
+            // The gap above a banner is its own margin: it closes and opens with the banner.
+            page.loose(banner, topDp = if (i == 0) 14 else 10)
         }
         again.text = page.str(R.string.states_banner_again)
         again.setOnClickListener {

@@ -180,7 +180,7 @@ class SancaiTextFieldTest {
         assertThat(field.action().contentDescription.toString())
             .isEqualTo(context.getString(R.string.sancai_text_field_clear))
         Snapshots.idle()
-        assertThat(field.action().width).isEqualTo((40 * field.resources.displayMetrics.density).toInt())
+        assertThat(field.action().width).isEqualTo(Math.round(44 * field.resources.displayMetrics.density))
 
         field.action().performClick()
         Snapshots.idle()

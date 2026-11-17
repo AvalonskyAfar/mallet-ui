@@ -1,6 +1,5 @@
 package io.github.avalonskyafar.sancai.showcase.pages
 
-import android.view.Gravity
 import android.widget.LinearLayout
 import io.github.avalonskyafar.sancai.showcase.DemoPage
 import io.github.avalonskyafar.sancai.showcase.PageScope
@@ -8,6 +7,7 @@ import io.github.avalonskyafar.sancai.showcase.R
 import io.github.avalonskyafar.sancai.theme.SancaiGlaze
 import io.github.avalonskyafar.sancai.theme.SancaiTextRole
 import io.github.avalonskyafar.sancai.theme.SancaiTextTone
+import io.github.avalonskyafar.sancai.widget.SancaiControlRow
 import io.github.avalonskyafar.sancai.widget.SancaiPowerSwitch
 import io.github.avalonskyafar.sancai.widget.SancaiSegmentedTrack
 import io.github.avalonskyafar.sancai.widget.SancaiSurface
@@ -119,22 +119,18 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
             val format = if (checked) R.string.tracks_switch_status_on else R.string.tracks_switch_status_off
             status.text = page.context.getString(format, page.str(label))
         }
-        fun row(label: Int, checked: Boolean, enabled: Boolean = true, setUp: SancaiSwitch.() -> Unit = {}): LinearLayout {
+        fun row(label: Int, checked: Boolean, enabled: Boolean = true, setUp: SancaiSwitch.() -> Unit = {}): SancaiControlRow {
             val switch = SancaiSwitch(page.context).apply {
                 setUp()
                 setChecked(checked, false)
-                isEnabled = enabled
-                contentDescription = page.str(label)
                 setOnCheckedChangeListener { _, isOn -> show(label, isOn) }
             }
-            val tone = if (enabled) SancaiTextTone.INK else SancaiTextTone.MUTED
-            return LinearLayout(page.context).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER_VERTICAL
-                minimumHeight = page.dp(ROW_MIN_HEIGHT)
-                setPaddingRelative(page.dp(7), page.dp(6), page.dp(3), page.dp(6))
-                addView(page.text(page.str(label), SancaiTextRole.BODY, tone), LinearLayout.LayoutParams(0, PageScope.WRAP, 1f))
-                addView(switch, LinearLayout.LayoutParams(PageScope.WRAP, PageScope.WRAP).apply { marginStart = page.dp(12) })
+            // The row names the switch for screen readers and pales with it when disabled.
+            return SancaiControlRow(page.context).apply {
+                title = page.str(label)
+                alignment = SancaiControlRow.Alignment.START
+                setControl(switch)
+                isEnabled = enabled
             }
         }
         show(R.string.tracks_switch_blocking, true)
@@ -160,6 +156,10 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
             quiet.setOnCheckedChangeListener { _, checked ->
                 status.text = if (checked) "On" else "Off"
             }
+            val row = SancaiControlRow(this)
+            row.title = "Quiet hours"
+            row.alignment = SancaiControlRow.Alignment.START
+            row.setControl(quiet)
         """)
     }
 
@@ -195,7 +195,6 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
 }
 
 private const val CARD_GAP = 14
-private const val ROW_MIN_HEIGHT = 56
 private val LEVELS = intArrayOf(R.string.tracks_off, R.string.tracks_gentle, R.string.tracks_standard, R.string.tracks_strict)
 
 /** Adds [view] across the whole width of the card. */

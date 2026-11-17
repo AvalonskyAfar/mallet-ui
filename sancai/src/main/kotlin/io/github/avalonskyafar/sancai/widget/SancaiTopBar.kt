@@ -50,7 +50,9 @@ import kotlin.math.roundToInt
  *
  * The bar is as quiet as the page under it: it has the canvas colour and no shadow. Only when
  * it is [lifted], which [bindTo] switches on once the content has scrolled, a full-bleed
- * hairline separates it from what moves underneath.
+ * hairline separates it from what moves underneath. The canvas colour is only the default
+ * background: a bar that stands on something else, a card for instance, keeps the background
+ * you set on it (`android:background`, `setBackgroundColor`).
  *
  * The title is centred in the bar and stays there whatever buttons are present: the room it
  * may use is the same on both sides, so a lone back button never pushes it off centre. A

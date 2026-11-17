@@ -55,7 +55,8 @@ import kotlin.math.roundToInt
  *
  * The banner appears by growing its height from zero and leaves the same way, so it pushes
  * the content below it instead of covering it. Give it `wrap_content` height. When it has
- * fully collapsed its visibility becomes `GONE`; [show] makes it `VISIBLE` again. Whether it
+ * fully collapsed its visibility becomes `GONE`; [show] makes it `VISIBLE` again. Its top
+ * and bottom margins close and open with it, so give the banner its gap as a margin. Whether it
  * is showing survives a configuration change. The platform's `isShown()` keeps its usual
  * meaning; ask [isShowing] for the banner's own state.
  *
@@ -122,6 +123,11 @@ public class SancaiBanner @JvmOverloads constructor(
     private var reveal = 1f
     private var showing = true
     private var animator: ValueAnimator? = null
+
+    // The vertical margins the banner has at rest, while a glide scales them with the height.
+    private var restParams: ViewGroup.MarginLayoutParams? = null
+    private var restTop = 0
+    private var restBottom = 0
     private var customIcon: SancaiIcon? = null
 
     private var dismissListener: OnDismissListener? = null
@@ -422,6 +428,7 @@ public class SancaiBanner @JvmOverloads constructor(
         run.interpolator = SancaiMotion.glide()
         run.addUpdateListener {
             reveal = it.animatedValue as Float
+            scaleMargins()
             requestLayout()
         }
         run.addListener(object : AnimatorListenerAdapter() {
@@ -438,13 +445,38 @@ public class SancaiBanner @JvmOverloads constructor(
             }
         })
         animator = run
+        scaleMargins()
         run.start()
+    }
+
+    /**
+     * The gap around a banner belongs to it: while it grows or collapses, its top and bottom
+     * margins are scaled with its height, so the content below never moves in a step.
+     */
+    private fun scaleMargins() {
+        val params = layoutParams as? ViewGroup.MarginLayoutParams ?: return
+        if (restParams !== params) {
+            restParams = params
+            restTop = params.topMargin
+            restBottom = params.bottomMargin
+        }
+        params.topMargin = (restTop * reveal).roundToInt()
+        params.bottomMargin = (restBottom * reveal).roundToInt()
+    }
+
+    private fun restoreMargins() {
+        val params = restParams ?: return
+        restParams = null
+        if (layoutParams !== params) return
+        params.topMargin = restTop
+        params.bottomMargin = restBottom
     }
 
     /** Settles at fully shown or fully collapsed without motion. */
     private fun jumpTo(shown: Boolean) {
         showing = shown
         reveal = if (shown) 1f else 0f
+        restoreMargins()
         syncFocusability()
         if (!shown) visibility = GONE
         requestLayout()

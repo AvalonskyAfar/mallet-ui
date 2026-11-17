@@ -153,6 +153,19 @@ public class SancaiNavBar @JvmOverloads constructor(
     /** The items in logical order. In right-to-left layouts the first one is drawn at the right. */
     public val items: List<Item> get() = java.util.Collections.unmodifiableList(entries)
 
+    /**
+     * Whether the row grows by the height of the system navigation bar, keeping the items above
+     * it in an edge-to-edge window. On by default. The insets are not consumed.
+     */
+    public var fitNavigationBar: Boolean = true
+        set(value) {
+            if (field == value) return
+            field = value
+            if (!value) insetBottom = 0
+            requestLayout()
+            if (value) ViewCompat.requestApplyInsets(this)
+        }
+
     init {
         var initial = 0
         if (attrs != null) {
@@ -169,6 +182,7 @@ public class SancaiNavBar @JvmOverloads constructor(
                 }
                 initial = a.getInt(R.styleable.SancaiNavBar_sancaiSelectedIndex, 0)
                 elevated = a.getBoolean(R.styleable.SancaiNavBar_sancaiElevated, false)
+                fitNavigationBar = a.getBoolean(R.styleable.SancaiNavBar_sancaiNavBarFitNavigationBar, true)
                 isEnabled = a.getBoolean(R.styleable.SancaiNavBar_android_enabled, true)
             } finally {
                 a.recycle()
@@ -498,21 +512,8 @@ public class SancaiNavBar @JvmOverloads constructor(
     // Insets, state and accessibility
     // ---------------------------------------------------------------------------------------
 
-    /**
-     * Whether the row grows by the height of the system navigation bar, keeping the items above
-     * it in an edge-to-edge window. On by default. The insets are not consumed.
-     */
-    public var fitsNavigationBar: Boolean = true
-        set(value) {
-            if (field == value) return
-            field = value
-            if (!value) insetBottom = 0
-            requestLayout()
-            if (value) ViewCompat.requestApplyInsets(this)
-        }
-
     override fun onApplyWindowInsets(insets: android.view.WindowInsets): android.view.WindowInsets {
-        val bottom = if (fitsNavigationBar) {
+        val bottom = if (fitNavigationBar) {
             // With the view, the compat layer can tell the navigation bar from the keyboard before API 30.
             WindowInsetsCompat.toWindowInsetsCompat(insets, this)
                 .getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
@@ -630,7 +631,8 @@ public class SancaiNavBar @JvmOverloads constructor(
         const val NONE = -1
         const val HEIGHT_DP = 72f
         const val SIDE_DP = 18f
-        const val ICON_DP = 24f
+        /** Side of the box an icon is drawn in: a glyph of the 24 unit grid is 24 dp across in it. */
+        const val ICON_DP = 32f
         const val ICON_CENTER_DP = 21f
         const val BASELINE_DP = 57f
         const val STROKE_DP = 1.7f

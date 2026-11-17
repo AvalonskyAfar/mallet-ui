@@ -113,6 +113,8 @@ object MaterialPage : DemoPage("f_material", R.string.page_f_material_title, R.s
         page.section(R.string.material_gutter_title, R.string.material_gutter_detail) {
             val zoom = SancaiSegmentedTrack(context).apply {
                 setOptions(page.str(R.string.material_gutter_actual), page.str(R.string.material_gutter_magnified))
+                // The options are equals, not levels: one glaze under all of them.
+                setGlazes(page.theme.glazes.uniform(2, page.theme.glazes.mist))
                 setOnSelectionChangeListener { _, index ->
                     specimen.zoom = if (index == 1) GutterSpecimen.MAGNIFIED else 1f
                     status.text = page.str(

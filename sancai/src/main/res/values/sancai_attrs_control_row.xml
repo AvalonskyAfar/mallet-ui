@@ -15,6 +15,11 @@
             <enum name="auto" value="0" />
             <enum name="utility" value="1" />
         </attr>
+        <!-- Whether the title and the detail are centred in the text column or aligned to its start. -->
+        <attr name="sancaiControlRowAlignment" format="enum">
+            <enum name="center" value="0" />
+            <enum name="start" value="1" />
+        </attr>
         <!-- Weight of the text column next to a control declared as the XML child. -->
         <attr name="sancaiControlRowTextWeight" format="float" />
         <!--

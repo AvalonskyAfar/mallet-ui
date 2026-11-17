@@ -322,9 +322,11 @@ abstract class SancaiControl (context: Context, attrs: AttributeSet? = null, def
 ```
 class SancaiControlRow (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A settings row:
   enum class Layout    // How the width is shared between the text and a segmented track.
+  enum class Alignment    // How the title and the detail stand in the text column.
   var title: CharSequence?    // The main line.
   var detail: CharSequence?    // The supporting line under the title.
   var layout: Layout    // The proportions used by [setSegmented].
+  var alignment: Alignment    // Whether the text is centred in its column (the default) or aligned to the start.
   var control: View?    // The control of the row, or `null` while there is none.
   val track: SancaiSegmentedTrack? get()    // The control as a segmented track:
   var textWeight: Float    // Weight of the text column.
@@ -432,6 +434,7 @@ class SancaiNavBar (context: Context, attrs: AttributeSet? = null, defStyleAttr:
   var selectedIndex: Int    // Index of the selected item in [Mode.TABS]; `-1` in [Mode.LAUNCHER] or without items.
   var elevated: Boolean    // Draws a full-bleed hairline along the top edge, for content that scrolls underneath the row.
   val items: List<Item> get()    // The items in logical order.
+  var fitNavigationBar: Boolean    // Whether the row grows by the height of the system navigation bar, keeping the items above it in an edge-to-edge window.
   fun addItem(icon: SancaiIcon, label: CharSequence): Int    // Appends an item and returns its index.
   fun setItems(items: List<Item>)    // Replaces all items.
   fun select(index: Int, animate: Boolean = true)    // Moves the selection to [index] from code; the listeners are not called.
@@ -439,7 +442,6 @@ class SancaiNavBar (context: Context, attrs: AttributeSet? = null, defStyleAttr:
   fun setBadgeDot(index: Int, show: Boolean)    // Shows or removes a small dot without a number at the top end of the icon of item [index].
   fun badgeCount(index: Int): Int = badges.getOrNull(index)?.count ?: 0    // The count shown on item [index]; zero when it has no badge or only a dot.
   fun hasBadgeDot(index: Int): Boolean = badges.getOrNull(index)?.let { it.count == 0 && it.showDot } ?: false    // Whether item [index] shows a dot without a number.
-  var fitsNavigationBar: Boolean    // Whether the row grows by the height of the system navigation bar, keeping the items above it in an edge-to-edge window.
 ```
 
 ### widget/SancaiPage.kt

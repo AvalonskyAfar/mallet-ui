@@ -1,11 +1,16 @@
 package io.github.avalonskyafar.sancai.widget
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AbsListView
+import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
+import android.widget.ScrollView
+import androidx.core.view.ScrollingView
 import io.github.avalonskyafar.sancai.R
 import io.github.avalonskyafar.sancai.material.SancaiCorners
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
@@ -75,6 +80,10 @@ public class SancaiDivider @JvmOverloads constructor(
  *   the view: 1.4 dp on each side, 1 dp above and 4.8 dp below. Content padding (9 dp by
  *   default) is measured from the view bounds.
  * - [SancaiDivider] children marked full-bleed are stretched from rim to rim.
+ * - Children are not clipped to their bounds, so that the tracks and capsules inside a card
+ *   can let their shadows fade out into the room around them. A child that scrolls (a
+ *   `ScrollView`, a list, a `RecyclerView`, anything marked as a scroll container) is the
+ *   exception: its content ends at its own edge.
  *
  * ```xml
  * <io.github.avalonskyafar.sancai.widget.SancaiSurface
@@ -190,6 +199,23 @@ public open class SancaiSurface @JvmOverloads constructor(
             }
         }
     }
+
+    override fun drawChild(canvas: Canvas, child: View, drawingTime: Long): Boolean {
+        if (!scrolls(child)) return super.drawChild(canvas, child, drawingTime)
+        val save = canvas.save()
+        canvas.clipRect(
+            child.left + child.translationX, child.top + child.translationY,
+            child.right + child.translationX, child.bottom + child.translationY,
+        )
+        val more = super.drawChild(canvas, child, drawingTime)
+        canvas.restoreToCount(save)
+        return more
+    }
+
+    /** Decided by what the child is, not by how far it can scroll right now: it must not change between frames. */
+    private fun scrolls(child: View): Boolean =
+        child is ScrollView || child is HorizontalScrollView || child is AbsListView ||
+            child is ScrollingView || child.isScrollContainer
 
     public companion object {
         /** Default padding between the view bounds and the content, in dp. */

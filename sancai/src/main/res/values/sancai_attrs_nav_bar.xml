@@ -17,6 +17,11 @@
         <attr name="sancaiSelectedIndex" />
         <!-- Draws a full-bleed hairline above the row, for content that scrolls underneath. -->
         <attr name="sancaiElevated" />
+        <!--
+            Whether the row grows by the height of the system navigation bar (default true).
+            Switch it off for a row that does not sit at the bottom of the window.
+        -->
+        <attr name="sancaiNavBarFitNavigationBar" format="boolean" />
         <attr name="android:enabled" />
     </declare-styleable>
 </resources>

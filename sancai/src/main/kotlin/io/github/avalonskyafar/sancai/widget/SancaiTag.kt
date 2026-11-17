@@ -24,7 +24,8 @@ import kotlin.math.roundToInt
  *
  * The tag says what state something is in ("Active", "Expired", "Draft") and nothing else. It
  * is 22 dp high, has no outer shadow, cannot be pressed and takes no focus. Its colour is the
- * state, and it lives in the bed: each [Tone] maps to one glaze of the theme.
+ * state, and it lives in the bed: each [Tone] maps to one glaze of the theme. Several tags
+ * side by side belong in a [SancaiChipGroup], which wraps them onto further lines.
  *
  * | Tone | Glaze | Use |
  * |---|---|---|

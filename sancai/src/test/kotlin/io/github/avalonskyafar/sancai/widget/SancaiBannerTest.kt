@@ -224,6 +224,54 @@ class SancaiBannerTest {
     }
 
     @Test
+    fun `the gap around a banner closes and opens with it`() {
+        val column = LinearLayout(context)
+        column.orientation = LinearLayout.VERTICAL
+        val view = banner()
+        val below = View(context)
+        val params = LinearLayout.LayoutParams(-1, -2)
+        params.topMargin = px(10f)
+        params.bottomMargin = px(12f)
+        column.addView(view, params)
+        column.addView(below, LinearLayout.LayoutParams(-1, px(40f)))
+        attachPaused(column)
+        val full = view.height
+        assertThat(below.top).isEqualTo(px(10f) + full + px(12f))
+
+        view.dismiss()
+        advance(60)
+        // Half-way: the margins have shrunk with the height, nothing has jumped.
+        assertThat(view.height).isLessThan(full)
+        assertThat(params.topMargin).isLessThan(px(10f))
+        assertThat(params.topMargin).isGreaterThan(0)
+        assertThat(below.top).isEqualTo(params.topMargin + view.height + params.bottomMargin)
+        // The glide lands softly: the last frame before the banner is gone leaves no gap to
+        // close in one step. Without the margins that step would be 22 dp.
+        var last = below.top
+        var frames = 0
+        while (view.visibility != View.GONE && frames < 60) {
+            last = below.top
+            advance(16)
+            frames++
+        }
+        assertThat(view.visibility).isEqualTo(View.GONE)
+        assertThat(last).isLessThan(px(6f))
+        assertThat(below.top).isEqualTo(0)
+        // At rest the margins are the ones the banner was given.
+        assertThat(params.topMargin).isEqualTo(px(10f))
+        assertThat(params.bottomMargin).isEqualTo(px(12f))
+
+        view.show()
+        advance(16)
+        // The first frames of the way back carry no full gap either.
+        assertThat(below.top).isLessThan(px(10f) + px(12f))
+        advance(400)
+        assertThat(view.height).isEqualTo(full)
+        assertThat(params.topMargin).isEqualTo(px(10f))
+        assertThat(below.top).isEqualTo(px(10f) + full + px(12f))
+    }
+
+    @Test
     fun `without animation and when not attached the change is immediate`() {
         val attached = banner()
         Snapshots.attach(attached, 320)

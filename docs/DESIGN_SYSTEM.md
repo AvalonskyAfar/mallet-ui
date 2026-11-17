@@ -300,10 +300,17 @@ chevron. Leading icons, trailing values and chevrons are positioned on their own
 the edge. Adding or removing one never moves the text. The same rule holds for the title of
 the top bar and for the label of a link row. *(Extracted; top bar New)*
 
+Centred text suits short rows that lead somewhere or carry a wide track. A list of switches,
+or rows with long text, reads better from one edge: entry rows and control rows can align
+their text to the start instead (`Alignment.START`), 12 dp from the edge, and a card should
+use one alignment for all of its rows. *(New)*
+
 ### 5.4 Touch targets
 
 Interactive elements are at least 44 dp in their smaller dimension, either by their own
-size or through the row that contains them. *(New)*
+size or through the row that contains them. The two exceptions are the dots of a page
+indicator (28 dp cells; the pager itself is the large target) and a chip in a dense group,
+whose 44 dp targets overlap those of its neighbours. *(New)*
 
 ---
 
@@ -478,9 +485,11 @@ vector file is shipped, so an icon takes any colour and any size.
 | Mirroring | chevrons and arrows left/right mirror in right-to-left layouts | New |
 
 The original drew six glyphs (two chevrons, an arrow, the power ring, and the book, sliders
-and "more" marks of its navigation row). They are kept with their geometry; the other
-forty-four were drawn for Sancai in the same hand. Navigation icons use a lighter 1.7 dp
-stroke, 2 dp when selected.
+and "more" marks of its navigation row). They are kept with their proportions; the other
+forty-four were drawn for Sancai in the same hand. The three navigation marks were drawn
+24 dp wide, a third larger than the rest, so on the common grid they are scaled to three
+quarters and are as large as every other icon. The navigation row draws its icons in a 32 dp
+box, which gives them their original size, with a lighter 1.7 dp stroke, 2 dp when selected.
 
 The power glyph's open ring (a 276° arc) doubles as the loading spinner.
 

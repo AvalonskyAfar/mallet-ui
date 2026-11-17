@@ -67,7 +67,7 @@ private fun PageScope.navRow() {
         val launcherNames = listOf(R.string.nav_item_rules, R.string.nav_item_history, R.string.nav_item_settings, R.string.nav_item_about)
         val launcher = SancaiNavBar(context).apply {
             mode = SancaiNavBar.Mode.LAUNCHER
-            fitsNavigationBar = false
+            fitNavigationBar = false
             addItem(SancaiIcon.SHIELD, str(launcherNames[0]))
             addItem(SancaiIcon.CLOCK, str(launcherNames[1]))
             addItem(SancaiIcon.SLIDERS, str(launcherNames[2]))
@@ -85,7 +85,7 @@ private fun PageScope.navRow() {
         val tabNames = listOf(R.string.nav_item_home, R.string.nav_item_inbox, R.string.nav_item_alerts, R.string.nav_item_me)
         val tabs = SancaiNavBar(context).apply {
             mode = SancaiNavBar.Mode.TABS
-            fitsNavigationBar = false
+            fitNavigationBar = false
             addItem(SancaiIcon.HOME, str(tabNames[0]))
             addItem(SancaiIcon.INBOX, str(tabNames[1]))
             addItem(SancaiIcon.BELL, str(tabNames[2]))
@@ -120,7 +120,7 @@ private fun PageScope.navRow() {
     }
     code("""
         nav.mode = SancaiNavBar.Mode.TABS
-        nav.fitsNavigationBar = false
+        nav.fitNavigationBar = false
         nav.addItem(SancaiIcon.HOME, "Home")
         nav.addItem(SancaiIcon.INBOX, "Inbox")
         nav.setBadge(1, 3)
