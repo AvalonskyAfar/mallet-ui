@@ -295,6 +295,21 @@ class SancaiSpatialHostTest {
     }
 
     @Test
+    fun `refreshing the current page keeps what it had saved`() {
+        val host = host()
+        host.navigate("settings", animate = false)
+        Snapshots.layout(host, 360, 640)
+        val before = scroller!!
+        before.scrollTo(0, 300)
+        host.refreshCurrent()
+        Snapshots.layout(host, 360, 640)
+        assertThat(scroller).isNotSameInstanceAs(before)
+        assertThat(scroller!!.scrollY).isEqualTo(300)
+        assertThat(host.currentKey).isEqualTo("settings")
+        assertThat(host.childCount).isEqualTo(1)
+    }
+
+    @Test
     fun `right to left layouts swap the start and end sides`() {
         val app = ApplicationProvider.getApplicationContext<Context>()
         app.applicationInfo.flags = app.applicationInfo.flags or ApplicationInfo.FLAG_SUPPORTS_RTL

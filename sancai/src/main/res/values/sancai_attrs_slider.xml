@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SancaiSlider">
+        <attr name="sancaiValueFrom" />
+        <attr name="sancaiValueTo" />
+        <attr name="sancaiStepSize" />
+        <attr name="sancaiValue" />
+        <attr name="sancaiGlaze" />
+        <!--
+            How the stretch behind the bead is glazed. "single" pours the glaze named by
+            sancaiGlaze. "scale" blends through terracotta, ochre, cobalt and celadon as the
+            value rises, for values that read as a strength.
+        -->
+        <attr name="sancaiSliderGlazeMode" format="enum">
+            <enum name="single" value="0" />
+            <enum name="scale" value="1" />
+        </attr>
+        <attr name="android:enabled" />
+    </declare-styleable>
+</resources>

@@ -142,7 +142,7 @@ public class SancaiButton @JvmOverloads constructor(
         }
         val label = when (variant) {
             Variant.NEUTRAL -> colors.ink
-            Variant.PRIMARY, Variant.DANGER -> Color.WHITE
+            Variant.PRIMARY, Variant.DANGER -> theme.labelOnTint(tint ?: colors.accent)
             Variant.TEXT -> tone.resolve(colors)
         }
         setTextColor(label)

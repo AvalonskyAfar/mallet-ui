@@ -168,12 +168,19 @@ public class SancaiSpatialHost @JvmOverloads constructor(
         replaceWith(key, obtainPage(key))
     }
 
-    /** Rebuilds the page on screen in place, for example after its data changed. */
+    /**
+     * Rebuilds the page on screen in place, for example after its data changed. Whatever the
+     * page had saved (scroll position, typed text) is handed to the new view.
+     */
     public fun refreshCurrent() {
         val key = current ?: return
         stabilise()
+        currentView?.let { view ->
+            val state = SparseArray<Parcelable>()
+            view.saveHierarchyState(state)
+            savedPages[key] = state
+        }
         cache.remove(key)
-        savedPages.remove(key)
         replaceWith(key, obtainPage(key))
     }
 

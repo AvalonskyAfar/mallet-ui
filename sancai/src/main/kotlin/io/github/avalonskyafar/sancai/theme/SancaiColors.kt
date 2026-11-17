@@ -48,6 +48,8 @@ public data class SancaiColors(
             val canvas = Color.rgb(255, 255, 255)
             val ink = Color.rgb(26, 28, 31)
             val hairline = if (highContrast) Color.rgb(209, 210, 210) else Color.rgb(237, 237, 237)
+            val danger = Color.rgb(200, 88, 88)
+            val success = Color.rgb(46, 145, 104)
             return SancaiColors(
                 isDark = false,
                 canvas = canvas,
@@ -58,9 +60,10 @@ public data class SancaiColors(
                 hairline = hairline,
                 divider = if (highContrast) hairline else blend(canvas, ink, DIVIDER_INK_SHARE),
                 accent = Color.rgb(49, 90, 155),
-                danger = Color.rgb(200, 88, 88),
-                warning = Color.rgb(224, 179, 58),
-                success = Color.rgb(46, 145, 104),
+                // High contrast deepens the two roles that fall short of 4.5 : 1 on white.
+                danger = if (highContrast) blend(danger, ink, 0.08f) else danger,
+                warning = Color.rgb(154, 106, 20),
+                success = if (highContrast) blend(success, ink, 0.12f) else success,
                 shadow = Color.argb(23, 26, 28, 31),
             )
         }
@@ -71,6 +74,10 @@ public data class SancaiColors(
             val canvas = Color.rgb(24, 29, 36)
             val ink = Color.rgb(235, 239, 244)
             val hairline = if (highContrast) Color.rgb(88, 101, 118) else Color.rgb(54, 64, 77)
+            val accent = Color.rgb(91, 126, 164)
+            val danger = Color.rgb(151, 89, 96)
+            val warning = Color.rgb(157, 128, 75)
+            val success = Color.rgb(89, 133, 105)
             return SancaiColors(
                 isDark = true,
                 canvas = canvas,
@@ -80,10 +87,11 @@ public data class SancaiColors(
                 muted = if (highContrast) Color.rgb(201, 208, 217) else Color.rgb(161, 172, 187),
                 hairline = hairline,
                 divider = if (highContrast) hairline else blend(canvas, ink, DIVIDER_INK_SHARE),
-                accent = Color.rgb(91, 126, 164),
-                danger = Color.rgb(151, 89, 96),
-                warning = Color.rgb(157, 128, 75),
-                success = Color.rgb(89, 133, 105),
+                // High contrast lifts the muted semantic colours until they read as text.
+                accent = if (highContrast) blend(accent, ink, 0.20f) else accent,
+                danger = if (highContrast) blend(danger, ink, 0.30f) else danger,
+                warning = if (highContrast) blend(warning, ink, 0.10f) else warning,
+                success = if (highContrast) blend(success, ink, 0.15f) else success,
                 shadow = Color.argb(100, 0, 0, 0),
             )
         }
@@ -102,6 +110,25 @@ public data class SancaiColors(
                 (Color.green(first) * (1 - a) + Color.green(second) * a).roundToInt(),
                 (Color.blue(first) * (1 - a) + Color.blue(second) * a).roundToInt(),
             )
+        }
+
+        /**
+         * WCAG 2 contrast ratio of two opaque colours, from 1 (identical) to 21 (black on
+         * white). Text needs 4.5 to pass level AA; large text and graphics need 3.
+         */
+        @JvmStatic
+        public fun contrast(@ColorInt first: Int, @ColorInt second: Int): Float {
+            val a = luminance(first)
+            val b = luminance(second)
+            return ((maxOf(a, b) + 0.05) / (minOf(a, b) + 0.05)).toFloat()
+        }
+
+        private fun luminance(color: Int): Double =
+            0.2126 * linear(Color.red(color)) + 0.7152 * linear(Color.green(color)) + 0.0722 * linear(Color.blue(color))
+
+        private fun linear(channel: Int): Double {
+            val value = channel / 255.0
+            return if (value <= 0.03928) value / 12.92 else Math.pow((value + 0.055) / 1.055, 2.4)
         }
 
         /** [color] with its alpha channel replaced by [alpha] (clamped to 0..255). */

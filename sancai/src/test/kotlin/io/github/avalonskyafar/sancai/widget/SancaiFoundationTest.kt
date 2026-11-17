@@ -7,6 +7,7 @@ import com.google.common.truth.Truth.assertThat
 import io.github.avalonskyafar.sancai.icon.SancaiIcon
 import io.github.avalonskyafar.sancai.testing.Snapshots
 import io.github.avalonskyafar.sancai.testing.Touch
+import io.github.avalonskyafar.sancai.theme.SancaiColors
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
 import io.github.avalonskyafar.sancai.theme.SancaiTextRole
 import io.github.avalonskyafar.sancai.theme.SancaiTextTone
@@ -58,6 +59,45 @@ class SancaiFoundationTest {
         assertThat(normal.labelOnBed(normal.glazes.cobalt)).isEqualTo(Color.WHITE)
         val deep = strong.labelOnBed(strong.glazes.cobalt)
         assertThat(Color.red(deep) + Color.green(deep) + Color.blue(deep)).isLessThan(3 * 80)
+    }
+
+    @Test
+    fun `contrast follows the WCAG formula`() {
+        assertThat(SancaiColors.contrast(Color.BLACK, Color.WHITE)).isWithin(0.01f).of(21f)
+        assertThat(SancaiColors.contrast(Color.WHITE, Color.WHITE)).isWithin(0.001f).of(1f)
+        val light = SancaiTheme.light().colors
+        assertThat(SancaiColors.contrast(light.ink, light.canvas)).isWithin(0.1f).of(17.1f)
+    }
+
+    @Test
+    fun `warning reads as text on the light canvas`() {
+        val light = SancaiTheme.light().colors
+        assertThat(SancaiColors.contrast(light.warning, light.canvas)).isAtLeast(4.5f)
+    }
+
+    @Test
+    fun `high contrast makes every text role pass AA on canvas and on a card`() {
+        for (colors in listOf(SancaiTheme.light(true).colors, SancaiTheme.dark(true).colors)) {
+            for (role in listOf(colors.ink, colors.muted, colors.accent, colors.danger, colors.warning, colors.success)) {
+                assertThat(SancaiColors.contrast(role, colors.canvas)).isAtLeast(4.5f)
+                assertThat(SancaiColors.contrast(role, colors.surface)).isAtLeast(4.5f)
+            }
+        }
+    }
+
+    @Test
+    fun `high contrast keeps labels legible on glaze and on tinted capsules`() {
+        for (theme in listOf(SancaiTheme.light(true), SancaiTheme.dark(true))) {
+            val g = theme.glazes
+            for (glaze in listOf(g.terracotta, g.ochre, g.cobalt, g.celadon, g.mist)) {
+                assertThat(SancaiColors.contrast(theme.labelOnBed(glaze), theme.bedColor(glaze))).isAtLeast(4.5f)
+            }
+            for (tint in listOf(theme.colors.accent, theme.colors.danger, theme.colors.success)) {
+                assertThat(SancaiColors.contrast(theme.labelOnTint(tint), tint)).isAtLeast(4.5f)
+            }
+        }
+        // Without high contrast the capsule label stays white, as designed.
+        assertThat(SancaiTheme.light().labelOnTint(SancaiTheme.light().colors.danger)).isEqualTo(Color.WHITE)
     }
 
     @Test

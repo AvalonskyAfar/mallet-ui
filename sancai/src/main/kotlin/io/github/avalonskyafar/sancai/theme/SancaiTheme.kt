@@ -3,9 +3,13 @@ package io.github.avalonskyafar.sancai.theme
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
+import android.graphics.Color
+import android.os.Build
 import android.provider.Settings
 import android.view.LayoutInflater
+import android.view.accessibility.AccessibilityManager
 import androidx.annotation.ColorInt
+import androidx.annotation.RequiresApi
 import io.github.avalonskyafar.sancai.R
 
 /**
@@ -68,6 +72,18 @@ public data class SancaiTheme(
             return SancaiColors.blend(own.bed, colors.ink, inkShare)
         }
         return if (highContrast) SancaiColors.blend(active.edge, colors.ink, 0.82f) else active.onBed
+    }
+
+    /**
+     * Colour of a label on a body glazed with [tint], such as a primary or destructive
+     * capsule. It is white, as in the original design; with high contrast it becomes the
+     * darkest neutral of the theme whenever that reads better on the tint.
+     */
+    @ColorInt
+    public fun labelOnTint(@ColorInt tint: Int): Int {
+        if (!highContrast) return Color.WHITE
+        val deep = if (isDark) colors.canvas else colors.ink
+        return if (SancaiColors.contrast(Color.WHITE, tint) >= SancaiColors.contrast(deep, tint)) Color.WHITE else deep
     }
 
     /** Supplies a theme for a context, or `null` to fall through to the Android theme. */
@@ -140,6 +156,20 @@ public data class SancaiTheme(
             false
         }
 
+        /**
+         * Whether the system's high-contrast text setting is on. Android exposes it from
+         * version 16 (API 36); on earlier versions this is always false.
+         */
+        @JvmStatic
+        public fun systemPrefersHighContrast(context: Context): Boolean {
+            if (Build.VERSION.SDK_INT < 36) return false
+            return try {
+                Api36.highContrastText(context)
+            } catch (_: RuntimeException) {
+                false
+            }
+        }
+
         /** Whether [context] is currently in night mode. */
         @JvmStatic
         public fun systemIsDark(context: Context): Boolean {
@@ -158,7 +188,11 @@ public data class SancaiTheme(
                 } else {
                     systemIsDark(context)
                 }
-                val contrast = a.getBoolean(R.styleable.SancaiTheme_sancaiHighContrast, false)
+                val contrast = if (a.hasValue(R.styleable.SancaiTheme_sancaiHighContrast)) {
+                    a.getBoolean(R.styleable.SancaiTheme_sancaiHighContrast, false)
+                } else {
+                    systemPrefersHighContrast(context)
+                }
                 val base = if (dark) SancaiColors.dark(contrast) else SancaiColors.light(contrast)
                 val canvas = a.getColor(R.styleable.SancaiTheme_sancaiColorCanvas, base.canvas)
                 val ink = a.getColor(R.styleable.SancaiTheme_sancaiColorInk, base.ink)
@@ -230,6 +264,12 @@ public data class SancaiTheme(
             }
         }
     }
+}
+
+@RequiresApi(36)
+private object Api36 {
+    fun highContrastText(context: Context): Boolean =
+        context.getSystemService(AccessibilityManager::class.java)?.isHighContrastTextEnabled == true
 }
 
 /** Carries an explicit [SancaiTheme] through the context chain, including into inflaters. */
