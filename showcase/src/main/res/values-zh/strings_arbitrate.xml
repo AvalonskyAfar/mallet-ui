@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="arbitrate_stack_title">一张卡片里的三位主人</string>
+    <string name="arbitrate_stack_detail">在它们身上各拖一次，先横着拖，再上下拖。</string>
+    <string name="arbitrate_level_off">关闭</string>
+    <string name="arbitrate_level_gentle">轻度</string>
+    <string name="arbitrate_level_standard">标准</string>
+    <string name="arbitrate_level_strict">严格</string>
+    <string name="arbitrate_track_line">横向：滑块跟着手指走，页面不动。上下：轨道放手，页面滚动。</string>
+    <string name="arbitrate_row_title">每周报告</string>
+    <string name="arbitrate_row_detail">向末端侧拖动</string>
+    <string name="arbitrate_row_action">删除</string>
+    <string name="arbitrate_row_said">操作已执行。这一行留着，方便再试。</string>
+    <string name="arbitrate_reveal_line">横向：这一行滑开，露出后面的操作。上下：行保持合上，页面滚动。</string>
+    <string name="arbitrate_page_name">第 %1$d 页，共 %2$d 页</string>
+    <string name="arbitrate_page_first">这一页前面没有页了。向末端侧拖，拖动会交给外面的页面。</string>
+    <string name="arbitrate_page_middle">在这一页，两个方向都归翻页器。</string>
+    <string name="arbitrate_page_last">这一页后面没有页了。向起始侧拖，拖动会交给外面的页面。</string>
+    <string name="arbitrate_pager_line">横向：翻页器翻页；到了第一页或最后一页，拖动交给外面的页面。上下：页面滚动。</string>
+    <string name="arbitrate_status_idle">还没有谁接手过手势。</string>
+    <string name="arbitrate_status_track">轨道接手了手势：%1$s。</string>
+    <string name="arbitrate_status_row_open">行接手了手势，现在是打开的。</string>
+    <string name="arbitrate_status_row_closed">行又合上了。</string>
+    <string name="arbitrate_status_pager">翻页器接手了手势：第 %1$d 页，共 %2$d 页。</string>
+    <string name="arbitrate_rules_title">怎样决定</string>
+    <string name="arbitrate_rule_wait">手指落下时什么都不决定。所有候选者都等手指移动超过触摸容差，最初那一下的方向决定这次拖动归谁。</string>
+    <string name="arbitrate_rule_inner">横向时，手指下最里层的候选者胜出。翻页器里的行、行里的轨道，由轨道留住拖动，行、翻页器和外面的页面都不动。</string>
+    <string name="arbitrate_rule_scroll">上下时，控件彻底放弃这次手势，页面滚动。如果上方或下方还有邻页，滚动到头后，邻页会在同一次手势里跟着手指进来。</string>
+    <string name="arbitrate_rule_own">已经无处可去的候选者把拖动向外交：到了最后一页的翻页器，已经打开的行。你自己的视图只要带上一个标记接口，就加入这条规则。</string>
+    <string name="arbitrate_table_title">谁管什么</string>
+    <string name="arbitrate_table_lands">手指落在</string>
+    <string name="arbitrate_table_owner">归属</string>
+    <string name="arbitrate_land_control">轨道、开关或滑杆</string>
+    <string name="arbitrate_owner_control">控件本身，除非拖动其实是上下的</string>
+    <string name="arbitrate_land_row">可滑开的行</string>
+    <string name="arbitrate_owner_row">这一行，最多滑出操作条的宽度</string>
+    <string name="arbitrate_land_pager">那个方向还有页的翻页器</string>
+    <string name="arbitrate_owner_pager">翻页器</string>
+    <string name="arbitrate_land_pager_end">停在第一页或最后一页的翻页器</string>
+    <string name="arbitrate_owner_pager_end">页面宿主：邻页跟着手指进来</string>
+    <string name="arbitrate_land_content">页面上的其他地方</string>
+    <string name="arbitrate_owner_content">横向归页面宿主；上下先归滚动的页面</string>
+    <string name="arbitrate_land_edge">距屏幕边缘 24 dp 以内</string>
+    <string name="arbitrate_owner_edge">系统返回手势</string>
+    <string name="arbitrate_edge_note">页面宿主从不在屏幕两侧 24 dp 的边缘区里开始横向拖动。这两条区域留给系统，所以返回手势在每一页都一样。</string>
+    <string name="arbitrate_origin">留住横向拖动、把上下拖动还给页面的轨道，可滑开的行，以及跟随手指的页面，取自原应用。翻页器，以及任何视图都能通过 SancaiHorizontalDragOwner 加入的同一条规则，是三彩新增。</string>
+</resources>

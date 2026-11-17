@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pager_flow_title">A short flow</string>
+    <string name="pager_flow_detail">Drag the lower area sideways or tap a dot. The heading above is a second pager that follows it.</string>
+    <string name="pager_step">Step %1$d of %2$d</string>
+    <string name="pager_page1_title">Edge to edge</string>
+    <string name="pager_page1_body">The page leaves under the finger while its neighbour follows it in.</string>
+    <string name="pager_page2_title">Land or return</string>
+    <string name="pager_page2_body">Let go after %1$d%% of the width, or with a quick flick, and it lands on the neighbour. Anything less glides back.</string>
+    <string name="pager_page3_title">Made on demand</string>
+    <string name="pager_page3_body">A page is created the first time it is needed, and only once.</string>
+    <string name="pager_page4_title">A firm end</string>
+    <string name="pager_page4_body">The first and the last page stop at the edge and do not over-scroll.</string>
+
+    <string name="pager_code_title">From code</string>
+    <string name="pager_code_detail">The buttons move the pager above. The heading and the dots follow as they do for a drag.</string>
+    <string name="pager_previous">Previous</string>
+    <string name="pager_next">Next</string>
+    <string name="pager_first">Jump to the first page</string>
+    <string name="pager_status_rest">Page %1$d of %2$d</string>
+    <string name="pager_status_hand">Page %1$d of %2$d, reached by hand</string>
+    <string name="pager_status_code">Page %1$d of %2$d, reached from code</string>
+    <string name="pager_status_jump">Page %1$d of %2$d, set without a glide</string>
+    <string name="pager_swipe_title">Swipe by hand</string>
+    <string name="pager_swipe_detail">Off disables the pager: drags, keys and dots no longer move it, code still does.</string>
+
+    <string name="pager_note">Extracted from the original app: the first-launch flow with its heading that moves in step with the content. New in Sancai: the page dots, moving it from code, and the link as a public call.</string>
+</resources>

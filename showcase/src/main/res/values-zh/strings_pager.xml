@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pager_flow_title">一段短流程</string>
+    <string name="pager_flow_detail">左右拖动下方区域，或点按圆点。上方的标题是另一个分页，会跟着一起翻。</string>
+    <string name="pager_step">第 %1$d 步，共 %2$d 步</string>
+    <string name="pager_page1_title">首尾相接</string>
+    <string name="pager_page1_body">当前页随手指离开，邻页紧跟着进入。</string>
+    <string name="pager_page2_title">落定或返回</string>
+    <string name="pager_page2_body">拖过宽度的 %1$d%% 再松手，或快速一划，就落到邻页；不足则滑回原处。</string>
+    <string name="pager_page3_title">按需创建</string>
+    <string name="pager_page3_body">每一页在第一次用到时才创建，而且只创建一次。</string>
+    <string name="pager_page4_title">到边即止</string>
+    <string name="pager_page4_body">第一页和最后一页停在边缘，不会越界滚动。</string>
+
+    <string name="pager_code_title">用代码翻页</string>
+    <string name="pager_code_detail">按钮翻动上面的分页，标题和圆点同拖动时一样跟随。</string>
+    <string name="pager_previous">上一页</string>
+    <string name="pager_next">下一页</string>
+    <string name="pager_first">直接回到第一页</string>
+    <string name="pager_status_rest">第 %1$d 页，共 %2$d 页</string>
+    <string name="pager_status_hand">第 %1$d 页，共 %2$d 页，手动翻到</string>
+    <string name="pager_status_code">第 %1$d 页，共 %2$d 页，由代码翻到</string>
+    <string name="pager_status_jump">第 %1$d 页，共 %2$d 页，不经滑行直接跳到</string>
+    <string name="pager_swipe_title">手动滑动</string>
+    <string name="pager_swipe_detail">关闭后分页被禁用：拖动、按键和圆点都不再翻页，代码仍然可以。</string>
+
+    <string name="pager_note">取自原应用：首次启动流程，以及与内容同步移动的标题。三彩新增：分页圆点、用代码翻页，以及公开的联动调用。</string>
+</resources>

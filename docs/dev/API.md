@@ -211,6 +211,34 @@ class SancaiBadge (context: Context, attrs: AttributeSet? = null, defStyleAttr: 
     fun attach(anchor: View): SancaiBadge    // Overlays a new badge on the top end corner of [anchor] and returns it.
 ```
 
+### widget/SancaiBanner.kt
+
+```
+class SancaiBanner (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A persistent inline message at the top of a page or a card.
+  enum class Tone    // What kind of condition a banner reports; picks the colour of the bar and the icon.
+  fun interface OnDismissListener    // Called when the user closes the banner with its close icon.
+    fun onDismiss(banner: SancaiBanner)    // [banner] has started to collapse because the user closed it.
+  val titleView: SancaiText =    // The view that shows [title]; exposed for fine tuning (max lines, ellipsis).
+  val detailView: SancaiText =    // The view that shows [detail].
+  val actionButton: SancaiButton    // The main text action, at the very end of the text column.
+  val secondaryActionButton: SancaiButton    // The second text action, before the main one.
+  var onDismissListener: OnDismissListener?    // Called when the user closes the banner.
+  var title: CharSequence?    // The title, in ink.
+  var detail: CharSequence?    // The muted line under the title.
+  var tone: Tone    // Colour of the bar and the icon, and the icon itself unless [icon] replaces it.
+  var icon: SancaiIcon?    // Replaces the icon the [tone] brings; `null` (default) goes back to the tone's own.
+  var showIcon: Boolean    // Whether the tone icon is drawn.
+  var isDismissible: Boolean    // Whether the close icon is offered.
+  var toneDescription: CharSequence?    // What a screen reader says before the title:
+  var closeDescription: CharSequence    // Description of the close icon for screen readers; "Close" by default.
+  val toneColor: Int    // The colour the bar and the icon are painted with right now.
+  val isShowing: Boolean    // Whether the banner is showing or on its way in.
+  fun setAction(text: CharSequence?, listener: OnClickListener?)    // Sets the main text action.
+  fun setSecondaryAction(text: CharSequence?, listener: OnClickListener?)    // Sets the second text action, placed before the main one.
+  fun show(animate: Boolean = true)    // Shows the banner by growing its height from where it is to its full height, pushing the content below it.
+  fun dismiss(animate: Boolean = true)    // Collapses the banner to zero height and then sets its visibility to `GONE`.
+```
+
 ### widget/SancaiButton.kt
 
 ```
@@ -245,6 +273,40 @@ class SancaiCheckbox (context: Context, attrs: AttributeSet? = null, defStyleAtt
   var glaze: SancaiGlaze    // The glaze poured into the box when it is checked.
   var text: CharSequence    // The label at the end of the box, or empty for a bare box.
   fun setChecked(checked: Boolean, animate: Boolean)    // Checks or unchecks the box from code.
+```
+
+### widget/SancaiChip.kt
+
+```
+class SancaiChip (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : SancaiControl(context, attrs, defStyleAttr)    // A small porcelain capsule for filters, suggestions and short actions.
+  enum class Kind { ACTION, FILTER }    // What a chip does when it is tapped.
+  fun interface OnCheckedChangeListener    // Called when the user checks or unchecks a filter chip.
+    fun onCheckedChanged(chip: SancaiChip, isChecked: Boolean)
+  var onCheckedChangeListener: OnCheckedChangeListener?    // Listener for user-driven changes of [isChecked].
+  var text: CharSequence    // The label.
+  var kind: Kind    // Whether the chip is pressed like a button or checked like a filter.
+  var glaze: SancaiGlaze    // Glaze poured into a checked filter chip.
+  var icon: SancaiIcon?    // Icon drawn before the label, or `null`.
+  var isChecked: Boolean    // Whether a filter chip is checked.
+  fun setChecked(checked: Boolean, animate: Boolean)    // Checks or unchecks a filter chip from code, gliding when [animate] is set.
+  fun getBodyBounds(out: RectF)    // The visible capsule in view coordinates, written to [out].
+```
+
+### widget/SancaiChipGroup.kt
+
+```
+class SancaiChipGroup (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ViewGroup(context, attrs, defStyleAttr)    // A wrapping row of [SancaiChip]s:
+  fun interface OnCheckedStateChangeListener    // Called when the user changes which chips of the group are checked.
+    fun onCheckedStateChanged(group: SancaiChipGroup, checkedIds: List<Int>)
+  var onCheckedStateChangeListener: OnCheckedStateChangeListener?    // Listener for user-driven changes of the checked chips.
+  var isSingleSelection: Boolean    // Whether at most one chip can be checked.
+  var isSelectionRequired: Boolean    // Whether the user is kept from unchecking the last checked chip.
+  var horizontalGap: Int    // Gap between the capsules of neighbouring chips in a row, in pixels.
+  var verticalGap: Int    // Gap between the capsules of neighbouring rows, in pixels.
+  val checkedChipIds: List<Int>    // Ids of the checked chips, in child order.
+  val checkedChipId: Int get()    // Id of the first checked chip, or [View.NO_ID] while none is checked.
+  fun check(id: Int, animate: Boolean = true)    // Checks the chip with [id] from code; listeners are not called.
+  fun clearCheck(animate: Boolean = true)    // Leaves no chip checked.
 ```
 
 ### widget/SancaiControl.kt
@@ -489,6 +551,22 @@ class SancaiSegmentedTrack (context: Context, attrs: AttributeSet? = null, defSt
     const val HEIGHT_DP: Float    // Default height of the view in dp:
 ```
 
+### widget/SancaiSkeleton.kt
+
+```
+class SancaiSkeleton (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : SancaiControl(context, attrs, defStyleAttr)    // A placeholder shape that stands where content will appear once it has loaded.
+  enum class Shape    // The outline of a skeleton.
+  var shape: Shape    // The outline of the block.
+  var cornerRadiusDp: Float    // Corner radius of a [Shape.BLOCK] in dp, limited to half the smaller side.
+  var widthFraction: Float    // The share of the offered width the skeleton takes when its layout width is `wrap_content`, 0.05 to 1.
+  var isAnimated: Boolean    // Whether the block moves at all.
+  val isRunning: Boolean get()    // True while the band travels or the block breathes:
+  val fillColor: Int    // The resting colour of the block in this theme.
+  val bandColor: Int    // The colour at the middle of the travelling band in this theme.
+  companion object
+    fun text(context: Context, @IntRange(from = 1) lines: Int = 3, @FloatRange(from = 0.05, to = 1.0) lastLineFraction: Float = LAST_LINE_FRACTION): LinearLayout    // Builds the placeholder of a paragraph:
+```
+
 ### widget/SancaiSlider.kt
 
 ```
@@ -516,6 +594,43 @@ class SancaiSpinner (context: Context, attrs: AttributeSet? = null, defStyleAttr
   var tone: SancaiTextTone    // The tone of the ring.
   var color: Int    // The colour of the ring.
   val isSpinning: Boolean get()    // True while the ring is actually turning:
+```
+
+### widget/SancaiStateLayout.kt
+
+```
+class SancaiStateLayout (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A frame that shows exactly one of four states of an area:
+  enum class State { CONTENT, LOADING, EMPTY, ERROR }    // What the area shows.
+  var contentView: View?    // The content:
+  var state: State    // The state the area is asked to show.
+  val displayedState: State get()    // The state that is on screen right now.
+  var minimumLoadingMs: Long    // The shortest time the loading state stays on screen once shown, in milliseconds.
+  var loadingLabel: CharSequence    // The caption under the default spinner, also read by screen readers.
+  fun setState(state: State, animate: Boolean)    // Shows [state].
+  fun stateView(state: State): View? =    // The view used for [state]:
+  fun setLoadingView(view: View?): Unit = replace(State.LOADING, view)    // Replaces the loading view.
+  fun setEmptyView(view: View?): Unit = replace(State.EMPTY, view)    // Replaces the empty view.
+  fun setErrorView(view: View?): Unit = replace(State.ERROR, view)    // Replaces the error view.
+  fun setEmpty(title: CharSequence?, detail: CharSequence? = null, actionLabel: CharSequence? = null, onAction: (() -> Unit)? = null)    // Configures the default empty message:
+  fun setError(title: CharSequence?, detail: CharSequence? = null, retryLabel: CharSequence? = null, onRetry: (() -> Unit)? = null)    // Configures the default error message:
+```
+
+### widget/SancaiStateView.kt
+
+```
+class SancaiStateView (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A centred message for an area that is empty, has failed, is offline or has finished.
+  enum class Kind(internal val icon: SancaiIcon, internal val tone: SancaiTextTone)    // What the area is telling the user.
+  val actionButton: SancaiButton    // The action button.
+  var kind: Kind    // The preset.
+  var icon: SancaiIcon?    // The icon above the title, or `null` for none.
+  var iconTone: SancaiTextTone    // Colour role of the icon, used while [iconColor] is `null`.
+  var iconColor: Int?    // An explicit icon colour; wins over [iconTone] until set back to `null`.
+  var title: CharSequence?    // The title, one short phrase in ink; `null` or empty hides it.
+  var detail: CharSequence?    // The supporting sentence in the muted colour; `null` or empty hides it.
+  val actionLabel: CharSequence?    // The label of the action, or `null` while there is no action.
+  var onActionClick: (() -> Unit)?    // Called when the user presses the action (touch, keyboard or accessibility click).
+  var compact: Boolean    // The small form for a card row:
+  fun setAction(label: CharSequence?, onClick: (() -> Unit)? = null)    // Shows the action as a neutral capsule button under the message, or removes it when [label] is `null` or empty.
 ```
 
 ### widget/SancaiStepper.kt
@@ -575,6 +690,36 @@ class SancaiSwitch (context: Context, attrs: AttributeSet? = null, defStyleAttr:
     const val TARGET_HEIGHT_DP: Float    // Height of the view on `wrap_content`, in dp:
 ```
 
+### widget/SancaiTabs.kt
+
+```
+class SancaiTabs (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : SancaiControl(context, attrs, defStyleAttr), SancaiHorizontalDragOwner    // Text tabs for switching between sibling views.
+  enum class Layout    // How the tabs share the width of the view.
+  fun interface OnTabSelectedListener    // Called when the user chooses another tab.
+    fun onTabSelected(tabs: SancaiTabs, index: Int)
+  var onTabSelectedListener: OnTabSelectedListener?    // Listener for user-driven tab changes:
+  val selectedIndex: Int get()    // Index of the selected tab.
+  val tabs: List<CharSequence> get()    // The tab labels, in order.
+  var layout: Layout    // How the tabs share the width:
+  fun setTabs(labels: List<CharSequence>)    // Replaces the tab labels.
+  fun setTabs(vararg labels: CharSequence)    // Replaces the tab labels.
+  fun select(index: Int, animate: Boolean = true)    // Selects tab [index] from code; the indicator glides there when [animate] is true.
+  fun setScrollPosition(index: Int, offset: Float)    // Places the indicator [offset] (0 to 1) of the way from tab [index] to the tab after it, without changing the selection:
+  fun attachTo(pager: SancaiPager?)    // Couples the tabs with [pager], or ends the coupling with `null`.
+  companion object
+    const val HEIGHT_DP: Float    // Height of the view in dp.
+```
+
+### widget/SancaiTag.kt
+
+```
+class SancaiTag (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr)    // A status tag:
+  enum class Tone { POSITIVE, CAUTION, NEGATIVE, INFO, NEUTRAL }    // What the tag says about its subject; each tone is one glaze of the theme.
+  var text: CharSequence    // The label.
+  var tone: Tone    // What the tag says about its subject.
+  val glaze: SancaiGlaze    // The glaze [tone] maps to in the theme of this view.
+```
+
 ### widget/SancaiText.kt
 
 ```
@@ -609,6 +754,29 @@ class SancaiTextField (context: Context, attrs: AttributeSet? = null, defStyleAt
   var inputType: Int    // The `android.text.InputType` of the field.
   var isMonospace: Boolean    // Monospace type at a smaller size, for code and configuration editors.
   fun validate(rule: (CharSequence) -> CharSequence?): Boolean    // Checks the text with [rule], which returns the error to show or null when the text is fine.
+```
+
+### widget/SancaiTopBar.kt
+
+```
+class SancaiTopBar (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ViewGroup(context, attrs, defStyleAttr)    // The bar at the top of a page:
+  var title: CharSequence?    // The title, centred in the bar on one line.
+  var subtitle: CharSequence?    // A quiet second line under the title.
+  var lifted: Boolean    // Whether content lies under the bar.
+  var fitStatusBar: Boolean    // Whether the bar pads itself for the status bar and display cutout (default true).
+  val navigationButton: View? get()    // The navigation button, or `null` when the bar has none.
+  val actionCount: Int get()    // Number of action icons at the end of the bar (0 to 2).
+  fun setNavigation(icon: SancaiIcon = SancaiIcon.CHEVRON_LEFT, description: CharSequence? = null, onClick: OnClickListener?)    // Shows the navigation button at the start of the bar, drawn in ink.
+  fun clearNavigation()    // Removes the navigation button.
+  fun addAction(icon: SancaiIcon, description: CharSequence, onClick: OnClickListener?): View    // Adds an action icon at the end of the bar, drawn muted, and returns its view (to disable it, or to anchor a menu to it).
+  fun getActionAt(index: Int): View = actions[index]    // The view of the action at [index], in the order the actions were added.
+  fun clearActions()    // Removes every action icon.
+  fun bindTo(scrollView: View?)    // Lets the bar follow a scrolling view:
+  companion object
+    const val HEIGHT_DP: Float    // Height of the bar without insets, in dp.
+    const val TARGET_DP: Float    // Side of a button's touch target, in dp.
+    const val ICON_DP: Float    // Side of a button's icon, in dp.
+    const val MAX_ACTIONS: Int    // Most action icons a bar holds.
 ```
 
 ## interaction
@@ -802,6 +970,29 @@ object SancaiThemeTransition    // Changes the theme without a flash.
 ```
 
 ## overlay
+
+### overlay/SancaiBottomSheet.kt
+
+```
+class SancaiBottomSheet private constructor(private val context: Context, private val builder: Builder)    // A porcelain sheet that rises from the bottom edge of the window and follows the finger back down.
+  fun interface OnDismissListener    // Told when a sheet has left the screen, whatever made it leave.
+    fun onDismiss(sheet: SancaiBottomSheet)
+  val isShowing: Boolean    // Whether the sheet is on screen, including while it glides in or out.
+  var isCancelable: Boolean    // Whether scrim taps, the back key and drags may dismiss the sheet.
+  fun setOnDismissListener(listener: OnDismissListener?)    // Replaces the listener that is told when the sheet has left the screen.
+  fun show(): SancaiBottomSheet    // Shows the sheet and lets it glide up.
+  fun dismiss()    // Lets the sheet glide down and then removes it.
+  class Builder(private val context: Context)    // Collects the parts of a sheet.
+    fun title(title: CharSequence?): Builder = apply { this.title = title }    // Centred title above the content; it is also announced as the name of the sheet.
+    fun message(message: CharSequence?): Builder = apply { this.message = message }    // Centred, muted explanation below the title.
+    fun view(view: View?): Builder = apply { this.view = view }    // Any content.
+    fun action(label: CharSequence, tone: SancaiTextTone = SancaiTextTone.INK, icon: SancaiIcon? = null, enabled: Boolean = true, onClick: Runnable? = null): Builder = apply { actions.add(Action(label, tone, icon, enabled, onClick)) }    // Adds an action row.
+    fun cancel(label: CharSequence? = null): Builder = apply    // Adds the cancel action below a full-bleed divider.
+    fun cancelable(cancelable: Boolean): Builder = apply { this.cancelable = cancelable }    // Whether scrim taps, the back key and drags may dismiss the sheet (default true).
+    fun onDismiss(listener: OnDismissListener?): Builder = apply { dismissListener = listener }    // Listener told when the sheet has left the screen.
+    fun build(): SancaiBottomSheet = SancaiBottomSheet(context, this)    // Builds the sheet without showing it.
+    fun show(): SancaiBottomSheet = build().show()    // Builds the sheet and shows it.
+```
 
 ### overlay/SancaiFloatingPanel.kt
 

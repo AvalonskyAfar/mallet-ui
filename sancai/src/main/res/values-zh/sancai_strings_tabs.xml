@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sancai_tabs_position"><xliff:g id="label" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%1$s</xliff:g>，第 <xliff:g id="index" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%2$d</xliff:g> 个标签，共 <xliff:g id="count" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%3$d</xliff:g> 个</string>
+</resources>

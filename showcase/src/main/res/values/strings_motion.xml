@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="motion_play">Play</string>
+    <string name="motion_ms">%1$d ms</string>
+
+    <string name="motion_curve_title">One curve</string>
+    <string name="motion_curve_detail">Everything that moves by itself follows glide(): fast at first, soft at the end, no bounce.</string>
+    <string name="motion_axis_time">time</string>
+    <string name="motion_axis_progress">progress</string>
+    <string name="motion_curve_glide">Glide</string>
+    <string name="motion_curve_linear">Linear</string>
+
+    <string name="motion_durations_title">Durations</string>
+    <string name="motion_durations_detail">The durations the widgets share, each with what it times.</string>
+    <string name="motion_durations_hint">Tap a row to send the bead across for that long.</string>
+    <string name="motion_durations_playing">%1$s, %2$d ms</string>
+    <string name="motion_use_control">Thumb and glaze after a tap or release</string>
+    <string name="motion_use_page">A page moving its full distance</string>
+    <string name="motion_use_dialog">Dialogs and sheets, in and out</string>
+    <string name="motion_use_feedback">Toasts, reveal rows and other small feedback</string>
+    <string name="motion_use_press">Pressed content sinking</string>
+    <string name="motion_use_reduced">Any animation while motion is reduced</string>
+
+    <string name="motion_settle_title">Settle</string>
+    <string name="motion_settle_detail">When a finger lets go of a page, the time to land depends on the distance left.</string>
+    <string name="motion_settle_left">Distance left</string>
+    <string name="motion_settle_status">%1$d%% left, settles in %2$d ms</string>
+
+    <string name="motion_origin">Extracted from the original app: the curve, the durations and the settle formula. New in Sancai: one settle formula for every page host, and this page.</string>
+</resources>

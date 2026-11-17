@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="motion_play">播放</string>
+    <string name="motion_ms">%1$d 毫秒</string>
+
+    <string name="motion_curve_title">一条曲线</string>
+    <string name="motion_curve_detail">凡是自己动起来的东西都走 glide()：起步快，收尾轻，不回弹。</string>
+    <string name="motion_axis_time">时间</string>
+    <string name="motion_axis_progress">进度</string>
+    <string name="motion_curve_glide">滑行</string>
+    <string name="motion_curve_linear">匀速</string>
+
+    <string name="motion_durations_title">时长</string>
+    <string name="motion_durations_detail">控件共用的几个时长，以及各自的用处。</string>
+    <string name="motion_durations_hint">点一行，圆珠就按这个时长走一遍。</string>
+    <string name="motion_durations_playing">%1$s，%2$d 毫秒</string>
+    <string name="motion_use_control">点按或松手后，滑块与釉色归位</string>
+    <string name="motion_use_page">页面走完全程</string>
+    <string name="motion_use_dialog">对话框与底部面板的进出</string>
+    <string name="motion_use_feedback">轻提示、滑出行等小反馈</string>
+    <string name="motion_use_press">按压时内容下沉</string>
+    <string name="motion_use_reduced">减弱动效时的所有动画</string>
+
+    <string name="motion_settle_title">归位</string>
+    <string name="motion_settle_detail">手指松开页面后，归位用多久取决于剩下的距离。</string>
+    <string name="motion_settle_left">剩余距离</string>
+    <string name="motion_settle_status">剩余 %1$d%%，%2$d 毫秒归位</string>
+
+    <string name="motion_origin">取自原应用：曲线、各个时长与归位公式。三彩新增：所有页面容器共用一条归位公式，以及本页。</string>
+</resources>

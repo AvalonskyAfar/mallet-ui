@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="reading_para_title">段落</string>
+    <string name="reading_para_detail">用来读，而不是扫一眼的文字。</string>
+    <string name="reading_para_intro">段落会先把一行排满再换行。不拆词，也不为了让末行好看而缩短前面的行，所以行尾尽量整齐。</string>
+    <string name="reading_para_cjk">识别在本机完成，屏幕上的内容不会上传；截图只保留在内存里，用完即弃。逗号、顿号、句号都跟着前一个字，不会落到下一行的开头。</string>
+    <string name="reading_para_option_on">保护</string>
+    <string name="reading_para_option_off">不处理</string>
+    <string name="reading_para_status_on">逗号、句号这类标点与前一个字绑在一起，不会出现在行首。</string>
+    <string name="reading_para_status_off">已关闭保护，标点落在哪一行由系统决定。</string>
+
+    <string name="reading_note_title">提示条</string>
+    <string name="reading_note_detail">正文旁的一段说明，有四种色调。</string>
+    <string name="reading_note_accent_title">哪些内容留在本机</string>
+    <string name="reading_note_accent_body">识别在本机完成，屏幕上的内容不会上传。</string>
+    <string name="reading_note_success_title">权限已授予</string>
+    <string name="reading_note_success_body">悬浮窗现在可以显示在其他应用之上。</string>
+    <string name="reading_note_warning_title">省电模式已开启</string>
+    <string name="reading_note_warning_body">息屏后，系统可能会暂停这项服务。</string>
+    <string name="reading_note_danger_title">此操作无法撤销</string>
+    <string name="reading_note_danger_body">清空历史会删除所有已保存的结果。</string>
+    <string name="reading_note_option_tones">色调</string>
+    <string name="reading_note_option_quiet">素色</string>
+    <string name="reading_note_said_tones">四条提示恢复各自的色调</string>
+    <string name="reading_note_said_quiet">四条提示都改用墨色</string>
+
+    <string name="reading_flow_title">流程行</string>
+    <string name="reading_flow_detail">表示先后顺序，不用卡片，也不是控件。</string>
+    <string name="reading_flow_one">截取</string>
+    <string name="reading_flow_one_detail">一帧画面</string>
+    <string name="reading_flow_two">识别</string>
+    <string name="reading_flow_two_detail">在本机完成</string>
+    <string name="reading_flow_three">作答</string>
+    <string name="reading_flow_three_detail">原位显示</string>
+
+    <string name="reading_media_title">图片框</string>
+    <string name="reading_media_detail">嵌在凹槽里的一张图。</string>
+    <string name="reading_media_description">低悬的太阳下有三座山丘</string>
+    <string name="reading_media_picture_note">这张图用主题色在代码里画成。无论多宽，图片框都保持所选的比例。</string>
+    <string name="reading_media_empty_note">没有图片时，凹槽里只有一个浅色图标，也可用作加载时的占位。</string>
+
+    <string name="reading_origin">段落的排版规则、提示条的色条、流程行和图片的凹槽取自原应用；提示条的色调、从右到左的支持、宽高比和空图片框是为三彩新设计的。</string>
+</resources>
