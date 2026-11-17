@@ -1,0 +1,5 @@
+# Build settings for https://jitpack.io (used once the repository is public and tagged).
+jdk:
+  - openjdk17
+install:
+  - ./gradlew :sancai:publishReleasePublicationToMavenLocal

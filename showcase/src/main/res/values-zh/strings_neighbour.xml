@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="neighbour_title">第二个 Activity</string>
+    <string name="neighbour_summary">它像相邻页面一样滑入</string>
+    <string name="neighbour_body">这是一个独立的 Activity。它从末端一侧滑入，下方的界面同时滑出；离开时同样如此。在页面内任意位置向回拖动、按返回键，或点按下方按钮，都可以返回。</string>
+    <string name="neighbour_track_title">控件保有自己的手势</string>
+    <string name="neighbour_track_detail">拖动这条轨道时，移动的是轨道，而不是页面</string>
+    <string name="neighbour_option_one">一</string>
+    <string name="neighbour_option_two">二</string>
+    <string name="neighbour_option_three">三</string>
+    <string name="neighbour_back">返回</string>
+</resources>

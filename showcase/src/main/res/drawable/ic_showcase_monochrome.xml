@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- The track as an outline with the bead as a solid disc, for themed icons. -->
+    <path
+        android:strokeColor="#FF000000"
+        android:strokeWidth="4"
+        android:pathData="M37,39 H71 A15,15 0 0 1 71,69 H37 A15,15 0 0 1 37,39 Z" />
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M54,54 m-8.5,0 a8.5,8.5 0 1 0 17,0 a8.5,8.5 0 1 0 -17,0" />
+</vector>

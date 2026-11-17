@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SancaiHeading">
+        <attr name="sancaiTitle" />
+        <attr name="sancaiDetail" />
+        <!-- Weight of the title: heading of a section (17 sp, default) or title of a page (20 sp). -->
+        <attr name="sancaiHeadingLevel" format="enum">
+            <enum name="section" value="0" />
+            <enum name="page" value="1" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="SancaiLinkRow">
+        <!-- The label of the link. -->
+        <attr name="sancaiTitle" />
+        <!-- Colour role of the label and the chevron. Default: muted. -->
+        <attr name="sancaiTone" />
+        <!--
+            Where the chevron sits: at the edge of the row, independent of the centred label
+            (default), or right next to the label with the pair centred as a group.
+        -->
+        <attr name="sancaiLinkRowArrowPlacement" format="enum">
+            <enum name="edge" value="0" />
+            <enum name="adjacent" value="1" />
+        </attr>
+        <!-- The side the destination lies on, and so the side and direction of the chevron. Default: end. -->
+        <attr name="sancaiLinkRowArrowDirection" format="enum">
+            <enum name="start" value="0" />
+            <enum name="end" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

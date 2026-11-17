@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The mark: a recessed track glazed in three colours with a neutral bead resting on the
+    second. Drawn for this project; 108dp adaptive-icon canvas, content inside the 66dp safe zone.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group>
+        <clip-path android:pathData="M37,39 H71 A15,15 0 0 1 71,69 H37 A15,15 0 0 1 37,39 Z" />
+        <path android:fillColor="#CE8353" android:pathData="M22,39 H42.7 V69 H22 Z" />
+        <path android:fillColor="#DEBE77" android:pathData="M42.7,39 H65.3 V69 H42.7 Z" />
+        <path android:fillColor="#86ACF7" android:pathData="M65.3,39 H86 V69 H65.3 Z" />
+        <!-- Inner shade at the top of the bed and a light at the bottom. -->
+        <path android:fillColor="#22000000" android:pathData="M22,39 H86 V42.5 H22 Z" />
+        <path android:fillColor="#3DFFFFFF" android:pathData="M22,66.5 H86 V69 H22 Z" />
+    </group>
+    <!-- The bead and its short shadow. -->
+    <path
+        android:fillColor="#291A1C1F"
+        android:pathData="M54,45 m-10,0 a10,10 0 1 0 20,0 l0,20 a10,10 0 1 1 -20,0 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#C8C9C9"
+        android:strokeWidth="0.9"
+        android:pathData="M54,54 m-10.5,0 a10.5,10.5 0 1 0 21,0 a10.5,10.5 0 1 0 -21,0" />
+</vector>

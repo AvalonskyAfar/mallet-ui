@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="neighbour_title">A second activity</string>
+    <string name="neighbour_summary">It arrived like a neighbouring page</string>
+    <string name="neighbour_body">This screen is a separate Activity. It slid in from the end side while the screen below slid out, and it leaves the same way. Drag it back from anywhere inside the page, press Back, or use the button.</string>
+    <string name="neighbour_track_title">Controls keep their gestures</string>
+    <string name="neighbour_track_detail">Dragging this track moves the track, not the page</string>
+    <string name="neighbour_option_one">One</string>
+    <string name="neighbour_option_two">Two</string>
+    <string name="neighbour_option_three">Three</string>
+    <string name="neighbour_back">Go back</string>
+</resources>
