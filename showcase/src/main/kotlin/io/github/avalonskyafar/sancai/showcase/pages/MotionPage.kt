@@ -2,6 +2,7 @@ package io.github.avalonskyafar.sancai.showcase.pages
 
 import android.animation.TimeInterpolator
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.DashPathEffect
@@ -187,6 +188,7 @@ private fun PageScope.labelled(label: String, groove: View): LinearLayout =
  * A recessed groove with one bead. [position] runs from 0 at the start to 1 at the end and is
  * mirrored in right-to-left layouts.
  */
+@SuppressLint("ViewConstructor") // built in code only
 private class GrooveView(context: Context, private val bed: Int, private val edge: Int) : View(context) {
     private val material = SancaiMaterial(context, SancaiTheme.of(context))
     private val track = RectF()
@@ -255,6 +257,7 @@ private const val PLOT_STEPS = 48
  * Plots [SancaiMotion.glide] in a well: time runs to the right, progress runs up. The dashed
  * diagonal is linear motion. While a bead plays, a dot rides the curve with it.
  */
+@SuppressLint("ViewConstructor") // built in code only
 private class CurveView(context: Context, private val timeLabel: String, private val progressLabel: String) : View(context) {
     private val theme = SancaiTheme.of(context)
     private val material = SancaiMaterial(context, theme)

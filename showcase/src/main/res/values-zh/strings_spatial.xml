@@ -15,7 +15,7 @@
     <string name="spatial_try_detail">回到首页，用一根手指移动页面。</string>
     <string name="spatial_try_directions">向四个方向各拖一次。手指下的页面和被露出的页面边贴着边，一起移动。</string>
     <string name="spatial_try_reverse">慢慢拖，不松手再往回拖。页面始终跟着手指。</string>
-    <string name="spatial_try_threshold">不到全程的 28 % 就松手，页面滑回原位；超过之后松手，新页面落定。</string>
+    <string name="spatial_try_threshold" formatted="false">不到全程的 28 % 就松手，页面滑回原位；超过之后松手，新页面落定。</string>
     <string name="spatial_try_flick">轻扫。又快又短的一划，同样能让新页面落定。</string>
     <string name="spatial_live_title">就地测量：把本页向“%1$s”拖回去</string>
     <string name="spatial_live_idle">静止中，没有页面在移动。</string>
@@ -31,5 +31,5 @@
     <string name="spatial_back_body">在 Android 14 及以上版本，返回手势会预览这次移动：本页跟着手势，向来时的页面移动一段。完成手势就落在那里，取消则滑回原位。</string>
     <string name="spatial_back_go">返回“%1$s”</string>
 
-    <string name="spatial_origin">提取自原应用：两个页面一起移动、28 % 与轻扫的判定规则，以及表现得像邻页的 Activity。三彩新增：可描述任意应用的页面图、监听器和从右到左布局。</string>
+    <string name="spatial_origin" formatted="false">提取自原应用：两个页面一起移动、28 % 与轻扫的判定规则，以及表现得像邻页的 Activity。三彩新增：可描述任意应用的页面图、监听器和从右到左布局。</string>
 </resources>

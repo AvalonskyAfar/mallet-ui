@@ -1,5 +1,6 @@
 package io.github.avalonskyafar.sancai.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -315,6 +316,8 @@ public class SancaiStepper @JvmOverloads constructor(
         else -> 0
     }
 
+    // Lint: accessibility steps and edits through performAccessibilityAction.
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!isEnabled) return false
         when (event.actionMasked) {

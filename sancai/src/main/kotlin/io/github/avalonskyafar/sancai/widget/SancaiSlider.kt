@@ -1,6 +1,7 @@
 package io.github.avalonskyafar.sancai.widget
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Path
@@ -320,6 +321,8 @@ public class SancaiSlider @JvmOverloads constructor(
     // Touch and keys
     // ---------------------------------------------------------------------------------------
 
+    // Lint: a slider has no click; accessibility moves it with scroll actions.
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!isEnabled) return false
         when (event.actionMasked) {

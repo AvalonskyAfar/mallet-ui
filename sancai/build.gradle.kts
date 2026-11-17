@@ -48,6 +48,14 @@ android {
         }
     }
 
+    lint {
+        // The library is held to a clean report: a warning fails the build.
+        warningsAsErrors = true
+        // Versions are pinned on purpose. A library depends on the oldest releases that give
+        // it what it needs, so that it never forces an upgrade on an app.
+        disable += setOf("GradleDependency", "NewerVersionAvailable", "AndroidGradlePluginVersion")
+    }
+
     publishing {
         singleVariant("release") {
             withSourcesJar()

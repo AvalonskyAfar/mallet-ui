@@ -45,6 +45,12 @@ android {
         }
     }
 
+    lint {
+        // Held to a clean report, like the library.
+        warningsAsErrors = true
+        disable += setOf("GradleDependency", "NewerVersionAvailable", "AndroidGradlePluginVersion")
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17

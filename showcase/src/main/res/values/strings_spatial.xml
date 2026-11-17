@@ -15,7 +15,7 @@
     <string name="spatial_try_detail">Go back to Home and move the pages with one finger.</string>
     <string name="spatial_try_directions">Drag in each of the four directions. The page under the finger and the one it uncovers travel together, edge to edge.</string>
     <string name="spatial_try_reverse">Drag slowly, then reverse without lifting. The pages stay under the finger the whole way.</string>
-    <string name="spatial_try_threshold">Let go before 28 % of the way and the page glides back. Let go after it and the new page lands.</string>
+    <string name="spatial_try_threshold" formatted="false">Let go before 28 % of the way and the page glides back. Let go after it and the new page lands.</string>
     <string name="spatial_try_flick">Flick. A quick, short stroke lands the new page as well.</string>
     <string name="spatial_live_title">Measured here: drag this page back towards %1$s</string>
     <string name="spatial_live_idle">At rest. Nothing is moving.</string>
@@ -31,5 +31,5 @@
     <string name="spatial_back_body">On Android 14 and later, the back gesture previews the move: this page follows the swipe part of the way towards the page it came from. Completing the gesture lands there, and cancelling it glides back.</string>
     <string name="spatial_back_go">Back to %1$s</string>
 
-    <string name="spatial_origin">Extracted from the original app: both pages travelling together, the 28 % and flick rules, and the activity that behaves like a neighbour. New in Sancai: a graph that describes any app, listeners and right-to-left.</string>
+    <string name="spatial_origin" formatted="false">Extracted from the original app: both pages travelling together, the 28 % and flick rules, and the activity that behaves like a neighbour. New in Sancai: a graph that describes any app, listeners and right-to-left.</string>
 </resources>

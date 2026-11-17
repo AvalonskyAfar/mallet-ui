@@ -3,6 +3,7 @@ package io.github.avalonskyafar.sancai.interaction
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
@@ -467,6 +468,8 @@ public class SancaiSpatialHost @JvmOverloads constructor(
         return tryBeginDrag(event.x - downX, event.y - downY)
     }
 
+    // Lint: the host only drags; it has no click of its own.
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val action = event.actionMasked
         if (action == MotionEvent.ACTION_DOWN) {

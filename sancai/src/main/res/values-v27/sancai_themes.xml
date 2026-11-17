@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- A light navigation bar needs dark navigation icons, which exist from API 27. -->
-    <style name="Theme.Sancai" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.Sancai" tools:ignore="ResourceName" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@color/sancai_canvas_light</item>
         <item name="android:statusBarColor">@color/sancai_canvas_light</item>
         <item name="android:navigationBarColor">@color/sancai_canvas_light</item>
@@ -11,7 +11,7 @@
         <item name="android:textColorPrimary">@color/sancai_ink_light</item>
     </style>
 
-    <style name="Theme.Sancai.Light" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.Sancai.Light" tools:ignore="ResourceName" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@color/sancai_canvas_light</item>
         <item name="android:statusBarColor">@color/sancai_canvas_light</item>
         <item name="android:navigationBarColor">@color/sancai_canvas_light</item>

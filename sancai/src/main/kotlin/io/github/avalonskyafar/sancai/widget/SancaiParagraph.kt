@@ -1,5 +1,6 @@
 package io.github.avalonskyafar.sancai.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Layout
 import android.text.SpannableStringBuilder
@@ -29,6 +30,10 @@ import io.github.avalonskyafar.sancai.theme.SancaiTextRole
  * character it closes. [getText] therefore returns the processed text; the text as it was
  * given stays available as [rawText].
  */
+// WrongConstant: Layout.BREAK_STRATEGY_SIMPLE is the constant of API 23; the LineBreaker one that
+// lint asks for has the same value and exists from API 29 only.
+// CustomViewStyleable: the role attribute is read from the styleable of the parent class.
+@SuppressLint("WrongConstant", "CustomViewStyleable")
 public open class SancaiParagraph @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,

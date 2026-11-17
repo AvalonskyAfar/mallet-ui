@@ -12,7 +12,6 @@
     <string name="home_switch_turn_off">洗去釉色</string>
     <string name="home_status_on">三种釉色，一颗素色滑块</string>
     <string name="home_status_off">素坯。滑动即可上釉</string>
-    <string name="home_hint">向某个名称拖动，或直接点按</string>
     <string name="page_home_title">首页</string>
 
     <string name="page_foundations_title">基础</string>

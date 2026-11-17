@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="states_views_title">State views</string>
     <string name="states_views_detail">A centred message for an area with nothing else to show. Five presets bring the icon and its colour.</string>
     <string name="states_kind_empty">Empty</string>
@@ -67,7 +67,7 @@
     <string name="states_banner_danger_said">Backup started</string>
     <string name="states_banner_success_title">Sync is up to date</string>
     <string name="states_banner_success_detail">Everything was saved a minute ago.</string>
-    <string name="states_banner_status">%1$d of %2$d showing</string>
+    <string name="states_banner_status" tools:ignore="PluralsCandidate">%1$d of %2$d showing</string>
     <string name="states_banner_again">Show all again</string>
 
     <string name="states_origin">The capsule button, the card and the spinner behind these states are extracted from the original app. The state view, the state layout, the skeleton and the banner are new in Sancai.</string>

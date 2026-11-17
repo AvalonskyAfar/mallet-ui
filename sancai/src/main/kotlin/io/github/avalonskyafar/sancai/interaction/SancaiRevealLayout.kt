@@ -1,6 +1,7 @@
 package io.github.avalonskyafar.sancai.interaction
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -439,6 +440,8 @@ public class SancaiRevealLayout @JvmOverloads constructor(
         }
     }
 
+    // Lint: the row's own click is forwarded; the action is offered as an accessibility action.
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!hasAction) return super.onTouchEvent(event)
         when (event.actionMasked) {

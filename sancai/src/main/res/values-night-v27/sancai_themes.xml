@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <style name="Theme.Sancai" parent="android:Theme.Material.NoActionBar">
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.Sancai" tools:ignore="ResourceName" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/sancai_canvas_dark</item>
         <item name="android:statusBarColor">@color/sancai_canvas_dark</item>
         <item name="android:navigationBarColor">@color/sancai_canvas_dark</item>

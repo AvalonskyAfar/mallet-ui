@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!--
         Optional activity themes. Sancai widgets do not need them: without any sancai*
         attribute a widget follows the night mode of its context. Use these when you want the
@@ -7,8 +7,11 @@
 
         Theme.Sancai follows the system night mode, Theme.Sancai.Light and Theme.Sancai.Dark
         are fixed.
+
+        Every other resource of the library starts with "sancai". Themes keep the platform's
+        "Theme." form, which is what an app looks for; hence the tools:ignore.
     -->
-    <style name="Theme.Sancai" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.Sancai" tools:ignore="ResourceName" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@color/sancai_canvas_light</item>
         <item name="android:statusBarColor">@color/sancai_canvas_light</item>
         <item name="android:windowLightStatusBar">true</item>
@@ -16,7 +19,7 @@
         <item name="android:textColorPrimary">@color/sancai_ink_light</item>
     </style>
 
-    <style name="Theme.Sancai.Light" parent="android:Theme.Material.Light.NoActionBar">
+    <style name="Theme.Sancai.Light" tools:ignore="ResourceName" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@color/sancai_canvas_light</item>
         <item name="android:statusBarColor">@color/sancai_canvas_light</item>
         <item name="android:windowLightStatusBar">true</item>
@@ -25,7 +28,7 @@
         <item name="sancaiIsDark">false</item>
     </style>
 
-    <style name="Theme.Sancai.Dark" parent="android:Theme.Material.NoActionBar">
+    <style name="Theme.Sancai.Dark" tools:ignore="ResourceName" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/sancai_canvas_dark</item>
         <item name="android:statusBarColor">@color/sancai_canvas_dark</item>
         <item name="android:navigationBarColor">@color/sancai_canvas_dark</item>

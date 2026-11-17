@@ -1,6 +1,7 @@
 package io.github.avalonskyafar.sancai.widget
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -341,6 +342,8 @@ public class SancaiPowerSwitch @JvmOverloads constructor(
     // Touch and keys
     // ---------------------------------------------------------------------------------------
 
+    // Lint: the accessibility click toggles through performAccessibilityAction.
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!isEnabled) return false
         when (event.actionMasked) {

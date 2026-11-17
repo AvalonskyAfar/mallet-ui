@@ -1,6 +1,7 @@
 package io.github.avalonskyafar.sancai.widget
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -434,6 +435,8 @@ public class SancaiTabs @JvmOverloads constructor(
     // Touch and keys
     // ---------------------------------------------------------------------------------------
 
+    // Lint: each tab is its own accessibility element and takes the click there (ExploreByTouchHelper).
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!isEnabled || labels.isEmpty()) return false
         when (event.actionMasked) {

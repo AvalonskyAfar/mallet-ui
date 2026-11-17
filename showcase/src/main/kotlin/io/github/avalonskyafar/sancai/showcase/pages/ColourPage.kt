@@ -1,5 +1,6 @@
 package io.github.avalonskyafar.sancai.showcase.pages
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -291,6 +292,7 @@ private fun swatchRow(page: PageScope, name: String, use: String, @ColorInt colo
 }
 
 /** A flat chip of one colour with a hairline rim, so that pale roles stay visible on the card. */
+@SuppressLint("ViewConstructor") // built in code only
 private class Swatch(context: Context, @ColorInt private val color: Int, @ColorInt private val rim: Int) : View(context) {
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val box = RectF()
@@ -310,6 +312,7 @@ private class Swatch(context: Context, @ColorInt private val color: Int, @ColorI
 }
 
 /** A short recessed bed poured with one glaze, with a label resting on it. */
+@SuppressLint("ViewConstructor") // built in code only
 private class GlazeBed(
     context: Context,
     private val theme: SancaiTheme,

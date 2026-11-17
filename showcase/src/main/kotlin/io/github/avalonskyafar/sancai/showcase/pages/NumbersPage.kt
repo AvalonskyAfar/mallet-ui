@@ -18,6 +18,7 @@ import io.github.avalonskyafar.sancai.widget.SancaiStepper
 import io.github.avalonskyafar.sancai.widget.SancaiSurface
 import io.github.avalonskyafar.sancai.widget.SancaiSwitch
 import io.github.avalonskyafar.sancai.widget.SancaiText
+import java.text.NumberFormat
 import kotlin.math.roundToInt
 
 /** Numbers and progress: stepper, slider, progress bar and spinner. */
@@ -142,14 +143,14 @@ private fun sliders(page: PageScope, followers: List<(Float) -> Unit>): SancaiSl
         val volumeValue = block(page, R.string.numbers_slider_volume, volume, gapDp = 0)
         val strictnessValue = block(page, R.string.numbers_slider_strictness, strictness, gapDp = 0)
         levelValue.text = percent(level.value / 100f)
-        volumeValue.text = volume.value.roundToInt().toString()
+        volumeValue.text = whole(volume.value)
         strictnessValue.text = names[strictness.value.roundToInt()]
         level.setOnValueChangeListener { _, value ->
             levelValue.text = percent(value / 100f)
             followers.forEach { it(value / 100f) }
         }
         volume.setOnValueChangeListener { _, value ->
-            volumeValue.text = value.roundToInt().toString()
+            volumeValue.text = whole(value)
         }
         strictness.setOnValueChangeListener { _, value ->
             strictnessValue.text = names[value.roundToInt()]
@@ -289,7 +290,10 @@ private fun spinners(page: PageScope) {
     )
 }
 
-private fun percent(share: Float): String = "${(share * 100f).roundToInt()} %"
+/** A share as the language of the device writes a percentage: "40%" in English, "40 %" in German. */
+private fun percent(share: Float): String = NumberFormat.getPercentInstance().format(share.toDouble())
+
+private fun whole(value: Float): String = NumberFormat.getIntegerInstance().format(value.roundToInt().toLong())
 
 /** A muted status line under a divider at the foot of a card. */
 private fun SancaiSurface.status(page: PageScope, text: CharSequence): SancaiText {

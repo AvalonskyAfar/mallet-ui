@@ -7,7 +7,10 @@
     <string name="press_sink_apps">Allowed apps</string>
     <string name="press_sink_apps_value">3</string>
     <string name="press_sink_own">A row made by hand</string>
-    <string name="press_sink_own_count">Pressed %1$d times</string>
+    <plurals name="press_sink_own_count">
+        <item quantity="one">Pressed %1$d time</item>
+        <item quantity="other">Pressed %1$d times</item>
+    </plurals>
     <string name="press_sink_button">A neutral button</string>
     <string name="press_sink_idle">Nothing pressed yet</string>
     <string name="press_sink_last">Last pressed: %1$s</string>

@@ -5,6 +5,15 @@
         widget styleables refer to them by name only.
     -->
 
+    <!--
+        What every control built on SancaiControl reads from a layout besides its own
+        attributes: it is focusable and clickable unless the layout says otherwise.
+    -->
+    <declare-styleable name="SancaiControl">
+        <attr name="android:focusable" />
+        <attr name="android:clickable" />
+    </declare-styleable>
+
     <!-- One of the five glazes of the theme. -->
     <attr name="sancaiGlaze" format="enum">
         <enum name="terracotta" value="0" />

@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Haptic ticks use View.performHapticFeedback and need no permission. The app asks for none. -->
 
+    <!--
+        The app keeps nothing worth backing up, so backup is off as a whole and no extraction
+        rules are needed. The back callback takes effect from Android 13; older versions ignore
+        the attribute.
+    -->
     <application
         android:name=".ShowcaseApp"
         android:allowBackup="false"
         android:enableOnBackInvokedCallback="true"
+        tools:ignore="DataExtractionRules"
+        tools:targetApi="33"
         android:icon="@mipmap/ic_showcase"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_showcase"

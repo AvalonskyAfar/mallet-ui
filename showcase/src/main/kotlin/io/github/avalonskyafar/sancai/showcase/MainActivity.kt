@@ -1,5 +1,6 @@
 package io.github.avalonskyafar.sancai.showcase
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
@@ -72,6 +73,8 @@ class MainActivity : Activity(), ShowcaseHost {
         if (!host.back()) finish()
     }
 
+    // Below Android 13 only. From 13 on, SancaiBack registers an OnBackInvokedCallback.
+    @SuppressLint("GestureBackNavigation")
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         if (!back.onBackPressed()) {

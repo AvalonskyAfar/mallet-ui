@@ -68,7 +68,8 @@ object PressPage : DemoPage("i_press", R.string.page_i_press_title, R.string.pag
     /** A row that is not a library widget: the host takes the touch, only its content sinks. */
     private fun ownRow(page: PageScope, onPress: () -> Unit): View {
         var presses = 0
-        val count = page.muted(page.context.getString(R.string.press_sink_own_count, presses))
+        fun counted() = page.context.resources.getQuantityString(R.plurals.press_sink_own_count, presses, presses)
+        val count = page.muted(counted())
         val content = LinearLayout(page.context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
@@ -82,7 +83,7 @@ object PressPage : DemoPage("i_press", R.string.page_i_press_title, R.string.pag
         }
         SancaiPress.attach(row, content) {
             presses++
-            count.text = page.context.getString(R.string.press_sink_own_count, presses)
+            count.text = counted()
             onPress()
         }
         return row

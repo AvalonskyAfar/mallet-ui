@@ -3,6 +3,7 @@ package io.github.avalonskyafar.sancai.interaction
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewTreeObserver
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
 
 /**
@@ -37,22 +38,17 @@ public object SancaiPress {
 
     /**
      * The sink alone: touching [host] sinks [content], releasing puts it back. No click
-     * listener is installed and nothing ticks.
+     * listener is installed and nothing ticks. The content also comes back when the host is
+     * disabled or leaves its window while the finger is still down.
      */
     @JvmStatic
     @JvmOverloads
     @SuppressLint("ClickableViewAccessibility")
     public fun attachSink(host: View, content: View = host) {
-        val sink = content.resources.displayMetrics.density * SancaiMotion.PRESS_SINK_DP
+        val distance = content.resources.displayMetrics.density * SancaiMotion.PRESS_SINK_DP
         host.isClickable = true
         host.isFocusable = true
-        host.setOnTouchListener { view, event ->
-            when (event.actionMasked) {
-                MotionEvent.ACTION_DOWN -> if (view.isEnabled) sink(content, sink)
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> release(content)
-            }
-            false
-        }
+        host.setOnTouchListener(Sink(host, content, distance))
     }
 
     /** Starts sinking [content] by [distancePx]. */
@@ -67,5 +63,54 @@ public object SancaiPress {
     public fun release(content: View) {
         content.animate().cancel()
         content.translationY = 0f
+    }
+
+    private class Sink(
+        private val host: View,
+        private val content: View,
+        private val distance: Float,
+    ) : View.OnTouchListener, ViewTreeObserver.OnPreDrawListener {
+
+        /** The observer this is registered with while a finger is down. */
+        private var watched: ViewTreeObserver? = null
+
+        @SuppressLint("ClickableViewAccessibility")
+        override fun onTouch(view: View, event: MotionEvent): Boolean {
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> if (view.isEnabled) {
+                    sink(content, distance)
+                    watch()
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    release(content)
+                    unwatch()
+                }
+            }
+            return false
+        }
+
+        // A disabled view is no longer told that the finger lifted, and a detached one is
+        // told nothing at all: look before each frame while the content is down.
+        override fun onPreDraw(): Boolean {
+            if (!host.isEnabled || !host.isAttachedToWindow) {
+                release(content)
+                unwatch()
+            }
+            return true
+        }
+
+        private fun watch() {
+            unwatch()
+            val observer = host.viewTreeObserver
+            if (!observer.isAlive) return
+            observer.addOnPreDrawListener(this)
+            watched = observer
+        }
+
+        private fun unwatch() {
+            val observer = watched ?: return
+            watched = null
+            if (observer.isAlive) observer.removeOnPreDrawListener(this)
+        }
     }
 }

@@ -2,7 +2,6 @@ package io.github.avalonskyafar.sancai.showcase.pages
 
 import android.content.Context
 import android.content.Intent
-import android.view.LayoutInflater
 import android.view.View
 import io.github.avalonskyafar.sancai.interaction.SancaiSpatialTransition
 import io.github.avalonskyafar.sancai.showcase.DemoPage
@@ -36,9 +35,8 @@ object XmlPage : DemoPage("c_xml", R.string.page_c_xml_title, R.string.page_c_xm
     override fun build(page: PageScope) {
         page.title()
         page.caption(page.str(R.string.xml_intro), topDp = 14)
-        val cards = LayoutInflater.from(page.context).inflate(R.layout.page_xml, null, false)
+        val cards = page.inflate(R.layout.page_xml, topDp = PageScope.SECTION_GAP)
         wire(page, cards)
-        page.loose(cards, topDp = PageScope.SECTION_GAP)
         source(page)
         kotlin(page)
         theme(page)
@@ -141,8 +139,10 @@ object XmlPage : DemoPage("c_xml", R.string.page_c_xml_title, R.string.page_c_xm
         page.loose(open, topDp = 14, sideDp = PageScope.BUTTON_SIDE)
         page.code("""
             // NeighbourActivity.onCreate
-            val screen = layoutInflater
-                .inflate(R.layout.activity_neighbour, null)
+            val root: ViewGroup =
+                findViewById(android.R.id.content)
+            val screen = layoutInflater.inflate(
+                R.layout.activity_neighbour, root, false)
             setContentView(
                 SancaiSpatialTransition.wrap(this, screen))
             val back: SancaiButton =

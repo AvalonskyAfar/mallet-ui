@@ -14,8 +14,8 @@
     <string name="follow_colour_title">Colour moves with position</string>
     <string name="follow_colour_detail">The stretch behind the bead wears the glaze nearest to the value. Passing half-way to the next one pours it in.</string>
     <string name="follow_colour_label">Strength</string>
-    <string name="follow_colour_value">%1$d %% · %2$s</string>
-    <string name="follow_colour_percent">%1$d %%</string>
+    <string name="follow_colour_value">%1$d%% · %2$s</string>
+    <string name="follow_colour_percent">%1$d%%</string>
 
     <string name="follow_vertical_title">Vertical movement gives the gesture back</string>
     <string name="follow_vertical_detail">A track only keeps a gesture that runs sideways.</string>

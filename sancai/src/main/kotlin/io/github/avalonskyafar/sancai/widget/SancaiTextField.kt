@@ -529,7 +529,7 @@ public class SancaiTextField @JvmOverloads constructor(
         val length = editText.length()
         counterView.text = context.getString(R.string.sancai_text_field_counter, length, limit)
         counterView.contentDescription =
-            context.getString(R.string.sancai_text_field_counter_description, length, limit)
+            resources.getQuantityString(R.plurals.sancai_text_field_counter_description, limit, length, limit)
         counterView.setTextColor(if (length > limit) colors.danger else colors.muted)
     }
 

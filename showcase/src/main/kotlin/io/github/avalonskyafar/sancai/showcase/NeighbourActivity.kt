@@ -1,5 +1,6 @@
 package io.github.avalonskyafar.sancai.showcase
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Build
 import android.os.Bundle
@@ -29,7 +30,7 @@ class NeighbourActivity : Activity() {
 
         // (2) Wrap the page: it glides in over a picture of the screen below and can be
         // dragged back out.
-        val screen = layoutInflater.inflate(R.layout.activity_neighbour, null)
+        val screen = layoutInflater.inflate(R.layout.activity_neighbour, findViewById(android.R.id.content), false)
         setContentView(SancaiSpatialTransition.wrap(this, screen))
 
         findViewById<SancaiButton>(R.id.neighbour_back).setOnClickListener {
@@ -44,6 +45,8 @@ class NeighbourActivity : Activity() {
         }
     }
 
+    // Below Android 13 only; from 13 on the callback registered in onCreate is called.
+    @SuppressLint("GestureBackNavigation")
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         SancaiSpatialTransition.finish(this)

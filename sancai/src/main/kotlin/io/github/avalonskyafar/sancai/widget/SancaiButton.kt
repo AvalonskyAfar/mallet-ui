@@ -59,6 +59,7 @@ public class SancaiButton @JvmOverloads constructor(
     private val density = resources.displayMetrics.density
     private val sinkPx = SancaiMotion.PRESS_SINK_DP * density
     private val bodyBounds = RectF()
+    private val viewBounds = android.graphics.Rect()
     private val spinnerBounds = RectF()
     private val spinnerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
@@ -245,7 +246,8 @@ public class SancaiButton @JvmOverloads constructor(
         val sink = if (down) sinkPx else 0f
         val surface = body
         if (surface != null && isFocused && hasWindowFocus() && !isInTouchMode) {
-            surface.bodyBounds(android.graphics.Rect(0, 0, width, height), bodyBounds)
+            viewBounds.set(0, 0, width, height)
+            surface.bodyBounds(viewBounds, bodyBounds)
             bodyBounds.offset(0f, sink)
             material.drawFocusRim(canvas, bodyBounds, bodyBounds.height() / 2f)
         }

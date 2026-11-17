@@ -103,6 +103,7 @@ public open class SancaiSurface @JvmOverloads constructor(
     protected val theme: SancaiTheme = SancaiTheme.of(context)
     private val material = SancaiMaterial(context, theme)
     private val body = RectF()
+    private val viewBounds = android.graphics.Rect()
     private var surface: SancaiSurfaceDrawable
 
     /** Corner radius in dp. */
@@ -191,7 +192,10 @@ public open class SancaiSurface @JvmOverloads constructor(
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             if (child !is SancaiDivider || !child.fullBleed || child.visibility == GONE) continue
-            if (body.isEmpty) surface.bodyBounds(android.graphics.Rect(0, 0, width, height), body)
+            if (body.isEmpty) {
+                viewBounds.set(0, 0, width, height)
+                surface.bodyBounds(viewBounds, body)
+            }
             if (child.orientation == VERTICAL) {
                 child.layout(child.left, body.top.roundToInt(), child.right, body.bottom.roundToInt())
             } else {

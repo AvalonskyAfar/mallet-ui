@@ -237,9 +237,15 @@ private class GutterSpecimen(context: Context) : View(context) {
         set(value) {
             if (field != value) {
                 field = value
+                dash = null
                 invalidate()
             }
         }
+
+    /** The dashes of the outline at the current zoom; made when first drawn. */
+    private var dash: DashPathEffect? = null
+
+    private fun newDash(stroke: Float) = DashPathEffect(floatArrayOf(4f * stroke, 3f * stroke), 0f)
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         setMeasuredDimension(getDefaultSize(suggestedMinimumWidth, widthMeasureSpec), (HEIGHT_DP * density).roundToInt())
@@ -256,7 +262,8 @@ private class GutterSpecimen(context: Context) : View(context) {
 
         val stroke = density / zoom
         outline.strokeWidth = stroke
-        outline.pathEffect = DashPathEffect(floatArrayOf(4f * stroke, 3f * stroke), 0f)
+        if (dash == null) dash = newDash(stroke)
+        outline.pathEffect = dash
         canvas.drawRect(stroke / 2f, stroke / 2f, width - stroke / 2f, height - stroke / 2f, outline)
         canvas.restore()
     }

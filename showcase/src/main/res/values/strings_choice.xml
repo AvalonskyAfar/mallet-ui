@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <item name="choice_backup_group" type="id" />
     <item name="choice_daily" type="id" />
     <item name="choice_weekly" type="id" />
@@ -18,7 +18,7 @@
     <string name="choice_messages">Messages</string>
     <string name="choice_reminders">Reminders</string>
     <string name="choice_updates">Updates</string>
-    <string name="choice_boxes_status">%1$d of %2$d selected. Listener calls: %3$d. A box set from code calls no listener, so tapping “Select all” counts once.</string>
+    <string name="choice_boxes_status" tools:ignore="PluralsCandidate">%1$d of %2$d selected. Listener calls: %3$d. A box set from code calls no listener, so tapping “Select all” counts once.</string>
 
     <string name="choice_states_title">Glaze and disabled</string>
     <string name="choice_glazed">Celadon glaze</string>

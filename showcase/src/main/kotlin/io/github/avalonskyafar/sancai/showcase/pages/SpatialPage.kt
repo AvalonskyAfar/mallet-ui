@@ -1,5 +1,6 @@
 package io.github.avalonskyafar.sancai.showcase.pages
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Canvas
@@ -225,6 +226,7 @@ private class MapPlace(
 )
 
 /** Draws the places as tiles on a 4 x 3 grid with their connections; a tap selects a place. */
+@SuppressLint("ViewConstructor") // built in code only
 private class SpatialMapView(
     context: Context,
     private val places: List<MapPlace>,
@@ -267,6 +269,7 @@ private class SpatialMapView(
         return true
     }
 
+    @SuppressLint("ClickableViewAccessibility") // a tap needs its position; performClick is the path without one
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> return true

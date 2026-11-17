@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -12,6 +13,7 @@ import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
+import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import io.github.avalonskyafar.sancai.icon.SancaiIcon
 import io.github.avalonskyafar.sancai.icon.SancaiIconView
@@ -143,6 +145,13 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
         params.gravity = gravity
         column.addView(view, params)
         hasContent = true
+    }
+
+    /** Inflates [layout] into the column of the page and returns its root view. */
+    fun inflate(@LayoutRes layout: Int, topDp: Int = 0): View {
+        val view = LayoutInflater.from(context).inflate(layout, column, false)
+        loose(view, topDp = topDp)
+        return view
     }
 
     /** A muted remark on the canvas. */

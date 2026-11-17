@@ -8,6 +8,8 @@ import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewConfiguration
+import io.github.avalonskyafar.sancai.R
+import io.github.avalonskyafar.sancai.internal.useOwnFocusRim
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
 import io.github.avalonskyafar.sancai.theme.SancaiTheme
@@ -47,8 +49,15 @@ public abstract class SancaiControl @JvmOverloads constructor(
     protected val textPaint: Paint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.SUBPIXEL_TEXT_FLAG)
 
     init {
-        isClickable = true
-        isFocusable = true
+        // Clickable and focusable, unless the layout says otherwise.
+        val a = context.obtainStyledAttributes(attrs, R.styleable.SancaiControl, defStyleAttr, 0)
+        try {
+            if (!a.hasValue(R.styleable.SancaiControl_android_focusable)) isFocusable = true
+            if (!a.hasValue(R.styleable.SancaiControl_android_clickable)) isClickable = true
+        } finally {
+            a.recycle()
+        }
+        useOwnFocusRim()
     }
 
     /** Whether the layout runs right-to-left. */
