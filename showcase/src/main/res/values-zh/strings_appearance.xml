@@ -24,7 +24,7 @@
     <string name="appearance_large_text">字体放大</string>
     <string name="appearance_large_text_detail">所有文字放大至 1.13 倍</string>
     <string name="appearance_contrast">增强对比度</string>
-    <string name="appearance_contrast_detail">让文字、分隔线与控件更易辨认</string>
+    <string name="appearance_contrast_detail">文字与控件更易辨认</string>
 
     <string name="appearance_feel_title">交互体验</string>
     <string name="appearance_feel_detail">调整界面对触摸的反馈</string>

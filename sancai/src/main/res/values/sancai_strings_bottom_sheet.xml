@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Announced as the name of a bottom sheet that has no title. -->
+    <string name="sancai_bottom_sheet_pane">Bottom sheet</string>
+    <!-- Label of the accessibility action that closes a bottom sheet. -->
+    <string name="sancai_bottom_sheet_dismiss">Dismiss</string>
+</resources>

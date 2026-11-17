@@ -63,7 +63,9 @@ Inside a card use `LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP)`.
    glazed.
 3. **Show the code.** After each section, a `page.code(...)` sample of at most about eight
    lines with the calls that built it, written the way a user of the library would write
-   them. Keep the sample truthful: it must compile if pasted into an activity.
+   them. Keep the sample truthful: it must compile if pasted into an activity. Keep every
+   line of a sample to **46 characters or fewer** (break after `=`, `(` or `{`), so that it
+   fits the well on a phone without sideways scrolling.
 4. **Say where it comes from.** End the page with one caption that names what on it was
    extracted from the original app and what was designed for Sancai. Keep it to one or two
    sentences.

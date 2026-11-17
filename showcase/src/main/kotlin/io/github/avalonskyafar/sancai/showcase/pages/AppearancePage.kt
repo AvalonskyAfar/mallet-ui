@@ -91,17 +91,18 @@ object AppearancePage : DemoPage("appearance", R.string.page_appearance_title, R
 
         page.code(
             """
-            // Application.onCreate: the library asks your settings for its theme
-            SancaiTheme.resolver = SancaiTheme.Resolver { context -> settings.toTheme(context) }
-
-            // A setting changed: let the thumb finish its glide, then rebuild the screen
-            track.onSelectionChangedListener =
-                SancaiSegmentedTrack.OnSelectionChangedListener { track, index ->
-                    settings.appearance = Appearance.values()[index]
-                    SancaiThemeTransition.recreateAfter(track)
+            // Application: your settings are the theme
+            SancaiTheme.resolver =
+                SancaiTheme.Resolver { context ->
+                    settings.toTheme(context)
                 }
 
-            // Activity.onCreate, after setContentView: fade the old look over the new one
+            // A setting changed: let the thumb land,
+            // then rebuild the screen
+            SancaiThemeTransition.recreateAfter(track)
+
+            // Activity.onCreate, after setContentView:
+            // fade the old look over the new one
             SancaiThemeTransition.play(this)
             """,
             topDp = PageScope.SECTION_GAP,
