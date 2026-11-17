@@ -52,6 +52,27 @@ class ControlsDeviceTest : DeviceTest() {
     }
 
     @Test
+    fun withAKeyboardFocusWalksIntoThePageAndATrackAnswersTheArrowKeys() {
+        Device.launch("c_tracks")
+        // The first track of the page has two options and starts on the second.
+        val track = Device.all<SancaiSegmentedTrack>().first()
+        assertEquals(1, selected(track))
+
+        // A key leaves touch mode; further presses walk the focus down the page to the track.
+        var presses = 0
+        while (!Device.onMain { track.isFocused } && presses++ < 8) {
+            Device.ui.pressDPadDown()
+            Device.settle(150)
+        }
+        assertTrue("the first track took the focus", Device.onMain { track.isFocused })
+
+        Device.ui.pressDPadLeft()
+        Device.waitUntil("the left arrow chose the first option") { track.selectedIndex == 0 }
+        Device.ui.pressDPadRight()
+        Device.waitUntil("the right arrow chose the second option") { track.selectedIndex == 1 }
+    }
+
+    @Test
     fun aVerticalDragThatStartsOnATrackScrollsThePage() {
         Device.launch("c_tracks")
         val track = Device.all<SancaiSegmentedTrack>()[2]

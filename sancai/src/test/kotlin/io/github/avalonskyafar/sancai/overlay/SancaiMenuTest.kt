@@ -111,6 +111,15 @@ class SancaiMenuTest {
     }
 
     @Test
+    fun `an item can be added with nothing but a label and what it does`() {
+        // The two-argument forms exist for Java, where optional parameters cannot be skipped.
+        val run = Runnable { }
+        val menu = SancaiMenu(context).add("Edit", run).addDanger("Delete", run)
+        assertThat(menu.itemCount).isEqualTo(2)
+        assertThat(menu.isEnabled(0)).isTrue()
+    }
+
+    @Test
     fun `leading and doubled dividers are ignored`() {
         val menu = SancaiMenu(context).addDivider().add("One").addDivider().addDivider().add("Two")
         val panel = laidOut(menu)

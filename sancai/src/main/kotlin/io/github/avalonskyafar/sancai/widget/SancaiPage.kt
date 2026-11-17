@@ -1,7 +1,12 @@
 package io.github.avalonskyafar.sancai.widget
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.LinearGradient
+import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.Shader
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.AttributeSet
@@ -19,6 +24,7 @@ import io.github.avalonskyafar.sancai.theme.SancaiTextRole
 import io.github.avalonskyafar.sancai.theme.SancaiTextTone
 import io.github.avalonskyafar.sancai.theme.SancaiTheme
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
@@ -42,15 +48,21 @@ import kotlin.math.roundToInt
  * - **Rhythm.** The padding is [SancaiSpacing.PAGE_SIDE], [SancaiSpacing.PAGE_TOP] and
  *   [SancaiSpacing.PAGE_BOTTOM]; [addTitle], [addSection], [addButton] and [addSpace] place
  *   the usual elements with the usual gaps. Padding given in XML replaces the default.
- * - **Edge to edge.** While [fitSystemBars] is on, the system-bar and display-cutout insets
- *   are added to the padding, and the keyboard inset to the bottom. Padding is not clipped,
- *   so content scrolls underneath the bars instead of being cut off above them. A page asks
- *   for the insets whenever it is attached, so it is also right when it joins a screen late.
+ * - **Edge to edge.** While [fitSystemBars] is on, the page reaches behind the system bars:
+ *   the system-bar and display-cutout insets are added to its padding, and the keyboard
+ *   inset to the bottom. A page asks for the insets whenever it is attached, so it is also
+ *   right when it joins a screen late.
+ * - **Clear bars.** Content that scrolls is not drawn under the status bar, nor under a
+ *   navigation bar with buttons: text sliding beneath a clock cannot be read and makes the
+ *   clock hard to read. It softens over a few dp and ends at the bar. Under the handle of
+ *   gesture navigation, which covers almost nothing, content shows through.
  * - **Width.** The column grows no wider than [maxContentWidthDp] (560 dp) and stands in the
  *   middle of a wider page, so that on a tablet, or on a phone lying on its side, a title and
  *   its control do not drift to opposite ends of the screen.
  * - **Stillness.** There are no scroll bars, and the over-scroll effect only exists while the
- *   content is taller than the page: a short page does not move at all.
+ *   content is taller than the page: a short page does not move at all. A page opens at its
+ *   top: it does not scroll to a text field, or raise the keyboard, unless the field is
+ *   tapped or asked for.
  * - **State.** The scroll position is saved and restored. As for any view, this needs an id.
  *
  * The column accepts the layout attributes a page needs: width, height, margins,
@@ -79,6 +91,13 @@ public open class SancaiPage @JvmOverloads constructor(
     private var applying = false
     private var revealFocusPending = false
     private val applied = intArrayOf(-1, -1, -1, -1)
+
+    // How much of the top and bottom edge belongs to a system bar that content must not show under.
+    private var guardTop = 0
+    private var guardBottom = 0
+    private val guardPaint = Paint()
+    private var guardColor = 0
+    private var guardReady = false
 
     /**
      * Whether the page adds the system-bar and display-cutout insets to its padding, and the
@@ -182,6 +201,8 @@ public open class SancaiPage @JvmOverloads constructor(
         var right = if (rtl) baseStart else baseEnd
         var bottom = baseBottom
         val insets = lastInsets
+        var keepTop = 0
+        var keepBottom = 0
         if (fitSystemBars && insets != null) {
             val bars = insets.getInsets(
                 WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout(),
@@ -191,6 +212,14 @@ public open class SancaiPage @JvmOverloads constructor(
             top += bars.top
             right += bars.right
             bottom += max(bars.bottom, keyboard.bottom)
+            keepTop = bars.top
+            // A bar with buttons is "tappable"; the handle of gesture navigation is not.
+            keepBottom = min(bars.bottom, insets.getInsets(WindowInsetsCompat.Type.tappableElement()).bottom)
+        }
+        if (keepTop != guardTop || keepBottom != guardBottom) {
+            guardTop = keepTop
+            guardBottom = keepBottom
+            invalidate()
         }
         // Reading the padding resolves it, which reports the RTL properties, which lands here
         // again: compare against what was applied last, not against the view.
@@ -380,6 +409,43 @@ public open class SancaiPage @JvmOverloads constructor(
         }
     }
 
+    override fun dispatchDraw(canvas: Canvas) {
+        if (guardTop == 0 && guardBottom == 0) {
+            super.dispatchDraw(canvas)
+            return
+        }
+        val left = scrollX.toFloat()
+        val cutTop = scrollY.toFloat() + guardTop
+        val cutBottom = scrollY.toFloat() + height - guardBottom
+        val save = canvas.save()
+        canvas.clipRect(left, cutTop, left + width, cutBottom)
+        super.dispatchDraw(canvas)
+        canvas.restoreToCount(save)
+
+        // The cut is softened in the colour of the page, when the page has one colour.
+        val color = (background as? ColorDrawable)?.color ?: return
+        if (color ushr 24 != 0xFF) return
+        val fade = px(BAR_FADE_DP).toFloat()
+        if (!guardReady || color != guardColor) {
+            guardColor = color
+            guardReady = true
+            guardPaint.shader = LinearGradient(0f, 0f, 0f, fade, color, color and 0x00FFFFFF, Shader.TileMode.CLAMP)
+        }
+        if (guardTop > 0) {
+            val fadeSave = canvas.save()
+            canvas.translate(left, cutTop)
+            canvas.drawRect(0f, 0f, width.toFloat(), fade, guardPaint)
+            canvas.restoreToCount(fadeSave)
+        }
+        if (guardBottom > 0) {
+            val fadeSave = canvas.save()
+            canvas.translate(left, cutBottom)
+            canvas.scale(1f, -1f)
+            canvas.drawRect(0f, 0f, width.toFloat(), fade, guardPaint)
+            canvas.restoreToCount(fadeSave)
+        }
+    }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         // Android hands the window insets down when they change, not when a view arrives. A
@@ -410,6 +476,19 @@ public open class SancaiPage @JvmOverloads constructor(
             revealFocusPending = false
             revealFocused()
         }
+    }
+
+    /**
+     * In touch mode a request for focus that names no view is only the window looking for
+     * somewhere to put the focus: Android before 8.0 does that whenever a window opens, and
+     * every version does it when the focused view goes away. Handing it to a descendant would
+     * open the page scrolled down to its first text field or selectable text, and raise the
+     * keyboard for a field nobody touched. The page declines; a field that is asked directly
+     * (`field.requestFocus()`), or tapped, takes the focus as always.
+     */
+    override fun onRequestFocusInDescendants(direction: Int, previouslyFocusedRect: Rect?): Boolean {
+        if (isInTouchMode) return false
+        return super.onRequestFocusInDescendants(direction, previouslyFocusedRect)
     }
 
     // ---- keeping content clear of the bars ----
@@ -444,6 +523,9 @@ public open class SancaiPage @JvmOverloads constructor(
     public companion object {
         /** The widest the column of a page gets unless [maxContentWidthDp] says otherwise, in dp. */
         public const val DEFAULT_MAX_CONTENT_WIDTH_DP: Float = 560f
+
+        /** The distance over which scrolling content fades out before a system bar, in dp. */
+        public const val BAR_FADE_DP: Float = 10f
 
         private const val STATE_SUPER = "sancai:page:super"
         private const val STATE_SCROLL = "sancai:page:scroll"

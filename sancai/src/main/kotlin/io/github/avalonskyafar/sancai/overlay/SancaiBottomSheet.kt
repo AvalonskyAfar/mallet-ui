@@ -288,6 +288,10 @@ public class SancaiBottomSheet private constructor(
             onClick: Runnable? = null,
         ): Builder = apply { actions.add(Action(label, tone, icon, enabled, onClick)) }
 
+        /** Adds a plain action row: [label] in the ink tone, without an icon. For callers in Java. */
+        public fun action(label: CharSequence, onClick: Runnable): Builder =
+            action(label, SancaiTextTone.INK, null, true, onClick)
+
         /**
          * Adds the cancel action below a full-bleed divider. Without a [label] it reads
          * "Cancel" in the language of the device.

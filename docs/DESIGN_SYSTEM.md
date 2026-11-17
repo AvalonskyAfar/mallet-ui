@@ -260,7 +260,9 @@ it needs no icon and no container. *(Extracted)*
 
 A page is one column. It is no wider than 560 dp (`SancaiPage.maxContentWidthDp`) and stands
 in the middle of a wider screen, so that on a tablet, or on a phone lying on its side, a
-title and its control do not drift to opposite ends of a row. *(New)*
+title and its control do not drift to opposite ends of a row. The page reaches behind the
+system bars, but what scrolls in it ends at the status bar, softened over 10 dp, and does
+not slide under the clock. *(New)*
 
 `SancaiSpacing` holds the vertical rhythm of a page, in dp. *(Extracted)*
 

@@ -114,6 +114,24 @@ public abstract class SancaiControl @JvmOverloads constructor(
         if (changed) invalidate()
     }
 
+    // The layout direction the control was last told about, plus one; zero until it is told.
+    private var seenDirection = 0
+
+    /**
+     * A control places and draws its parts by the layout direction. When an ancestor changes
+     * direction while the control is on screen, its size stays the same, so nothing else
+     * would make it lay out or draw again: it asks for both.
+     */
+    override fun onRtlPropertiesChanged(layoutDirection: Int) {
+        super.onRtlPropertiesChanged(layoutDirection)
+        val told = layoutDirection + 1
+        if (seenDirection != 0 && seenDirection != told) {
+            requestLayout()
+            invalidate()
+        }
+        seenDirection = told
+    }
+
     override fun onFocusChanged(gainFocus: Boolean, direction: Int, previouslyFocusedRect: android.graphics.Rect?) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect)
         invalidate()

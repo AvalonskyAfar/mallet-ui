@@ -296,6 +296,8 @@ PLATFORM = {
     "android:scaleType": ("scale type", "How the picture is fitted."),
     "android:orientation": ("horizontal / vertical", "The direction children are laid out in."),
     "android:gravity": ("gravity", "How the content is placed."),
+    "android:focusable": ("boolean", "Whether the component takes keyboard focus. True unless the layout says otherwise."),
+    "android:clickable": ("boolean", "Whether the component answers taps and keys. True unless the layout says otherwise."),
 }
 
 

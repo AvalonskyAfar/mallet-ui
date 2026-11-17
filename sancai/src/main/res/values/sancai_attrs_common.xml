@@ -62,10 +62,13 @@
     <attr name="sancaiCornerRadius" format="dimension" />
     <!-- Whether a body is lifted (rim and shadow) or flat (rim only). -->
     <attr name="sancaiElevated" format="boolean" />
-    <!-- Lower bound, upper bound, step and current value of a numeric control. -->
+    <!-- Lower bound of a numeric control. -->
     <attr name="sancaiValueFrom" format="float" />
+    <!-- Upper bound of a numeric control. -->
     <attr name="sancaiValueTo" format="float" />
+    <!-- The step a numeric control moves in. -->
     <attr name="sancaiStepSize" format="float" />
+    <!-- The value a numeric control starts with. -->
     <attr name="sancaiValue" format="float" />
 
     <!-- An icon of the built-in set. Values follow the order of the SancaiIcon enum. -->

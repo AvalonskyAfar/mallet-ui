@@ -8,6 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SdkSuppress
 import io.github.avalonskyafar.sancai.showcase.Pages
 import io.github.avalonskyafar.sancai.showcase.ShowcaseSettings
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,6 +31,9 @@ class PagesDeviceTest : DeviceTest() {
             val page = Device.pageView()
             assertTrue("$key has a size", Device.onMain { page.width > 0 && page.height > 0 })
             val scroll = page as? ScrollView ?: continue
+            // Android before 8.0 hands the focus to the first text field or selectable text
+            // of a window that opens, and a scroll view scrolls to it. A page opens at its top.
+            assertEquals("$key opens at its top", 0, Device.onMain { scroll.scrollY })
             // Down in steps of a screen, so every part of the page is drawn, and back up.
             var guard = 0
             while (Device.onMain { scroll.canScrollVertically(1) } && guard++ < 40) {

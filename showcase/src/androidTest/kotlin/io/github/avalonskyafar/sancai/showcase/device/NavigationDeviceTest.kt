@@ -67,7 +67,7 @@ class NavigationDeviceTest : DeviceTest() {
     @Test
     fun aShortSlowDragGlidesBack() {
         Device.launch()
-        // An eighth of the width in 300 ms: neither far enough nor a flick.
+        // An eighth of the width in about a second: neither far enough nor a flick.
         Device.swipeScreen(0.60f, 0.25f, 0.48f, 0.25f, steps = 60)
         Device.settle(900)
         assertEquals(Pages.HOME, Device.currentPage())

@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Puts the pictures taken on a device into docs/images.
+"""Puts the pictures and clips taken on a device into docs/images.
 
     python tools/device.py shots          (leaves the screenshots in build/device/shots)
+    python tools/device.py motion         (leaves the clips in build/device/motion)
     python tools/gallery.py               (run from the project root; needs Pillow)
 
 - docs/images/device/<name>.png   every screenshot of the tour except the screen-by-screen
                                   scrolls, 480 px wide
+- docs/images/motion/<name>.gif   the clips of the motion tour, as they are
 - docs/images/hero.png            five screens side by side, for the top of the README
 
 The screenshots are photographs of the demo app running on the device named in
@@ -14,6 +16,7 @@ each screen and sets the screens on a plain ground with the short downward shado
 design language.
 """
 import os
+import shutil
 import sys
 
 try:
@@ -23,6 +26,8 @@ except ImportError:
 
 FROM = os.path.join("build", "device", "shots")
 TO = os.path.join("docs", "images", "device")
+CLIPS_FROM = os.path.join("build", "device", "motion")
+CLIPS_TO = os.path.join("docs", "images", "motion")
 HERO = os.path.join("docs", "images", "hero.png")
 WIDTH = 480
 
@@ -100,6 +105,15 @@ def main():
             count += 1
     print("%d pictures, %.1f MB in %s" % (count, total / 1e6, TO))
     hero(sys.argv[1:] or HERO_SCREENS)
+
+    if os.path.isdir(CLIPS_FROM):
+        os.makedirs(CLIPS_TO, exist_ok=True)
+        size = 0
+        clips = sorted(name for name in os.listdir(CLIPS_FROM) if name.endswith(".gif"))
+        for name in clips:
+            shutil.copyfile(os.path.join(CLIPS_FROM, name), os.path.join(CLIPS_TO, name))
+            size += os.path.getsize(os.path.join(CLIPS_TO, name))
+        print("%d clips, %.1f MB in %s" % (len(clips), size / 1e6, CLIPS_TO))
 
 
 if __name__ == "__main__":

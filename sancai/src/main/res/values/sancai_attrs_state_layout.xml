@@ -12,11 +12,13 @@
         <attr name="sancaiStateLayoutMinimumLoadingMs" format="integer" />
         <!-- The caption under the spinner. Default "Loading". -->
         <attr name="sancaiStateLayoutLoadingLabel" format="string" />
-        <!-- Title and supporting sentence of the default empty message. -->
+        <!-- Title of the default empty message. -->
         <attr name="sancaiStateLayoutEmptyTitle" format="string" />
+        <!-- Supporting sentence of the default empty message. -->
         <attr name="sancaiStateLayoutEmptyDetail" format="string" />
-        <!-- Title and supporting sentence of the default error message. -->
+        <!-- Title of the default error message. -->
         <attr name="sancaiStateLayoutErrorTitle" format="string" />
+        <!-- Supporting sentence of the default error message. -->
         <attr name="sancaiStateLayoutErrorDetail" format="string" />
         <attr name="android:enabled" />
     </declare-styleable>

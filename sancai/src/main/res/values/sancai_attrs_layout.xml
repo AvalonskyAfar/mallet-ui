@@ -29,9 +29,11 @@
     </declare-styleable>
 
     <declare-styleable name="SancaiButton">
-        <!-- A button is focusable and clickable unless the layout says otherwise. -->
+        <!-- Whether the button takes keyboard focus. True unless the layout says otherwise. -->
         <attr name="android:focusable" />
+        <!-- Whether the button answers taps and keys. True unless the layout says otherwise. -->
         <attr name="android:clickable" />
+        <!-- The body of the button: a porcelain capsule, a glazed capsule, or the label alone. -->
         <attr name="sancaiButtonVariant" format="enum">
             <!-- Neutral porcelain capsule. -->
             <enum name="neutral" value="0" />

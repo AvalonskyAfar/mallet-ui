@@ -171,6 +171,18 @@ class SancaiBottomSheetTest {
     }
 
     @Test
+    fun `an action can be added with nothing but a label and what it does`() {
+        // The two-argument form exists for Java, where optional parameters cannot be skipped.
+        var copied = 0
+        val copy = Runnable { copied++ }
+        val sheet = shown(SancaiBottomSheet.Builder(activityContext()).action("Copy", copy).cancel())
+        val row = sheet.root.sheet.actionRows[0]
+        Touch.tap(row, row.width / 2f, row.height / 2f)
+        Snapshots.idle()
+        assertThat(copied).isEqualTo(1)
+    }
+
+    @Test
     fun `disabled action pales and does nothing`() {
         var runs = 0
         val sheet = shown(

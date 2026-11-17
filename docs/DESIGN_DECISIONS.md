@@ -85,7 +85,7 @@ parts usable from XML and code by any app, and fills the gaps in the same langua
 | Sancai | Mark | Origin | Kept | Changed or added |
 |---|---|---|---|---|
 | `SancaiSurface`, `SancaiDivider` | Extracted | `UiKit.java:367-377`, `460-465`; `MainActivity.java:1221-1227` | card material, 9 dp padding, rim-to-rim divider at 14 % ink | the card stretches dividers itself instead of callers using negative margins; flat and split-corner variants |
-| `SancaiPage` | Extracted | `UiKit.java:269-282`, `329-365` | page padding, scroll configuration, insets as padding | XML children; keyboard inset; saved scroll position |
+| `SancaiPage` | Extracted | `UiKit.java:269-282`, `329-365` | page padding, scroll configuration, insets as padding | XML children; keyboard inset; saved scroll position; a column no wider than 560 dp; content that ends at the system bars; a page that opens at its top ([D-22](#d-22)) |
 | `SancaiHeading` | Extracted | `UiKit.java:296-315` | 17 sp title, 12.5 sp muted detail, 10 dp inset | page-title level |
 | `SancaiEntryRow` | Extended | `UiKit.java:800-845` | 62 / 76 dp, centred title and detail, independent chevron, content-only sink | start alignment, leading icon, trailing value, RTL, focus |
 | `SancaiControlRow` | Extracted | `UiKit.java:467-508` | centred text column, weights 2 : 1, 1 : 3, 1 : 4 and 1 : 1.35, heights 64 / 72 dp | any control, not only a track |
@@ -288,6 +288,21 @@ An empty area shows an outline icon, a line or two and at most one action, on th
 never inside an empty card. A skeleton is a recessed neutral block with a slow light passing
 over it, and all skeletons on a screen share one sweep. A banner is a flat card with the
 accent bar of the callout; it pushes content down rather than covering it.
+
+### D-22
+**A page keeps the system bars clear, and opens at its top.**
+The original pads its root for the system bars on Android 15 and later and lets the system
+draw opaque bars before that. Sancai draws behind the bars on every version, so a page has
+to decide what happens there. Three things were found by running the showcase on devices
+and are part of `SancaiPage`: content that scrolls ends at the status bar, softened over
+10 dp, instead of sliding under the clock where neither can be read (under the thin handle
+of gesture navigation it shows through, because that covers almost nothing); a page asks
+for the window insets whenever it is attached, because Android hands them down only when
+they change and a page that a host attaches later would otherwise lie under the bar; and a
+page does not give the focus to a text field merely because a window opened, which on
+Android 7 and earlier scrolled a page to its first field and raised the keyboard. The
+column is also held to 560 dp and centred, so the centred rows of the language do not
+stretch across a tablet.
 
 ---
 

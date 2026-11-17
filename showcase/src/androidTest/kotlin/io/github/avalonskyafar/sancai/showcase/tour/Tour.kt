@@ -2,6 +2,9 @@ package io.github.avalonskyafar.sancai.showcase.tour
 
 import android.os.SystemClock
 import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.runner.lifecycle.ActivityLifecycleCallback
+import androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry
+import androidx.test.runner.lifecycle.Stage
 import io.github.avalonskyafar.sancai.showcase.ShowcaseSettings
 import io.github.avalonskyafar.sancai.showcase.device.Device
 import org.junit.Assume
@@ -15,6 +18,9 @@ import org.junit.Assume
  */
 internal object Tour {
     const val ROOT: String = "/data/local/tmp/sancai"
+
+    /** How long a recording runs before its scene begins; `tools/device.py` cuts most of it off again. */
+    const val RECORD_LEAD_MS: Long = 1800
     const val PACKAGE: String = "io.github.avalonskyafar.sancai.showcase"
 
     private val arguments get() = InstrumentationRegistry.getArguments()
@@ -28,6 +34,17 @@ internal object Tour {
     val slow: Float get() = arguments.getString("slow")?.toFloatOrNull()?.coerceIn(1f, 10f) ?: 1f
 
     private val recordSize: String get() = arguments.getString("size") ?: "720x1600"
+
+    private val touchMarker = ActivityLifecycleCallback { activity, stage ->
+        if (stage == Stage.RESUMED) TouchMarker.install(activity)
+    }
+
+    /** From now on every activity of the app shows where it is touched; see [TouchMarker]. */
+    fun markTouches(on: Boolean) {
+        val registry = ActivityLifecycleMonitorRegistry.getInstance()
+        registry.removeLifecycleCallback(touchMarker)
+        if (on) registry.addLifecycleCallback(touchMarker)
+    }
 
     fun assumeRequested() {
         Assume.assumeTrue("pass -e tour true to run the tours", arguments.getString("tour") == "true")
@@ -93,11 +110,6 @@ internal object Tour {
     /** The duration of a gesture in a clip. */
     fun time(ms: Long): Long = (ms * slow).toLong()
 
-    /** The system draws a dot where the screen is touched. */
-    fun showTouches(on: Boolean) {
-        shell("settings put system show_touches ${if (on) 1 else 0}")
-    }
-
     /** Records the screen into `motion/<name>.mp4` while [block] runs. */
     fun record(name: String, block: () -> Unit) {
         val file = "$ROOT/motion/$name.mp4"
@@ -109,10 +121,10 @@ internal object Tour {
         recorder = thread
         thread.start()
         // The recorder needs a moment before it takes its first frame.
-        SystemClock.sleep(1800)
+        SystemClock.sleep(RECORD_LEAD_MS)
         try {
             block()
-            pause(500)
+            pause(400)
         } finally {
             shell("pkill -2 screenrecord")
             thread.join(15_000)

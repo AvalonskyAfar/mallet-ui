@@ -123,7 +123,9 @@ internal object Device {
         waitUntil("the app rests on the page \"$page\"") {
             val host = (ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED).firstOrNull() as? MainActivity)
                 ?.findViewById<SancaiSpatialHost>(R.id.showcase_host)
-            host != null && host.currentKey == page && !host.isMoving && host.width > 0
+            // Laid out, at rest, and in a window that takes input: a touch sent before the
+            // window has focus goes to whatever was in front until then.
+            host != null && host.currentKey == page && !host.isMoving && host.width > 0 && host.hasWindowFocus()
         }
         settle(250)
     }
@@ -161,17 +163,26 @@ internal object Device {
      * Scrolls the page so that [view] stands in the middle of the screen, clear of the system
      * bars. This is the test arranging the screen, not a gesture under test.
      */
-    fun bringToCentre(view: View) {
+    fun bringToCentre(view: View) = bringIntoView(view, view)
+
+    /**
+     * Scrolls the page so that everything from [first] to [last] stands around the middle of
+     * the screen. With [smooth] the page glides there, for a clip; otherwise it jumps.
+     */
+    fun bringIntoView(first: View, last: View, smooth: Boolean = false) {
         onMain {
-            var parent = view.parent
+            var parent = first.parent
             while (parent != null && parent !is ScrollView) parent = parent.parent
             val scroll = parent as? ScrollView ?: return@onMain
-            val rect = Rect(0, 0, view.width, view.height)
-            scroll.offsetDescendantRectToMyCoords(view, rect)
+            val top = Rect(0, 0, first.width, first.height)
+            val bottom = Rect(0, 0, last.width, last.height)
+            scroll.offsetDescendantRectToMyCoords(first, top)
+            scroll.offsetDescendantRectToMyCoords(last, bottom)
             val range = (scroll.getChildAt(0).height - (scroll.height - scroll.paddingTop - scroll.paddingBottom)).coerceAtLeast(0)
-            scroll.scrollTo(0, (rect.centerY() - scroll.height / 2).coerceIn(0, range))
+            val target = ((top.top + bottom.bottom) / 2 - scroll.height / 2).coerceIn(0, range)
+            if (smooth) scroll.smoothScrollTo(0, target) else scroll.scrollTo(0, target)
         }
-        settle(200)
+        settle(if (smooth) 650 else 200)
     }
 
     /** A tap at the given share of the width and height of [view]. */
@@ -181,7 +192,10 @@ internal object Device {
         settle()
     }
 
-    /** A finger that goes down on [view] at [fromFx], travels to [toFx] and lifts. A step lasts 5 ms. */
+    /**
+     * A finger that goes down on [view] at [fromFx], travels to [toFx] in [steps] moves and
+     * lifts. A move takes 5 ms and the time the app needs to handle it: about 18 ms.
+     */
     fun drag(view: View, fromFx: Float, toFx: Float, fy: Float = 0.5f, steps: Int = 30) {
         val r = bounds(view)
         val y = (r.top + r.height() * fy).roundToInt()
@@ -211,8 +225,14 @@ internal object Device {
         ui.executeShellCommand("wm dismiss-keyguard")
         // With a hardware keyboard attached (every emulator has one) the soft keyboard would
         // only cover the lower half of the screen; text is typed as key events anyway.
-        ui.executeShellCommand("settings put secure show_ime_with_hard_keyboard 0")
+        // Changing the setting changes the configuration, which recreates a running activity
+        // a moment later: it is written once, and the change is given time to pass.
+        if (ui.executeShellCommand("settings get secure show_ime_with_hard_keyboard").trim() != "0") {
+            ui.executeShellCommand("settings put secure show_ime_with_hard_keyboard 0")
+            SystemClock.sleep(2_000)
+        }
         ui.setOrientationNatural()
+        ui.waitForIdle()
     }
 
     // ---- Things in other windows: dialogs, sheets, menus ----
@@ -241,11 +261,11 @@ internal object Device {
     }
 
     /** Brings the button of the page that carries the text [label] to the middle and taps it. */
-    fun pressButton(label: Int) {
+    fun pressButton(label: Int, smooth: Boolean = false) {
         val text = shown(label)
         val button = all<SancaiButton>().firstOrNull { onMain { it.text.toString() } == text }
             ?: throw AssertionError("the page has no button \"$text\"")
-        bringToCentre(button)
+        bringIntoView(button, button, smooth)
         tap(button)
     }
 
@@ -273,15 +293,21 @@ internal object Device {
      * Positions are in pixels of the screen.
      */
     fun glide(fromX: Int, fromY: Int, toX: Int, toY: Int, ms: Long = 600) {
-        val count = (ms / 10).toInt().coerceAtLeast(4)
+        // One move per stretch between two points. A move is injected, handled by the app
+        // (which takes up to a frame) and followed by a rest of 5 ms: about 18 ms altogether.
+        val count = (ms / MOVE_MS).toInt().coerceAtLeast(4)
         val points = Array(count + 1) { index ->
             val t = index / count.toFloat()
             val eased = t * t * (3f - 2f * t)
             Point((fromX + (toX - fromX) * eased).roundToInt(), (fromY + (toY - fromY) * eased).roundToInt())
         }
-        // Two steps of 5 ms between neighbouring points.
+        // With two steps per stretch UiAutomator sends one move, half-way along it; with one
+        // step it would send none at all.
         ui.swipe(points, 2)
     }
+
+    /** What one injected move takes, roughly: 5 ms of rest and the time the app needs to handle it. */
+    private const val MOVE_MS = 18L
 
     /**
      * A finger that goes down, glides to the second point and stays there while [held] runs;

@@ -357,7 +357,9 @@ SancaiWindow.preferHighestRefreshRate(activity)   // optional, for screens built
 ```
 
 `SancaiPage` pads itself for the system bars and the keyboard, so a screen whose root is a
-`SancaiPage` needs only the first call. Android 15 and later draw every app edge to edge;
+`SancaiPage` needs only the first call. The page reaches behind the bars, but what scrolls
+in it ends at the status bar (and at a navigation bar with buttons) instead of sliding
+under the clock. Android 15 and later draw every app edge to edge;
 on earlier versions `SancaiWindow.apply(activity, edgeToEdge = false)` keeps the classic
 layout with canvas-coloured bars (a black navigation bar under a light theme before Android 8).
 
@@ -469,7 +471,9 @@ with the default optimising configuration and no extra rules.
 | The theme did not change after a setting changed | Views read the theme at construction. Recreate the activity (section 7.3) or rebuild the views. |
 | A listener is not called after `select()` or `setChecked()` | By design: listeners are for user input. Call your own handler after setting the value. |
 | A track inside a `ViewPager2` swallows page swipes | Swipes that start on the track belong to the track. Start the swipe outside it, or disable the track while paging. |
-| A page host does not move when dragging over a custom scrolling view | Implement `canScrollVertically` / `canScrollHorizontally` on that view; the host asks it who should move. |
+| A page host takes a drag that a custom scrolling view should have had, or never takes over at its end | Implement `canScrollVertically` / `canScrollHorizontally` on that view truthfully; the host asks it who should move. |
+| Scrolling content stops short of the top edge of the screen | `SancaiPage` ends what scrolls at the status bar on purpose (section 8). For a page inside a container that already keeps clear of the bars, set `fitSystemBars = false`. |
+| A text field is not focused when the screen opens | A page does not hand the focus to a field merely because a window opened, which would scroll to it and raise the keyboard. On a screen that is about typing, call `field.requestFocus()` yourself. |
 | Labels on blue or green tracks are hard to read | The default palette keeps the original white-on-glaze look. Turn on `sancaiHighContrast`; see [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md#12-accessibility). |
 | Manifest merger or duplicate-class errors | Sancai declares nothing in the manifest. Check that the three AndroidX dependencies are not excluded and that `android.useAndroidX=true`. |
 | Build fails on Windows with "path contains non-ASCII characters" | An Android Gradle Plugin check, unrelated to the library. Move the project, or set `android.overridePathCheck=true` in `gradle.properties`. |

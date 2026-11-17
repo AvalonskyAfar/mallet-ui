@@ -25,3 +25,7 @@ Thumbs.db
 
 # Agent scratch
 .claude/
+
+# Python tools
+__pycache__/
+*.pyc

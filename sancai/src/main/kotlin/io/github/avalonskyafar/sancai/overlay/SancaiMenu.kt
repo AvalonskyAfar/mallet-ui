@@ -91,12 +91,18 @@ public class SancaiMenu(context: Context) {
         return this
     }
 
+    /** Adds an action without an icon. For callers in Java. */
+    public fun add(label: CharSequence, onClick: Runnable): SancaiMenu = add(label, null, onClick)
+
     /** Adds a destructive action: label and icon are drawn in the danger colour. */
     @JvmOverloads
     public fun addDanger(label: CharSequence, icon: SancaiIcon? = null, onClick: Runnable? = null): SancaiMenu {
         entries.add(Entry(label, icon, danger = true, action = onClick))
         return this
     }
+
+    /** Adds a destructive action without an icon. For callers in Java. */
+    public fun addDanger(label: CharSequence, onClick: Runnable): SancaiMenu = addDanger(label, null, onClick)
 
     /**
      * Starts a new group: a hairline from rim to rim after the items added so far. A divider

@@ -316,6 +316,98 @@ class SancaiPageTest {
         assertThat(asked).isEqualTo(1)
     }
 
+    /** What the page shows on screen: the scrolled content, as its parent would draw it. */
+    private fun onScreen(page: SancaiPage): android.graphics.Bitmap {
+        val bitmap = android.graphics.Bitmap.createBitmap(page.width, page.height, android.graphics.Bitmap.Config.ARGB_8888)
+        val canvas = android.graphics.Canvas(bitmap)
+        canvas.translate(0f, -page.scrollY.toFloat())
+        page.draw(canvas)
+        return bitmap
+    }
+
+    @Test
+    fun `scrolling content ends at the status bar instead of sliding under the clock`() {
+        val page = SancaiPage(context)
+        page.addView(block(3000, Color.RED))
+        ViewCompat.dispatchApplyWindowInsets(page, insets(0, 63, 0, 0))
+        Snapshots.layout(page, 300, 400)
+        page.scrollTo(0, px(600f))
+        val picture = onScreen(page)
+        val x = picture.width / 2
+        val canvasColour = SancaiTheme.light().colors.canvas
+
+        // Behind the status bar: the page's own colour, although content lies there.
+        assertThat(picture.getPixel(x, 10)).isEqualTo(canvasColour)
+        assertThat(picture.getPixel(x, 62)).isEqualTo(canvasColour)
+        // Just below the bar the content is still faint, a little further down it is itself.
+        val faint = picture.getPixel(x, 63 + px(2f))
+        assertThat(Color.green(faint)).isGreaterThan(120)
+        assertThat(picture.getPixel(x, 63 + px(SancaiPage.BAR_FADE_DP) + 2)).isEqualTo(Color.RED)
+        // The lower edge has no bar here: content runs to the edge.
+        assertThat(picture.getPixel(x, picture.height - 2)).isEqualTo(Color.RED)
+    }
+
+    @Test
+    fun `content shows under a gesture handle but not under a bar with buttons`() {
+        fun bottomInsets(tappable: Int): WindowInsetsCompat = WindowInsetsCompat.Builder()
+            .setInsets(WindowInsetsCompat.Type.systemBars(), Insets.of(0, 0, 0, 126))
+            .setInsets(WindowInsetsCompat.Type.tappableElement(), Insets.of(0, 0, 0, tappable))
+            .build()
+
+        val page = SancaiPage(context)
+        page.addView(block(3000, Color.RED))
+        // Gesture navigation: an inset, but nothing to tap in it.
+        ViewCompat.dispatchApplyWindowInsets(page, bottomInsets(tappable = 0))
+        Snapshots.layout(page, 300, 400)
+        page.scrollTo(0, px(600f))
+        var picture = onScreen(page)
+        assertThat(picture.getPixel(picture.width / 2, picture.height - 10)).isEqualTo(Color.RED)
+
+        // Three buttons: the bar is kept clear.
+        ViewCompat.dispatchApplyWindowInsets(page, bottomInsets(tappable = 126))
+        Snapshots.layout(page, 300, 400)
+        page.scrollTo(0, px(600f))
+        picture = onScreen(page)
+        val canvasColour = SancaiTheme.light().colors.canvas
+        assertThat(picture.getPixel(picture.width / 2, picture.height - 10)).isEqualTo(canvasColour)
+        assertThat(picture.getPixel(picture.width / 2, picture.height - 126 - px(SancaiPage.BAR_FADE_DP) - 2)).isEqualTo(Color.RED)
+
+        // A page that is told not to fit the bars draws everywhere.
+        page.fitSystemBars = false
+        Snapshots.layout(page, 300, 400)
+        page.scrollTo(0, px(600f))
+        picture = onScreen(page)
+        assertThat(picture.getPixel(picture.width / 2, picture.height - 10)).isEqualTo(Color.RED)
+    }
+
+    @Test
+    fun `a page opens at its top, whatever in it could take the focus`() {
+        val page = SancaiPage(context)
+        page.addView(block(500))
+        // Half on screen, and focusable by touch: a text field, or text that can be selected.
+        val field = android.widget.EditText(context)
+        page.addView(field, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, px(300f)))
+        page.addView(block(900))
+        Snapshots.attach(page, 300)
+        Snapshots.layout(page, 300, 600)
+        val instrumentation = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation()
+
+        // What a window does when it opens (before Android 8.0) or loses its focused view.
+        instrumentation.setInTouchMode(true)
+        assertThat(page.requestFocus(View.FOCUS_FORWARD)).isFalse()
+        Snapshots.idle()
+        assertThat(field.isFocused).isFalse()
+        assertThat(page.scrollY).isEqualTo(0)
+
+        // Asked for by name, the field takes the focus and is brought on screen.
+        assertThat(field.requestFocus()).isTrue()
+        Snapshots.idle()
+        assertThat(field.isFocused).isTrue()
+        assertThat(page.scrollY).isGreaterThan(0)
+        // (With a keyboard, focus travels into the page as on any screen; the device tests
+        // walk it there with the arrow keys.)
+    }
+
     @Test
     fun `scroll position is saved and restored`() {
         val first = tallPage(101)

@@ -281,6 +281,10 @@ class PlatformLevelsTest {
 
     @Test
     fun `every view lives through a whole life in the light and in the dark theme`() {
+        // Without this flag of the application Android resolves every direction to
+        // left-to-right, and the right-to-left part of the exercise would do nothing.
+        val app = androidx.test.core.app.ApplicationProvider.getApplicationContext<android.app.Application>()
+        app.applicationInfo.flags = app.applicationInfo.flags or android.content.pm.ApplicationInfo.FLAG_SUPPORTS_RTL
         val classes = viewClasses()
         assertThat(classes.map { it.simpleName }).containsAtLeast(
             "SancaiSegmentedTrack", "SancaiButton", "SancaiTextField", "SancaiSpatialHost", "SancaiRevealLayout",
@@ -308,6 +312,24 @@ class PlatformLevelsTest {
         assertWithMessage(failures.joinToString("\n")).that(failures).isEmpty()
         // Every view of the library can be built from a context alone.
         assertWithMessage("views without a (Context) constructor").that(notBuilt.distinct()).isEmpty()
+    }
+
+    @Test
+    fun `the steps of a flow row share its width equally without an exact width`() {
+        // Android 6 measured weighted children of a wrap-content row differently; the row
+        // measures twice to get the same columns everywhere.
+        val row = SancaiFlowRow(Snapshots.context())
+        row.setSteps("Go" to null, "Review everything" to null)
+        val unbounded = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        for (spec in listOf(unbounded, View.MeasureSpec.makeMeasureSpec(1500, View.MeasureSpec.AT_MOST))) {
+            row.forceLayout()
+            row.measure(spec, unbounded)
+            row.layout(0, 0, row.measuredWidth, row.measuredHeight)
+            val columns = (0 until row.childCount).map { row.getChildAt(it) }.filter { it !is SancaiIconView }
+            assertThat(columns).hasSize(2)
+            assertThat(columns[0].width).isGreaterThan(0)
+            assertThat(columns[1].width.toFloat()).isWithin(1f).of(columns[0].width.toFloat())
+        }
     }
 
     @Test

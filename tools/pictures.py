@@ -3,6 +3,7 @@
 
     ./gradlew :sancai:testDebugUnitTest :showcase:testDebugUnitTest
     python tools/pictures.py            (run from the project root; needs Pillow)
+    python tools/pictures.py --pages    (also the pages of the demo app, about 20 MB)
 
 The library tests draw a gallery of every component in the light and in the dark theme
 (sancai/build/snapshots); the showcase test draws every page of the demo app
@@ -11,7 +12,10 @@ graphics, so the pictures show what the code draws, but they are not photographs
 there is no status bar in them, and fonts are the ones bundled with Robolectric.
 
 - docs/images/components/<name>_light.png, <name>_dark.png   the galleries, 720 px wide
-- docs/images/pages/<page>_<variant>.png                     the top of each demo page
+- docs/images/pages/<page>_<variant>.png                     with --pages: the top of each demo page
+
+The page pictures are not kept in the repository: the screenshots taken on a device show
+the same pages as they really look. They are useful while working on a page.
 
 Pictures taken on an emulator (docs/images/device) are made by tools/device.py instead.
 """
@@ -61,7 +65,7 @@ def main():
     print("%d component pictures" % count)
 
     pages = 0
-    if os.path.isdir(PAGES_FROM):
+    if "--pages" in sys.argv and os.path.isdir(PAGES_FROM):
         for name in sorted(os.listdir(PAGES_FROM)):
             stem, extension = os.path.splitext(name)
             if extension != ".png" or not stem.startswith("page_"):
