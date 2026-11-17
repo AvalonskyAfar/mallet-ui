@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SancaiPager">
+        <!-- How many pages on each side of the current one stay attached. Default: 1. -->
+        <attr name="sancaiPagerOffscreenPageLimit" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="SancaiPageIndicator">
+        <!-- Number of dots of a standalone indicator. -->
+        <attr name="sancaiPagerIndicatorCount" format="integer" />
+        <!-- Index of the selected dot of a standalone indicator. -->
+        <attr name="sancaiPagerIndicatorSelected" format="integer" />
+    </declare-styleable>
+</resources>

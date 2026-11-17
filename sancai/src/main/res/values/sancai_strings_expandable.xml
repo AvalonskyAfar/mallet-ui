@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- State description of the header of an expanded section. -->
+    <string name="sancai_expandable_state_expanded">Expanded</string>
+    <!-- State description of the header of a collapsed section. -->
+    <string name="sancai_expandable_state_collapsed">Collapsed</string>
+</resources>
