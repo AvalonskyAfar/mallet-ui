@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tracks_segmented_title">Segmented track</string>
+    <string name="tracks_segmented_detail">One choice out of two to four. Tap an option or drag the thumb. Each position has its own glaze.</string>
+    <string name="tracks_off">Off</string>
+    <string name="tracks_on">On</string>
+    <string name="tracks_day">Day</string>
+    <string name="tracks_week">Week</string>
+    <string name="tracks_month">Month</string>
+    <string name="tracks_gentle">Gentle</string>
+    <string name="tracks_standard">Standard</string>
+    <string name="tracks_strict">Strict</string>
+    <string name="tracks_status_filter">Filter: %1$s</string>
+    <string name="tracks_status_range">Range: %1$s</string>
+    <string name="tracks_status_level">Level: %1$s</string>
+
+    <string name="tracks_plain_title">Plain choice</string>
+    <string name="tracks_plain_detail">When the options are equals and none is stronger than another, pour one glaze under all of them.</string>
+    <string name="tracks_list">List</string>
+    <string name="tracks_grid">Grid</string>
+    <string name="tracks_newest">Newest</string>
+    <string name="tracks_oldest">Oldest</string>
+    <string name="tracks_by_name">By name</string>
+    <string name="tracks_status_plain">View: %1$s. Order: %2$s</string>
+
+    <string name="tracks_refuse_title">A change can be refused</string>
+    <string name="tracks_refuse_detail">The listener may send the thumb back. Choose Strict to see it return.</string>
+    <string name="tracks_refuse_reason">Strict needs a passcode first. The level stays at %1$s.</string>
+
+    <string name="tracks_switch_title">Switch</string>
+    <string name="tracks_switch_detail">Two states in a row of a list. Tap it or drag the thumb.</string>
+    <string name="tracks_switch_blocking">Block trackers</string>
+    <string name="tracks_switch_images">Load remote images</string>
+    <string name="tracks_switch_quiet">Quiet hours</string>
+    <string name="tracks_switch_managed">Set by your organisation</string>
+    <string name="tracks_switch_status_on">%1$s: on</string>
+    <string name="tracks_switch_status_off">%1$s: off</string>
+
+    <string name="tracks_power_title">Power switch</string>
+    <string name="tracks_power_detail">The one switch a screen is about. The thumb names the state, the bed names the action.</string>
+    <string name="tracks_power_on">Protected</string>
+    <string name="tracks_power_off">Paused</string>
+    <string name="tracks_power_turn_on">Resume</string>
+    <string name="tracks_power_turn_off">Pause</string>
+    <string name="tracks_power_status_on">Protection is running.</string>
+    <string name="tracks_power_status_off">Protection is paused. Nothing is filtered.</string>
+    <string name="tracks_power_disabled">Disabled, with the default labels</string>
+
+    <string name="tracks_origin">The segmented track, the switch, the power switch and the ordinal glazes were extracted from the original app, as was rolling a change back. Uniform glazes, glazes you can set on a switch and labels you can set on the power switch were designed for Sancai.</string>
+</resources>

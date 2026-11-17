@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tracks_segmented_title">分段轨道</string>
+    <string name="tracks_segmented_detail">在二到四个选项里选一个。点选项，或者拖动滑块。每个位置有自己的釉色。</string>
+    <string name="tracks_off">关闭</string>
+    <string name="tracks_on">开启</string>
+    <string name="tracks_day">日</string>
+    <string name="tracks_week">周</string>
+    <string name="tracks_month">月</string>
+    <string name="tracks_gentle">宽松</string>
+    <string name="tracks_standard">标准</string>
+    <string name="tracks_strict">严格</string>
+    <string name="tracks_status_filter">过滤：%1$s</string>
+    <string name="tracks_status_range">范围：%1$s</string>
+    <string name="tracks_status_level">级别：%1$s</string>
+
+    <string name="tracks_plain_title">平等的选项</string>
+    <string name="tracks_plain_detail">选项之间没有强弱之分时，整条轨道只上一种釉色。</string>
+    <string name="tracks_list">列表</string>
+    <string name="tracks_grid">网格</string>
+    <string name="tracks_newest">最新</string>
+    <string name="tracks_oldest">最早</string>
+    <string name="tracks_by_name">按名称</string>
+    <string name="tracks_status_plain">视图：%1$s　排序：%2$s</string>
+
+    <string name="tracks_refuse_title">改动可以被拒绝</string>
+    <string name="tracks_refuse_detail">监听器可以把滑块送回原位。选“严格”试试。</string>
+    <string name="tracks_refuse_reason">“严格”需要先设置密码，级别仍为“%1$s”。</string>
+
+    <string name="tracks_switch_title">开关</string>
+    <string name="tracks_switch_detail">列表行里的两种状态。点一下，或者拖动滑块。</string>
+    <string name="tracks_switch_blocking">拦截跟踪器</string>
+    <string name="tracks_switch_images">加载远程图片</string>
+    <string name="tracks_switch_quiet">免打扰时段</string>
+    <string name="tracks_switch_managed">由组织统一设置</string>
+    <string name="tracks_switch_status_on">%1$s：已开启</string>
+    <string name="tracks_switch_status_off">%1$s：已关闭</string>
+
+    <string name="tracks_power_title">总开关</string>
+    <string name="tracks_power_detail">一个页面只为它而设的那个开关。滑块上写状态，轨道上写动作。</string>
+    <string name="tracks_power_on">保护中</string>
+    <string name="tracks_power_off">已暂停</string>
+    <string name="tracks_power_turn_on">恢复</string>
+    <string name="tracks_power_turn_off">暂停</string>
+    <string name="tracks_power_status_on">保护正在运行。</string>
+    <string name="tracks_power_status_off">保护已暂停，不再过滤任何内容。</string>
+    <string name="tracks_power_disabled">不可用状态，使用默认文字</string>
+
+    <string name="tracks_origin">分段轨道、开关、总开关和按强弱排列的釉色都取自原应用，撤回改动的做法也是。单一釉色、可自选釉色的开关和可自定文字的总开关是为三彩新设计的。</string>
+</resources>

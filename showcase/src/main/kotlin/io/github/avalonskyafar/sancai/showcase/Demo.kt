@@ -96,6 +96,13 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
 
     fun dp(value: Int): Int = (value * density).roundToInt()
 
+    /** Width of the content column: the window, or the widest a page is allowed to grow. */
+    private fun columnWidthPx(): Int {
+        val windowDp = context.resources.configuration.screenWidthDp
+        val window = if (windowDp > 0) dp(windowDp) else context.resources.displayMetrics.widthPixels
+        return min(window, dp(MAX_WIDTH_DP))
+    }
+
     fun str(@StringRes id: Int): String = context.getString(id)
 
     /** The page title with an optional line under it. */
@@ -134,16 +141,18 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
     /** A code sample in a recessed well. The text can be selected and scrolls sideways. */
     fun code(snippet: String, topDp: Int = 10) {
         val label = TextView(context).apply {
-            text = snippet.trimIndent()
             typeface = Typeface.MONOSPACE
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f * theme.textScale)
             setTextColor(theme.colors.ink)
             setTextIsSelectable(true)
             includeFontPadding = false
             setLineSpacing(dp(3).toFloat(), 1f)
-            setPadding(dp(13), dp(11), dp(13), dp(11))
+            setPadding(dp(CODE_PADDING), dp(11), dp(CODE_PADDING), dp(11))
             textDirection = View.TEXT_DIRECTION_LTR
         }
+        // Lines too long for the well are wrapped where the code allows it; see CodeWrap.
+        val room = columnWidthPx() - dp(PAGE_SIDE) * 2 - dp(CODE_PADDING) * 2
+        label.text = CodeWrap.wrap(snippet.trimIndent(), (room / label.paint.measureText("0")).toInt())
         val scroller = HorizontalScrollView(context).apply {
             background = SancaiWellDrawable(context)
             isHorizontalScrollBarEnabled = false
@@ -244,5 +253,6 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
         const val SECTION_GAP = 22
         const val BUTTON_SIDE = 30
         private const val MAX_WIDTH_DP = 560
+        private const val CODE_PADDING = 13
     }
 }

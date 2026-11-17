@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="material_porcelain_title">Porcelain</string>
+    <string name="material_porcelain_detail">The raised body of cards and capsules: a hairline rim and one soft shadow that falls straight down.</string>
+    <string name="material_porcelain_card">A card. Rim, shadow, 9 dp of padding.</string>
+    <string name="material_porcelain_flat">A flat card. It keeps the rim and gives up the shadow.</string>
+    <string name="material_porcelain_lifted">The same card, lifted. The view grew a little to hold the shadow.</string>
+    <string name="material_porcelain_lift">Lift the flat card</string>
+    <string name="material_porcelain_flatten">Lay it flat</string>
+    <string name="material_porcelain_glazed">Glazed capsule</string>
+    <string name="material_porcelain_said">A glazed body sinks like a neutral one. Its colour does not change.</string>
+
+    <string name="material_track_title">Glazed track and thumb</string>
+    <string name="material_track_detail">A recessed bed filled with glaze, and the neutral bead that rides in it.</string>
+    <string name="material_track_rest">Rest</string>
+    <string name="material_track_pressed">Pressed</string>
+    <string name="material_track_rest_note">At rest. The shadows under the track and the thumb are at full length.</string>
+    <string name="material_track_pressed_note">Pressed. Both shadows tighten; no colour changes.</string>
+
+    <string name="material_well_title">Well</string>
+    <string name="material_well_detail">A recess for text fields and media. A solid rim replaces the shaded one to show focus or an error.</string>
+    <string name="material_well_default">Default: the rim shades from dark above to light below</string>
+    <string name="material_well_focus">Focus: an ink rim</string>
+    <string name="material_well_error">Error: a danger rim</string>
+
+    <string name="material_gutter_title">The shadow lives inside the view</string>
+    <string name="material_gutter_detail">A body draws its shadow within its own bounds, so the view is a little larger than the card the eye sees. The dashed line is the view.</string>
+    <string name="material_gutter_actual">Actual size</string>
+    <string name="material_gutter_magnified">Four times</string>
+    <string name="material_gutter_actual_note">The gutter: 1.4 dp at the sides, 1 dp above, 4.8 dp below.</string>
+    <string name="material_gutter_magnified_note">The bottom corner, four times larger. The shadow ends before the dashed line.</string>
+
+    <string name="material_split_title">Split card</string>
+    <string name="material_split_detail">Two halves around a divider read as one card, and each can move or be hidden on its own.</string>
+    <string name="material_split_top">Upper half: top corners, no shadow below.</string>
+    <string name="material_split_bottom">Lower half: bottom corners, and the shadow of the whole card.</string>
+    <string name="material_split_fold">Fold the lower half away</string>
+    <string name="material_split_unfold">Bring it back</string>
+
+    <string name="material_origin">Extracted from the original app: porcelain, the glazed track and thumb, the well, the shadow gutter and the split card of its first-launch pages. New in Sancai: the glazed primary capsule, the flat card, and the solid well rims for focus and error.</string>
+</resources>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SancaiChip">
+        <!-- Label of the chip. -->
+        <attr name="android:text" />
+        <attr name="android:enabled" />
+        <!-- What the chip does: an action is pressed, a filter is checked and unchecked. -->
+        <attr name="sancaiChipKind" format="enum">
+            <enum name="action" value="0" />
+            <enum name="filter" value="1" />
+        </attr>
+        <!-- Whether a filter chip starts checked. -->
+        <attr name="sancaiChecked" />
+        <!-- Glaze of a checked filter chip. Cobalt by default. -->
+        <attr name="sancaiGlaze" />
+        <!-- Icon drawn before the label. -->
+        <attr name="sancaiIcon" />
+    </declare-styleable>
+
+    <declare-styleable name="SancaiChipGroup">
+        <!-- Whether at most one filter chip of the group can be checked at a time. -->
+        <attr name="sancaiChipGroupSingleSelection" format="boolean" />
+        <!-- Whether the user is kept from unchecking the last checked chip. -->
+        <attr name="sancaiChipGroupSelectionRequired" format="boolean" />
+        <!-- Gap between the bodies of neighbouring chips in a row. 8dp by default. -->
+        <attr name="sancaiChipGroupHorizontalGap" format="dimension" />
+        <!-- Gap between the bodies of chips in neighbouring rows. 8dp by default. -->
+        <attr name="sancaiChipGroupVerticalGap" format="dimension" />
+        <!-- Id of the chip that is checked at start. -->
+        <attr name="sancaiChipGroupCheckedChip" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="SancaiTag">
+        <!-- Label of the tag. -->
+        <attr name="android:text" />
+        <!-- What the tag says about its subject; decides the glaze of its bed. -->
+        <attr name="sancaiTagTone" format="enum">
+            <enum name="positive" value="0" />
+            <enum name="caution" value="1" />
+            <enum name="negative" value="2" />
+            <enum name="info" value="3" />
+            <enum name="neutral" value="4" />
+        </attr>
+    </declare-styleable>
+</resources>
