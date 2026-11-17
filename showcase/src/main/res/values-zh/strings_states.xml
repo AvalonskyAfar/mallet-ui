@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="states_views_title">状态视图</string>
+    <string name="states_views_detail">区域里没有别的内容时，居中显示的一段说明。五种预设各带图标和颜色。</string>
+    <string name="states_kind_empty">空</string>
+    <string name="states_kind_error">错误</string>
+    <string name="states_kind_offline">离线</string>
+    <string name="states_kind_success">完成</string>
+    <string name="states_kind_info">提示</string>
+    <string name="states_kind_empty_title">还没有笔记</string>
+    <string name="states_kind_empty_detail">写下的笔记会出现在这里。</string>
+    <string name="states_kind_empty_action">新建笔记</string>
+    <string name="states_kind_error_title">笔记加载失败</string>
+    <string name="states_kind_error_detail">文件无法读取，内容没有被改动。</string>
+    <string name="states_kind_error_action">重试</string>
+    <string name="states_kind_offline_title">没有网络</string>
+    <string name="states_kind_offline_detail">网络恢复后，笔记会继续同步。</string>
+    <string name="states_kind_offline_action">打开设置</string>
+    <string name="states_kind_success_title">全部看完了</string>
+    <string name="states_kind_success_detail">每一条笔记都已读过。</string>
+    <string name="states_kind_info_title">搜索笔记</string>
+    <string name="states_kind_info_detail">输入一个词，找出包含它的笔记。</string>
+    <string name="states_said_action">按下了“%1$s”</string>
+    <string name="states_compact_heading">同步</string>
+    <string name="states_compact_title">同步已暂停</string>
+    <string name="states_compact_detail">紧凑样式的图标更小，间距更紧。</string>
+    <string name="states_compact_action">重试</string>
+    <string name="states_compact_done_title">已同步</string>
+    <string name="states_compact_done_detail">还是同一个视图，换成了完成预设。</string>
+    <string name="states_compact_reset">再次暂停</string>
+
+    <string name="states_layout_title">状态布局</string>
+    <string name="states_layout_detail">包在内容外面的一层，显示内容、加载、空或错误四种状态之一。里面的操作会重新加载。</string>
+    <string name="states_layout_content">内容</string>
+    <string name="states_layout_loading">加载</string>
+    <string name="states_layout_empty">空</string>
+    <string name="states_layout_error">错误</string>
+    <string name="states_layout_empty_title">没有备份</string>
+    <string name="states_layout_empty_detail">还没有保存过任何内容。</string>
+    <string name="states_layout_empty_action">再找一次</string>
+    <string name="states_layout_error_title">备份加载失败</string>
+    <string name="states_layout_error_detail">请检查网络后重试。</string>
+    <string name="states_layout_error_action">重试</string>
+    <string name="states_row_1_title">周一</string>
+    <string name="states_row_2_title">周二</string>
+    <string name="states_row_3_title">周三</string>
+    <string name="states_row_detail">完整备份</string>
+    <string name="states_row_1_value">12 MB</string>
+    <string name="states_row_2_value">14 MB</string>
+    <string name="states_row_3_value">9 MB</string>
+    <string name="states_said_row">%1$s的备份</string>
+
+    <string name="states_skeleton_title">骨架屏</string>
+    <string name="states_skeleton_detail">先占住内容将要出现的位置。一道光带同步扫过所有骨架。</string>
+    <string name="states_skeleton_still">静止</string>
+    <string name="states_skeleton_moving">流动</string>
+
+    <string name="states_banner_title">横幅</string>
+    <string name="states_banner_detail">一直留在页面上的消息，关闭后才消失。共四种色调；关掉一条，下面的内容随之上移。</string>
+    <string name="states_banner_info_title">新版本已就绪</string>
+    <string name="states_banner_info_detail">下次启动应用时安装。</string>
+    <string name="states_banner_warning_title">存储空间即将用完</string>
+    <string name="states_banner_warning_detail">这台设备还剩约 200 MB。</string>
+    <string name="states_banner_danger_title">备份失败</string>
+    <string name="states_banner_danger_detail">昨晚的备份没能写入。</string>
+    <string name="states_banner_danger_action">立即备份</string>
+    <string name="states_banner_danger_said">已开始备份</string>
+    <string name="states_banner_success_title">同步已是最新</string>
+    <string name="states_banner_success_detail">一分钟前已全部保存。</string>
+    <string name="states_banner_status">正在显示 %1$d / %2$d 条</string>
+    <string name="states_banner_again">全部重新显示</string>
+
+    <string name="states_origin">这些状态背后的胶囊按钮、卡片和加载环取自原应用；状态视图、状态布局、骨架屏和横幅为三彩新增。</string>
+</resources>

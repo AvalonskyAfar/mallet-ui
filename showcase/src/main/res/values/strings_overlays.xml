@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="overlays_status_label">Last result</string>
+    <string name="overlays_status_idle">Nothing yet. Open an overlay and choose.</string>
+    <string name="overlays_cancelled">Cancelled. Nothing was changed.</string>
+
+    <string name="overlays_dialogs_title">Dialog</string>
+    <string name="overlays_dialogs_detail">A modal question on a porcelain card. Back and a touch outside count as cancelling.</string>
+    <string name="overlays_dialog_confirm">Confirm</string>
+    <string name="overlays_dialog_delete">Destructive</string>
+    <string name="overlays_dialog_input">Input</string>
+    <string name="overlays_dialog_three">Three actions</string>
+    <string name="overlays_restore_title">Restore the defaults?</string>
+    <string name="overlays_restore_message">Every track returns to Standard.</string>
+    <string name="overlays_restore_action">Restore</string>
+    <string name="overlays_restore_done">Confirmed. The defaults are back.</string>
+    <string name="overlays_delete_title">Delete this rule?</string>
+    <string name="overlays_delete_message">It cannot be brought back.</string>
+    <string name="overlays_delete_action">Delete</string>
+    <string name="overlays_delete_done">Confirmed. The rule was deleted.</string>
+    <string name="overlays_name_title">Name the rule</string>
+    <string name="overlays_name_message">Two characters or more. Try a single letter to see the error.</string>
+    <string name="overlays_name_hint">Rule name</string>
+    <string name="overlays_name_error">The name needs at least two characters.</string>
+    <string name="overlays_name_rejected">Rejected. The dialog stays open with its error.</string>
+    <string name="overlays_name_done">Typed “%1$s”.</string>
+    <string name="overlays_keep_title">Keep your changes?</string>
+    <string name="overlays_keep_message">This rule was edited.</string>
+    <string name="overlays_keep_save">Save</string>
+    <string name="overlays_keep_discard">Discard</string>
+    <string name="overlays_keep_saved">Picked Save.</string>
+    <string name="overlays_keep_discarded">Picked Discard.</string>
+
+    <string name="overlays_sheets_title">Sheet</string>
+    <string name="overlays_sheets_detail">Rises from the bottom edge and follows the finger back down. It holds action rows or any view.</string>
+    <string name="overlays_sheet_actions">Actions</string>
+    <string name="overlays_sheet_custom">Custom content</string>
+    <string name="overlays_sheet_done">Done</string>
+    <string name="overlays_sheet_closed">Sheet closed. Nothing was picked.</string>
+    <string name="overlays_share_title">Share rule</string>
+    <string name="overlays_action_copy">Copy</string>
+    <string name="overlays_action_share">Share</string>
+    <string name="overlays_action_download">Download</string>
+    <string name="overlays_action_delete">Delete</string>
+    <string name="overlays_action_edit">Edit</string>
+    <string name="overlays_picked_copy">Picked Copy.</string>
+    <string name="overlays_picked_share">Picked Share.</string>
+    <string name="overlays_picked_delete">Picked Delete.</string>
+    <string name="overlays_picked_edit">Picked Edit.</string>
+    <string name="overlays_strictness_title">Strictness</string>
+    <string name="overlays_strictness_message">A segmented track inside the sheet.</string>
+    <string name="overlays_strictness_done">Sheet closed on %1$s.</string>
+    <string name="overlays_level_gentle">Gentle</string>
+    <string name="overlays_level_standard">Standard</string>
+    <string name="overlays_level_strict">Strict</string>
+
+    <string name="overlays_menus_title">Menu</string>
+    <string name="overlays_menus_detail">Grows out of the button that opened it. An item can carry an icon, a check mark or the danger colour, or be disabled.</string>
+    <string name="overlays_menu_more">More</string>
+    <string name="overlays_menu_sort">Sort</string>
+    <string name="overlays_order_name">By name</string>
+    <string name="overlays_order_date">By date</string>
+    <string name="overlays_order_size">By size</string>
+    <string name="overlays_order_done">Sort order: %1$s. The check mark follows it.</string>
+
+    <string name="overlays_toasts_title">Toast</string>
+    <string name="overlays_toasts_detail">A pill that rises at the bottom, says one thing and sinks away. A new one replaces the one on screen.</string>
+    <string name="overlays_toast_neutral">Neutral</string>
+    <string name="overlays_toast_success">Success</string>
+    <string name="overlays_toast_danger">Destructive</string>
+    <string name="overlays_toast_action">With action</string>
+    <string name="overlays_toast_neutral_text">Copied to the clipboard</string>
+    <string name="overlays_toast_success_text">Rule saved</string>
+    <string name="overlays_toast_danger_text">Could not save the rule</string>
+    <string name="overlays_toast_action_text">Rule deleted</string>
+    <string name="overlays_toast_undo">Undo</string>
+    <string name="overlays_toast_neutral_shown">Showed a neutral toast.</string>
+    <string name="overlays_toast_success_shown">Showed a success toast.</string>
+    <string name="overlays_toast_danger_shown">Showed a destructive toast.</string>
+    <string name="overlays_toast_action_shown">Showed a toast with Undo. It stays a little longer.</string>
+    <string name="overlays_toast_undone">Picked Undo.</string>
+    <string name="overlays_toast_left">The toast left. Undo was not taken.</string>
+
+    <string name="overlays_panel_title">Floating panel</string>
+    <string name="overlays_panel_detail">A small porcelain panel above the screen. Drag it anywhere; it reads out its own position.</string>
+    <string name="overlays_panel_attach">Attach the panel</string>
+    <string name="overlays_panel_remove">Remove the panel</string>
+    <string name="overlays_panel_snap">Glide to the nearer side on release</string>
+    <string name="overlays_panel_name">Floating panel</string>
+    <string name="overlays_panel_position">x %1$d%% · y %2$d%%</string>
+    <string name="overlays_panel_attached">Panel attached. It stays above the page until it is removed.</string>
+    <string name="overlays_panel_removed">Panel removed.</string>
+
+    <string name="overlays_origin">Dialog, the neutral and destructive toasts and the floating panel were extracted from the original app. Sheet, menu, and the success tone and action of a toast are new in Sancai.</string>
+</resources>

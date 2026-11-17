@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_row_title">导航行</string>
+    <string name="nav_row_detail">只有图标和文字，没有底栏，也没有指示条。选中的标签用墨色绘制。</string>
+    <string name="nav_row_launcher">入口模式：每一项都是快捷入口</string>
+    <string name="nav_row_tabs">标签模式：始终有一项处于选中</string>
+    <string name="nav_row_launcher_idle">点一下任意一项，不会留下选中状态。</string>
+    <string name="nav_row_opened">已打开“%1$s”</string>
+    <string name="nav_row_tabs_idle">打开“收件箱”或“提醒”，角标随之消失。</string>
+    <string name="nav_row_selected">已选中“%1$s”</string>
+    <string name="nav_row_reselected">再次点按“%1$s”：回到顶部</string>
+    <string name="nav_row_add_badge">来一条新消息</string>
+    <string name="nav_row_badge_now">收件箱角标：%1$d</string>
+    <string name="nav_item_rules">规则</string>
+    <string name="nav_item_history">记录</string>
+    <string name="nav_item_settings">设置</string>
+    <string name="nav_item_about">关于</string>
+    <string name="nav_item_home">首页</string>
+    <string name="nav_item_inbox">收件箱</string>
+    <string name="nav_item_alerts">提醒</string>
+    <string name="nav_item_me">我的</string>
+
+    <string name="nav_top_title">顶栏</string>
+    <string name="nav_top_detail">标题居中，一个返回按钮，最多两个操作。滚动下面的文字：内容移到顶栏下方后，会出现一条细线。</string>
+    <string name="nav_top_bar_title">拦截号码</string>
+    <string name="nav_top_bar_subtitle">12 条</string>
+    <string name="nav_top_back">回到顶部</string>
+    <string name="nav_top_search">搜索</string>
+    <string name="nav_top_more">更多</string>
+    <string name="nav_top_idle">滚动文字，或点按顶栏上的按钮。</string>
+    <string name="nav_top_did_back">返回：已回到顶部</string>
+    <string name="nav_top_did_search">点了搜索</string>
+    <string name="nav_top_did_more">点了更多</string>
+    <string name="nav_top_p1">顶栏和它下面的页面一样安静，没有阴影，也没有自己的颜色。</string>
+    <string name="nav_top_p2">文字停在顶部时，顶栏和内容之间没有任何分隔。第一行移到顶栏下方后，才画出一条贯通两端的细线。</string>
+    <string name="nav_top_p3">无论两侧有哪些按钮，标题始终居中。左右留出的空间相同，所以单独一个返回按钮不会把标题挤偏。</string>
+    <string name="nav_top_p4">滚回顶部，或点按返回按钮，细线随即消失。</string>
+
+    <string name="nav_tabs_title">标签与翻页</string>
+    <string name="nav_tabs_detail">等分布局：每个标签一样宽。点按标签、滑动页面或点按圆点，三者始终同步。</string>
+    <string name="nav_tab_all">全部</string>
+    <string name="nav_tab_calls">来电</string>
+    <string name="nav_tab_messages">短信</string>
+    <string name="nav_tab_all_body">所有被拦下的内容，最新的在前。</string>
+    <string name="nav_tab_calls_body">没有响铃的来电。</string>
+    <string name="nav_tab_messages_body">没有进入收件箱的短信。</string>
+    <string name="nav_tabs_idle">正在显示“全部”</string>
+    <string name="nav_tabs_showing">正在显示“%1$s”</string>
+
+    <string name="nav_scroll_title">可滚动的标签</string>
+    <string name="nav_scroll_detail">滚动布局：标签宽度随文字而定，放不下时整行可以横向滚动。</string>
+    <string-array name="nav_scroll_tabs">
+        <item>今天</item>
+        <item>最近一周</item>
+        <item>最近一个月</item>
+        <item>最近一个季度</item>
+        <item>最近一年</item>
+        <item>全部时间</item>
+    </string-array>
+    <string name="nav_scroll_idle">横向拖动这一行，再点按一个标签。</string>
+    <string name="nav_scroll_chosen">%1$s，第 %2$d 个，共 %3$d 个</string>
+
+    <string name="nav_origin">取自原应用：入口模式的导航行，图标在上、文字在下，背后没有底栏。三彩新增：导航行的标签模式和角标，以及顶栏、标签、翻页和页码圆点。</string>
+</resources>

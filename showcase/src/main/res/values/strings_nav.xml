@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_row_title">Navigation row</string>
+    <string name="nav_row_detail">Icons with labels and nothing else: no bar and no indicator. The selected tab is drawn in ink.</string>
+    <string name="nav_row_launcher">Launcher: every item is a shortcut</string>
+    <string name="nav_row_tabs">Tabs: one item stays selected</string>
+    <string name="nav_row_launcher_idle">Tap an item. Nothing stays selected.</string>
+    <string name="nav_row_opened">Opened %1$s</string>
+    <string name="nav_row_tabs_idle">Open Inbox or Alerts to clear its badge.</string>
+    <string name="nav_row_selected">Selected %1$s</string>
+    <string name="nav_row_reselected">%1$s tapped again: scroll to top</string>
+    <string name="nav_row_add_badge">New message</string>
+    <string name="nav_row_badge_now">Inbox badge: %1$d</string>
+    <string name="nav_item_rules">Rules</string>
+    <string name="nav_item_history">History</string>
+    <string name="nav_item_settings">Settings</string>
+    <string name="nav_item_about">About</string>
+    <string name="nav_item_home">Home</string>
+    <string name="nav_item_inbox">Inbox</string>
+    <string name="nav_item_alerts">Alerts</string>
+    <string name="nav_item_me">Me</string>
+
+    <string name="nav_top_title">Top bar</string>
+    <string name="nav_top_detail">A centred title, a way back and up to two actions. Scroll the text: a hairline appears once content lies under the bar.</string>
+    <string name="nav_top_bar_title">Blocked numbers</string>
+    <string name="nav_top_bar_subtitle">12 entries</string>
+    <string name="nav_top_back">Back to top</string>
+    <string name="nav_top_search">Search</string>
+    <string name="nav_top_more">More</string>
+    <string name="nav_top_idle">Scroll the text, or tap a button in the bar.</string>
+    <string name="nav_top_did_back">Back: returned to the top</string>
+    <string name="nav_top_did_search">Search tapped</string>
+    <string name="nav_top_did_more">More tapped</string>
+    <string name="nav_top_p1">The bar is as quiet as the page under it. It has no shadow and no colour of its own.</string>
+    <string name="nav_top_p2">While the text rests at the top, nothing separates the bar from it. Once the first line has moved underneath, a hairline is drawn from edge to edge.</string>
+    <string name="nav_top_p3">The title stays in the centre whatever buttons are present. Both sides give it the same room, so a lone back button never pushes it aside.</string>
+    <string name="nav_top_p4">Scroll back to the top, or tap the back button, and the hairline is gone again.</string>
+
+    <string name="nav_tabs_title">Tabs with a pager</string>
+    <string name="nav_tabs_detail">Fill layout: every tab gets the same width. Tap a tab, swipe the page or tap a dot; the three stay together.</string>
+    <string name="nav_tab_all">All</string>
+    <string name="nav_tab_calls">Calls</string>
+    <string name="nav_tab_messages">Messages</string>
+    <string name="nav_tab_all_body">Everything that was stopped, newest first.</string>
+    <string name="nav_tab_calls_body">Calls that never rang.</string>
+    <string name="nav_tab_messages_body">Messages kept out of the inbox.</string>
+    <string name="nav_tabs_idle">Showing All</string>
+    <string name="nav_tabs_showing">Showing %1$s</string>
+
+    <string name="nav_scroll_title">Scrolling tabs</string>
+    <string name="nav_scroll_detail">Scroll layout: every tab is as wide as its label, and the row moves when they do not fit.</string>
+    <string-array name="nav_scroll_tabs">
+        <item>Today</item>
+        <item>This week</item>
+        <item>This month</item>
+        <item>This quarter</item>
+        <item>This year</item>
+        <item>Everything</item>
+    </string-array>
+    <string name="nav_scroll_idle">Drag the row sideways, then tap a tab.</string>
+    <string name="nav_scroll_chosen">%1$s, tab %2$d of %3$d</string>
+
+    <string name="nav_origin">Extracted from the original app: the navigation row in launcher mode, icons over labels with no bar behind them. New in Sancai: its tabs mode and badges, the top bar, the tabs, the pager and the page dots.</string>
+</resources>

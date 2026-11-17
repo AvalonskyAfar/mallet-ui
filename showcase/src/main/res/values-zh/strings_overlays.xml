@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="overlays_status_label">最近的结果</string>
+    <string name="overlays_status_idle">还没有结果。打开一个弹层，做个选择。</string>
+    <string name="overlays_cancelled">已取消，什么都没有改动。</string>
+
+    <string name="overlays_dialogs_title">对话框</string>
+    <string name="overlays_dialogs_detail">瓷面卡片上的一个模态提问。按返回键或点卡片外面，都算取消。</string>
+    <string name="overlays_dialog_confirm">确认</string>
+    <string name="overlays_dialog_delete">危险操作</string>
+    <string name="overlays_dialog_input">输入</string>
+    <string name="overlays_dialog_three">三个操作</string>
+    <string name="overlays_restore_title">恢复默认设置？</string>
+    <string name="overlays_restore_message">所有轨道都会回到“标准”。</string>
+    <string name="overlays_restore_action">恢复</string>
+    <string name="overlays_restore_done">已确认，默认设置已恢复。</string>
+    <string name="overlays_delete_title">删除这条规则？</string>
+    <string name="overlays_delete_message">删除后无法找回。</string>
+    <string name="overlays_delete_action">删除</string>
+    <string name="overlays_delete_done">已确认，规则已删除。</string>
+    <string name="overlays_name_title">给规则起个名字</string>
+    <string name="overlays_name_message">至少两个字。只输入一个字，可以看到错误提示。</string>
+    <string name="overlays_name_hint">规则名称</string>
+    <string name="overlays_name_error">名称至少需要两个字。</string>
+    <string name="overlays_name_rejected">未通过。对话框保持打开，并显示错误。</string>
+    <string name="overlays_name_done">输入了“%1$s”。</string>
+    <string name="overlays_keep_title">保留这些修改？</string>
+    <string name="overlays_keep_message">这条规则已被编辑。</string>
+    <string name="overlays_keep_save">保存</string>
+    <string name="overlays_keep_discard">放弃</string>
+    <string name="overlays_keep_saved">选择了“保存”。</string>
+    <string name="overlays_keep_discarded">选择了“放弃”。</string>
+
+    <string name="overlays_sheets_title">底部面板</string>
+    <string name="overlays_sheets_detail">从窗口底边升起，也会跟着手指滑回去。里面可以放操作行，也可以放任意视图。</string>
+    <string name="overlays_sheet_actions">操作列表</string>
+    <string name="overlays_sheet_custom">自定义内容</string>
+    <string name="overlays_sheet_done">完成</string>
+    <string name="overlays_sheet_closed">底部面板已关闭，没有选择任何操作。</string>
+    <string name="overlays_share_title">分享规则</string>
+    <string name="overlays_action_copy">复制</string>
+    <string name="overlays_action_share">分享</string>
+    <string name="overlays_action_download">下载</string>
+    <string name="overlays_action_delete">删除</string>
+    <string name="overlays_action_edit">编辑</string>
+    <string name="overlays_picked_copy">选择了“复制”。</string>
+    <string name="overlays_picked_share">选择了“分享”。</string>
+    <string name="overlays_picked_delete">选择了“删除”。</string>
+    <string name="overlays_picked_edit">选择了“编辑”。</string>
+    <string name="overlays_strictness_title">严格程度</string>
+    <string name="overlays_strictness_message">面板里放了一条分段轨道。</string>
+    <string name="overlays_strictness_done">底部面板已关闭，停在“%1$s”。</string>
+    <string name="overlays_level_gentle">轻度</string>
+    <string name="overlays_level_standard">标准</string>
+    <string name="overlays_level_strict">严格</string>
+
+    <string name="overlays_menus_title">菜单</string>
+    <string name="overlays_menus_detail">从打开它的按钮旁长出来。菜单项可以带图标、带勾选、用危险色，也可以禁用。</string>
+    <string name="overlays_menu_more">更多</string>
+    <string name="overlays_menu_sort">排序</string>
+    <string name="overlays_order_name">按名称</string>
+    <string name="overlays_order_date">按日期</string>
+    <string name="overlays_order_size">按大小</string>
+    <string name="overlays_order_done">已%1$s排序，勾选也跟了过去。</string>
+
+    <string name="overlays_toasts_title">轻提示</string>
+    <string name="overlays_toasts_detail">一枚胶囊从底部升起，只说一件事，然后沉下去。新的提示会替换屏幕上的那一条。</string>
+    <string name="overlays_toast_neutral">普通</string>
+    <string name="overlays_toast_success">成功</string>
+    <string name="overlays_toast_danger">危险</string>
+    <string name="overlays_toast_action">带操作</string>
+    <string name="overlays_toast_neutral_text">已复制到剪贴板</string>
+    <string name="overlays_toast_success_text">规则已保存</string>
+    <string name="overlays_toast_danger_text">规则保存失败</string>
+    <string name="overlays_toast_action_text">规则已删除</string>
+    <string name="overlays_toast_undo">撤销</string>
+    <string name="overlays_toast_neutral_shown">显示了一条普通提示。</string>
+    <string name="overlays_toast_success_shown">显示了一条成功提示。</string>
+    <string name="overlays_toast_danger_shown">显示了一条危险提示。</string>
+    <string name="overlays_toast_action_shown">显示了一条带“撤销”的提示，它会多停留一会儿。</string>
+    <string name="overlays_toast_undone">选择了“撤销”。</string>
+    <string name="overlays_toast_left">提示已离开，没有撤销。</string>
+
+    <string name="overlays_panel_title">浮动面板</string>
+    <string name="overlays_panel_detail">浮在屏幕上方的一小块瓷面。可以拖到任何位置，它会报出自己所在的位置。</string>
+    <string name="overlays_panel_attach">添加浮动面板</string>
+    <string name="overlays_panel_remove">移除浮动面板</string>
+    <string name="overlays_panel_snap">松手后滑向较近的一侧</string>
+    <string name="overlays_panel_name">浮动面板</string>
+    <string name="overlays_panel_position">x %1$d%% · y %2$d%%</string>
+    <string name="overlays_panel_attached">浮动面板已添加。移除之前，它一直浮在页面上方。</string>
+    <string name="overlays_panel_removed">浮动面板已移除。</string>
+
+    <string name="overlays_origin">对话框、普通与危险两种轻提示、浮动面板取自原应用。底部面板、菜单，以及轻提示的成功色和操作为三彩新增。</string>
+</resources>

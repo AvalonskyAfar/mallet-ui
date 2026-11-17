@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="states_views_title">State views</string>
+    <string name="states_views_detail">A centred message for an area with nothing else to show. Five presets bring the icon and its colour.</string>
+    <string name="states_kind_empty">Empty</string>
+    <string name="states_kind_error">Error</string>
+    <string name="states_kind_offline">Offline</string>
+    <string name="states_kind_success">Done</string>
+    <string name="states_kind_info">Info</string>
+    <string name="states_kind_empty_title">No notes yet</string>
+    <string name="states_kind_empty_detail">Notes you write appear here.</string>
+    <string name="states_kind_empty_action">New note</string>
+    <string name="states_kind_error_title">Could not load notes</string>
+    <string name="states_kind_error_detail">The file could not be read. Nothing was changed.</string>
+    <string name="states_kind_error_action">Try again</string>
+    <string name="states_kind_offline_title">No connection</string>
+    <string name="states_kind_offline_detail">Notes sync again once the network is back.</string>
+    <string name="states_kind_offline_action">Open settings</string>
+    <string name="states_kind_success_title">All caught up</string>
+    <string name="states_kind_success_detail">Every note has been read.</string>
+    <string name="states_kind_info_title">Search your notes</string>
+    <string name="states_kind_info_detail">Type a word to find the notes that contain it.</string>
+    <string name="states_said_action">Pressed “%1$s”</string>
+    <string name="states_compact_heading">Sync</string>
+    <string name="states_compact_title">Sync is paused</string>
+    <string name="states_compact_detail">The compact form has a smaller icon and tighter gaps.</string>
+    <string name="states_compact_action">Try again</string>
+    <string name="states_compact_done_title">Synced</string>
+    <string name="states_compact_done_detail">The same view, now with the success preset.</string>
+    <string name="states_compact_reset">Pause again</string>
+
+    <string name="states_layout_title">State layout</string>
+    <string name="states_layout_detail">One frame around the content shows content, loading, empty or error. The actions inside load again.</string>
+    <string name="states_layout_content">Content</string>
+    <string name="states_layout_loading">Loading</string>
+    <string name="states_layout_empty">Empty</string>
+    <string name="states_layout_error">Error</string>
+    <string name="states_layout_empty_title">No backups</string>
+    <string name="states_layout_empty_detail">Nothing has been saved yet.</string>
+    <string name="states_layout_empty_action">Look again</string>
+    <string name="states_layout_error_title">Could not load backups</string>
+    <string name="states_layout_error_detail">Check the connection and try again.</string>
+    <string name="states_layout_error_action">Retry</string>
+    <string name="states_row_1_title">Monday</string>
+    <string name="states_row_2_title">Tuesday</string>
+    <string name="states_row_3_title">Wednesday</string>
+    <string name="states_row_detail">Full backup</string>
+    <string name="states_row_1_value">12 MB</string>
+    <string name="states_row_2_value">14 MB</string>
+    <string name="states_row_3_value">9 MB</string>
+    <string name="states_said_row">%1$s backup</string>
+
+    <string name="states_skeleton_title">Skeletons</string>
+    <string name="states_skeleton_detail">Shapes that stand where content will appear. One band of light crosses all of them in step.</string>
+    <string name="states_skeleton_still">Still</string>
+    <string name="states_skeleton_moving">Moving</string>
+
+    <string name="states_banner_title">Banners</string>
+    <string name="states_banner_detail">A message that stays until it is closed. Four tones; closing one pulls the content below it up.</string>
+    <string name="states_banner_info_title">A new version is ready</string>
+    <string name="states_banner_info_detail">It installs the next time the app starts.</string>
+    <string name="states_banner_warning_title">Storage is almost full</string>
+    <string name="states_banner_warning_detail">About 200 MB is left on this device.</string>
+    <string name="states_banner_danger_title">Backup failed</string>
+    <string name="states_banner_danger_detail">Last night\'s backup could not be written.</string>
+    <string name="states_banner_danger_action">Back up now</string>
+    <string name="states_banner_danger_said">Backup started</string>
+    <string name="states_banner_success_title">Sync is up to date</string>
+    <string name="states_banner_success_detail">Everything was saved a minute ago.</string>
+    <string name="states_banner_status">%1$d of %2$d showing</string>
+    <string name="states_banner_again">Show all again</string>
+
+    <string name="states_origin">The capsule button, the card and the spinner behind these states are extracted from the original app. The state view, the state layout, the skeleton and the banner are new in Sancai.</string>
+</resources>
