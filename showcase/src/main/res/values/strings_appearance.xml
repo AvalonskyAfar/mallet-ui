@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="appearance_theme_title">Theme</string>
+    <string name="appearance_theme_detail">The old look fades into the new one; nothing moves</string>
+    <string name="appearance_mode">Appearance</string>
+    <string name="appearance_mode_detail">Light, dark, or as the system says</string>
+    <string name="appearance_mode_system">System</string>
+    <string name="appearance_mode_light">Light</string>
+    <string name="appearance_mode_dark">Dark</string>
+    <string name="appearance_glazes">Glazes</string>
+    <string name="appearance_glazes_detail">The same scale, poured in other colours</string>
+    <string name="appearance_glazes_classic">Classic</string>
+    <string name="appearance_glazes_plum">Plum</string>
+
+    <string name="appearance_preview_title">Preview</string>
+    <string name="appearance_preview_detail">The scale as it looks with these settings</string>
+    <string name="appearance_level_off">Off</string>
+    <string name="appearance_level_gentle">Gentle</string>
+    <string name="appearance_level_standard">Standard</string>
+    <string name="appearance_level_strict">Strict</string>
+
+    <string name="appearance_reading_title">Reading</string>
+    <string name="appearance_reading_detail">Only changes how things are shown</string>
+    <string name="appearance_large_text">Larger text</string>
+    <string name="appearance_large_text_detail">Every size times 1.13</string>
+    <string name="appearance_contrast">High contrast</string>
+    <string name="appearance_contrast_detail">Stronger rims, labels and secondary text</string>
+
+    <string name="appearance_feel_title">Feel</string>
+    <string name="appearance_feel_detail">How the interface answers a touch</string>
+    <string name="appearance_reduce_motion">Reduce motion</string>
+    <string name="appearance_reduce_motion_detail">Shortens every glide</string>
+    <string name="appearance_haptics">Haptics</string>
+    <string name="appearance_haptics_detail">A tick when a change is committed</string>
+
+    <string name="appearance_off">Off</string>
+    <string name="appearance_on">On</string>
+    <string name="appearance_provenance">These six settings, the 1 : 1.35 rows and the fade between themes come from the settings page of the original app. The second glaze set is new: it shows that the scale is a token, not a fixed palette.</string>
+</resources>

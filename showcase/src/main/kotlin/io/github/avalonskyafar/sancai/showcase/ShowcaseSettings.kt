@@ -23,29 +23,44 @@ class ShowcaseSettings(context: Context) {
     private val prefs: SharedPreferences =
         context.applicationContext.getSharedPreferences("sancai_showcase", Context.MODE_PRIVATE)
 
+    // Every view asks for the theme when it is built, so the theme is made once per change.
+    private var version = 0
+    private var cachedKey = -1
+    private var cached: SancaiTheme? = null
+
+    private fun put(key: String, value: Int) {
+        prefs.edit().putInt(key, value).apply()
+        version++
+    }
+
+    private fun put(key: String, value: Boolean) {
+        prefs.edit().putBoolean(key, value).apply()
+        version++
+    }
+
     var appearance: Appearance
         get() = Appearance.values().getOrElse(prefs.getInt(KEY_APPEARANCE, 0)) { Appearance.SYSTEM }
-        set(value) = prefs.edit().putInt(KEY_APPEARANCE, value.ordinal).apply()
+        set(value) = put(KEY_APPEARANCE, value.ordinal)
 
     var largeText: Boolean
         get() = prefs.getBoolean(KEY_LARGE_TEXT, false)
-        set(value) = prefs.edit().putBoolean(KEY_LARGE_TEXT, value).apply()
+        set(value) = put(KEY_LARGE_TEXT, value)
 
     var highContrast: Boolean
         get() = prefs.getBoolean(KEY_HIGH_CONTRAST, false)
-        set(value) = prefs.edit().putBoolean(KEY_HIGH_CONTRAST, value).apply()
+        set(value) = put(KEY_HIGH_CONTRAST, value)
 
     var reduceMotion: Boolean
         get() = prefs.getBoolean(KEY_REDUCE_MOTION, false)
-        set(value) = prefs.edit().putBoolean(KEY_REDUCE_MOTION, value).apply()
+        set(value) = put(KEY_REDUCE_MOTION, value)
 
     var haptics: Boolean
         get() = prefs.getBoolean(KEY_HAPTICS, true)
-        set(value) = prefs.edit().putBoolean(KEY_HAPTICS, value).apply()
+        set(value) = put(KEY_HAPTICS, value)
 
     var glazeSet: GlazeSet
         get() = GlazeSet.values().getOrElse(prefs.getInt(KEY_GLAZES, 0)) { GlazeSet.CLASSIC }
-        set(value) = prefs.edit().putInt(KEY_GLAZES, value.ordinal).apply()
+        set(value) = put(KEY_GLAZES, value.ordinal)
 
     /** Whether the dark palette is in effect for [context]. */
     fun isDark(context: Context): Boolean = when (appearance) {
@@ -56,16 +71,24 @@ class ShowcaseSettings(context: Context) {
 
     /** The theme these settings describe. */
     fun toTheme(context: Context): SancaiTheme {
+        val dark = isDark(context)
         val contrast = highContrast || SancaiTheme.systemPrefersHighContrast(context)
-        val colors = if (isDark(context)) SancaiColors.dark(contrast) else SancaiColors.light(contrast)
-        return SancaiTheme(
-            colors = colors,
+        val reduce = reduceMotion || SancaiTheme.systemReducesMotion(context)
+        // The system side can change behind our back (night mode, animation scale), so it is
+        // part of the key together with the count of our own changes.
+        val key = (version shl 3) or (if (dark) 4 else 0) or (if (contrast) 2 else 0) or (if (reduce) 1 else 0)
+        cached?.let { if (cachedKey == key) return it }
+        val theme = SancaiTheme(
+            colors = if (dark) SancaiColors.dark(contrast) else SancaiColors.light(contrast),
             glazes = if (glazeSet == GlazeSet.PLUM) plumGlazes() else SancaiGlazes.default(),
             textScale = if (largeText) SancaiTheme.LARGE_TEXT_SCALE else 1f,
             highContrast = contrast,
-            reduceMotion = reduceMotion || SancaiTheme.systemReducesMotion(context),
+            reduceMotion = reduce,
             haptics = haptics,
         )
+        cached = theme
+        cachedKey = key
+        return theme
     }
 
     companion object {

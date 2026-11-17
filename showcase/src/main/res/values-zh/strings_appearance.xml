@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="appearance_theme_title">主题</string>
+    <string name="appearance_theme_detail">旧外观淡出、新外观显现，界面本身不移动</string>
+    <string name="appearance_mode">界面主题</string>
+    <string name="appearance_mode_detail">浅色、深色，或跟随系统</string>
+    <string name="appearance_mode_system">跟随系统</string>
+    <string name="appearance_mode_light">浅色</string>
+    <string name="appearance_mode_dark">深色</string>
+    <string name="appearance_glazes">釉色</string>
+    <string name="appearance_glazes_detail">同一套色阶，换一组颜色</string>
+    <string name="appearance_glazes_classic">经典</string>
+    <string name="appearance_glazes_plum">梅紫</string>
+
+    <string name="appearance_preview_title">预览</string>
+    <string name="appearance_preview_detail">当前设置下的釉色阶</string>
+    <string name="appearance_level_off">关闭</string>
+    <string name="appearance_level_gentle">轻度</string>
+    <string name="appearance_level_standard">标准</string>
+    <string name="appearance_level_strict">严格</string>
+
+    <string name="appearance_reading_title">显示与阅读</string>
+    <string name="appearance_reading_detail">只改变界面的显示方式</string>
+    <string name="appearance_large_text">字体放大</string>
+    <string name="appearance_large_text_detail">所有文字放大至 1.13 倍</string>
+    <string name="appearance_contrast">增强对比度</string>
+    <string name="appearance_contrast_detail">让文字、分隔线与控件更易辨认</string>
+
+    <string name="appearance_feel_title">交互体验</string>
+    <string name="appearance_feel_detail">调整界面对触摸的反馈</string>
+    <string name="appearance_reduce_motion">减少动态效果</string>
+    <string name="appearance_reduce_motion_detail">缩短所有滑动与过渡</string>
+    <string name="appearance_haptics">震动反馈</string>
+    <string name="appearance_haptics_detail">更改生效时轻轻一振</string>
+
+    <string name="appearance_off">关闭</string>
+    <string name="appearance_on">开启</string>
+    <string name="appearance_provenance">这六项设置、1 : 1.35 的行比例，以及主题切换时的淡入过渡，均取自原应用的设置页。第二套釉色为新增，用来说明色阶是可替换的设计变量，而不是一组写死的颜色。</string>
+</resources>

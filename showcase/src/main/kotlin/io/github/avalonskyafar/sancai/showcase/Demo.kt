@@ -77,6 +77,9 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
 
     /** The finished page. */
     val view: View = ScrollView(context).apply {
+        // With an id the page keeps its scroll position when the screen is rebuilt, for
+        // example after a theme change. The host stores the state of each page separately.
+        id = R.id.showcase_page_scroll
         setBackgroundColor(theme.colors.canvas)
         isFillViewport = true
         clipToPadding = false
