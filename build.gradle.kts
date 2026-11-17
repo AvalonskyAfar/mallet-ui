@@ -48,9 +48,10 @@ val mavenRepoZip = tasks.register<Zip>("mavenRepoZip") {
     from(layout.buildDirectory.dir("dist-repo"))
 }
 
-tasks.register<Copy>("dist") {
+// A Sync, not a Copy: whatever an earlier run left in dist/ and this run does not produce is removed.
+tasks.register<Sync>("dist") {
     group = "distribution"
-    description = "Builds every release artifact into dist/."
+    description = "Builds every release artifact into dist/, which then holds nothing else."
     dependsOn(":sancai:assembleRelease", ":showcase:assembleRelease", sourceZip, mavenRepoZip)
     val target = layout.projectDirectory.dir("dist")
     into(target)

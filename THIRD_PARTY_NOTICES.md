@@ -55,6 +55,13 @@ Copyright JetBrains s.r.o. and contributors. The full licence text is in
 | `com.google.truth:truth` | 1.4.4 | Apache-2.0 |
 | `org.robolectric:robolectric` | 4.16.1 | MIT |
 | `androidx.test:core` | 1.7.0 | Apache-2.0 |
+| `androidx.test:runner` | 1.7.0 | Apache-2.0 |
+| `androidx.test.ext:junit` | 1.3.0 | Apache-2.0 |
+| `androidx.test.uiautomator:uiautomator` | 2.3.0 | Apache-2.0 |
+
+The last three are used only by the tests that run on a device (`showcase/src/androidTest`).
+They are packaged into a separate test APK that is installed next to the demo app during a
+test run and is not part of any release artifact.
 
 ## 4. Build tooling
 

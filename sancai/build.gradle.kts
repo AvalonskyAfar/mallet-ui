@@ -110,3 +110,12 @@ publishing {
         }
     }
 }
+
+// The staging repository must only ever hold the version that is being published. It is
+// emptied first, so that a version left behind by an earlier build is not zipped along.
+val cleanDistRepo = tasks.register<Delete>("cleanDistRepo") {
+    delete(rootProject.layout.buildDirectory.dir("dist-repo"))
+}
+tasks.matching { it.name == "publishReleasePublicationToDistRepository" }.configureEach {
+    dependsOn(cleanDistRepo)
+}

@@ -22,6 +22,7 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = providers.gradleProperty("VERSION_NAME").get()
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -122,4 +123,11 @@ dependencies {
     testImplementation(libs.truth)
     testImplementation(libs.robolectric)
     testImplementation(libs.androidx.test.core)
+
+    // Tests and tours that run on a device: src/androidTest. See docs/VERIFICATION.md.
+    androidTestImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.test.uiautomator)
 }
