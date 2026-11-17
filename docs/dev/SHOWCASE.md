@@ -31,7 +31,7 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
         }
         page.code("""
             track.setOptions("Off", "Gentle", "Standard", "Strict")
-            track.onSelectionChangedListener = ...
+            track.setOnSelectionChangeListener { view, index -> ... }
         """)
         page.caption(page.str(R.string.tracks_note))   // muted remark on the canvas
         page.loose(button, topDp = 22, sideDp = PageScope.BUTTON_SIDE)   // anything on the canvas
@@ -44,8 +44,9 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
 | `title(titleRes, detailRes)` | the page title; defaults to the page's own |
 | `section(titleRes, detailRes = 0) { ... }` | heading + card; returns the card |
 | `loose(view, topDp, sideDp, width, gravity)` | a view on the canvas |
+| `heading(titleRes, detailRes = 0)` | a heading alone, for a section whose content is not one card |
 | `caption(text, topDp)` | muted remark |
-| `code(snippet, topDp)` | selectable monospace sample in a well |
+| `code(snippet, topDp, wrap = true)` | selectable monospace sample in a well; `wrap = false` for XML |
 | `text(value, role, tone)` | a `SancaiText` |
 | `dp(n)`, `str(res)`, `context`, `theme`, `host` | utilities |
 | `host.say(message)` | short message pill at the bottom |
@@ -65,7 +66,9 @@ Inside a card use `LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP)`.
    lines with the calls that built it, written the way a user of the library would write
    them. Keep the sample truthful: it must compile if pasted into an activity. Lines too
    long for the screen are wrapped for you at safe places (`CodeWrap`); still, prefer short
-   lines, and never rely on a trailing comment staying on its line.
+   lines, and never rely on a trailing comment staying on its line. Set listeners the way
+   the library is meant to be used, with a trailing lambda:
+   `switch.setOnCheckedChangeListener { _, isChecked -> ... }`.
 4. **Say where it comes from.** End the page with one caption that names what on it was
    extracted from the original app and what was designed for Sancai. Keep it to one or two
    sentences.
