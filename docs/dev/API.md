@@ -197,6 +197,20 @@ class SancaiIconView (context: Context, attrs: AttributeSet? = null, defStyleAtt
 
 ## widget
 
+### widget/SancaiBadge.kt
+
+```
+class SancaiBadge (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr)    // A count badge:
+  var count: Int    // The number shown.
+  var showDot: Boolean    // Whether a count of zero is drawn as a small dot instead of nothing.
+  var maxCount: Int    // The largest number written out; anything above is shown as this number and a plus sign.
+  val text: String    // What the badge currently says:
+  val isShowing: Boolean get()    // Whether anything is drawn at all:
+  fun detach()    // Removes a badge created with [attach] from its anchor.
+  companion object
+    fun attach(anchor: View): SancaiBadge    // Overlays a new badge on the top end corner of [anchor] and returns it.
+```
+
 ### widget/SancaiButton.kt
 
 ```
@@ -207,6 +221,18 @@ class SancaiButton (context: Context, attrs: AttributeSet? = null, defStyleAttr:
   var icon: SancaiIcon?    // Icon drawn before the label, or `null`.
   var isLoading: Boolean    // Shows a spinner instead of the label and ignores clicks.
   companion object
+```
+
+### widget/SancaiCallout.kt
+
+```
+class SancaiCallout (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A note beside running text:
+  val titleView: SancaiText =    // The view that shows [title]; exposed for fine tuning (max lines, text selection).
+  val bodyView: SancaiText =    // The view that shows [body].
+  var title: CharSequence?    // The title, in the tone colour.
+  var body: CharSequence?    // The body, in ink, 7 dp below the title.
+  var tone: SancaiTextTone    // Colour of the bar and of the title:
+  val barColor: Int    // The colour the bar is painted with right now.
 ```
 
 ### widget/SancaiCheckbox.kt
@@ -266,6 +292,15 @@ class SancaiEntryRow (context: Context, attrs: AttributeSet? = null, defStyleAtt
     const val MIN_HEIGHT_DETAIL_DP: Float    // Height of a row with a detail line, in dp.
 ```
 
+### widget/SancaiFlowRow.kt
+
+```
+class SancaiFlowRow (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A flat sequence of steps:
+  data class Step (/** The name of the step, one or two words. */ val title: CharSequence, /** A supporting line under the title; `null` or empty leaves it out. */ val detail: CharSequence? = null)    // One step of a [SancaiFlowRow]:
+  var steps: List<Step>    // The steps shown, in reading order.
+  fun setSteps(vararg steps: Pair<CharSequence, CharSequence?>)    // Convenience for code:
+```
+
 ### widget/SancaiHeading.kt
 
 ```
@@ -302,6 +337,49 @@ class SancaiLinkRow (context: Context, attrs: AttributeSet? = null, defStyleAttr
   var tone: SancaiTextTone    // Colour role of the label and the chevron; muted by default, because the link is quiet.
 ```
 
+### widget/SancaiMediaFrame.kt
+
+```
+open class SancaiMediaFrame (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A picture set into a recessed well:
+  val imageView: ImageView    // The view that shows the picture, for image loaders and anything this class does not forward.
+  var scaleType: ImageView.ScaleType    // How the picture is fitted into the frame.
+  var aspectRatio: Float    // Width divided by height of the picture inside the well, for example `16f / 9f`.
+  val hasImage: Boolean get()    // Whether a picture is set.
+  fun setImageDrawable(drawable: Drawable?)    // Shows [drawable], or the empty well when it is `null`.
+  fun setImageBitmap(bitmap: Bitmap?)    // Shows [bitmap], or the empty well when it is `null`.
+  fun setImageResource(@DrawableRes resId: Int)    // Shows the drawable resource [resId]; `0` clears the picture.
+  companion object
+    const val IMAGE_INSET_DP: Float    // Distance between the edge of the well and the picture, in dp.
+    const val IMAGE_RADIUS_DP: Float    // Corner radius of the picture, in dp.
+    const val DEFAULT_HEIGHT_DP: Float    // Height of a frame that has neither a layout height nor an aspect ratio, in dp.
+```
+
+### widget/SancaiNavBar.kt
+
+```
+class SancaiNavBar (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : SancaiControl(context, attrs, defStyleAttr)    // The bottom navigation row:
+  enum class Mode    // How the items behave.
+  class Item(public val icon: SancaiIcon, public val label: CharSequence)    // One entry of the row:
+  fun interface OnItemSelectedListener    // Called when the user activates an item.
+    fun onItemSelected(bar: SancaiNavBar, index: Int)    // In [Mode.LAUNCHER] this is called for every tap.
+  fun interface OnItemReselectedListener    // Called in [Mode.TABS] when the user taps the item that is already selected.
+    fun onItemReselected(bar: SancaiNavBar, index: Int)
+  var onItemSelectedListener: OnItemSelectedListener?    // Listener for user-driven activation.
+  var onItemReselectedListener: OnItemReselectedListener?    // Listener for a tap on the selected item in [Mode.TABS], typically "scroll to top".
+  var mode: Mode    // Shortcut row or tab row.
+  var selectedIndex: Int    // Index of the selected item in [Mode.TABS]; `-1` in [Mode.LAUNCHER] or without items.
+  var elevated: Boolean    // Draws a full-bleed hairline along the top edge, for content that scrolls underneath the row.
+  val items: List<Item> get()    // The items in logical order.
+  fun addItem(icon: SancaiIcon, label: CharSequence): Int    // Appends an item and returns its index.
+  fun setItems(items: List<Item>)    // Replaces all items.
+  fun select(index: Int, animate: Boolean = true)    // Moves the selection to [index] from code; the listeners are not called.
+  fun setBadge(index: Int, count: Int)    // Shows a count badge at the top end of the icon of item [index]; a [count] of zero or less removes it.
+  fun setBadgeDot(index: Int, show: Boolean)    // Shows or removes a small dot without a number at the top end of the icon of item [index].
+  fun badgeCount(index: Int): Int = badges.getOrNull(index)?.count ?: 0    // The count shown on item [index]; zero when it has no badge or only a dot.
+  fun hasBadgeDot(index: Int): Boolean = badges.getOrNull(index)?.let { it.count == 0 && it.showDot } ?: false    // Whether item [index] shows a dot without a number.
+  var fitsNavigationBar: Boolean    // Whether the row grows by the height of the system navigation bar, keeping the items above it in an edge-to-edge window.
+```
+
 ### widget/SancaiPage.kt
 
 ```
@@ -327,6 +405,18 @@ class SancaiPageIndicator (context: Context, attrs: AttributeSet? = null, defSty
   var count: Int    // Number of dots.
   var selected: Int    // Index of the accent dot.
   fun attachTo(pager: SancaiPager?)    // Follows [pager] and moves it when a dot is tapped; `null` detaches and leaves the dots as they are, for standalone use.
+```
+
+### widget/SancaiParagraph.kt
+
+```
+open class SancaiParagraph (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = android.R.attr.textViewStyle) : SancaiText(context, attrs, defStyleAttr)    // Long-form copy:
+  var rawText: CharSequence?    // The text as it was handed to [setText], without the inserted word joiners.
+  var protectClosingPunctuation: Boolean    // Whether CJK closing punctuation (`，。！？；：、）】》”’`) is tied to the character before it so that it never starts a line.
+  companion object
+    const val CLOSING_PUNCTUATION: String    // The CJK closing punctuation marks that must not start a line.
+    const val WORD_JOINER: Char    // The invisible character that forbids a line break on both of its sides.
+    fun protect(text: CharSequence?): CharSequence?    // Returns [text] with a [WORD_JOINER] in front of every mark of [CLOSING_PUNCTUATION] that is not the first character and is not already protected.
 ```
 
 ### widget/SancaiPowerSwitch.kt
@@ -482,6 +572,7 @@ class SancaiSwitch (context: Context, attrs: AttributeSet? = null, defStyleAttr:
   companion object
     const val WIDTH_DP: Float    // Default width of the view in dp:
     const val HEIGHT_DP: Float    // Default height of the view in dp:
+    const val TARGET_HEIGHT_DP: Float    // Height of the view on `wrap_content`, in dp:
 ```
 
 ### widget/SancaiText.kt
@@ -711,6 +802,26 @@ object SancaiThemeTransition    // Changes the theme without a flash.
 ```
 
 ## overlay
+
+### overlay/SancaiFloatingPanel.kt
+
+```
+open class SancaiFloatingPanel (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr), SancaiHorizontalDragOwner    // A small porcelain panel that floats above a screen and is moved with the finger:
+  var isDragging: Boolean    // True while the finger is moving the panel.
+  var snapToEdge: Boolean    // Whether the panel glides to the nearer side of its parent when a drag ends.
+  var onPositionChangedListener: ((x: Float, y: Float) -> Unit)?    // Called when the user has moved the panel (end of a drag, arrow key, accessibility action) with the new [positionX] and [positionY].
+  var positionX: Float    // Horizontal position as a fraction of the free travel:
+  var positionY: Float    // Vertical position as a fraction of the free travel:
+  val isBoundToWindow: Boolean get()    // True once [bindToWindow] has made this panel a window of its own.
+  fun setPosition(x: Float, y: Float, animate: Boolean = false)    // Moves the panel to the given fractions (clamped to 0..1).
+  fun bindToWindow(windowManager: WindowManager, params: WindowManager.LayoutParams)    // Makes the panel a window of its own:
+  fun remove()    // Takes the panel off the screen:
+  companion object
+    const val CONTENT_PADDING_HORIZONTAL_DP: Float    // Space between the sides of the porcelain body and the content, in dp.
+    const val CONTENT_PADDING_VERTICAL_DP: Float    // Space between the top and bottom of the porcelain body and the content, in dp.
+    fun attach(activity: Activity, content: View): SancaiFloatingPanel    // Adds a floating panel holding [content] to the content view of [activity] and returns it.
+    fun overlayLayoutParams(type: Int = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY): WindowManager.LayoutParams = WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, type, WindowManager.Layout
+```
 
 ### overlay/SancaiMenu.kt
 
