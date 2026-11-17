@@ -18,14 +18,17 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 import org.robolectric.shadows.ShadowLooper
 
 /**
- * Builds every page of the showcase, in light and in dark, the way the app does, and writes a
- * picture of each to `showcase/build/snapshots`.
+ * Builds every page of the showcase the way the app does and writes a picture of each to
+ * `showcase/build/snapshots`: in light and in dark, in Chinese, right to left, and with large
+ * text (system font scale 1.3 together with the app's larger-text setting).
  *
- * A page that throws while it is built, or that comes out empty, fails the test.
+ * A page that throws while it is built, or that comes out empty, fails the test. Whether a
+ * page looks right is judged by a person who opens the pictures.
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
@@ -53,10 +56,18 @@ class ShowcasePagesTest {
         SancaiTheme.resolver = null
     }
 
-    private fun render(key: String, appearance: ShowcaseSettings.Appearance): Bitmap {
+    /** One way of looking at a page; [suffix] ends the name of its picture. */
+    private class Variant(
+        val suffix: String,
+        val appearance: ShowcaseSettings.Appearance,
+        val largeText: Boolean = false,
+    )
+
+    private fun render(key: String, variant: Variant): Bitmap {
         val activity = Robolectric.buildActivity(Activity::class.java).setup().get()
         val settings = ShowcaseSettings(activity)
-        settings.appearance = appearance
+        settings.appearance = variant.appearance
+        settings.largeText = variant.largeText
         SancaiTheme.resolver = SancaiTheme.Resolver { context -> settings.toTheme(context) }
         val view = Pages.create(key, TestHost(activity, settings))
         activity.setContentView(view)
@@ -110,16 +121,34 @@ class ShowcasePagesTest {
     }
 
     @Test
-    fun `every page builds and draws in light and dark`() {
+    fun `every page builds and draws in light and dark`() = renderAll(
+        Variant("light", ShowcaseSettings.Appearance.LIGHT),
+        Variant("dark", ShowcaseSettings.Appearance.DARK),
+    )
+
+    @Test
+    @Config(qualifiers = "+zh")
+    fun `every page builds and draws in Chinese`() = renderAll(Variant("zh", ShowcaseSettings.Appearance.LIGHT))
+
+    @Test
+    @Config(qualifiers = "+ar-ldrtl")
+    fun `every page builds and draws right to left`() = renderAll(Variant("rtl", ShowcaseSettings.Appearance.DARK))
+
+    @Test
+    @Config(fontScale = 1.3f)
+    fun `every page builds and draws with large text`() =
+        renderAll(Variant("large", ShowcaseSettings.Appearance.LIGHT, largeText = true))
+
+    private fun renderAll(vararg variants: Variant) {
         val failures = ArrayList<String>()
         // -PsancaiPages=<regex> renders only the pages whose snapshot name matches.
         val only = System.getProperty("sancai.pages")?.takeIf { it.isNotBlank() }?.toRegex()
         for (key in Pages.graph.keys.sorted()) {
-            for (appearance in listOf(ShowcaseSettings.Appearance.LIGHT, ShowcaseSettings.Appearance.DARK)) {
-                val name = "page_${key}_${appearance.name.lowercase()}"
+            for (variant in variants) {
+                val name = "page_${key}_${variant.suffix}"
                 if (only != null && !only.containsMatchIn(name)) continue
                 try {
-                    val bitmap = render(key, appearance)
+                    val bitmap = render(key, variant)
                     save(bitmap, name)
                     val blank = inkShare(bitmap) < 0.002f
                     bitmap.recycle()

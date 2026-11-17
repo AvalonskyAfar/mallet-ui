@@ -130,7 +130,7 @@ object HomePage : DemoPage(Pages.HOME, R.string.page_home_title, 0) {
             typeface = SancaiWeight.BOLD.typeface()
             textAlign = Paint.Align.CENTER
             color = theme.colors.muted
-            textSize = 12.5f * theme.textScale * resources.displayMetrics.scaledDensity
+            textSize = SancaiTextRole.CAPTION.sizeSp * theme.textScale * resources.displayMetrics.scaledDensity
         }
 
         init {
@@ -156,10 +156,25 @@ object HomePage : DemoPage(Pages.HOME, R.string.page_home_title, 0) {
             SancaiIconPainter.draw(canvas, icon, iconLeft, cy - iconSize / 2f, iconSize, theme.colors.muted, 1.7f * density, rtl)
             // The name runs along the edge, reading towards the top on the left and the bottom on the right.
             val textX = if (atLeft) iconLeft + iconSize + 14f * density else iconLeft - 6f * density
+            if (label.all { isIdeograph(it) }) {
+                // Chinese is written down the edge with every character upright.
+                val line = paint.textSize * 1.3f
+                val x = if (atLeft) iconLeft + iconSize + 8f * density else iconLeft - 8f * density
+                var baseline = cy - line * (label.length - 1) / 2f - (paint.ascent() + paint.descent()) / 2f
+                for (character in label) {
+                    canvas.drawText(character.toString(), x, baseline, paint)
+                    baseline += line
+                }
+                return
+            }
             val save = canvas.save()
             canvas.rotate(if (atLeft) -90f else 90f, textX, cy)
             canvas.drawText(label, textX, cy, paint)
             canvas.restoreToCount(save)
         }
+
+        /** Han, kana and hangul: scripts that are written upright in a vertical line. */
+        private fun isIdeograph(character: Char): Boolean =
+            character in '\u3040'..'\u30FF' || character in '\u3400'..'\u9FFF' || character in '\uAC00'..'\uD7AF'
     }
 }

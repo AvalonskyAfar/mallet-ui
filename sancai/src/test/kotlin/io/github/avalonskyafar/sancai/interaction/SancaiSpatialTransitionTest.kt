@@ -363,7 +363,7 @@ class SancaiSpatialTransitionTest {
 
     @Test
     fun `start takes a picture, passes its token and switches the window animation off`() {
-        val activity = Snapshots.attach(Page(context, "Gravekeeper"), 360)
+        val activity = Snapshots.attach(Page(context, "Overview"), 360)
         val intent = Intent(activity, Activity::class.java)
         SancaiSpatialTransition.start(activity, intent, Side.START)
         val started = shadowOf(activity).nextStartedActivity
@@ -641,7 +641,7 @@ class SancaiSpatialTransitionTest {
 
     private fun snapshotScene(theme: SancaiTheme, name: String) {
         val themed = Snapshots.context(theme)
-        val below = Snapshots.render(Page(themed, "Gravekeeper"), 360, PAGE_HEIGHT_DP)
+        val below = Snapshots.render(Page(themed, "Overview"), 360, PAGE_HEIGHT_DP)
         val host = settledHost(snapshot = below, themed = themed)
         assertThat(host.height).isEqualTo(below.height)
         val y = titleY(host)

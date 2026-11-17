@@ -107,15 +107,21 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
 
     /** The page title with an optional line under it. */
     fun title(@StringRes title: Int = demo.title, @StringRes detail: Int = demo.summary) {
-        loose(text(str(title), SancaiTextRole.TITLE), sideDp = TEXT_INSET)
-        if (detail != 0) loose(text(str(detail), SancaiTextRole.CAPTION, SancaiTextTone.MUTED), topDp = 4, sideDp = TEXT_INSET)
+        loose(label(str(title), SancaiTextRole.TITLE), sideDp = TEXT_INSET)
+        if (detail != 0) loose(label(str(detail), SancaiTextRole.CAPTION, SancaiTextTone.MUTED), topDp = 4, sideDp = TEXT_INSET)
         hasContent = true
     }
 
+    /**
+     * Text that labels what follows it: aligned to the start edge of the page whatever
+     * language it is written in, so that headings line up with their cards right to left too.
+     */
+    private fun label(value: CharSequence, role: SancaiTextRole, tone: SancaiTextTone = SancaiTextTone.INK): SancaiText =
+        text(value, role, tone).apply { textAlignment = View.TEXT_ALIGNMENT_VIEW_START }
+
     /** A heading with a card under it; [content] fills the card. */
     fun section(@StringRes title: Int, @StringRes detail: Int = 0, content: SancaiSurface.() -> Unit): SancaiSurface {
-        loose(text(str(title), SancaiTextRole.HEADING), topDp = if (hasContent) SECTION_GAP else 0, sideDp = TEXT_INSET)
-        if (detail != 0) loose(text(str(detail), SancaiTextRole.CAPTION, SancaiTextTone.MUTED), topDp = 4, sideDp = TEXT_INSET)
+        heading(title, detail)
         val card = SancaiSurface(context)
         card.content()
         loose(card, topDp = HEADING_GAP)
@@ -124,8 +130,8 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
 
     /** A heading on the canvas with nothing under it yet; what follows is added by the page. */
     fun heading(@StringRes title: Int, @StringRes detail: Int = 0) {
-        loose(text(str(title), SancaiTextRole.HEADING), topDp = if (hasContent) SECTION_GAP else 0, sideDp = TEXT_INSET)
-        if (detail != 0) loose(text(str(detail), SancaiTextRole.CAPTION, SancaiTextTone.MUTED), topDp = 4, sideDp = TEXT_INSET)
+        loose(label(str(title), SancaiTextRole.HEADING), topDp = if (hasContent) SECTION_GAP else 0, sideDp = TEXT_INSET)
+        if (detail != 0) loose(label(str(detail), SancaiTextRole.CAPTION, SancaiTextTone.MUTED), topDp = 4, sideDp = TEXT_INSET)
     }
 
     /** A view placed directly on the canvas. */
@@ -141,7 +147,7 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
 
     /** A muted remark on the canvas. */
     fun caption(text: CharSequence, topDp: Int = 8) {
-        loose(text(text, SancaiTextRole.CAPTION, SancaiTextTone.MUTED), topDp = topDp, sideDp = TEXT_INSET)
+        loose(label(text, SancaiTextRole.CAPTION, SancaiTextTone.MUTED), topDp = topDp, sideDp = TEXT_INSET)
     }
 
     /**
@@ -168,6 +174,8 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
         label.text = if (wrap) CodeWrap.wrap(code, (room / label.paint.measureText("0")).toInt()) else code
         val scroller = HorizontalScrollView(context).apply {
             background = SancaiWellDrawable(context)
+            // Code reads left to right in every language, so the sample starts at its left end.
+            layoutDirection = View.LAYOUT_DIRECTION_LTR
             // The padding keeps scrolled text inside the rim of the well instead of over it.
             setPadding(dp(CODE_RIM), 0, dp(CODE_RIM), 0)
             isHorizontalScrollBarEnabled = false

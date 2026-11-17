@@ -537,7 +537,7 @@ class SancaiTopBarTest {
             )
             column.addView(SancaiTopBar(themed).apply(configure))
         }
-        add("title only") { title = "Gravekeeper" }
+        add("title only") { title = "Sancai" }
         add("navigation") {
             title = "Blocked numbers"
             setNavigation { }

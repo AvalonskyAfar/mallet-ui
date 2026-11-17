@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="buttons_capsule_title">Capsule buttons</string>
+    <string name="buttons_capsule_detail">Four variants of one capsule. Each sinks when pressed.</string>
+    <string name="buttons_neutral">Neutral</string>
+    <string name="buttons_primary">Primary</string>
+    <string name="buttons_danger">Delete</string>
+    <string name="buttons_text">Text</string>
+    <string name="buttons_icon">Share</string>
+    <string name="buttons_disabled">Disabled</string>
+    <string name="buttons_status_idle">Tap a button.</string>
+    <string name="buttons_status_tapped">Last tapped: %1$s</string>
+    <string name="buttons_status_loading">Loading. Taps are ignored.</string>
+    <string name="buttons_loading_title">Loading</string>
+    <string name="buttons_loading_detail">A spinner replaces each label.</string>
+
+    <string name="buttons_chips_title">Chips</string>
+    <string name="buttons_chips_detail">Small capsules that filter, choose or act.</string>
+    <string name="buttons_filter_label">Filter, any number</string>
+    <string name="buttons_filter_bowls">Bowls</string>
+    <string name="buttons_filter_vases">Vases</string>
+    <string name="buttons_filter_figures">Figures</string>
+    <string name="buttons_filter_tiles">Tiles</string>
+    <string name="buttons_filter_jars">Jars</string>
+    <string name="buttons_filter_status">Showing: %1$s</string>
+    <string name="buttons_filter_none">Showing everything.</string>
+    <string name="buttons_single_label">Single selection, one is always kept</string>
+    <string name="buttons_single_day">Day</string>
+    <string name="buttons_single_week">Week</string>
+    <string name="buttons_single_month">Month</string>
+    <string name="buttons_single_year">Year</string>
+    <string name="buttons_single_status">Range: %1$s</string>
+    <string name="buttons_action_label">Actions</string>
+    <string name="buttons_action_copy">Copy</string>
+    <string name="buttons_action_share">Share</string>
+    <string name="buttons_action_refresh">Refresh</string>
+    <string name="buttons_action_said">%1$s tapped</string>
+    <string name="buttons_list_separator">", "</string>
+
+    <string name="buttons_tags_title">Tags and badges</string>
+    <string name="buttons_tags_detail">Tags name a state. Badges count.</string>
+    <string name="buttons_tag_positive">Passed</string>
+    <string name="buttons_tag_caution">Pending</string>
+    <string name="buttons_tag_negative">Failed</string>
+    <string name="buttons_tag_info">Info</string>
+    <string name="buttons_tag_neutral">Draft</string>
+    <string name="buttons_badge_zero">0, as a dot</string>
+    <string name="buttons_badge_five">5</string>
+    <string name="buttons_badge_many">120, shown as 99+</string>
+    <string name="buttons_badge_add">Add 5</string>
+    <string name="buttons_badge_clear">Clear</string>
+    <plurals name="buttons_badge_bell">
+        <item quantity="one">Notifications, %1$d unread</item>
+        <item quantity="other">Notifications, %1$d unread</item>
+    </plurals>
+    <string name="buttons_badge_status">Unread: %1$d. The badge shows %2$s.</string>
+    <string name="buttons_badge_status_none">Unread: 0. The badge is hidden.</string>
+
+    <string name="buttons_note">The neutral capsule and its press are extracted from the original app. The primary, destructive and text variants, the icon, loading and disabled states, chips, tags and badges are new in Sancai.</string>
+</resources>

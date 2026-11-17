@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="buttons_capsule_title">胶囊按钮</string>
+    <string name="buttons_capsule_detail">同一枚胶囊的四种样式，按下时都会下沉。</string>
+    <string name="buttons_neutral">普通</string>
+    <string name="buttons_primary">主要</string>
+    <string name="buttons_danger">删除</string>
+    <string name="buttons_text">文字</string>
+    <string name="buttons_icon">分享</string>
+    <string name="buttons_disabled">不可用</string>
+    <string name="buttons_status_idle">点按任意按钮。</string>
+    <string name="buttons_status_tapped">刚才点按：%1$s</string>
+    <string name="buttons_status_loading">加载中，点按不会生效。</string>
+    <string name="buttons_loading_title">加载状态</string>
+    <string name="buttons_loading_detail">加载环取代按钮上的文字。</string>
+
+    <string name="buttons_chips_title">筛选片</string>
+    <string name="buttons_chips_detail">用来筛选、单选或触发操作的小胶囊。</string>
+    <string name="buttons_filter_label">筛选，可多选</string>
+    <string name="buttons_filter_bowls">碗</string>
+    <string name="buttons_filter_vases">瓶</string>
+    <string name="buttons_filter_figures">俑</string>
+    <string name="buttons_filter_tiles">砖</string>
+    <string name="buttons_filter_jars">罐</string>
+    <string name="buttons_filter_status">正在显示：%1$s</string>
+    <string name="buttons_filter_none">正在显示全部。</string>
+    <string name="buttons_single_label">单选，始终保留一项</string>
+    <string name="buttons_single_day">日</string>
+    <string name="buttons_single_week">周</string>
+    <string name="buttons_single_month">月</string>
+    <string name="buttons_single_year">年</string>
+    <string name="buttons_single_status">范围：%1$s</string>
+    <string name="buttons_action_label">操作</string>
+    <string name="buttons_action_copy">复制</string>
+    <string name="buttons_action_share">分享</string>
+    <string name="buttons_action_refresh">刷新</string>
+    <string name="buttons_action_said">已点按“%1$s”</string>
+    <string name="buttons_list_separator">、</string>
+
+    <string name="buttons_tags_title">状态标签与角标</string>
+    <string name="buttons_tags_detail">状态标签说明状态，角标显示数量。</string>
+    <string name="buttons_tag_positive">已通过</string>
+    <string name="buttons_tag_caution">待处理</string>
+    <string name="buttons_tag_negative">未通过</string>
+    <string name="buttons_tag_info">提示</string>
+    <string name="buttons_tag_neutral">草稿</string>
+    <string name="buttons_badge_zero">0，显示为圆点</string>
+    <string name="buttons_badge_five">5</string>
+    <string name="buttons_badge_many">120，显示为 99+</string>
+    <string name="buttons_badge_add">加 5</string>
+    <string name="buttons_badge_clear">清零</string>
+    <plurals name="buttons_badge_bell">
+        <item quantity="other">通知，%1$d 条未读</item>
+    </plurals>
+    <string name="buttons_badge_status">未读：%1$d，角标显示 %2$s。</string>
+    <string name="buttons_badge_status_none">未读：0，角标不显示。</string>
+
+    <string name="buttons_note">普通胶囊按钮及其按压效果取自原应用；主要、删除、文字三种样式，图标、加载与不可用状态，以及筛选片、状态标签和角标均为三彩新增。</string>
+</resources>
