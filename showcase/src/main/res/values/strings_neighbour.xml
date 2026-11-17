@@ -8,5 +8,11 @@
     <string name="neighbour_option_one">One</string>
     <string name="neighbour_option_two">Two</string>
     <string name="neighbour_option_three">Three</string>
+    <!-- The options of the track in res/layout/activity_neighbour.xml. -->
+    <string-array name="neighbour_options">
+        <item>@string/neighbour_option_one</item>
+        <item>@string/neighbour_option_two</item>
+        <item>@string/neighbour_option_three</item>
+    </string-array>
     <string name="neighbour_back">Go back</string>
 </resources>

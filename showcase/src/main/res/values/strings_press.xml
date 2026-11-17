@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="press_sink_title">Pressing sinks</string>
+    <string name="press_sink_detail">Touch a row and hold. It goes down 1.5 dp and is back before the click arrives.</string>
+    <string name="press_sink_lists">Filter lists</string>
+    <string name="press_sink_lists_detail">12 lists, updated today</string>
+    <string name="press_sink_apps">Allowed apps</string>
+    <string name="press_sink_apps_value">3</string>
+    <string name="press_sink_own">A row made by hand</string>
+    <string name="press_sink_own_count">Pressed %1$d times</string>
+    <string name="press_sink_button">A neutral button</string>
+    <string name="press_sink_idle">Nothing pressed yet</string>
+    <string name="press_sink_last">Last pressed: %1$s</string>
+    <string name="press_sink_note">The card stays. Only what you touch moves, and nothing changes colour.</string>
+
+    <string name="press_haptics_title">Haptics</string>
+    <string name="press_haptics_detail">Five effects, each with one meaning. Each button here ticks first, as every button does, then plays its effect.</string>
+    <string name="press_haptics_tick">A state change was committed.</string>
+    <string name="press_haptics_detent">The finger crossed into another option while dragging.</string>
+    <string name="press_haptics_confirm">A consequential action succeeded.</string>
+    <string name="press_haptics_reject">An action was refused or failed validation.</string>
+    <string name="press_haptics_long_press">A long press was recognised.</string>
+    <string name="press_haptics_idle">Nothing played yet</string>
+    <string name="press_haptics_played">Played: %1$s</string>
+    <string name="press_haptics_muted">%1$s was not played: Haptics is off on the Appearance page</string>
+    <string name="press_haptics_note">All five follow the Haptics setting on the Appearance page. When it is off, every call does nothing. Older Android versions play the nearest effect they have.</string>
+
+    <string name="press_order_title">Order of events</string>
+    <string name="press_order_detail">A control that holds a value tells you first. An action ticks first.</string>
+    <string name="press_order_switch">Switch</string>
+    <string name="press_order_button">Button</string>
+    <string name="press_order_empty">The log is empty. Use the switch or the button.</string>
+    <string name="press_order_switch_on">Switch on: listener, then tick</string>
+    <string name="press_order_switch_off">Switch off: listener, then tick</string>
+    <string name="press_order_button_line">Button: tick, then listener</string>
+    <string name="press_order_line">%1$d  %2$s</string>
+    <string name="press_order_note">The switch calls its listener while it starts to glide, then ticks. The button ticks at once, because its listener may open something slow.</string>
+
+    <string name="press_source">Extracted from the original app: the 1.5 dp sink without a colour change, and the tick on a committed change. New in Sancai: SancaiPress for your own rows and the five named effects of SancaiHaptics.</string>
+</resources>

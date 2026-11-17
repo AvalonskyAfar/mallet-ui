@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="rows_headings_title">Headings</string>
+    <string name="rows_headings_detail">Two levels: one for the page, one above a card.</string>
+    <string name="rows_heading_page">Display</string>
+    <string name="rows_heading_page_detail">Page level. Opens a screen.</string>
+    <string name="rows_heading_section">Reading</string>
+    <string name="rows_heading_section_detail">Section level. Sits above a card.</string>
+
+    <string name="rows_entries_title">Entry rows</string>
+    <string name="rows_entries_detail">A row that leads somewhere. The text stays on the centre line whatever sits at the edges.</string>
+    <string name="rows_entry_end">Storage</string>
+    <string name="rows_entry_end_detail">Chevron at the end: this opens something</string>
+    <string name="rows_entry_start">Back to overview</string>
+    <string name="rows_entry_icon">Notifications</string>
+    <string name="rows_entry_value">Language</string>
+    <string name="rows_entry_value_detail">Tap to change the value</string>
+    <string name="rows_entry_aligned">Privacy</string>
+    <string name="rows_entry_aligned_detail">Aligned to the start, for list-like content</string>
+    <string name="rows_entry_disabled">Backup</string>
+    <string name="rows_entry_disabled_value">Unavailable</string>
+    <string-array name="rows_languages">
+        <item>English</item>
+        <item>中文</item>
+        <item>Français</item>
+    </string-array>
+    <string name="rows_say_end">Storage would open at the end side</string>
+    <string name="rows_say_start">The overview lies at the start side</string>
+    <string name="rows_say_icon">Notifications would open</string>
+    <string name="rows_say_aligned">Privacy would open</string>
+
+    <string name="rows_controls_title">Control rows</string>
+    <string name="rows_controls_detail">A setting and its control in one row. The facts at the end of the page follow these.</string>
+    <string name="rows_sync">Sync</string>
+    <string name="rows_sync_detail">Two options</string>
+    <string name="rows_density">Density</string>
+    <string name="rows_strength">Protection</string>
+    <string name="rows_haptics">Haptics</string>
+    <string name="rows_haptics_detail">A switch as the control</string>
+    <string name="rows_columns">Columns</string>
+    <string name="rows_brightness">Brightness</string>
+    <string name="rows_locked">Managed</string>
+    <string name="rows_locked_detail">A disabled row pales with its control</string>
+    <string name="rows_locked_value">Set by policy</string>
+    <string name="rows_on">On</string>
+    <string name="rows_off">Off</string>
+    <string name="rows_percent">%1$d%%</string>
+    <string-array name="rows_sync_options">
+        <item>Paused</item>
+        <item>On</item>
+    </string-array>
+    <string-array name="rows_density_options">
+        <item>Compact</item>
+        <item>Regular</item>
+        <item>Roomy</item>
+    </string-array>
+    <string-array name="rows_strength_options">
+        <item>Off</item>
+        <item>Light</item>
+        <item>Firm</item>
+        <item>Strict</item>
+    </string-array>
+
+    <string name="rows_links_title">Link rows</string>
+    <string name="rows_links_detail">A quiet link on the canvas. The chevron sits at the edge, or right next to the label.</string>
+    <string name="rows_link_edge">Earlier settings</string>
+    <string name="rows_link_adjacent">More settings</string>
+    <string name="rows_say_edge">Earlier settings lie at the start side</string>
+    <string name="rows_say_adjacent">More settings lie at the end side</string>
+
+    <string name="rows_facts_title">Facts</string>
+    <string name="rows_facts_detail">A read-only list. It shows what the control rows above are set to; tones mark what matters.</string>
+    <string name="rows_note">All five were extracted from the original app. New in Sancai: the page-level heading, the icon, value and start alignment of an entry row, any control in a control row, and a tone for a link or a fact.</string>
+</resources>

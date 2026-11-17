@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    A whole screen declared in XML: the root is a SancaiPage, which scrolls, sets the page
+    rhythm and keeps clear of the system bars by itself. NeighbourActivity inflates this file
+    and adds one click listener.
+-->
+<io.github.avalonskyafar.sancai.widget.SancaiPage xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/neighbour_page"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <io.github.avalonskyafar.sancai.widget.SancaiHeading
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sancaiDetail="@string/neighbour_summary"
+        app:sancaiHeadingLevel="page"
+        app:sancaiTitle="@string/neighbour_title" />
+
+    <io.github.avalonskyafar.sancai.widget.SancaiParagraph
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="10dp"
+        android:text="@string/neighbour_body" />
+
+    <io.github.avalonskyafar.sancai.widget.SancaiHeading
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        app:sancaiDetail="@string/neighbour_track_detail"
+        app:sancaiTitle="@string/neighbour_track_title" />
+
+    <io.github.avalonskyafar.sancai.widget.SancaiSurface
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <io.github.avalonskyafar.sancai.widget.SancaiSegmentedTrack
+            android:id="@+id/neighbour_track"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:sancaiOptions="@array/neighbour_options"
+            app:sancaiSelectedIndex="1" />
+    </io.github.avalonskyafar.sancai.widget.SancaiSurface>
+
+    <io.github.avalonskyafar.sancai.widget.SancaiButton
+        android:id="@+id/neighbour_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginEnd="30dp"
+        android:text="@string/neighbour_back" />
+</io.github.avalonskyafar.sancai.widget.SancaiPage>

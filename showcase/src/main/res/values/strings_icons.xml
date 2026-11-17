@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="icons_all_title">All fifty</string>
+    <string name="icons_all_detail">Line drawings on a 24 unit grid, painted in code. Tap one for the name of its constant.</string>
+
+    <string name="icons_size_title">Size and weight</string>
+    <string name="icons_size_detail">An icon fills the box it is given. The stroke is set apart from the size, so a large icon can stay light.</string>
+    <string name="icons_size_label">Size</string>
+    <string name="icons_stroke_label">Stroke</string>
+    <string name="icons_size_status">%1$d dp, stroke %2$s dp</string>
+
+    <string name="icons_tones_title">Tones</string>
+    <string name="icons_tones_detail">An icon takes the colour roles of text. Muted is the default. Tap a tone to set the large icon in it.</string>
+    <string name="icons_tone_status">tone = SancaiTextTone.%1$s</string>
+
+    <string name="icons_direction_title">Direction</string>
+    <string name="icons_direction_detail">Chevrons and arrows to the left and right follow the reading direction. The check between them does not turn.</string>
+    <string name="icons_ltr">Left to right</string>
+    <string name="icons_rtl">Right to left</string>
+
+    <string name="icons_origin">Six glyphs come from the original app: chevron, arrow, power ring, book, sliders and more. The other forty-four, the icon view, the tones and the mirroring were drawn and built for Sancai.</string>
+</resources>

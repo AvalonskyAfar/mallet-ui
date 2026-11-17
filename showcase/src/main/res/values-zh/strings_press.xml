@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="press_sink_title">按压即下沉</string>
+    <string name="press_sink_detail">按住一行不放：它下沉 1.5 dp，点击送达之前已经回到原位。</string>
+    <string name="press_sink_lists">过滤列表</string>
+    <string name="press_sink_lists_detail">共 12 份，今天已更新</string>
+    <string name="press_sink_apps">放行的应用</string>
+    <string name="press_sink_apps_value">3</string>
+    <string name="press_sink_own">自己搭的一行</string>
+    <string name="press_sink_own_count">已按 %1$d 次</string>
+    <string name="press_sink_button">普通按钮</string>
+    <string name="press_sink_idle">还没有按过</string>
+    <string name="press_sink_last">刚才按的是：%1$s</string>
+    <string name="press_sink_note">卡片不动，只有手指碰到的内容下沉，颜色始终不变。</string>
+
+    <string name="press_haptics_title">触感</string>
+    <string name="press_haptics_detail">五种效果，各有一个含义。这里的按钮和所有按钮一样先振一下，再播放自己的效果。</string>
+    <string name="press_haptics_tick">一次更改已经生效。</string>
+    <string name="press_haptics_detent">拖动时手指滑进了另一个选项。</string>
+    <string name="press_haptics_confirm">一项重要的操作成功了。</string>
+    <string name="press_haptics_reject">操作被拒绝，或没有通过校验。</string>
+    <string name="press_haptics_long_press">识别到一次长按。</string>
+    <string name="press_haptics_idle">还没有播放</string>
+    <string name="press_haptics_played">已播放：%1$s</string>
+    <string name="press_haptics_muted">%1$s 没有播放：“外观”页的震动反馈已关闭</string>
+    <string name="press_haptics_note">五种效果都听从“外观”页的震动反馈设置，关闭后每次调用都不起作用。较旧的 Android 版本会改用最接近的效果。</string>
+
+    <string name="press_order_title">事件的先后</string>
+    <string name="press_order_detail">保存数值的控件先通知你，执行动作的控件先振动。</string>
+    <string name="press_order_switch">开关</string>
+    <string name="press_order_button">按钮</string>
+    <string name="press_order_empty">记录还是空的，拨一下开关或按一下按钮。</string>
+    <string name="press_order_switch_on">开关开启：先回调，后振动</string>
+    <string name="press_order_switch_off">开关关闭：先回调，后振动</string>
+    <string name="press_order_button_line">按钮：先振动，后回调</string>
+    <string name="press_order_line">%1$d  %2$s</string>
+    <string name="press_order_note">开关在滑块开始滑行时先调用监听器，再振动。按钮立刻振动，因为它的监听器可能要打开比较慢的东西。</string>
+
+    <string name="press_source">取自原应用：下沉 1.5 dp 且不变色的按压，以及更改生效时的一振。三彩新增：可用于自定义行的 SancaiPress，和 SancaiHaptics 的五种具名效果。</string>
+</resources>

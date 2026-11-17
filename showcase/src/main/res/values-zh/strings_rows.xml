@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="rows_headings_title">标题</string>
+    <string name="rows_headings_detail">两个层级：一个给页面，一个放在卡片上方。</string>
+    <string name="rows_heading_page">显示</string>
+    <string name="rows_heading_page_detail">页面级，用在一屏的开头。</string>
+    <string name="rows_heading_section">阅读</string>
+    <string name="rows_heading_section_detail">分区级，放在卡片上方。</string>
+
+    <string name="rows_entries_title">入口行</string>
+    <string name="rows_entries_detail">通往别处的一行。无论两端放了什么，文字始终落在中线上。</string>
+    <string name="rows_entry_end">存储</string>
+    <string name="rows_entry_end_detail">箭头在末端：点开会进入下一层</string>
+    <string name="rows_entry_start">返回概览</string>
+    <string name="rows_entry_icon">通知</string>
+    <string name="rows_entry_value">语言</string>
+    <string name="rows_entry_value_detail">点一下切换取值</string>
+    <string name="rows_entry_aligned">隐私</string>
+    <string name="rows_entry_aligned_detail">靠起始端对齐，适合列表式内容</string>
+    <string name="rows_entry_disabled">备份</string>
+    <string name="rows_entry_disabled_value">不可用</string>
+    <string-array name="rows_languages">
+        <item>English</item>
+        <item>中文</item>
+        <item>Français</item>
+    </string-array>
+    <string name="rows_say_end">“存储”会从末端一侧打开</string>
+    <string name="rows_say_start">概览在起始端一侧</string>
+    <string name="rows_say_icon">这里会打开“通知”</string>
+    <string name="rows_say_aligned">这里会打开“隐私”</string>
+
+    <string name="rows_controls_title">控件行</string>
+    <string name="rows_controls_detail">一项设置和它的控件同在一行。页面末尾的信息列表会跟着这里变化。</string>
+    <string name="rows_sync">同步</string>
+    <string name="rows_sync_detail">两个选项</string>
+    <string name="rows_density">密度</string>
+    <string name="rows_strength">防护</string>
+    <string name="rows_haptics">触感</string>
+    <string name="rows_haptics_detail">以开关作为控件</string>
+    <string name="rows_columns">列数</string>
+    <string name="rows_brightness">亮度</string>
+    <string name="rows_locked">受管理</string>
+    <string name="rows_locked_detail">禁用的行会连同控件一起变淡</string>
+    <string name="rows_locked_value">由策略决定</string>
+    <string name="rows_on">开</string>
+    <string name="rows_off">关</string>
+    <string name="rows_percent">%1$d%%</string>
+    <string-array name="rows_sync_options">
+        <item>暂停</item>
+        <item>开启</item>
+    </string-array>
+    <string-array name="rows_density_options">
+        <item>紧凑</item>
+        <item>标准</item>
+        <item>宽松</item>
+    </string-array>
+    <string-array name="rows_strength_options">
+        <item>关</item>
+        <item>轻度</item>
+        <item>中度</item>
+        <item>严格</item>
+    </string-array>
+
+    <string name="rows_links_title">链接行</string>
+    <string name="rows_links_detail">画布上一条不显眼的链接。箭头可以贴在边缘，也可以紧挨着文字。</string>
+    <string name="rows_link_edge">之前的设置</string>
+    <string name="rows_link_adjacent">更多设置</string>
+    <string name="rows_say_edge">之前的设置在起始端一侧</string>
+    <string name="rows_say_adjacent">更多设置在末端一侧</string>
+
+    <string name="rows_facts_title">信息列表</string>
+    <string name="rows_facts_detail">只读的列表，显示上面各控件行当前的取值；色调用来标出要紧的项。</string>
+    <string name="rows_note">这五种组件都取自原应用。三彩新增的是：页面级标题，入口行的图标、取值和起始端对齐，控件行可以放任意控件，以及链接和信息项的色调。</string>
+</resources>

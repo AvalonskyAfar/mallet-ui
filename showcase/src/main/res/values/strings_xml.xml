@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="xml_intro">Everything in the two cards below is declared in a layout file. The Kotlin of this page only finds views by id and adds listeners.</string>
+
+    <!-- Used by res/layout/page_xml.xml -->
+    <string name="xml_filter_title">A settings card</string>
+    <string name="xml_filter_detail">A track, a switch, a divider and an entry row.</string>
+    <string name="xml_strength">Strength</string>
+    <string name="xml_level_off">Off</string>
+    <string name="xml_level_gentle">Gentle</string>
+    <string name="xml_level_standard">Standard</string>
+    <string name="xml_level_strict">Strict</string>
+    <string-array name="xml_levels">
+        <item>@string/xml_level_off</item>
+        <item>@string/xml_level_gentle</item>
+        <item>@string/xml_level_standard</item>
+        <item>@string/xml_level_strict</item>
+    </string-array>
+    <string name="xml_wifi">Only on Wi-Fi</string>
+    <string name="xml_wifi_detail">Leave mobile data alone.</string>
+    <string name="xml_exceptions">Exceptions</string>
+    <string name="xml_exceptions_detail">Accounts the filter never touches.</string>
+    <string name="xml_profile_title">A form</string>
+    <string name="xml_profile_detail">A text field with its label, helper and counter, and a checkbox.</string>
+    <string name="xml_name">Profile name</string>
+    <string name="xml_name_hint">For example: Weekdays</string>
+    <string name="xml_name_helper">Shown in the list of profiles.</string>
+    <string name="xml_remember">Use this profile on every device</string>
+    <string name="xml_status_idle">Nothing has been changed yet.</string>
+    <string name="xml_save">Save the profile</string>
+
+    <!-- Written by XmlPage.kt -->
+    <string name="xml_status_strength">Filter strength: %1$s.</string>
+    <string name="xml_status_wifi_on">The filter now waits for Wi-Fi.</string>
+    <string name="xml_status_wifi_off">The filter now runs on any connection.</string>
+    <string name="xml_status_remember_on">The profile will follow you to other devices.</string>
+    <string name="xml_status_remember_off">The profile stays on this device.</string>
+    <string name="xml_status_exceptions">The row was pressed. In an app it would open a page.</string>
+    <string name="xml_error_name">Give the profile a name first.</string>
+    <string name="xml_status_saved">Saved as “%1$s” with the filter on %2$s.</string>
+
+    <string name="xml_source_title">The layout file</string>
+    <string name="xml_source_detail">The first card, read from the same file the page was inflated from. Drag sideways to read on.</string>
+    <string name="xml_source_missing">The layout source is not packaged with this build.</string>
+    <string name="xml_kotlin_title">The Kotlin that is left</string>
+    <string name="xml_kotlin_detail">Inflate, find, listen.</string>
+    <string name="xml_theme_title">The theme</string>
+    <string name="xml_theme_detail">One parent style gives every widget its colours. Each role and each glaze can be replaced by an attribute.</string>
+    <string name="xml_theme_note">None of it is required: a widget in an app without these attributes follows the night mode of its context. An app that keeps appearance in its own settings, as this one does, hands the theme over in code instead.</string>
+    <string name="xml_screen_title">A whole screen</string>
+    <string name="xml_screen_detail">The neighbour activity of this app is one layout file with a SancaiPage at its root.</string>
+    <string name="xml_screen_open">Open the XML screen</string>
+
+    <string name="xml_origin">The original app built every screen in Java and had no layout files, no custom attributes and no theme attributes. The XML attributes of every widget, the Theme.Sancai styles and the rule that a child declared inside a row becomes its control are new in Sancai.</string>
+</resources>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="type_scale_title">The scale</string>
+    <string name="type_scale_detail">Ten roles. Each name is set in its own size and weight.</string>
+    <string name="type_spec">%1$s sp · %2$s</string>
+    <string name="type_weight_regular">Regular</string>
+    <string name="type_weight_medium">Medium</string>
+    <string name="type_weight_bold">Bold</string>
+
+    <string name="type_tones_title">Tones</string>
+    <string name="type_tones_detail">Six colour roles. They follow the theme, so each stays readable at night.</string>
+    <string name="type_tone_ink">Ink carries everything you read first.</string>
+    <string name="type_tone_muted">Muted explains and steps back.</string>
+    <string name="type_tone_accent">Accent marks what you can act on.</string>
+    <string name="type_tone_danger">Danger says this cannot be undone.</string>
+    <string name="type_tone_warning">Warning asks you to look again.</string>
+    <string name="type_tone_success">Success confirms it is done.</string>
+
+    <string name="type_reading_title">Reading</string>
+    <string name="type_reading_detail">The same passage in the two body roles. Both get extra leading; the compact one is for cards and dialogs.</string>
+    <string name="type_reading_copy">A glaze is thin where the clay shows through and deep where the colour pools. Type on a screen works the same way: the letters matter, and so does the space left between the lines. Body text is given a little more leading than a label, so that the eye finds the start of the next line without looking for it.</string>
+
+    <string name="type_large_title">Larger text</string>
+    <string name="type_large_detail">The same heading and row at two text scales. The switches move together.</string>
+    <string name="type_large_scale">Text scale %1$s</string>
+    <string name="type_large_heading">Display</string>
+    <string name="type_large_row_title">Larger text</string>
+    <string name="type_large_row_on">Every size grows by the same share</string>
+    <string name="type_large_row_off">Sizes stay as designed</string>
+
+    <string name="type_origin">The ten sizes, the leading of body text and the 1.13 larger-text scale were extracted from the original app. The named roles and tones, and the paragraph that keeps Chinese punctuation off the start of a line, were designed for Sancai.</string>
+</resources>

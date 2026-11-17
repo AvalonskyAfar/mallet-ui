@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="numbers_stepper_title">Stepper</string>
+    <string name="numbers_stepper_detail">An exact number, one step at a time. The value sits on the thumb between the two marks.</string>
+    <string name="numbers_stepper_delay">Delay</string>
+    <string name="numbers_stepper_ratio">Ratio, in steps of 0.01</string>
+    <string name="numbers_stepper_copies">Copies, at the upper bound</string>
+    <string name="numbers_stepper_idle">Tap a mark to step, or tap the value.</string>
+    <string name="numbers_stepper_changed">%1$s is now %2$s</string>
+    <string name="numbers_stepper_edit">%1$s: %2$s</string>
+    <string name="numbers_stepper_note">Hold a mark to repeat; the pace picks up after a moment. At a bound the mark on that side pales. Tapping the value asks for editing. An app would open an input dialog here; this page only says the value.</string>
+
+    <string name="numbers_slider_title">Slider</string>
+    <string name="numbers_slider_detail">An approximate amount, set by dragging the bead or tapping the track.</string>
+    <string name="numbers_slider_level">Continuous</string>
+    <string name="numbers_slider_volume">Stepped, 0 to 10</string>
+    <string name="numbers_slider_strictness">Through the glaze scale</string>
+    <string-array name="numbers_slider_strictness_names">
+        <item>Off</item>
+        <item>Gentle</item>
+        <item>Standard</item>
+        <item>Strict</item>
+    </string-array>
+
+    <string name="numbers_progress_title">Progress</string>
+    <string name="numbers_progress_detail">A groove that fills with glaze as work completes.</string>
+    <string name="numbers_progress_follow">Follows the continuous slider</string>
+    <string name="numbers_progress_task">A task</string>
+    <string name="numbers_progress_run">Run</string>
+    <string name="numbers_progress_again">Run again</string>
+    <string name="numbers_progress_done">Done</string>
+    <string name="numbers_progress_unknown">Amount unknown</string>
+    <string name="numbers_progress_glazes">Other glazes, same slider</string>
+
+    <string name="numbers_spinner_title">Spinner</string>
+    <string name="numbers_spinner_detail">For a short wait with nothing to measure.</string>
+    <string name="numbers_spinner_sizes">Sizes</string>
+    <string name="numbers_spinner_tones">Tones</string>
+    <string name="numbers_spinner_busy">Saving</string>
+    <string name="numbers_spinner_busy_detail">The button below shows a spinner and ignores taps.</string>
+    <string name="numbers_spinner_save">Save</string>
+    <string name="numbers_spinner_saved">Saved</string>
+
+    <string name="numbers_origin">The stepper was extracted from the original app and completed: it now owns its value, range and format. The slider, the progress bar and the spinner were designed for Sancai in the same material.</string>
+</resources>

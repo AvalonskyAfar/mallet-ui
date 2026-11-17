@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="xml_intro">下面两张卡片里的全部内容都在布局文件中声明。本页的 Kotlin 代码只按 id 查找视图，并为它们添加监听器。</string>
+
+    <!-- 用于 res/layout/page_xml.xml -->
+    <string name="xml_filter_title">一张设置卡片</string>
+    <string name="xml_filter_detail">一条轨道、一个开关、一条分隔线和一个入口行。</string>
+    <string name="xml_strength">强度</string>
+    <string name="xml_level_off">关闭</string>
+    <string name="xml_level_gentle">轻度</string>
+    <string name="xml_level_standard">标准</string>
+    <string name="xml_level_strict">严格</string>
+    <string name="xml_wifi">仅在 Wi-Fi 下</string>
+    <string name="xml_wifi_detail">不占用移动数据。</string>
+    <string name="xml_exceptions">例外</string>
+    <string name="xml_exceptions_detail">过滤器永不处理的账号。</string>
+    <string name="xml_profile_title">一份表单</string>
+    <string name="xml_profile_detail">带标签、提示和计数的文本框，以及一个复选框。</string>
+    <string name="xml_name">方案名称</string>
+    <string name="xml_name_hint">例如：工作日</string>
+    <string name="xml_name_helper">显示在方案列表中。</string>
+    <string name="xml_remember">在所有设备上使用此方案</string>
+    <string name="xml_status_idle">还没有任何改动。</string>
+    <string name="xml_save">保存方案</string>
+
+    <!-- 由 XmlPage.kt 写入 -->
+    <string name="xml_status_strength">过滤强度：%1$s。</string>
+    <string name="xml_status_wifi_on">过滤器现在会等待 Wi-Fi。</string>
+    <string name="xml_status_wifi_off">过滤器现在在任何网络下运行。</string>
+    <string name="xml_status_remember_on">此方案会同步到其他设备。</string>
+    <string name="xml_status_remember_off">此方案只保留在本机。</string>
+    <string name="xml_status_exceptions">这一行被按下了。在实际应用中，它会打开一个页面。</string>
+    <string name="xml_error_name">请先为方案起个名称。</string>
+    <string name="xml_status_saved">已保存为“%1$s”，过滤强度为%2$s。</string>
+
+    <string name="xml_source_title">布局文件</string>
+    <string name="xml_source_detail">第一张卡片的源码，读取自用来生成本页的同一个文件。向两侧拖动可以看完整行。</string>
+    <string name="xml_source_missing">此构建没有打包布局源码。</string>
+    <string name="xml_kotlin_title">剩下的 Kotlin 代码</string>
+    <string name="xml_kotlin_detail">加载布局，查找视图，添加监听。</string>
+    <string name="xml_theme_title">主题</string>
+    <string name="xml_theme_detail">只需一个父样式，所有组件就有了颜色。每个颜色角色和每种釉色都可以用属性替换。</string>
+    <string name="xml_theme_note">这些都不是必需的：应用即使不设置任何属性，组件也会跟随所在 Context 的深色模式。像本应用这样把外观保存在自己设置里的应用，则改用代码提供主题。</string>
+    <string name="xml_screen_title">一整个界面</string>
+    <string name="xml_screen_detail">本应用的邻页 Activity 就是一个布局文件，根节点是 SancaiPage。</string>
+    <string name="xml_screen_open">打开 XML 界面</string>
+
+    <string name="xml_origin">原应用的每个界面都用 Java 代码搭建，没有布局文件，没有自定义属性，也没有主题属性。各组件的 XML 属性、Theme.Sancai 样式，以及“在行内声明的子视图即成为它的控件”这条规则，都是三彩新增的。</string>
+</resources>

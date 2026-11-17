@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="type_scale_title">字号阶梯</string>
+    <string name="type_scale_detail">共十个角色，每个名称都用它自己的字号和字重排出。</string>
+    <string name="type_spec">%1$s sp · %2$s</string>
+    <string name="type_weight_regular">常规</string>
+    <string name="type_weight_medium">中等</string>
+    <string name="type_weight_bold">粗体</string>
+
+    <string name="type_tones_title">色调</string>
+    <string name="type_tones_detail">六种文字颜色，随主题变化，夜间同样清晰。</string>
+    <string name="type_tone_ink">墨色，承载最先要读的内容。</string>
+    <string name="type_tone_muted">淡色，用来补充说明，退居其后。</string>
+    <string name="type_tone_accent">强调色，标出可以操作的地方。</string>
+    <string name="type_tone_danger">危险色，提示操作无法撤销。</string>
+    <string name="type_tone_warning">警示色，提醒你再看一眼。</string>
+    <string name="type_tone_success">成功色，告诉你已经完成。</string>
+
+    <string name="type_reading_title">阅读</string>
+    <string name="type_reading_detail">同一段文字，分别用两种正文角色排出。两者都加大了行距，紧凑的一种用在卡片和对话框里。</string>
+    <string name="type_reading_copy">瓷器上的釉，薄处见胎，厚处见色。屏幕上的文字也是如此：字形要紧，行与行之间留出的空白同样要紧。正文的行距比标签略宽一些，读完一行，眼睛不必寻找，就能落到下一行的开头。</string>
+
+    <string name="type_large_title">大字</string>
+    <string name="type_large_detail">同一个标题和同一个设置行，分别按两种文字比例排出。两个开关同步切换。</string>
+    <string name="type_large_scale">文字比例 %1$s</string>
+    <string name="type_large_heading">显示</string>
+    <string name="type_large_row_title">大字</string>
+    <string name="type_large_row_on">所有字号按同一比例放大</string>
+    <string name="type_large_row_off">字号保持设计时的大小</string>
+
+    <string name="type_origin">十档字号、正文行距和 1.13 的大字比例取自原应用；命名的角色与色调，以及避免中文标点出现在行首的段落控件，是为三彩新设计的。</string>
+</resources>

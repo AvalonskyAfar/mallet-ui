@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sancai_banner_tone_info">Information</string>
+    <string name="sancai_banner_tone_warning">Warning</string>
+    <string name="sancai_banner_tone_danger">Error</string>
+    <string name="sancai_banner_tone_success">Success</string>
+</resources>

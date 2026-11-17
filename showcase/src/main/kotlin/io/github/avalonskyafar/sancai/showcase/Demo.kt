@@ -122,6 +122,12 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
         return card
     }
 
+    /** A heading on the canvas with nothing under it yet; what follows is added by the page. */
+    fun heading(@StringRes title: Int, @StringRes detail: Int = 0) {
+        loose(text(str(title), SancaiTextRole.HEADING), topDp = if (hasContent) SECTION_GAP else 0, sideDp = TEXT_INSET)
+        if (detail != 0) loose(text(str(detail), SancaiTextRole.CAPTION, SancaiTextTone.MUTED), topDp = 4, sideDp = TEXT_INSET)
+    }
+
     /** A view placed directly on the canvas. */
     fun loose(view: View, topDp: Int = 0, sideDp: Int = 0, width: Int = MATCH, gravity: Int = Gravity.NO_GRAVITY) {
         val params = LinearLayout.LayoutParams(width, WRAP)
@@ -138,8 +144,14 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
         loose(text(text, SancaiTextRole.CAPTION, SancaiTextTone.MUTED), topDp = topDp, sideDp = TEXT_INSET)
     }
 
-    /** A code sample in a recessed well. The text can be selected and scrolls sideways. */
-    fun code(snippet: String, topDp: Int = 10) {
+    /**
+     * A code sample in a recessed well. The text can be selected and scrolls sideways.
+     *
+     * Kotlin is wrapped to the width of the well. Pass [wrap] = false for text that must stay
+     * as it was written, such as a layout file. A line that is still too long fades out at
+     * the rim of the well and is read by dragging the sample sideways.
+     */
+    fun code(snippet: String, topDp: Int = 10, wrap: Boolean = true) {
         val label = TextView(context).apply {
             typeface = Typeface.MONOSPACE
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f * theme.textScale)
@@ -147,16 +159,21 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
             setTextIsSelectable(true)
             includeFontPadding = false
             setLineSpacing(dp(3).toFloat(), 1f)
-            setPadding(dp(CODE_PADDING), dp(11), dp(CODE_PADDING), dp(11))
+            setPadding(dp(CODE_PADDING - CODE_RIM), dp(11), dp(CODE_PADDING - CODE_RIM), dp(11))
             textDirection = View.TEXT_DIRECTION_LTR
         }
         // Lines too long for the well are wrapped where the code allows it; see CodeWrap.
         val room = columnWidthPx() - dp(PAGE_SIDE) * 2 - dp(CODE_PADDING) * 2
-        label.text = CodeWrap.wrap(snippet.trimIndent(), (room / label.paint.measureText("0")).toInt())
+        val code = snippet.trimIndent()
+        label.text = if (wrap) CodeWrap.wrap(code, (room / label.paint.measureText("0")).toInt()) else code
         val scroller = HorizontalScrollView(context).apply {
             background = SancaiWellDrawable(context)
+            // The padding keeps scrolled text inside the rim of the well instead of over it.
+            setPadding(dp(CODE_RIM), 0, dp(CODE_RIM), 0)
             isHorizontalScrollBarEnabled = false
             overScrollMode = View.OVER_SCROLL_NEVER
+            isHorizontalFadingEdgeEnabled = true
+            setFadingEdgeLength(dp(24))
             addView(label)
         }
         loose(scroller, topDp = topDp)
@@ -254,5 +271,8 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
         const val BUTTON_SIDE = 30
         private const val MAX_WIDTH_DP = 560
         private const val CODE_PADDING = 13
+
+        /** Room the gutter and the rim of a well take at each side, in dp. */
+        private const val CODE_RIM = 3
     }
 }

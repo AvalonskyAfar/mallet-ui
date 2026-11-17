@@ -78,6 +78,37 @@ kotlin {
     }
 }
 
+/**
+ * Copies layout files into the assets, so that the "Built from XML" page can show the very
+ * file it was inflated from. Compiled layouts are binary inside an APK; this keeps the text.
+ */
+abstract class CopyLayoutSources : DefaultTask() {
+    @get:InputFiles
+    @get:PathSensitive(PathSensitivity.NAME_ONLY)
+    abstract val layouts: ConfigurableFileCollection
+
+    @get:OutputDirectory
+    abstract val output: DirectoryProperty
+
+    @TaskAction
+    fun copy() {
+        val directory = output.get().asFile
+        directory.deleteRecursively()
+        directory.mkdirs()
+        layouts.forEach { it.copyTo(File(directory, it.name), overwrite = true) }
+    }
+}
+
+androidComponents {
+    onVariants { variant ->
+        val name = variant.name.replaceFirstChar { it.uppercase() }
+        val copy = tasks.register<CopyLayoutSources>("copy${name}LayoutSources") {
+            layouts.from(layout.projectDirectory.file("src/main/res/layout/page_xml.xml"))
+        }
+        variant.sources.assets?.addGeneratedSourceDirectory(copy, CopyLayoutSources::output)
+    }
+}
+
 dependencies {
     implementation(project(":sancai"))
 

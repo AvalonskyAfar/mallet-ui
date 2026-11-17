@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fields_parts_title">文本框的组成</string>
+    <string name="fields_parts_detail">上面是标签，中间是盛放文字的凹槽，下面是辅助行。每个文本框都可以输入。</string>
+    <string name="fields_name_label">显示名称</string>
+    <string name="fields_name_hint">例如：守窑人</string>
+    <string name="fields_name_helper">显示在个人页面顶部。</string>
+    <string name="fields_motto_label">签名</string>
+    <string name="fields_motto_text">三次入窑</string>
+    <string name="fields_password_label">密码</string>
+    <string name="fields_search_hint">搜索釉色</string>
+    <string name="fields_search_text">青瓷</string>
+    <string name="fields_search_idle">没有要搜索的内容。文字清空后，叉号也随之消失。</string>
+    <string name="fields_search_status">正在搜索“%1$s”。</string>
+
+    <string name="fields_validation_title">校验</string>
+    <string name="fields_validation_detail">按钮按一条规则检查文字。错误提示会取代辅助说明，文字合格后随即消失。</string>
+    <string name="fields_code_label">邀请码</string>
+    <string name="fields_code_hint">六位数字</string>
+    <string name="fields_code_helper">可以在邀请消息里找到。</string>
+    <string name="fields_code_error">请输入完整的六位数字。</string>
+    <string name="fields_code_check">检查</string>
+    <string name="fields_code_waiting">尚未检查。</string>
+    <string name="fields_code_rejected">已检查：邀请码不是六位。</string>
+    <string name="fields_code_accepted">已检查：%1$s 通过。</string>
+    <string name="fields_code_said">邀请码已通过</string>
+
+    <string name="fields_forms_title">其他形态</string>
+    <string name="fields_forms_detail">多行文字、用于配置的等宽字体，以及停用的文本框。</string>
+    <string name="fields_note_label">备注</string>
+    <string name="fields_note_text">等窑完全冷却后再开。\n釉面遇到冷空气会开裂。</string>
+    <string name="fields_config_label">配置</string>
+    <string name="fields_locked_label">设备名称</string>
+    <string name="fields_locked_text">三号窑</string>
+    <string name="fields_locked_helper">由管理员设定。</string>
+    <string name="fields_locked_enable">启用文本框</string>
+    <string name="fields_locked_disable">停用文本框</string>
+
+    <string name="fields_origin">凹槽、内边距、15 sp 的文字和上方的标签取自原应用。辅助说明、错误提示、计数、两种末端操作，以及聚焦和出错时的描边，是三彩新增的。</string>
+</resources>

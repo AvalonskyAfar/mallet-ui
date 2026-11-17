@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The cards of the "Built from XML" page. Everything here is declared, not built in code;
+    XmlPage.kt only finds the views by id and adds listeners.
+
+    The part between the two "sample" markers is shown on the page as its own source.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:orientation="vertical">
+
+    <!-- sample:begin -->
+    <io.github.avalonskyafar.sancai.widget.SancaiHeading
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sancaiDetail="@string/xml_filter_detail"
+        app:sancaiTitle="@string/xml_filter_title" />
+
+    <io.github.avalonskyafar.sancai.widget.SancaiSurface
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <io.github.avalonskyafar.sancai.widget.SancaiControlRow
+            android:id="@+id/xml_strength"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:sancaiOptions="@array/xml_levels"
+            app:sancaiSelectedIndex="2"
+            app:sancaiTitle="@string/xml_strength" />
+
+        <io.github.avalonskyafar.sancai.widget.SancaiControlRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:sancaiDetail="@string/xml_wifi_detail"
+            app:sancaiTitle="@string/xml_wifi">
+
+            <io.github.avalonskyafar.sancai.widget.SancaiSwitch
+                android:id="@+id/xml_wifi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:sancaiChecked="true" />
+        </io.github.avalonskyafar.sancai.widget.SancaiControlRow>
+
+        <io.github.avalonskyafar.sancai.widget.SancaiDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp" />
+
+        <io.github.avalonskyafar.sancai.widget.SancaiEntryRow
+            android:id="@+id/xml_exceptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:sancaiDetail="@string/xml_exceptions_detail"
+            app:sancaiEntryArrow="end"
+            app:sancaiTitle="@string/xml_exceptions" />
+    </io.github.avalonskyafar.sancai.widget.SancaiSurface>
+    <!-- sample:end -->
+
+    <io.github.avalonskyafar.sancai.widget.SancaiHeading
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        app:sancaiDetail="@string/xml_profile_detail"
+        app:sancaiTitle="@string/xml_profile_title" />
+
+    <io.github.avalonskyafar.sancai.widget.SancaiSurface
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:sancaiContentPadding="14dp">
+
+        <io.github.avalonskyafar.sancai.widget.SancaiTextField
+            android:id="@+id/xml_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/xml_name_hint"
+            app:sancaiFieldCounter="24"
+            app:sancaiFieldEndAction="clear"
+            app:sancaiFieldHelper="@string/xml_name_helper"
+            app:sancaiFieldLabel="@string/xml_name" />
+
+        <io.github.avalonskyafar.sancai.widget.SancaiCheckbox
+            android:id="@+id/xml_remember"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/xml_remember"
+            app:sancaiChecked="true"
+            app:sancaiGlaze="celadon" />
+    </io.github.avalonskyafar.sancai.widget.SancaiSurface>
+
+    <io.github.avalonskyafar.sancai.widget.SancaiText
+        android:id="@+id/xml_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:text="@string/xml_status_idle"
+        app:sancaiTextRole="caption"
+        app:sancaiTone="muted" />
+
+    <io.github.avalonskyafar.sancai.widget.SancaiButton
+        android:id="@+id/xml_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="30dp"
+        android:text="@string/xml_save"
+        app:sancaiButtonVariant="primary"
+        app:sancaiIcon="check" />
+</LinearLayout>

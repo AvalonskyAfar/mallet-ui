@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="reveal_swipe_title">Swipe a row aside</string>
+    <string name="reveal_swipe_detail">Drag a row away from the start side. Past two fifths of the strip it stays open; a tap on the row closes it. The switches keep their own drag.</string>
+    <string name="reveal_rule_ads">Block ads</string>
+    <string name="reveal_rule_trackers">Block trackers</string>
+    <string name="reveal_rule_popups">Block pop-ups</string>
+    <string name="reveal_rule_autoplay">Stop autoplay</string>
+    <string name="reveal_delete">Delete</string>
+    <string name="reveal_removed">Removed “%1$s”</string>
+    <string name="reveal_restore">Restore rows</string>
+    <string name="reveal_restored">All four rows are back</string>
+    <string name="reveal_status">%1$d of 4 rows left, %2$d switched on</string>
+    <string name="reveal_empty">No rows left. Restore them below.</string>
+
+    <string name="reveal_end_title">Action at the end side</string>
+    <string name="reveal_end_detail">The same row with revealEdge = END and an accent action. The second row was opened from code.</string>
+    <string name="reveal_site_news">Morning news</string>
+    <string name="reveal_site_video">Video site</string>
+    <string name="reveal_pin">Pin</string>
+    <string name="reveal_pinned">Pinned “%1$s”</string>
+    <string name="reveal_opened">“%1$s” is open</string>
+
+    <string name="reveal_expand_title">Expand</string>
+    <string name="reveal_expand_detail">Tap a header. The body grows from its top edge and the chevron turns with it.</string>
+    <string name="reveal_expand_status">%1$d of %2$d sections open</string>
+    <string name="reveal_topic_what">What moves</string>
+    <string name="reveal_topic_what_body">Only the height of the body changes. The text stays anchored at its top edge and is clipped at the bottom, as if a cover slid away.</string>
+    <string name="reveal_topic_motion">A change of mind</string>
+    <string name="reveal_topic_motion_body">Tap again while the section is moving and it turns around from where it is. Nothing fades and nothing scales.</string>
+    <string name="reveal_topic_keys">Without touch</string>
+    <string name="reveal_topic_keys_body">With the header focused, Enter or Space toggles the section. A screen reader hears whether it is expanded or collapsed.</string>
+
+    <string name="reveal_note">The row that slides aside for Delete is extracted from the original app. The end edge, the tones and icons of the action and the expandable section are new in Sancai.</string>
+</resources>
