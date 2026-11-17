@@ -207,6 +207,24 @@ class SancaiCalloutFlowTest {
     }
 
     @Test
+    fun `flow row columns are equal without an exact width`() {
+        // The test runtime is newer than Android 6, where the columns differed; this pins the
+        // equal share, which the second measuring pass must not disturb.
+        val row = SancaiFlowRow(context)
+        row.setSteps("Go" to null, "Review everything" to null)
+        val unbounded = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        for (spec in listOf(unbounded, View.MeasureSpec.makeMeasureSpec(px(600f), View.MeasureSpec.AT_MOST))) {
+            row.forceLayout()
+            row.measure(spec, unbounded)
+            row.layout(0, 0, row.measuredWidth, row.measuredHeight)
+            val columns = row.columns()
+            assertThat(columns[0].width).isGreaterThan(0)
+            assertThat(columns[1].width.toFloat()).isWithin(1f).of(columns[0].width.toFloat())
+            assertThat(columns.sumOf { it.width } + row.arrows().sumOf { it.width }).isEqualTo(row.width)
+        }
+    }
+
+    @Test
     fun `flow row step is a centred title over a muted detail four dp below`() {
         val row = flow(3)
         Snapshots.layout(row, 340)

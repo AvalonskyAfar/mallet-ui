@@ -272,6 +272,53 @@ class SancaiTopBarTest {
     }
 
     @Test
+    fun `enabling the bar again keeps a button the app disabled on its own disabled`() {
+        var clicks = 0
+        val bar = bar()
+        bar.setNavigation { clicks += 100 }
+        val save = bar.addAction(SancaiIcon.SEARCH, "Search") { clicks++ }
+        val other = bar.addAction(SancaiIcon.PLUS, "Add") { clicks += 10 }
+        save.isEnabled = false
+        bar.isEnabled = false
+        assertThat(other.isEnabled).isFalse()
+        bar.isEnabled = true
+        assertThat(save.isEnabled).isFalse()
+        assertThat(other.isEnabled).isTrue()
+        // Also when the bar was enabled all along.
+        bar.isEnabled = true
+        assertThat(save.isEnabled).isFalse()
+        Snapshots.attach(bar)
+        Touch.tap(bar, centreX(save), bar.height / 2f)
+        Touch.tap(bar, centreX(other), bar.height / 2f)
+        Snapshots.idle()
+        assertThat(clicks).isEqualTo(10)
+
+        // A button enabled while the bar is disabled waits for the bar.
+        bar.isEnabled = false
+        save.isEnabled = true
+        assertThat(save.isEnabled).isFalse()
+        bar.isEnabled = true
+        assertThat(save.isEnabled).isTrue()
+
+        // Changing the navigation icon does not enable a navigation button disabled on its own.
+        val nav = bar.navigationButton!!
+        nav.isEnabled = false
+        bar.setNavigation(SancaiIcon.CHEVRON_LEFT, null) { clicks += 100 }
+        assertThat(nav.isEnabled).isFalse()
+    }
+
+    @Test
+    fun `buttons draw their own focus rim without the platform highlight`() {
+        val bar = bar()
+        bar.setNavigation { }
+        val action = bar.addAction(SancaiIcon.SEARCH, "Search") { }
+        if (android.os.Build.VERSION.SDK_INT >= 26) {
+            assertThat(bar.navigationButton!!.defaultFocusHighlightEnabled).isFalse()
+            assertThat(action.defaultFocusHighlightEnabled).isFalse()
+        }
+    }
+
+    @Test
     fun `enter and space operate a focused button, other keys are not consumed`() {
         var clicks = 0
         val bar = bar()
@@ -348,6 +395,22 @@ class SancaiTopBarTest {
         WindowInsetsCompat.Builder()
             .setInsets(WindowInsetsCompat.Type.systemBars(), Insets.of(left, top, right, 0))
             .build()
+
+    @Test
+    fun `a bar that joins a screen late asks for the window insets`() {
+        var asked = 0
+        val parent = object : android.widget.FrameLayout(context) {
+            @Suppress("OVERRIDE_DEPRECATION")
+            override fun requestFitSystemWindows() {
+                asked++
+                super.requestFitSystemWindows()
+            }
+        }
+        Snapshots.attach(parent, 360)
+        asked = 0
+        parent.addView(SancaiTopBar(context))
+        assertThat(asked).isEqualTo(1)
+    }
 
     @Test
     fun `status bar inset is added above the bar and passed on`() {

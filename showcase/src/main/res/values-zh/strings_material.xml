@@ -4,7 +4,7 @@
     <string name="material_porcelain_detail">卡片和胶囊的凸起主体：一圈细边，一道垂直落下的柔和阴影。</string>
     <string name="material_porcelain_card">一张卡片。细边、阴影，内边距 9 dp。</string>
     <string name="material_porcelain_flat">平面卡片。只留细边，不带阴影。</string>
-    <string name="material_porcelain_lifted">同一张卡片，抬起之后。视图略微变大，好容下阴影。</string>
+    <string name="material_porcelain_lifted">同一张卡片，抬起之后。主体略微内收，好给阴影留出位置。</string>
     <string name="material_porcelain_lift">抬起平面卡片</string>
     <string name="material_porcelain_flatten">放平</string>
     <string name="material_porcelain_glazed">上釉胶囊</string>

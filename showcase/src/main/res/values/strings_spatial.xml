@@ -24,7 +24,7 @@
 
     <string name="spatial_neighbour_title">Another activity as a neighbour</string>
     <string name="spatial_neighbour_detail">A second activity can arrive and leave like a page of the map.</string>
-    <string name="spatial_neighbour_body">The button starts a separate activity. It glides in from the end side over a picture of this screen, and it can be dragged back out or left with system back.</string>
+    <string name="spatial_neighbour_body">The button starts a separate activity. It glides in from the end side while a picture of this screen glides out the other way, and it can be dragged back out or left with system back.</string>
     <string name="spatial_neighbour_open">Open the neighbour</string>
 
     <string name="spatial_back_title">System back</string>

@@ -39,7 +39,8 @@ The source is a single-purpose Android app with an unusually deliberate interfac
   snapshot-based transitions between activities.
 - **Gaps.** One button variant in use; no text-field component, checkbox, radio, slider,
   menu, sheet, tab, app bar, progress or loading indicator; no disabled, focused or keyboard
-  state anywhere; no screen-reader semantics on the custom controls; no right-to-left
+  state anywhere; only content descriptions, no roles or actions, for screen readers on the
+  custom controls; no right-to-left
   support; strings and product copy inside views; minimum Android 11; phone portrait only.
 
 Sancai keeps the idea and the interaction model, states them as tokens and rules, makes the
@@ -53,12 +54,12 @@ parts usable from XML and code by any app, and fills the gaps in the same langua
 
 | Sancai | Mark | Origin | Kept | Changed or added |
 |---|---|---|---|---|
-| `SancaiColors` | Extracted | `UiKit.java:82-115` | every neutral and semantic value, light and dark, and the high-contrast variants of muted, hairline and divider | role names; `warning` darkened in light ([D-07](#d-07)); semantic roles strengthened in high contrast ([D-08](#d-08)); `contrast()` |
+| `SancaiColors` | Extracted | `UiKit.java:82-115`, `460-465` | every neutral and semantic value, light and dark, and the high-contrast variants of muted, hairline and divider | role names; `warning` darkened in light ([D-07](#d-07)); semantic roles strengthened in high contrast ([D-08](#d-08)); `contrast()` |
 | `SancaiGlaze`, `SancaiGlazes` | Extracted | `UiKit.java:54-66`, `2541-2609` | the five bed and edge colours; label colours on each bed; the 2 / 3 / 4-option scale | glazes are data instead of label-count logic ([D-02](#d-02)); `uniform()`; mist as a general neutral glaze |
 | `SancaiTheme` | Extended | `UiKit.java:126-142`, `196-212`; `AppPreferences.java` | text scale 1.13, high contrast, reduced motion, haptics as theme flags | resolution from context, resolver or XML attributes ([D-01](#d-01)); night glaze ([D-03](#d-03)); system settings as defaults |
 | `SancaiTextRole`, `SancaiTextTone` | Extended | `UiKit.java:284-315`, `ReadingLayoutSpec.java` | recurring sizes, medium weight for titles, no font padding, body leading | eleven named roles instead of about twenty literals ([D-05](#d-05)) |
-| `SancaiSpacing` | Extracted | `UiKit.java:329-334`, `MainActivity.java:402-460`, `1217-1227` | page padding 12 / 22 / 34, heading and section gaps, card padding 9 | names |
-| `SancaiMotion` | Extracted | `MotionSpec.java`, `UiKit.java:263-265`, `res/interpolator/gk_spatial.xml` | the curve, 260 / 420 / 320 / 220 / 55 ms, the 28 % commit rule, the settle formula | one settle formula and a density-based flick threshold ([D-06](#d-06)) |
+| `SancaiSpacing` | Extracted | `UiKit.java:267`, `329-334`, `MainActivity.java:402-460`, `1217-1227` | page padding 12 / 22 / 34, heading and section gaps, card padding 9 | names |
+| `SancaiMotion` | Extracted | `MotionSpec.java`, `UiKit.java:263-265`, `1071`, `1324`, `1459-1464`, `1622-1635`, `res/interpolator/gk_spatial.xml` | the curve, 260 / 420 / 320 / 220 / 55 ms, the 28 % commit rule, the settle formula | one settle formula and a density-based flick threshold ([D-06](#d-06)) |
 | `SancaiMaterial` | Extracted | `UiKit.java:1663-1937` | layer order, gradient stops, alphas, stroke widths, gutters of card, track and thumb, in both themes | one public painter instead of private statics; focus rim; pressed porcelain; repaint without lift |
 | `SancaiSurfaceDrawable`, `SancaiWellDrawable` | Extracted | `UiKit.java:1939-2046`, `2185-2242` | card, capsule, dialog and well materials | split-corner cards from `2330-2448` folded in; solid rims for focus and error |
 | `SancaiIcon`, `SancaiIconPainter` | Extended | `UiKit.java:847-927`, `2823-2831`; `MainActivity.java:357-399` | six glyphs: chevron, arrow, power ring, book, sliders, more | forty-four further icons drawn for Sancai; drawable and view; RTL mirroring ([D-10](#d-10)) |
@@ -68,15 +69,15 @@ parts usable from XML and code by any app, and fills the gaps in the same langua
 
 | Sancai | Mark | Origin | Kept | Changed or added |
 |---|---|---|---|---|
-| `SancaiSegmentedTrack` | Extracted | `UiKit.java:2450-2720` | geometry (60 dp view, 52 dp capsule, 4 dp inset), finger-following thumb, glaze blending, label rules, vertical abort, listener-then-haptic | any number of options, any glazes; XML; RTL; keys; saved state; one accessibility element per option; disabled; shrink-to-fit labels |
-| `SancaiSwitch` | Extracted | `UiKit.java:525-684` | 61 × 34 dp, thumb and travel, tap and drag | glaze properties; RTL; keys; saved state; `Switch` role |
-| `SancaiPowerSwitch` | Extracted | `UiKit.java:2722-2930` | 92 dp view, 80 dp capsule, thumb width rule, glyph and two labels that flip at mid-travel, deep shadow | labels as properties instead of product copy ([D-11](#d-11)); glazes; RTL; keys; saved state |
+| `SancaiSegmentedTrack` | Extracted | `UiKit.java:506`, `2450-2720` | geometry (60 dp view, 52 dp capsule, 4 dp inset), finger-following thumb, glaze blending, label rules, vertical abort, listener-then-haptic | any number of options, any glazes; XML; RTL; keys; saved state; one accessibility element per option; disabled; shrink-to-fit labels |
+| `SancaiSwitch` | Extracted | `UiKit.java:525-684`, `WhitelistAccountsPage.java:234` | 61 × 34 dp, thumb and travel, tap and drag | glaze properties; RTL; keys; saved state; `Switch` role |
+| `SancaiPowerSwitch` | Extracted | `UiKit.java:2722-2930`, `MainActivity.java:287` | 92 dp view, 80 dp capsule, thumb width rule, glyph and two labels that flip at mid-travel, deep shadow | labels as properties instead of product copy ([D-11](#d-11)); glazes; RTL; keys; saved state |
 | `SancaiStepper` | Extended | `UiKit.java:686-793`, `DeveloperOptionsActivity.java:548-592` | three zones 1 : 1.35 : 1, fixed centre thumb with the value, marks on the bed | owns its value, range and step; hold to repeat; paled marks at the bounds; edit request; `SeekBar` role |
 | `SancaiButton` | Extended | `UiKit.java:977-989`, `1065-1084` | capsule, padding 22 × 13 dp, 14.5 sp medium, sink on press | primary, destructive and text variants; icon; loading; disabled; focus ([D-12](#d-12)) |
 | `SancaiCheckbox`, `SancaiRadioButton`, `SancaiRadioGroup` | New | — | — | a small bed that fills with glaze; see [D-13](#d-13) |
 | `SancaiSlider` | New | — | — | a slim track glazed from the start to a neutral bead; see [D-14](#d-14) |
 | `SancaiProgressBar`, `SancaiSpinner` | New | the ring of `UiKit.java:2823-2831` | the 276° open ring | see [D-15](#d-15) |
-| `SancaiTextField` | Extended | `UiKit.java:1488-1505`, `WhitelistAccountsPage.java:89-109`, `ConfigEditorActivity.java:68-79` | the recessed well, 13 × 11 dp padding, label above | text on the scale (15.5 sp instead of 15); one component with label, helper, error, counter, end actions, focus and error rims |
+| `SancaiTextField` | Extended | `UiKit.java:1488-1505`, `WhitelistAccountsPage.java:89-109` (13 × 11 dp, 15 sp); `ConfigEditorActivity.java:68-79` (well only) | the recessed well, 13 × 11 dp padding, label above | text on the scale (15.5 sp instead of 15); one component with label, helper, error, counter, end actions, focus and error rims |
 | `SancaiChip`, `SancaiChipGroup`, `SancaiTag`, `SancaiBadge` | New | — | — | porcelain capsules that glaze when checked; glazed status tags; see [D-16](#d-16) |
 
 ### 2.3 Layout and reading
@@ -105,7 +106,7 @@ parts usable from XML and code by any app, and fills the gaps in the same langua
 | `SancaiThemeTransition` | Extracted | `UiKit.java:144-194`; `MainActivity.java:1278-1289` | capture before recreation, 300 ms fade, delay until the control has settled | bounded store; survives undrawable content |
 | `SancaiPress` | Extracted | `UiKit.java:1065-1084` | 1.5 dp sink in 55 ms, instant return before the click | usable on any view |
 | `SancaiHaptics` | Extended | `UiKit.java:1086-1088` | tick on commit, honouring the preference | detent, confirm, reject, long press |
-| `SancaiHorizontalDragOwner` | Extended | `MainActivity.java:1841-1860`; `UiKit.java:1381-1397` | controls keep horizontal drags that start on them | a marker interface instead of `instanceof` lists of four classes |
+| `SancaiHorizontalDragOwner` | Extended | `MainActivity.java:1841-1860`; `UiKit.java:1381-1397` | controls keep horizontal drags that start on them | a marker interface instead of `instanceof` lists of the four control classes |
 | `SancaiRevealLayout` | Extracted | `WhitelistAccountsPage.java:206-280`; `UiKit.java:2244-2328` | 78 dp strip, 42 % threshold, flat row fill, recessed coloured bed, switch keeps its gesture | either edge; sibling closing; accessibility and keyboard access |
 | `SancaiPager`, `SancaiPageIndicator` | Extracted | `FirstLaunchActivity.java:263-277`, `330-543` | finger-following pages, 22 % / 0.45-width commit, linked heading, dots | adapter; RTL; saved state; blending dots |
 | `SancaiExpandableLayout` | New | — | — | see [D-18](#d-18) |
@@ -116,7 +117,7 @@ parts usable from XML and code by any app, and fills the gaps in the same langua
 
 | Sancai | Mark | Origin | Kept | Changed or added |
 |---|---|---|---|---|
-| `SancaiDialog` | Extracted | `UiKit.java:1474-1640` | card radius 16, padding, centred title and message, full-bleed divider, 54 dp text actions, dim 0.27, width rule, 320 ms rise, closing guard, in-dialog error capsule | builder; one to three actions; stacking; scrolling message; input variant |
+| `SancaiDialog` | Extracted | `UiKit.java:1414-1428`, `1474-1640` | card radius 16, padding, centred title and message, full-bleed divider, 54 dp text actions, dim 0.27, width rule, 320 ms rise, closing guard, in-dialog error capsule | builder; one to three actions; stacking; scrolling message; input variant |
 | `SancaiToast` | Extended | `UiKit.java:1414-1472` | capsule, rise of 18 dp, 2600 ms, replacement rule, no fade | text on the `FOOTNOTE` role (13.5 sp instead of 13); success tone; one action; insets; announcement |
 | `SancaiFloatingPanel` | Extracted | `StatusOverlayController.java`; `UiKit.java:2048-2183` | draggable porcelain panel, radius 10 | usable inside any window; clamping; saved position |
 | `SancaiMenu`, `SancaiBottomSheet` | New | — | — | see [D-20](#d-20) |
@@ -148,7 +149,7 @@ The original drew every dark track as the same neutral groove and left state to 
 position and tinted labels. That is restrained, but it gives up the central idea, colour as
 state, exactly where a control has no labels: a dark switch looked the same on and off
 except for the bead. Blending 30 % of the bed colour into the groove keeps the scale visible
-without glare; label contrast on those beds is 5.8 : 1 or better. Setting `nightGlaze` to 0
+without glare; label contrast on those beds is 5.5 : 1 or better. Setting `nightGlaze` to 0
 restores the original.
 
 ### D-04
@@ -159,7 +160,8 @@ graph. The gesture logic is unchanged; only its knowledge of the pages moved int
 
 ### D-05
 **Eleven type roles replace about twenty sizes.**
-Sizes within half a point of one another (19.2 and 20; 11.5, 11.8 and 12; 13 and 13.5; 14, 14.5 and 15)
+Sizes within half a point of one another (19.2 and 20; 11.5, 11.8 and 12; 13 and 13.5; 14,
+14.5 and 15)
 were merged into the nearest recurring value. Only the label sizes that belong to the
 geometry of the two signature controls stay inside them: 12.2 and 11.2 in the segmented
 track, 14 in the power switch. The merge moves some text by up to half a point (the field

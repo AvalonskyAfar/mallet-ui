@@ -6,8 +6,9 @@ import android.view.View
 import io.github.avalonskyafar.sancai.theme.SancaiTheme
 
 /**
- * The haptic vocabulary of Sancai. Every call is a no-op when [SancaiTheme.haptics] is off,
- * and each effect falls back to the nearest one the running Android version offers.
+ * The haptic vocabulary of Sancai. Every call is a no-op when [SancaiTheme.haptics] is off.
+ * Each effect falls back to the nearest one the running Android version offers; [detent] is
+ * silent below Android 8.1.
  *
  * | Effect | Meaning |
  * |---|---|

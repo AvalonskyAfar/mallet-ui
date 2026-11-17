@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Parcelable
 import android.util.SparseArray
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.LinearLayout
@@ -111,6 +112,42 @@ class SancaiPowerSwitchTest {
         assertThat(calls[0]).isEqualTo(1)
         // Dragging further towards the on side changes nothing.
         Touch.drag(view, view.width * 0.5f, view.midY, view.width * 0.9f, view.midY)
+        assertThat(view.isChecked).isTrue()
+        assertThat(calls[0]).isEqualTo(1)
+    }
+
+    @Test
+    fun `a second finger changes nothing once the first has lifted`() {
+        val view = power()
+        val calls = view.count()
+        val y = view.midY
+        val a = view.width * 0.9f
+        val b = view.width * 0.3f
+        Touch.drag(view, view.width * 0.2f, y, a, y, release = false)
+        Touch.multi(view, MotionEvent.ACTION_POINTER_DOWN, 1, Touch.Finger(0, a, y), Touch.Finger(1, b, y))
+        Touch.multi(view, MotionEvent.ACTION_POINTER_UP, 0, Touch.Finger(0, a, y), Touch.Finger(1, b, y))
+        assertThat(view.isChecked).isTrue()
+        assertThat(calls[0]).isEqualTo(1)
+        Touch.multi(view, MotionEvent.ACTION_MOVE, 0, Touch.Finger(1, view.width * 0.15f, y))
+        Touch.multi(view, MotionEvent.ACTION_MOVE, 0, Touch.Finger(1, 0f, y))
+        Touch.multi(view, MotionEvent.ACTION_UP, 0, Touch.Finger(1, 0f, y))
+        assertThat(view.isChecked).isTrue()
+        assertThat(calls[0]).isEqualTo(1)
+        val rest = power(checked = true)
+        assertThat(Snapshots.render(view, WIDTH_DP).sameAs(Snapshots.render(rest, WIDTH_DP))).isTrue()
+    }
+
+    @Test
+    fun `a tap with a second finger resting on the switch is one tap`() {
+        val view = power()
+        val calls = view.count()
+        val y = view.midY
+        val a = view.width * 0.5f
+        val b = view.width * 0.8f
+        Touch.dispatch(view, MotionEvent.ACTION_DOWN, a, y)
+        Touch.multi(view, MotionEvent.ACTION_POINTER_DOWN, 1, Touch.Finger(0, a, y), Touch.Finger(1, b, y))
+        Touch.multi(view, MotionEvent.ACTION_POINTER_UP, 0, Touch.Finger(0, a, y), Touch.Finger(1, b, y))
+        Touch.multi(view, MotionEvent.ACTION_UP, 0, Touch.Finger(1, b, y))
         assertThat(view.isChecked).isTrue()
         assertThat(calls[0]).isEqualTo(1)
     }

@@ -44,7 +44,11 @@ import kotlin.math.roundToInt
  *   the usual elements with the usual gaps. Padding given in XML replaces the default.
  * - **Edge to edge.** While [fitSystemBars] is on, the system-bar and display-cutout insets
  *   are added to the padding, and the keyboard inset to the bottom. Padding is not clipped,
- *   so content scrolls underneath the bars instead of being cut off above them.
+ *   so content scrolls underneath the bars instead of being cut off above them. A page asks
+ *   for the insets whenever it is attached, so it is also right when it joins a screen late.
+ * - **Width.** The column grows no wider than [maxContentWidthDp] (560 dp) and stands in the
+ *   middle of a wider page, so that on a tablet, or on a phone lying on its side, a title and
+ *   its control do not drift to opposite ends of the screen.
  * - **Stillness.** There are no scroll bars, and the over-scroll effect only exists while the
  *   content is taller than the page: a short page does not move at all.
  * - **State.** The scroll position is saved and restored. As for any view, this needs an id.
@@ -91,12 +95,27 @@ public open class SancaiPage @JvmOverloads constructor(
             }
         }
 
+    /**
+     * The widest the column of the page gets, in dp. On a wider page the column keeps this
+     * width and is centred. Zero or less lets the column fill the page.
+     */
+    public var maxContentWidthDp: Float = DEFAULT_MAX_CONTENT_WIDTH_DP
+        set(value) {
+            if (field != value) {
+                field = value
+                requestLayout()
+            }
+        }
+
     init {
         var fit = true
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.SancaiPage, defStyleAttr, 0)
             try {
                 fit = a.getBoolean(R.styleable.SancaiPage_sancaiPageFitSystemBars, true)
+                if (a.hasValue(R.styleable.SancaiPage_sancaiPageMaxContentWidth)) {
+                    maxContentWidthDp = a.getDimension(R.styleable.SancaiPage_sancaiPageMaxContentWidth, 0f) / density
+                }
             } finally {
                 a.recycle()
             }
@@ -124,7 +143,9 @@ public open class SancaiPage @JvmOverloads constructor(
         super.addView(
             content,
             -1,
-            FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT),
+            FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL,
+            ),
         )
 
         fitSystemBars = fit
@@ -359,6 +380,25 @@ public open class SancaiPage @JvmOverloads constructor(
         }
     }
 
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        // Android hands the window insets down when they change, not when a view arrives. A
+        // page attached later (by a page host, a pager, a fragment) has to ask for them.
+        if (fitSystemBars) ViewCompat.requestApplyInsets(this)
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        // The column takes the room between the paddings, up to its limit. The width is given
+        // to it as a size of its own, because a scroll view measures its child twice when it
+        // stretches it to the viewport, and both times from the child's layout parameters.
+        val room = MeasureSpec.getSize(widthMeasureSpec) - paddingLeft - paddingRight
+        val limit = px(maxContentWidthDp)
+        val capped = maxContentWidthDp > 0f && room > limit &&
+            MeasureSpec.getMode(widthMeasureSpec) != MeasureSpec.UNSPECIFIED
+        content.layoutParams.width = if (capped) limit else ViewGroup.LayoutParams.MATCH_PARENT
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    }
+
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         super.onLayout(changed, l, t, r, b)
         if (pendingScrollY >= 0) {
@@ -401,7 +441,10 @@ public open class SancaiPage @JvmOverloads constructor(
         if (delta != 0) scrollBy(0, delta)
     }
 
-    private companion object {
+    public companion object {
+        /** The widest the column of a page gets unless [maxContentWidthDp] says otherwise, in dp. */
+        public const val DEFAULT_MAX_CONTENT_WIDTH_DP: Float = 560f
+
         private const val STATE_SUPER = "sancai:page:super"
         private const val STATE_SCROLL = "sancai:page:scroll"
         private val WEIGHT_ATTR = intArrayOf(android.R.attr.layout_weight)

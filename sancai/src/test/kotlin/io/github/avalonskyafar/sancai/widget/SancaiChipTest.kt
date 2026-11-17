@@ -335,6 +335,62 @@ class SancaiChipTest {
     // ---------------------------------------------------------------------------------------
 
     @Test
+    fun `chip disabled or left by the window under a press comes back up`() {
+        val view = chip()
+        val rest = draw(view)
+        Touch.dispatch(view, android.view.MotionEvent.ACTION_DOWN, view.width / 2f, view.height / 2f)
+        assertThat(draw(view).sameAs(rest)).isFalse()
+        view.isEnabled = false
+        view.isEnabled = true
+        assertThat(draw(view).sameAs(rest)).isTrue()
+        assertThat(view.isChecked).isFalse()
+
+        val code = KeyEvent.KEYCODE_SPACE
+        view.onKeyDown(code, KeyEvent(KeyEvent.ACTION_DOWN, code))
+        assertThat(draw(view).sameAs(rest)).isFalse()
+        view.onWindowFocusChanged(false)
+        assertThat(draw(view).sameAs(rest)).isTrue()
+        // The key-up that still arrives finds no press to finish.
+        assertThat(view.onKeyUp(code, KeyEvent(KeyEvent.ACTION_UP, code))).isFalse()
+        assertThat(view.isChecked).isFalse()
+    }
+
+    @Test
+    fun `chip detached in mid-glide is measured again when it comes back`() {
+        val view = SancaiChip(Snapshots.context(light)).apply {
+            text = "Unread"
+            kind = SancaiChip.Kind.FILTER
+        }
+        val inner = LinearLayout(view.context)
+        inner.addView(view, LinearLayout.LayoutParams(-2, -2))
+        val outer = LinearLayout(view.context)
+        outer.addView(inner, LinearLayout.LayoutParams(-2, -2))
+        Snapshots.attach(outer)
+        val plain = view.width
+        view.setChecked(true, animate = false)
+        Snapshots.idle()
+        val grown = view.width
+        assertThat(grown).isGreaterThan(plain)
+
+        // A layout pass while the glide back is under way: nothing is pending after it.
+        view.setChecked(false, animate = true)
+        outer.measure(
+            MeasureSpec.makeMeasureSpec(outer.width, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(outer.height, MeasureSpec.EXACTLY),
+        )
+        outer.layout(outer.left, outer.top, outer.right, outer.bottom)
+        assertThat(view.isLayoutRequested).isFalse()
+        assertThat(view.width).isEqualTo(grown)
+
+        // The page is taken away and put back with the same room.
+        outer.removeView(inner)
+        assertThat(view.isLayoutRequested).isTrue()
+        outer.addView(inner, LinearLayout.LayoutParams(-2, -2))
+        Snapshots.idle()
+        assertThat(view.width).isEqualTo(plain)
+    }
+
+    @Test
     fun `empty group takes no room and a narrow group clamps its chips`() {
         val empty = group(labels = emptyList())
         assertThat(empty.height).isEqualTo(0)
@@ -452,6 +508,53 @@ class SancaiChipTest {
         view.chipAt(3).setChecked(true, animate = false)
         view.isSingleSelection = true
         assertThat(view.checkedChipIds).containsExactly(view.chipAt(1).id)
+    }
+
+    @Test
+    fun `change rolled back by the chip listener leaves the group as it was`() {
+        val view = group()
+        view.isSingleSelection = true
+        view.isSelectionRequired = true
+        view.chipAt(0).setChecked(true, animate = false)
+        val heard = mutableListOf<List<Int>>()
+        val first = mutableListOf<Boolean>()
+        view.setOnCheckedStateChangeListener { _, ids -> heard += ids }
+        view.chipAt(0).setOnCheckedChangeListener { _, checked -> first += checked }
+        view.chipAt(1).setOnCheckedChangeListener { chip, _ -> chip.setChecked(false, animate = false) }
+        view.chipAt(1).tapCentre()
+        assertThat(view.checkedChipIds).containsExactly(view.chipAt(0).id)
+        assertThat(heard).isEmpty()
+        assertThat(first).isEmpty()
+
+        // Several may be checked: the refused one is not reported either.
+        val many = group()
+        val told = mutableListOf<List<Int>>()
+        many.setOnCheckedStateChangeListener { _, ids -> told += ids }
+        many.chipAt(1).setOnCheckedChangeListener { chip, _ -> chip.setChecked(false, animate = false) }
+        many.chipAt(1).tapCentre()
+        many.chipAt(2).tapCentre()
+        assertThat(told).containsExactly(listOf(many.chipAt(2).id))
+    }
+
+    @Test
+    fun `key is not consumed by the one checked chip of a required selection`() {
+        val view = group()
+        view.isSelectionRequired = true
+        val only = view.chipAt(0)
+        only.setChecked(true, animate = false)
+        val rest = draw(only)
+        val code = KeyEvent.KEYCODE_ENTER
+        assertThat(only.onKeyDown(code, KeyEvent(KeyEvent.ACTION_DOWN, code))).isFalse()
+        // It does not sink either.
+        assertThat(draw(only).sameAs(rest)).isTrue()
+        assertThat(only.onKeyUp(code, KeyEvent(KeyEvent.ACTION_UP, code))).isFalse()
+        assertThat(only.isChecked).isTrue()
+
+        // With a second chip checked the key can act again.
+        view.chipAt(1).setChecked(true, animate = false)
+        assertThat(only.onKeyDown(code, KeyEvent(KeyEvent.ACTION_DOWN, code))).isTrue()
+        assertThat(only.onKeyUp(code, KeyEvent(KeyEvent.ACTION_UP, code))).isTrue()
+        assertThat(only.isChecked).isFalse()
     }
 
     @Test

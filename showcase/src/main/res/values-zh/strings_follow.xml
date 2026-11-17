@@ -3,7 +3,7 @@
     <string name="follow_drag_title">拖动，而不是点按</string>
     <string name="follow_drag_detail">整个手势里，滑块始终跟在指尖下面。</string>
     <string name="follow_level_off">关闭</string>
-    <string name="follow_level_gentle">温和</string>
+    <string name="follow_level_gentle">轻度</string>
     <string name="follow_level_standard">标准</string>
     <string name="follow_level_strict">严格</string>
     <string name="follow_drag_track_status">过滤：%1$s</string>
@@ -36,5 +36,5 @@
     <string name="follow_code_jumped">select(0, animate = false)：滑块直接跳到了“%1$s”。</string>
     <string name="follow_code_dragged">手动移到了“%1$s”。</string>
 
-    <string name="follow_origin">跟手的滑块、松手后的归位、随滑块流动的颜色，以及把竖向移动交还给页面的做法，都取自原应用的轨道和总开关。滑杆及其釉色渐变是为三彩新设计的。</string>
+    <string name="follow_origin">跟手的滑块、松手后的归位、随滑块流动的颜色，以及把竖向移动交还给页面的做法，都取自原应用的轨道和总开关。滑杆及其釉色阶是为三彩新设计的。</string>
 </resources>

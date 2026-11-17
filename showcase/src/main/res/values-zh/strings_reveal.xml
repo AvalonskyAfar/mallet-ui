@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="reveal_swipe_title">把一行拨到一边</string>
-    <string name="reveal_swipe_detail">从起始侧把行拖开。露出超过操作区的五分之二，松手后保持打开；轻点这一行即可合上。开关仍由自己响应拖动。</string>
+    <string name="reveal_swipe_detail" formatted="false">从起始侧把行拖开。露出超过操作区的 42 %，松手后保持打开；轻点这一行即可合上。开关仍由自己响应拖动。</string>
     <string name="reveal_rule_ads">拦截广告</string>
     <string name="reveal_rule_trackers">拦截跟踪器</string>
     <string name="reveal_rule_popups">拦截弹窗</string>

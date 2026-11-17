@@ -83,6 +83,8 @@ test run and is not part of any release artifact.
 
 ## 6. Fonts, images and other media
 
-None. Sancai UI uses the system typefaces of the device. The library and the Showcase app
+None. Sancai UI uses the system typefaces of the device. The sources of the library and the
+Showcase app
 contain no raster image, font file, sound or third-party vector asset; all drawings are
-produced by code in this repository.
+made in this repository (canvas code, plus the Showcase's own vector launcher icon). A built
+Showcase APK can still carry the stock PNG resources of `androidx.core` (Apache-2.0).

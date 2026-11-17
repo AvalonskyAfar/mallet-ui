@@ -75,8 +75,9 @@ Take `widget/SancaiSegmentedTrack.kt` (custom-drawn control) and `widget/SancaiB
 
 - **Listeners fire for user input only** (touch, keyboard, accessibility action). Setters
   called from code never call back. This is what makes "roll back inside the listener" safe.
-- **Listener shape.** A listener is a `fun interface OnXxxChangeListener` nested in its
-  widget, with one method `onXxxChanged(sender, value)` whose first parameter is the widget
+- **Listener shape.** A listener is a `fun interface` nested in its widget, named
+  `OnXxxChangeListener` (or for its event: `OnTabSelectedListener`, `OnDismissListener`),
+  with one method whose first parameter is the widget
   itself, typed. It is set with a function, `setOnXxxChangeListener(listener)`, never with a
   property: a function accepts a trailing lambda in Kotlin and a lambda in Java, a property
   needs the interface name spelled out. `null` removes the listener. A formatter is a

@@ -461,6 +461,13 @@ class SancaiToastTest {
     }
 
     @Test
+    fun `action draws its own focus rim without the platform highlight`() {
+        val view = action(pill(context, "Rule deleted", action = "Undo"))
+        assertThat(view.isFocusable).isTrue()
+        if (android.os.Build.VERSION.SDK_INT >= 26) assertThat(view.defaultFocusHighlightEnabled).isFalse()
+    }
+
+    @Test
     fun `snapshot of toasts`() {
         val light = Snapshots.capture(sheet(SancaiTheme.light()), "toast_light", 360)
         val dark = Snapshots.capture(sheet(SancaiTheme.dark()), "toast_dark", 360)

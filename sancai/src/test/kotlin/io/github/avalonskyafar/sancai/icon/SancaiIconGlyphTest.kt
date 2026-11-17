@@ -176,6 +176,21 @@ class SancaiIconGlyphTest {
     }
 
     @Test
+    fun `a drawable of no size counts as one pixel and still draws a finite stroke`() {
+        val context = Snapshots.context(SancaiTheme.light())
+        for (sizeDp in floatArrayOf(0f, -8f)) {
+            val drawable = SancaiIconDrawable(context, SancaiIcon.CHECK, Color.BLACK, sizeDp)
+            assertThat(drawable.intrinsicWidth).isEqualTo(1)
+            assertThat(drawable.intrinsicHeight).isEqualTo(1)
+            // A host that sets its own bounds: the stroke width stays a finite, positive number.
+            val bitmap = Bitmap.createBitmap(48, 48, Bitmap.Config.ARGB_8888)
+            drawable.setBounds(0, 0, 48, 48)
+            drawable.draw(Canvas(bitmap))
+            assertThat(Color.alpha(bitmap.getPixel(24, 30))).isEqualTo(255)
+        }
+    }
+
+    @Test
     fun `a filled dot is left in stroke mode for the next icon`() {
         // PALETTE ends with dots; CLOCK drawn afterwards must still be an outline.
         render(SancaiIcon.PALETTE)

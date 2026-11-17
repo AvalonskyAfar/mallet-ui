@@ -14,6 +14,7 @@ import android.text.InputType
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.text.method.PasswordTransformationMethod
+import android.text.method.SingleLineTransformationMethod
 import android.util.AttributeSet
 import android.util.SparseArray
 import android.util.TypedValue
@@ -33,6 +34,7 @@ import io.github.avalonskyafar.sancai.icon.SancaiIcon
 import io.github.avalonskyafar.sancai.icon.SancaiIconDrawable
 import io.github.avalonskyafar.sancai.interaction.SancaiHaptics
 import io.github.avalonskyafar.sancai.interaction.SancaiPress
+import io.github.avalonskyafar.sancai.internal.useOwnFocusRim
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.material.SancaiWellDrawable
 import io.github.avalonskyafar.sancai.theme.SancaiColors
@@ -53,7 +55,7 @@ import kotlin.math.roundToInt
  * popping. Everything that is not covered by a property is reachable through [editText].
  *
  * Several fields on one screen each restore their own text, error and password visibility,
- * provided each field has an id.
+ * and the one that was being typed in takes focus again, provided each field has an id.
  *
  * ```xml
  * <io.github.avalonskyafar.sancai.widget.SancaiTextField
@@ -215,21 +217,43 @@ public class SancaiTextField @JvmOverloads constructor(
 
     /**
      * The action inside the well at the end. [EndAction.PASSWORD_TOGGLE] hides the text and,
-     * when the input type is plain text, switches it to a password type.
+     * when the input type is plain text, switches it to a password type. Leaving it undoes
+     * both: the plain input type comes back and the text is shown again, unless the input
+     * type itself is a password type that was set through [inputType]. The selection is kept.
      */
     public var endAction: EndAction = EndAction.NONE
         set(value) {
             if (field == value) return
+            val leavingToggle = field == EndAction.PASSWORD_TOGGLE
             field = value
-            if (value == EndAction.PASSWORD_TOGGLE && editText.inputType == InputType.TYPE_CLASS_TEXT) {
-                quietly {
-                    editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            keepingSelection {
+                if (value == EndAction.PASSWORD_TOGGLE && editText.inputType == InputType.TYPE_CLASS_TEXT) {
+                    quietly {
+                        editText.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                    }
+                    passwordTypeFromToggle = true
+                    applyTextStyle()
+                } else if (leavingToggle) {
+                    if (passwordTypeFromToggle) {
+                        passwordTypeFromToggle = false
+                        quietly { editText.inputType = InputType.TYPE_CLASS_TEXT }
+                    }
+                    // Setting the input type again puts back the transformation that belongs to it.
+                    applyLines()
+                    // A type that is no password type (a number, text with flags) was hidden
+                    // by the transformation alone, which no input type takes away.
+                    val plain = if (multilineNow) null else SingleLineTransformationMethod.getInstance()
+                    if (!isPasswordType(editText.inputType) && editText.transformationMethod !== plain) {
+                        quietly { editText.transformationMethod = plain }
+                    }
                 }
-                applyTextStyle()
+                applyPassword()
             }
-            applyPassword()
             updateAction()
         }
+
+    /** Whether the password input type was put there by [endAction], not by the caller. */
+    private var passwordTypeFromToggle = false
 
     /**
      * Whether a password is shown as typed. Only has an effect with
@@ -269,8 +293,12 @@ public class SancaiTextField @JvmOverloads constructor(
     public var inputType: Int
         get() = editText.inputType
         set(value) {
-            quietly { editText.inputType = value }
-            applyLines()
+            // A type the caller chose is never undone by leaving the password toggle.
+            passwordTypeFromToggle = false
+            keepingSelection {
+                quietly { editText.inputType = value }
+                applyLines()
+            }
         }
 
     /**
@@ -331,6 +359,9 @@ public class SancaiTextField @JvmOverloads constructor(
 
         editText.id = R.id.sancai_text_field_edit
         editText.background = null
+        // The well and the action draw the focus rim themselves.
+        editText.useOwnFocusRim()
+        actionView.useOwnFocusRim()
         editText.minimumHeight = px(MIN_HEIGHT_DP)
         editText.includeFontPadding = false
         editText.setTextColor(colors.ink)
@@ -447,7 +478,10 @@ public class SancaiTextField @JvmOverloads constructor(
     private val multilineNow: Boolean
         get() = isMultiline && (editText.inputType and InputType.TYPE_MASK_CLASS) == InputType.TYPE_CLASS_TEXT
 
-    private fun applyLines() {
+    // Setting a password input type sets the text again, which would drop the cursor to 0.
+    private fun applyLines(): Unit = keepingSelection { applyLinesNow() }
+
+    private fun applyLinesNow() {
         val flag = InputType.TYPE_TEXT_FLAG_MULTI_LINE
         val isText = (editText.inputType and InputType.TYPE_MASK_CLASS) == InputType.TYPE_CLASS_TEXT
         val base = if (isText) editText.inputType and flag.inv() else editText.inputType
@@ -466,6 +500,15 @@ public class SancaiTextField @JvmOverloads constructor(
         applyPassword()
         updatePadding()
     }
+
+    /** Whether EditText itself hides text of this input type. */
+    private fun isPasswordType(type: Int): Boolean =
+        when (type and (InputType.TYPE_MASK_CLASS or InputType.TYPE_MASK_VARIATION)) {
+            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD,
+            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD,
+            InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_VARIATION_PASSWORD -> true
+            else -> false
+        }
 
     private fun applyPassword() {
         if (endAction != EndAction.PASSWORD_TOGGLE) return
@@ -672,6 +715,7 @@ public class SancaiTextField @JvmOverloads constructor(
             putSparseParcelableArray(STATE_CHILDREN, children)
             putCharSequence(STATE_ERROR, currentError)
             putBoolean(STATE_PASSWORD_VISIBLE, isPasswordVisible)
+            putBoolean(STATE_FOCUSED, editText.isFocused)
         }
     }
 
@@ -692,6 +736,19 @@ public class SancaiTextField @JvmOverloads constructor(
         isPasswordVisible = state.getBoolean(STATE_PASSWORD_VISIBLE, isPasswordVisible)
         applyError(state.getCharSequence(STATE_ERROR), feedback = false)
         supportAnimator?.end()
+        // Every field's text has the same id, so the window gives focus back to the first field
+        // on the screen. Posted, so that this runs after the window did that.
+        if (state.getBoolean(STATE_FOCUSED, false)) post { if (isEnabled) editText.requestFocus() }
+    }
+
+    /** Runs [block], which may set the text again, and puts the selection back afterwards. */
+    private inline fun keepingSelection(block: () -> Unit) {
+        val start = editText.selectionStart
+        val end = editText.selectionEnd
+        block()
+        if (start < 0 || end < 0) return
+        val length = editText.length()
+        editText.setSelection(start.coerceAtMost(length), end.coerceAtMost(length))
     }
 
     /** Runs [block] without telling the text listener: the change does not come from the user. */
@@ -779,5 +836,6 @@ public class SancaiTextField @JvmOverloads constructor(
         const val STATE_CHILDREN = "sancai:children"
         const val STATE_ERROR = "sancai:error"
         const val STATE_PASSWORD_VISIBLE = "sancai:passwordVisible"
+        const val STATE_FOCUSED = "sancai:focused"
     }
 }

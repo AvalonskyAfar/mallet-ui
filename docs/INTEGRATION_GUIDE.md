@@ -4,8 +4,10 @@ How to add Sancai UI to an Android app, use it from XML and from code, and make 
 
 Contents: [Requirements](#1-requirements) · [Add the library](#2-add-the-library) ·
 [First screen](#3-first-screen) · [From XML](#4-from-xml) · [From Kotlin](#5-from-kotlin) ·
-[From Java](#6-from-java) · [Theming](#7-theming) · [Windows and system bars](#8-windows-and-system-bars) ·
-[Living with other UI kits](#9-living-with-other-ui-kits) · [Custom views](#10-custom-views-in-the-same-language) ·
+[From Java](#6-from-java) · [Theming](#7-theming) · [Windows and system
+bars](#8-windows-and-system-bars) ·
+[Living with other UI kits](#9-living-with-other-ui-kits) · [Custom
+views](#10-custom-views-in-the-same-language) ·
 [Testing](#11-testing) · [Shrinking](#12-shrinking) · [Troubleshooting](#13-troubleshooting)
 
 ---
@@ -90,7 +92,7 @@ dependencies { implementation(project(":sancai")) }
 ```
 
 The module uses the version catalog `gradle/libs.versions.toml` of this repository; copy
-the entries it needs into yours.
+the entries its build script refers to (versions, libraries and the two plugins) into yours.
 
 ### 2.4 From JitPack
 
@@ -152,7 +154,7 @@ theme attributes it uses the built-in palette and follows the system's dark mode
 class SettingsActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        SancaiWindow.apply(this)                       // optional: canvas-coloured window and bars
+        SancaiWindow.apply(this)                       // optional: canvas-coloured window, edge to edge
         setContentView(R.layout.activity_settings)
 
         val strength = findViewById<SancaiSegmentedTrack>(R.id.strength)
@@ -188,7 +190,7 @@ The complete list of components, with their XML attributes and code APIs, is in 
 - A card does not clip its children, so the shadows of the controls inside it can fade out
   around them. A child that scrolls (`ScrollView`, a list, a `RecyclerView`) is the
   exception and ends at its own edge. Plain content of your own, a line of text for
-  instance, sits about 5 dp closer to the lower rim than to the upper one, because the
+  instance, sits about 4 dp closer to the lower rim than to the upper one, because the
   lower gutter is the deeper; give it a bottom margin if that shows.
 - Give every view whose state should survive rotation an `android:id`, as with any Android
   view.
@@ -273,7 +275,8 @@ high-contrast text settings.
 </style>
 ```
 
-`Theme.Sancai` follows night mode and also colours the window and the system bars;
+`Theme.Sancai` follows night mode and also colours the window and the system bars (the light
+navigation bar from Android 8.1);
 `Theme.Sancai.Light` and `Theme.Sancai.Dark` are fixed. You do not have to inherit from
 them: the `sancai*` attributes work in any theme, including AppCompat and Material themes.
 
@@ -356,7 +359,7 @@ SancaiWindow.preferHighestRefreshRate(activity)   // optional, for screens built
 `SancaiPage` pads itself for the system bars and the keyboard, so a screen whose root is a
 `SancaiPage` needs only the first call. Android 15 and later draw every app edge to edge;
 on earlier versions `SancaiWindow.apply(activity, edgeToEdge = false)` keeps the classic
-layout with canvas-coloured bars.
+layout with canvas-coloured bars (a black navigation bar under a light theme before Android 8).
 
 ---
 
@@ -440,8 +443,9 @@ class StrengthTest {
   machine; add `.copy(reduceMotion = true)` to make animations jump.
 - Controls expose platform accessibility roles and states, so Espresso and UI Automator
   find them as switches, check boxes, seek bars and buttons.
-- In instrumented tests, `performClick()` on a control counts as user input and calls its
-  listener.
+- `performClick()` on a switch, check box, radio button, chip or button counts as user input
+  and calls its listener; tracks, sliders and steppers change only through touch, keys or
+  accessibility actions.
 
 ---
 

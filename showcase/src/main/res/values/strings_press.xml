@@ -26,7 +26,7 @@
     <string name="press_haptics_idle">Nothing played yet</string>
     <string name="press_haptics_played">Played: %1$s</string>
     <string name="press_haptics_muted">%1$s was not played: Haptics is off on the Appearance page</string>
-    <string name="press_haptics_note">All five follow the Haptics setting on the Appearance page. When it is off, every call does nothing. Older Android versions play the nearest effect they have.</string>
+    <string name="press_haptics_note">All five follow the Haptics setting on the Appearance page. When it is off, every call does nothing. Older Android versions play the nearest effect they have; before Android 8.1 detent plays nothing.</string>
 
     <string name="press_order_title">Order of events</string>
     <string name="press_order_detail">A control that holds a value tells you first. An action ticks first.</string>
@@ -39,5 +39,5 @@
     <string name="press_order_line">%1$d  %2$s</string>
     <string name="press_order_note">The switch calls its listener while it starts to glide, then ticks. The button ticks at once, because its listener may open something slow.</string>
 
-    <string name="press_source">Extracted from the original app: the 1.5 dp sink without a colour change, and the tick on a committed change. New in Sancai: SancaiPress for your own rows and the five named effects of SancaiHaptics.</string>
+    <string name="press_source">Extracted from the original app: the 1.5 dp sink without a colour change, and the tick on a committed change. New in Sancai: SancaiPress for your own rows and four more effects in SancaiHaptics: detent, confirm, reject and long press.</string>
 </resources>

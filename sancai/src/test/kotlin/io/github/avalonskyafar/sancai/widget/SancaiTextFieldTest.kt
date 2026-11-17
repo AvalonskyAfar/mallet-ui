@@ -300,6 +300,96 @@ class SancaiTextFieldTest {
     }
 
     @Test
+    fun `the field that was typed in takes focus again after a restore`() {
+        fun form(): Triple<LinearLayout, SancaiTextField, SancaiTextField> {
+            val first = field { id = 101 }
+            val second = field { id = 102 }
+            val parent = LinearLayout(context).apply { addView(first); addView(second) }
+            return Triple(parent, first, second)
+        }
+        val (parent, _, second) = form()
+        Snapshots.attach(parent)
+        assertThat(second.requestFocus()).isTrue()
+        val state = SparseArray<Parcelable>()
+        parent.saveHierarchyState(state)
+
+        val (newParent, newFirst, newSecond) = form()
+        Snapshots.attach(newParent)
+        newParent.restoreHierarchyState(state)
+        // What the window does after the hierarchy: focus the first view with the saved id.
+        newParent.findViewById<View>(R.id.sancai_text_field_edit).requestFocus()
+        assertThat(newFirst.editText.isFocused).isTrue()
+        Snapshots.idle()
+        assertThat(newSecond.editText.isFocused).isTrue()
+        assertThat(newFirst.editText.isFocused).isFalse()
+    }
+
+    @Test
+    fun `visible password keeps the cursor when lines or input type are set`() {
+        val field = field { endAction = SancaiTextField.EndAction.PASSWORD_TOGGLE }
+        field.text = "secret"
+        field.isPasswordVisible = true
+        field.editText.setSelection(6)
+        field.minLines = 2
+        assertThat(field.editText.selectionStart).isEqualTo(6)
+        field.maxLines = 4
+        assertThat(field.editText.selectionStart).isEqualTo(6)
+        field.editText.setSelection(2, 4)
+        field.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        assertThat(field.editText.selectionStart).isEqualTo(2)
+        assertThat(field.editText.selectionEnd).isEqualTo(4)
+        assertThat(field.editText.transformationMethod).isNull()
+
+        val plain = field { text = "secret" }
+        plain.editText.setSelection(6)
+        plain.endAction = SancaiTextField.EndAction.PASSWORD_TOGGLE
+        assertThat(plain.editText.selectionStart).isEqualTo(6)
+    }
+
+    @Test
+    fun `leaving the password toggle shows the text again and keeps a chosen password type`() {
+        val field = field { text = "secret" }
+        var calls = 0
+        field.setOnTextChangeListener { _, _ -> calls++ }
+        field.endAction = SancaiTextField.EndAction.PASSWORD_TOGGLE
+        field.editText.setSelection(3)
+        field.endAction = SancaiTextField.EndAction.CLEAR
+        assertThat(field.inputType).isEqualTo(InputType.TYPE_CLASS_TEXT)
+        assertThat(field.editText.transformationMethod).isNotInstanceOf(PasswordTransformationMethod::class.java)
+        assertThat(field.editText.selectionStart).isEqualTo(3)
+        assertThat(calls).isEqualTo(0)
+
+        val password = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+        val chosen = field { inputType = password; text = "secret" }
+        chosen.endAction = SancaiTextField.EndAction.PASSWORD_TOGGLE
+        chosen.isPasswordVisible = true
+        chosen.endAction = SancaiTextField.EndAction.NONE
+        assertThat(chosen.inputType).isEqualTo(password)
+        assertThat(chosen.editText.transformationMethod).isInstanceOf(PasswordTransformationMethod::class.java)
+
+        // A type that is no password type was hidden by the transformation alone.
+        for (type in listOf(InputType.TYPE_CLASS_NUMBER, InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS)) {
+            val other = field { inputType = type; text = "1234" }
+            other.endAction = SancaiTextField.EndAction.PASSWORD_TOGGLE
+            assertThat(other.editText.transformationMethod).isInstanceOf(PasswordTransformationMethod::class.java)
+            other.endAction = SancaiTextField.EndAction.NONE
+            assertThat(other.inputType).isEqualTo(type)
+            assertThat(other.editText.transformationMethod).isNotInstanceOf(PasswordTransformationMethod::class.java)
+        }
+        val lines = field { isMultiline = true; text = "a\nb" }
+        lines.endAction = SancaiTextField.EndAction.PASSWORD_TOGGLE
+        lines.endAction = SancaiTextField.EndAction.NONE
+        assertThat(lines.editText.transformationMethod).isNull()
+    }
+
+    @Test
+    fun `the text and the end action leave the focus highlight to the rim`() {
+        val field = field { endAction = SancaiTextField.EndAction.CLEAR }
+        assertThat(field.editText.defaultFocusHighlightEnabled).isFalse()
+        assertThat(field.action().defaultFocusHighlightEnabled).isFalse()
+    }
+
+    @Test
     fun `rim is hairline at rest ink with focus and danger with an error`() {
         val field = field { text = "abc" }
         Snapshots.attach(field, 300)

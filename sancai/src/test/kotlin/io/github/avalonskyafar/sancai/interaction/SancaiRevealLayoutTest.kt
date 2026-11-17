@@ -525,6 +525,93 @@ class SancaiRevealLayoutTest {
     }
 
     @Test
+    fun `a held enter runs the action once and swallows the repeats`() {
+        val layout = laidOut()
+        layout.open(animate = false)
+        assertThat(key(layout, KeyEvent.KEYCODE_ENTER)).isTrue()
+        for (repeat in 1..5) {
+            val held = KeyEvent(0L, 0L, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER, repeat)
+            assertThat(layout.onKeyDown(KeyEvent.KEYCODE_ENTER, held)).isTrue()
+        }
+        assertThat(clicks).isEqualTo(1)
+        assertThat(layout.isOpen).isTrue()
+    }
+
+    @Test
+    fun `padding on the layout moves the bed and its hit area with the row`() {
+        val layout = row()
+        layout.setBackgroundColor(Color.GREEN)
+        layout.setPadding(dp(16), dp(6), 0, dp(6))
+        Snapshots.layout(layout, 300)
+        layout.open(animate = false)
+        val bitmap = Snapshots.render(layout, 300)
+        val middle = layout.height / 2
+        // The padding stays the layout's own; the bed starts where the row was laid out.
+        assertThat(bitmap.getPixel(dp(8), middle)).isEqualTo(Color.GREEN)
+        assertThat(bitmap.getPixel(dp(16) + 8, dp(3))).isEqualTo(Color.GREEN)
+        assertThat(near(bitmap.getPixel(dp(16) + 8, middle), SancaiTheme.light().colors.danger)).isTrue()
+        assertThat(bitmap.getPixel(dp(16) + strip.toInt() - 4, middle)).isNotEqualTo(Color.GREEN)
+        // The whole uncovered strip is the action, up to the edge of the shifted row.
+        Touch.tap(layout, dp(16) + strip - 4f)
+        assertThat(clicks).isEqualTo(1)
+        assertThat(layout.isOpen).isTrue()
+        // The padding is not: a tap there closes the row like any tap beside the action,
+        // beside the bed as well as above it.
+        Touch.tap(layout, dp(4).toFloat())
+        assertThat(clicks).isEqualTo(1)
+        assertThat(layout.isOpen).isFalse()
+        layout.open(animate = false)
+        Touch.tap(layout, dp(16) + 8f, dp(3).toFloat())
+        assertThat(clicks).isEqualTo(1)
+        assertThat(layout.isOpen).isFalse()
+    }
+
+    @Test
+    fun `a second finger does not move the row once the first has lifted`() {
+        val layout = laidOut()
+        val far = 100f + strip * 0.35f
+        Touch.drag(layout, 100f, 60f, far, 60f, release = false)
+        assertThat(layout.shift).isGreaterThan(0f)
+        val a = Touch.Finger(0, far, 60f)
+        Touch.multi(layout, MotionEvent.ACTION_POINTER_DOWN, 1, a, Touch.Finger(1, 250f, 60f))
+        Touch.multi(layout, MotionEvent.ACTION_MOVE, 0, a, Touch.Finger(1, 260f, 60f))
+        assertThat(layout.shift).isLessThan(strip * 0.35f + 1f)
+        // The first finger lifts: the drag ends where it left the row, short of opening.
+        Touch.multi(layout, MotionEvent.ACTION_POINTER_UP, 0, a, Touch.Finger(1, 260f, 60f))
+        assertThat(layout.isOpen).isFalse()
+        assertThat(layout.shift).isEqualTo(0f)
+        Touch.multi(layout, MotionEvent.ACTION_MOVE, 0, Touch.Finger(1, 260f + strip, 60f))
+        assertThat(layout.shift).isEqualTo(0f)
+        Touch.multi(layout, MotionEvent.ACTION_UP, 0, Touch.Finger(1, 260f + strip, 60f))
+        assertThat(layout.isOpen).isFalse()
+        assertThat(layout.shift).isEqualTo(0f)
+        assertThat(changes).isEmpty()
+        assertThat(clicks).isEqualTo(0)
+    }
+
+    @Test
+    fun `a row opened by the first finger stays open whatever the second does`() {
+        val layout = laidOut()
+        val far = 100f + strip * 0.8f
+        Touch.drag(layout, 100f, 60f, far, 60f, release = false)
+        val a = Touch.Finger(0, far, 60f)
+        Touch.multi(layout, MotionEvent.ACTION_POINTER_DOWN, 1, a, Touch.Finger(1, 280f, 60f))
+        Touch.multi(layout, MotionEvent.ACTION_POINTER_UP, 0, a, Touch.Finger(1, 280f, 60f))
+        assertThat(layout.isOpen).isTrue()
+        Touch.multi(layout, MotionEvent.ACTION_MOVE, 0, Touch.Finger(1, 280f - strip, 60f))
+        Touch.multi(layout, MotionEvent.ACTION_UP, 0, Touch.Finger(1, 280f - strip, 60f))
+        assertThat(layout.isOpen).isTrue()
+        assertThat(layout.shift).isEqualTo(strip)
+        assertThat(changes).containsExactly(true)
+        assertThat(clicks).isEqualTo(0)
+    }
+
+    @Test
+    fun `the platform focus highlight is off under the row's own rim`() {
+        assertThat(row().defaultFocusHighlightEnabled).isFalse()
+    }
+
+    @Test
     fun `snapshot of reveal rows`() {
         gallery(SancaiTheme.light(), "reveal_light")
         gallery(SancaiTheme.dark(), "reveal_dark")

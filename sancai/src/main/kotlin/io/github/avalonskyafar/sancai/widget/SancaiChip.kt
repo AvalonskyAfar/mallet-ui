@@ -180,8 +180,10 @@ public class SancaiChip @JvmOverloads constructor(
         checkedState = value
         moveTo(if (value) 1f else 0f, animate)
         sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
-        group?.onChipChecked(this, value, animate, fromUser)
+        // The chip's own listener goes first: a change it rolls back never reaches the group,
+        // so the siblings keep their state and the group listener hears nothing stale.
         if (fromUser) checkedChangeListener?.onCheckedChanged(this, value)
+        if (checkedState == value) group?.onChipChecked(this, value, animate, fromUser)
     }
 
     private fun moveTo(target: Float, animate: Boolean) {
@@ -204,9 +206,23 @@ public class SancaiChip @JvmOverloads constructor(
     override fun onDetachedFromWindow() {
         animator?.cancel()
         animator = null
-        progress = if (checkedState) 1f else 0f
+        // Through setProgress: the jump changes the width, and the layout request it leaves
+        // behind is what re-measures the chip when it comes back.
+        setProgress(if (checkedState) 1f else 0f)
         down = false
         super.onDetachedFromWindow()
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        // The release of a press that is under way will be refused: let go now.
+        if (!enabled) setDown(false)
+    }
+
+    override fun onWindowFocusChanged(hasWindowFocus: Boolean) {
+        super.onWindowFocusChanged(hasWindowFocus)
+        // The key-up of a key held down goes to the other window.
+        if (!hasWindowFocus) setDown(false)
     }
 
     // ---------------------------------------------------------------------------------------
@@ -380,6 +396,8 @@ public class SancaiChip @JvmOverloads constructor(
             KeyEvent.KEYCODE_NUMPAD_ENTER -> {
                 // A chip that cannot act on the key does not swallow it either.
                 if (!isEnabled) return false
+                // Nor does the one checked chip of a group that requires a selection.
+                if (kind == Kind.FILTER && checkedState && group?.mayUncheck(this) == false) return false
                 if (event.repeatCount == 0) setDown(true)
                 return true
             }

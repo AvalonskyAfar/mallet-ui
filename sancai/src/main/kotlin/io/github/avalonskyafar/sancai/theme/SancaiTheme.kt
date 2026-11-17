@@ -29,7 +29,7 @@ import io.github.avalonskyafar.sancai.R
  * @property nightGlaze share of glaze colour kept in the recessed tracks of a dark theme;
  * `0` reproduces the neutral dark groove of the original app
  */
-public data class SancaiTheme(
+public data class SancaiTheme @JvmOverloads constructor(
     val colors: SancaiColors,
     val glazes: SancaiGlazes = SancaiGlazes.default(),
     val textScale: Float = 1f,
@@ -78,6 +78,7 @@ public data class SancaiTheme(
      * tone for a deep one.
      */
     @ColorInt
+    @JvmOverloads
     public fun labelOnBed(active: SancaiGlaze, own: SancaiGlaze = active, optionCount: Int = 2): Int {
         if (isDark) {
             val inkShare = if (highContrast) 0.86f else if (optionCount == 2) 0.62f else 0.70f
@@ -142,17 +143,34 @@ public data class SancaiTheme(
             }
             resolver?.resolve(context)?.let { return it }
             // Resolving three dozen attributes for every view of a page adds up, so the result
-            // is remembered per context for as long as its night mode stays the same.
+            // is remembered per context for as long as its night mode and the two system
+            // settings a theme may follow (animations off, high-contrast text) stay the same.
+            // Neither setting recreates an activity, so they are read again on every lookup.
             val uiMode = context.resources.configuration.uiMode
+            val reduceMotion = systemReducesMotion(context)
+            val highContrast = systemPrefersHighContrast(context)
             synchronized(attributeCache) {
-                attributeCache[context]?.let { cached -> if (cached.uiMode == uiMode) return cached.theme }
+                attributeCache[context]?.let { cached ->
+                    if (cached.uiMode == uiMode && cached.reduceMotion == reduceMotion &&
+                        cached.highContrast == highContrast
+                    ) {
+                        return cached.theme
+                    }
+                }
             }
             val resolved = fromAttributes(context)
-            synchronized(attributeCache) { attributeCache[context] = CachedTheme(uiMode, resolved) }
+            synchronized(attributeCache) {
+                attributeCache[context] = CachedTheme(uiMode, reduceMotion, highContrast, resolved)
+            }
             return resolved
         }
 
-        private class CachedTheme(val uiMode: Int, val theme: SancaiTheme)
+        private class CachedTheme(
+            val uiMode: Int,
+            val reduceMotion: Boolean,
+            val highContrast: Boolean,
+            val theme: SancaiTheme,
+        )
 
         private val attributeCache = java.util.WeakHashMap<Context, CachedTheme>()
 

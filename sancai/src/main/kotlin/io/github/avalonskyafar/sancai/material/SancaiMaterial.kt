@@ -92,8 +92,9 @@ public class SancaiMaterial @JvmOverloads constructor(
     }
 
     /**
-     * The standard lift of a raised or recessed element. [compact] selects the tighter, darker
-     * shadow used by tracks; otherwise the wide shadow of cards.
+     * The standard lift of a raised or recessed element. [compact] selects the darker shadow
+     * used by tracks (deeper in light themes, tighter in dark ones); otherwise the fainter
+     * shadow of cards.
      */
     public fun drawLift(canvas: Canvas, bounds: RectF, radius: Float, pressed: Boolean, compact: Boolean) {
         if (!theme.isDark) {

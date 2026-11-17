@@ -17,7 +17,7 @@
     <string name="type_tone_success">成功色，告诉你已经完成。</string>
 
     <string name="type_reading_title">阅读</string>
-    <string name="type_reading_detail">同一段文字，分别用两种正文角色排出。两者都加大了行距，紧凑的一种用在卡片和对话框里。</string>
+    <string name="type_reading_detail">同一段文字，分别用两种正文角色排出。两者都加大了行距，紧凑的一种用于卡片、提示块等较密的文字。</string>
     <string name="type_reading_copy">瓷器上的釉，薄处见胎，厚处见色。屏幕上的文字也是如此：字形要紧，行与行之间留出的空白同样要紧。正文的行距比标签略宽一些，读完一行，眼睛不必寻找，就能落到下一行的开头。</string>
 
     <string name="type_large_title">大字</string>
@@ -28,5 +28,5 @@
     <string name="type_large_row_on">所有字号按同一比例放大</string>
     <string name="type_large_row_off">字号保持设计时的大小</string>
 
-    <string name="type_origin">十档字号、正文行距和 1.13 的大字比例取自原应用；命名的角色与色调，以及避免中文标点出现在行首的段落控件，是为三彩新设计的。</string>
+    <string name="type_origin">九档字号、正文行距、1.13 的大字比例，以及避免中文标点出现在行首的规则取自原应用；命名的角色与色调，以及可复用的段落控件，是为三彩新设计的。</string>
 </resources>

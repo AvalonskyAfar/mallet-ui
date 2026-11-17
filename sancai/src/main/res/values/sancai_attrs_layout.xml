@@ -29,6 +29,9 @@
     </declare-styleable>
 
     <declare-styleable name="SancaiButton">
+        <!-- A button is focusable and clickable unless the layout says otherwise. -->
+        <attr name="android:focusable" />
+        <attr name="android:clickable" />
         <attr name="sancaiButtonVariant" format="enum">
             <!-- Neutral porcelain capsule. -->
             <enum name="neutral" value="0" />

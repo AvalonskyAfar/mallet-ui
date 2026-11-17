@@ -19,7 +19,7 @@
     <string name="motion_use_dialog">对话框与底部面板的进出</string>
     <string name="motion_use_feedback">轻提示、滑出行等小反馈</string>
     <string name="motion_use_press">按压时内容下沉</string>
-    <string name="motion_use_reduced">减弱动效时的所有动画</string>
+    <string name="motion_use_reduced">减弱动效时的控件、页面与底部面板</string>
 
     <string name="motion_settle_title">归位</string>
     <string name="motion_settle_detail">手指松开页面后，归位用多久取决于剩下的距离。</string>

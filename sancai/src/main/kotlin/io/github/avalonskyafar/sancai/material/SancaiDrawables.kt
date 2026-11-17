@@ -1,6 +1,7 @@
 package io.github.avalonskyafar.sancai.material
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.graphics.Outline
@@ -56,7 +57,13 @@ public class SancaiSurfaceDrawable @JvmOverloads constructor(
     private val body = RectF()
     private var layerAlpha = 255
 
-    /** Colour of a glazed body, or `null` for neutral porcelain. */
+    /**
+     * Colour of a glazed body, or `null` for neutral porcelain.
+     *
+     * The platform's tint calls end here too: `Drawable.setTint(int)`, [setTintList],
+     * `DrawableCompat.setTint` and `android:backgroundTint` of the view that carries this
+     * background all glaze the body.
+     */
     @get:ColorInt
     @setparam:ColorInt
     public var tint: Int? = tint
@@ -66,6 +73,14 @@ public class SancaiSurfaceDrawable @JvmOverloads constructor(
                 invalidateSelf()
             }
         }
+
+    /**
+     * Glazes the body with the default colour of [tint]; `null` returns it to neutral
+     * porcelain. The body has one colour, so the states of the list are not followed.
+     */
+    override fun setTintList(tint: ColorStateList?) {
+        this.tint = tint?.defaultColor
+    }
 
     /** Draws the tighter shadow of a pressed body and lets it sink by [sinkPx]. */
     public var pressed: Boolean = false

@@ -225,8 +225,9 @@ public class SancaiSwitch @JvmOverloads constructor(
         if (!isEnabled) return false
         // A gesture whose start this view never saw (it was disabled then) changes nothing.
         if (event.actionMasked != MotionEvent.ACTION_DOWN && !tracking) return true
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
+        val action = event.actionMasked
+        when {
+            action == MotionEvent.ACTION_DOWN -> {
                 animator?.cancel()
                 gate.down(event)
                 downX = event.x
@@ -235,9 +236,10 @@ public class SancaiSwitch @JvmOverloads constructor(
                 tracking = true
                 invalidate()
             }
-            MotionEvent.ACTION_MOVE -> when (gate.move(this, event)) {
+            action == MotionEvent.ACTION_MOVE -> when (gate.move(this, event)) {
                 HorizontalDragGate.State.DRAGGING -> {
-                    val dx = if (isRtl) downX - event.x else event.x - downX
+                    val x = gate.x(event)
+                    val dx = if (isRtl) downX - x else x - downX
                     position = (startPosition + dx / travel()).coerceIn(0f, 1f)
                     invalidate()
                 }
@@ -247,7 +249,8 @@ public class SancaiSwitch @JvmOverloads constructor(
                 }
                 HorizontalDragGate.State.UNDECIDED -> Unit
             }
-            MotionEvent.ACTION_UP -> {
+            // The followed finger lifts; fingers that stay down do nothing afterwards.
+            gate.isRelease(event) -> {
                 val dragged = gate.isDragging
                 gate.finish(this)
                 down = false
@@ -262,7 +265,7 @@ public class SancaiSwitch @JvmOverloads constructor(
                     inTouchCommit = false
                 }
             }
-            MotionEvent.ACTION_CANCEL -> {
+            action == MotionEvent.ACTION_CANCEL -> {
                 gate.finish(this)
                 down = false
                 tracking = false
@@ -395,7 +398,7 @@ public class SancaiSwitch @JvmOverloads constructor(
         /** Default width of the view in dp: a 58 dp track plus its side gutters. */
         public const val WIDTH_DP: Float = 61f
 
-        /** Default height of the view in dp: a 30 dp track plus its shadow gutter. */
+        /** Height of the box the track is drawn in, in dp: a 30 dp bed plus its shadow gutter. */
         public const val HEIGHT_DP: Float = 34f
 
         /** Height of the view on `wrap_content`, in dp: the track centred in a 44 dp touch target. */

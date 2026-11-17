@@ -87,7 +87,7 @@ INFO, WARNING, ERROR, SUCCESS, TRASH, EDIT, EYE, EYE_OFF, INBOX, CLOUD_OFF, IMAG
 (`DISABLED_ALPHA` = 107), repaint on focus change. It is clickable and focusable by default.
 
 `SancaiText(context)` with `role`, `tone`; `SancaiText.create(context, text, role, tone)`.
-`SancaiDivider` (`fullBleed`, `orientation`). `SancaiSurface` (vertical LinearLayout card; `addDivider(marginDp)`,
+`SancaiDivider` (`fullBleed`, `orientation`). `SancaiSurface` (vertical LinearLayout card; `addDivider(verticalMarginDp)`,
 `cornerRadiusDp`, `elevated`, `corners`; 9 dp content padding).
 `SancaiButton` (`variant` NEUTRAL / PRIMARY / DANGER / TEXT, `tone`, `icon`, `isLoading`).
 `SancaiSegmentedTrack` (`options`, `selectedIndex`, `select(index, animate)`, `setGlazes(list?)`,
@@ -131,4 +131,4 @@ Facts that cost time if unknown:
 - Sample pixels where there is no text and no thumb. The test device is 411 dp wide at density 2.625.
 - Assertions: Google Truth (`assertThat(x).isEqualTo(y)`). Test names may use backticks.
 - Kotlin language level is 2.0. `explicitApi()` applies to main code only, not to tests.
-- Top-level helper functions and constants in main code must be `private` (file-private) to avoid clashes.
+- Top-level helper functions and constants in main code must be `private` (file-private) to avoid clashes; the shared ones are `internal` in `internal/Units.kt` (`dp`, `dpInt`, `sp`).

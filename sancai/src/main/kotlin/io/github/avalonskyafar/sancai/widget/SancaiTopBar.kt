@@ -20,6 +20,7 @@ import io.github.avalonskyafar.sancai.R
 import io.github.avalonskyafar.sancai.icon.SancaiIcon
 import io.github.avalonskyafar.sancai.icon.SancaiIconPainter
 import io.github.avalonskyafar.sancai.interaction.SancaiPress
+import io.github.avalonskyafar.sancai.internal.useOwnFocusRim
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
 import io.github.avalonskyafar.sancai.theme.SancaiTextRole
@@ -183,8 +184,9 @@ public class SancaiTopBar @JvmOverloads constructor(
      * @param icon the glyph; the default chevron points back and is mirrored in
      *   right-to-left layouts, as every directional icon is
      * @param description what a screen reader says; `null` uses the library's "Back"
-     * @param onClick called after the tick when the button is operated; may be set later
-     *   through [navigationButton]
+     * @param onClick called after the tick when the button is operated; to set it later, call
+     *   this function again. A click listener set directly on [navigationButton] replaces the
+     *   one that ticks, so the button then works without the tick.
      */
     @JvmOverloads
     public fun setNavigation(
@@ -198,7 +200,7 @@ public class SancaiTopBar @JvmOverloads constructor(
         }
         button.bind(icon, theme.colors.ink, NAVIGATION_STROKE_DP)
         button.contentDescription = description ?: context.getString(R.string.sancai_action_back)
-        button.isEnabled = isEnabled
+        button.sync()
         SancaiPress.attach(button, button, onClick)
     }
 
@@ -224,7 +226,7 @@ public class SancaiTopBar @JvmOverloads constructor(
         val button = BarButton(context)
         button.bind(icon, theme.colors.muted, ACTION_STROKE_DP)
         button.contentDescription = description
-        button.isEnabled = isEnabled
+        button.sync()
         SancaiPress.attach(button, button, onClick)
         actions.add(button)
         addView(button)
@@ -271,17 +273,24 @@ public class SancaiTopBar @JvmOverloads constructor(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         boundView?.let(::watch)
+        // Android hands the window insets down when they change, not when a view arrives. A
+        // bar on a page that is attached later has to ask for them.
+        if (fitStatusBar) ViewCompat.requestApplyInsets(this)
     }
 
     private fun syncLifted(view: View) {
         lifted = view.canScrollVertically(-1)
     }
 
-    /** Disabling the bar disables and pales its buttons; the title stays as it is. */
+    /**
+     * Disabling the bar disables and pales its buttons; the title stays as it is. Enabling it
+     * again gives each button back the state it was given on its own: a button the app
+     * disabled through its view stays disabled.
+     */
     override fun setEnabled(enabled: Boolean) {
         super.setEnabled(enabled)
-        navigation?.isEnabled = enabled
-        for (button in actions) button.isEnabled = enabled
+        navigation?.sync()
+        for (button in actions) button.sync()
     }
 
     private fun label(role: SancaiTextRole, tone: SancaiTextTone): SancaiText =
@@ -441,8 +450,21 @@ public class SancaiTopBar @JvmOverloads constructor(
             }
         }
 
+        /** What the app asked of this button; it is operable only while the bar is enabled as well. */
+        private var ownEnabled = true
+
+        init {
+            useOwnFocusRim()
+        }
+
         override fun setEnabled(enabled: Boolean) {
-            super.setEnabled(enabled)
+            ownEnabled = enabled
+            sync()
+        }
+
+        /** Applies the button's own state and the bar's: either one disabled disables the button. */
+        fun sync() {
+            super.setEnabled(ownEnabled && this@SancaiTopBar.isEnabled)
             invalidate()
         }
 

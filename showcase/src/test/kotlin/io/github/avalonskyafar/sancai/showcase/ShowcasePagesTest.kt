@@ -80,11 +80,13 @@ class ShowcasePagesTest {
         val content = (view as? ScrollView)?.getChildAt(0)
         var height = screen
         if (content != null) {
+            // The page padding lies on the scroll view, around the column.
             content.measure(
-                MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(width - view.paddingLeft - view.paddingRight, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
             )
-            height = min((MAX_HEIGHT_DP * density).roundToInt(), maxOf(screen, content.measuredHeight))
+            val whole = content.measuredHeight + view.paddingTop + view.paddingBottom
+            height = min((MAX_HEIGHT_DP * density).roundToInt(), maxOf(screen, whole))
         }
         view.measure(
             MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),

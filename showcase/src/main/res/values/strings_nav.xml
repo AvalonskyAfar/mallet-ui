@@ -60,5 +60,5 @@
     <string name="nav_scroll_idle">Drag the row sideways, then tap a tab.</string>
     <string name="nav_scroll_chosen">%1$s, tab %2$d of %3$d</string>
 
-    <string name="nav_origin">Extracted from the original app: the navigation row in launcher mode, icons over labels with no bar behind them. New in Sancai: its tabs mode and badges, the top bar, the tabs, the pager and the page dots.</string>
+    <string name="nav_origin">Extracted from the original app: the navigation row in launcher mode, icons over labels with no bar behind them, and the pager with its page dots. New in Sancai: the tabs mode and the badges of the row, the top bar and the tabs.</string>
 </resources>

@@ -69,6 +69,7 @@ public class SancaiSegmentedTrack @JvmOverloads constructor(
     private var thumbPosition = 0f
     private var trackPosition = 0f
     private var down = false
+    private var tracking = false
     private val gate = HorizontalDragGate(touchSlop)
     private var animator: ValueAnimator? = null
     private val trackBounds = RectF()
@@ -89,8 +90,10 @@ public class SancaiSegmentedTrack @JvmOverloads constructor(
         set(value) {
             labels = value.map { it.toString() }
             glazes = resolveGlazes()
+            // Replaced under the finger: the gesture was about options that are gone.
+            letGo()
             jumpTo(selected.coerceIn(0, max(0, labels.size - 1)))
-            accessibility.invalidateRoot()
+            announceState()
             requestLayout()
         }
 
@@ -118,6 +121,7 @@ public class SancaiSegmentedTrack @JvmOverloads constructor(
         glazes = resolveGlazes()
         jumpTo(initial.coerceIn(0, max(0, labels.size - 1)))
         ViewCompat.setAccessibilityDelegate(this, accessibility)
+        announceState()
     }
 
     /** Replaces the option labels. */
@@ -253,15 +257,17 @@ public class SancaiSegmentedTrack @JvmOverloads constructor(
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!isEnabled || labels.isEmpty()) return false
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
+        val action = event.actionMasked
+        when {
+            action == MotionEvent.ACTION_DOWN -> {
                 animator?.cancel()
                 gate.down(event)
                 down = true
+                tracking = true
                 invalidate()
             }
-            MotionEvent.ACTION_MOVE -> when (gate.move(this, event)) {
-                HorizontalDragGate.State.DRAGGING -> follow(event.x)
+            action == MotionEvent.ACTION_MOVE -> when (gate.move(this, event)) {
+                HorizontalDragGate.State.DRAGGING -> follow(gate.x(event))
                 HorizontalDragGate.State.ABORTED -> if (down) {
                     down = false
                     candidate = selected
@@ -269,20 +275,24 @@ public class SancaiSegmentedTrack @JvmOverloads constructor(
                 }
                 HorizontalDragGate.State.UNDECIDED -> Unit
             }
-            MotionEvent.ACTION_UP -> {
+            // The followed finger lifts; fingers that stay down do nothing afterwards.
+            gate.isRelease(event) -> {
+                val x = gate.x(event)
                 gate.finish(this)
                 down = false
+                tracking = false
                 if (gate.isAborted) {
                     candidate = selected
                     animateTo(selected.toFloat())
                 } else {
-                    commit(indexAt(event.x))
+                    commit(indexAt(x))
                     performClick()
                 }
             }
-            MotionEvent.ACTION_CANCEL -> {
+            action == MotionEvent.ACTION_CANCEL -> {
                 gate.finish(this)
                 down = false
+                tracking = false
                 candidate = selected
                 animateTo(selected.toFloat())
             }
@@ -328,7 +338,11 @@ public class SancaiSegmentedTrack @JvmOverloads constructor(
                 }
                 KeyEvent.KEYCODE_SPACE, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_DPAD_CENTER,
                 KeyEvent.KEYCODE_NUMPAD_ENTER -> {
-                    commit((selected + 1) % labels.size)
+                    // With one option there is nothing to step to: the key is not consumed
+                    // (the platform would take it as a press of a clickable view).
+                    if (labels.size < 2) return false
+                    // A held key steps once.
+                    if (event.repeatCount == 0) commit((selected + 1) % labels.size)
                     return true
                 }
             }
@@ -370,6 +384,32 @@ public class SancaiSegmentedTrack @JvmOverloads constructor(
         thumbPosition = index.toFloat()
         trackPosition = thumbPosition
         invalidate()
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        // Disabled under the finger: let go and rest on the committed option.
+        if (!enabled && tracking) {
+            letGo()
+            jumpTo(selected)
+        }
+        super.setEnabled(enabled)
+    }
+
+    /**
+     * Ends a gesture in flight without committing. Does nothing when no finger is down, so a
+     * drag on another view keeps its hold on the scrolling parent.
+     */
+    private fun letGo() {
+        if (!tracking) return
+        down = false
+        tracking = false
+        gate.finish(this)
+    }
+
+    override fun onDetachedFromWindow() {
+        letGo()
+        jumpTo(selected)
+        super.onDetachedFromWindow()
     }
 
     // ---------------------------------------------------------------------------------------
@@ -423,6 +463,12 @@ public class SancaiSegmentedTrack @JvmOverloads constructor(
 
         override fun getVisibleVirtualViews(virtualViewIds: MutableList<Int>) {
             for (i in labels.indices) virtualViewIds.add(i)
+        }
+
+        override fun onPopulateNodeForHost(node: AccessibilityNodeInfoCompat) {
+            // The options take the click; the track as a whole has nothing to activate.
+            node.isClickable = false
+            node.removeAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CLICK)
         }
 
         override fun onPopulateNodeForVirtualView(virtualViewId: Int, node: AccessibilityNodeInfoCompat) {

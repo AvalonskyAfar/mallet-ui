@@ -24,6 +24,7 @@ import io.github.avalonskyafar.sancai.R
 import io.github.avalonskyafar.sancai.icon.SancaiIcon
 import io.github.avalonskyafar.sancai.icon.SancaiIconPainter
 import io.github.avalonskyafar.sancai.internal.HorizontalDragGate
+import io.github.avalonskyafar.sancai.internal.useOwnFocusRim
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
 import io.github.avalonskyafar.sancai.theme.SancaiTextRole
@@ -152,6 +153,7 @@ public class SancaiRevealLayout @JvmOverloads constructor(
 
     init {
         setWillNotDraw(false)
+        useOwnFocusRim()
         clipChildren = true
         labelPaint.typeface = SancaiWeight.MEDIUM.typeface()
         labelPaint.textAlign = Paint.Align.CENTER
@@ -175,7 +177,8 @@ public class SancaiRevealLayout @JvmOverloads constructor(
      * [label] is drawn white, centred in the strip, and names the accessibility action;
      * [tone] colours the bed; [icon] is drawn above the label when given. [onClick] runs when
      * the user taps the uncovered strip, presses Enter on the open row or picks the
-     * accessibility action; it receives this layout. The row stays open afterwards: close it
+     * accessibility action; it receives this layout. A held key runs it once, not once per
+     * repeat. The row stays open afterwards: close it
      * or remove it in the callback.
      */
     @JvmOverloads
@@ -316,13 +319,17 @@ public class SancaiRevealLayout @JvmOverloads constructor(
         super.onDraw(canvas)
         val label = actionLabel ?: return
         if (offset <= 0f) return
-        val w = width.toFloat()
-        val h = height.toFloat()
-        val left = if (stripOnLeft) 0f else w - stripWidth
+        // The bed lies where the row was laid out, which padding or a margin moves off the edges.
+        val child = row
+        val l = child?.left?.toFloat() ?: 0f
+        val r = child?.right?.toFloat() ?: width.toFloat()
+        val t = child?.top?.toFloat() ?: 0f
+        val b = child?.bottom?.toFloat() ?: height.toFloat()
+        val left = if (stripOnLeft) l else r - stripWidth
         val save = canvas.save()
         // Only the uncovered part: a row with a translucent background must not show the bed.
-        if (stripOnLeft) canvas.clipRect(0f, 0f, offset, h) else canvas.clipRect(w - offset, 0f, w, h)
-        rect.set(left, 0f, left + stripWidth, h)
+        if (stripOnLeft) canvas.clipRect(l, t, l + offset, b) else canvas.clipRect(r - offset, t, r, b)
+        rect.set(left, t, left + stripWidth, b)
         material.drawRevealBed(canvas, rect, actionTone.resolve(theme.colors))
 
         val sink = if (stripPressed) SancaiMotion.PRESS_SINK_DP * density else 0f
@@ -332,7 +339,7 @@ public class SancaiRevealLayout @JvmOverloads constructor(
         val icon = actionIcon
         val iconSize = if (icon != null) ICON_DP * density else 0f
         val gap = if (icon != null) ICON_GAP_DP * density else 0f
-        var top = (h - iconSize - gap - textHeight) / 2f + sink
+        var top = t + (b - t - iconSize - gap - textHeight) / 2f + sink
         if (icon != null) {
             SancaiIconPainter.draw(
                 canvas, icon, cx - iconSize / 2f, top, iconSize, Color.WHITE,
@@ -385,15 +392,23 @@ public class SancaiRevealLayout @JvmOverloads constructor(
     private fun canMove(fingerMovesRight: Boolean): Boolean =
         if (fingerMovesRight == stripOnLeft) offset < stripWidth else offset > 0f
 
-    private fun inStrip(x: Float): Boolean =
-        offset > 0f && if (stripOnLeft) x < offset else x >= width - offset
+    private fun inStrip(x: Float, y: Float): Boolean {
+        if (offset <= 0f) return false
+        val child = row
+        val l = child?.left?.toFloat() ?: 0f
+        val r = child?.right?.toFloat() ?: width.toFloat()
+        val t = child?.top?.toFloat() ?: 0f
+        val b = child?.bottom?.toFloat() ?: height.toFloat()
+        if (y < t || y >= b) return false
+        return if (stripOnLeft) x >= l && x < l + offset else x >= r - offset && x < r
+    }
 
     private fun beginGesture(event: MotionEvent) {
         gate.down(event)
         dragging = false
         refused = false
         stripPressed = false
-        downOnStrip = hasAction && inStrip(event.x)
+        downOnStrip = hasAction && inStrip(event.x, event.y)
         val child = row
         downOnOwner = !downOnStrip && child != null &&
             ownerUnder(child, event.x - child.left - child.translationX, event.y - child.top)
@@ -407,11 +422,11 @@ public class SancaiRevealLayout @JvmOverloads constructor(
             HorizontalDragGate.State.UNDECIDED -> return false
             HorizontalDragGate.State.ABORTED -> refused = true
             HorizontalDragGate.State.DRAGGING -> {
-                if (canMove(fingerMovesRight = event.x > gate.downX)) {
+                if (canMove(fingerMovesRight = gate.x(event) > gate.downX)) {
                     animator?.cancel()
                     animator = null
                     dragging = true
-                    dragStartX = event.x
+                    dragStartX = gate.x(event)
                     downOffset = offset
                 } else {
                     // Nothing to uncover in this direction: the page behind may have it.
@@ -436,7 +451,12 @@ public class SancaiRevealLayout @JvmOverloads constructor(
                 targetOpen && !downOnStrip && !downOnOwner
             }
             MotionEvent.ACTION_MOVE -> decide(event)
-            else -> false
+            else -> {
+                // The followed finger left while a view in the row has the gesture: nothing
+                // that another finger does afterwards moves the row.
+                if (gate.isRelease(event)) refused = true
+                false
+            }
         }
     }
 
@@ -444,33 +464,37 @@ public class SancaiRevealLayout @JvmOverloads constructor(
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!hasAction) return super.onTouchEvent(event)
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
+        val action = event.actionMasked
+        when {
+            action == MotionEvent.ACTION_DOWN -> {
                 // The gesture was set up in onInterceptTouchEvent, which always sees the down.
                 if (downOnStrip) {
                     stripPressed = true
                     invalidate()
                 }
             }
-            MotionEvent.ACTION_MOVE -> if (decide(event)) {
-                val dx = event.x - dragStartX
+            action == MotionEvent.ACTION_MOVE -> if (decide(event)) {
+                val dx = gate.x(event) - dragStartX
                 applyOffset(downOffset + if (stripOnLeft) dx else -dx)
             }
-            MotionEvent.ACTION_UP -> {
+            // The followed finger lifts: the gesture ends here, whatever other fingers still do.
+            gate.isRelease(event) -> {
+                val x = gate.x(event)
+                val y = gate.y(event)
                 gate.finish(this)
                 val wasPressed = stripPressed
                 stripPressed = false
                 when {
                     dragging -> userMoveTo(offset >= stripWidth * OPEN_FRACTION)
                     refused -> settleBack()
-                    wasPressed && inStrip(event.x) -> performAction()
+                    wasPressed && inStrip(x, y) -> performAction()
                     targetOpen -> userMoveTo(false)
                     else -> performClick()
                 }
                 dragging = false
                 invalidate()
             }
-            MotionEvent.ACTION_CANCEL -> {
+            action == MotionEvent.ACTION_CANCEL -> {
                 gate.finish(this)
                 stripPressed = false
                 if (dragging) userMoveTo(false) else settleBack()
@@ -514,15 +538,15 @@ public class SancaiRevealLayout @JvmOverloads constructor(
     // ---- keyboard and accessibility ----
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean =
-        handleKey(keyCode) || super.onKeyDown(keyCode, event)
+        handleKey(keyCode, event) || super.onKeyDown(keyCode, event)
 
     /** Keys that a focused view inside the row leaves alone reach the row as well. */
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         if (super.dispatchKeyEvent(event)) return true
-        return event.action == KeyEvent.ACTION_DOWN && !isFocused && hasFocus() && handleKey(event.keyCode)
+        return event.action == KeyEvent.ACTION_DOWN && !isFocused && hasFocus() && handleKey(event.keyCode, event)
     }
 
-    private fun handleKey(keyCode: Int): Boolean {
+    private fun handleKey(keyCode: Int, event: KeyEvent): Boolean {
         if (!hasAction) return false
         when (keyCode) {
             KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT -> {
@@ -534,7 +558,8 @@ public class SancaiRevealLayout @JvmOverloads constructor(
             }
             KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_NUMPAD_ENTER, KeyEvent.KEYCODE_SPACE,
             KeyEvent.KEYCODE_DPAD_CENTER -> if (targetOpen) {
-                performAction()
+                // A held key repeats: the action runs once, the repeats are swallowed.
+                if (event.repeatCount == 0) performAction()
                 return true
             }
             KeyEvent.KEYCODE_ESCAPE -> if (targetOpen) {

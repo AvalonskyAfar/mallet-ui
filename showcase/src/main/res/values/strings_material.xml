@@ -4,7 +4,7 @@
     <string name="material_porcelain_detail">The raised body of cards and capsules: a hairline rim and one soft shadow that falls straight down.</string>
     <string name="material_porcelain_card">A card. Rim, shadow, 9 dp of padding.</string>
     <string name="material_porcelain_flat">A flat card. It keeps the rim and gives up the shadow.</string>
-    <string name="material_porcelain_lifted">The same card, lifted. The view grew a little to hold the shadow.</string>
+    <string name="material_porcelain_lifted">The same card, lifted. The body drew in a little to leave room for the shadow.</string>
     <string name="material_porcelain_lift">Lift the flat card</string>
     <string name="material_porcelain_flatten">Lay it flat</string>
     <string name="material_porcelain_glazed">Glazed capsule</string>

@@ -11,7 +11,7 @@
     <string name="colour_role_divider">行与行之间的分隔线</string>
 
     <string name="colour_semantic_title">语义色</string>
-    <string name="colour_semantic_detail">四种带含义的颜色，用在文字和图标上，不用来铺底。</string>
+    <string name="colour_semantic_detail">四种带含义的颜色，用在文字和图标上；只有主要按钮、删除按钮和角标用它们铺底。</string>
     <string name="colour_accent_line">查看全部 24 条</string>
     <string name="colour_danger_line">这份清单将被永久删除。</string>
     <string name="colour_warning_line">上次备份已是九天前。</string>
@@ -27,7 +27,7 @@
     <string name="colour_scale_note">慢慢拖动滑块，可以看到两种釉色彼此交融。</string>
     <string name="colour_opt_off">关闭</string>
     <string name="colour_opt_on">开启</string>
-    <string name="colour_opt_gentle">宽松</string>
+    <string name="colour_opt_gentle">轻度</string>
     <string name="colour_opt_standard">标准</string>
     <string name="colour_opt_strict">严格</string>
 

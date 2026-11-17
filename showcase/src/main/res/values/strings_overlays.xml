@@ -5,7 +5,7 @@
     <string name="overlays_cancelled">Cancelled. Nothing was changed.</string>
 
     <string name="overlays_dialogs_title">Dialog</string>
-    <string name="overlays_dialogs_detail">A modal question on a porcelain card. Back and a touch outside count as cancelling.</string>
+    <string name="overlays_dialogs_detail">A modal question on a porcelain card. Back counts as cancelling; a touch outside does nothing by default.</string>
     <string name="overlays_dialog_confirm">Confirm</string>
     <string name="overlays_dialog_delete">Destructive</string>
     <string name="overlays_dialog_input">Input</string>

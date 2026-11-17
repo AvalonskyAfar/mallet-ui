@@ -5,7 +5,7 @@
     <string name="overlays_cancelled">已取消，什么都没有改动。</string>
 
     <string name="overlays_dialogs_title">对话框</string>
-    <string name="overlays_dialogs_detail">瓷面卡片上的一个模态提问。按返回键或点卡片外面，都算取消。</string>
+    <string name="overlays_dialogs_detail">瓷面卡片上的一个模态提问。按返回键算取消；点卡片外面默认不起作用。</string>
     <string name="overlays_dialog_confirm">确认</string>
     <string name="overlays_dialog_delete">危险操作</string>
     <string name="overlays_dialog_input">输入</string>

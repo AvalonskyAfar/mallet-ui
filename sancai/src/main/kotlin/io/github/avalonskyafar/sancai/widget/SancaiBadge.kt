@@ -31,6 +31,12 @@ import kotlin.math.roundToInt
  *
  * Use it as a plain view, or call [attach] to overlay one on the top end corner of any view
  * without touching the layout.
+ *
+ * For screen readers the badge describes itself with its number and is hidden while it shows
+ * no number. A content description or an `importantForAccessibility` other than `auto` that
+ * you set yourself, in XML or from code, is kept: the badge then leaves that property alone.
+ * Set the description back to `null`, or the importance back to `auto`, and the badge takes
+ * it over again with its next change.
  */
 public class SancaiBadge @JvmOverloads constructor(
     context: Context,
@@ -43,6 +49,14 @@ public class SancaiBadge @JvmOverloads constructor(
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.SUBPIXEL_TEXT_FLAG)
     private val body = RectF()
     private var host: View? = null
+
+    /**
+     * Whether the content description and the importance are the badge's to write. They are
+     * until the developer sets one, in XML or from code; `null` and `auto` hand them back.
+     */
+    private var ownsDescription = false
+    private var ownsImportance = false
+    private var writing = false
 
     /** The number shown. Negative values count as zero. Zero hides the badge or shows the dot. */
     public var count: Int = 0
@@ -86,16 +100,40 @@ public class SancaiBadge @JvmOverloads constructor(
         textPaint.color = TEXT_COLOR
         textPaint.typeface = SancaiWeight.BOLD.typeface()
         textPaint.textAlign = Paint.Align.CENTER
+        // The View constructor has applied the XML attributes by now: what it left is ours.
+        ownsDescription = contentDescription == null
+        ownsImportance = importantForAccessibility == IMPORTANT_FOR_ACCESSIBILITY_AUTO
         refresh()
+    }
+
+    /** Sets the description read by screen readers. Once set, the badge no longer writes its number; `null` hands it back. */
+    override fun setContentDescription(contentDescription: CharSequence?) {
+        if (!writing) ownsDescription = contentDescription == null
+        super.setContentDescription(contentDescription)
+    }
+
+    /** Sets the importance for accessibility. Once set, the badge no longer changes it; `auto` hands it back. */
+    override fun setImportantForAccessibility(mode: Int) {
+        if (!writing) ownsImportance = mode == IMPORTANT_FOR_ACCESSIBILITY_AUTO
+        super.setImportantForAccessibility(mode)
     }
 
     private fun dp(value: Float): Float = value * resources.displayMetrics.density
 
     private fun refresh() {
-        contentDescription = text.ifEmpty { null }
-        // Only a number can be spoken; the dot and the hidden badge are decoration.
-        importantForAccessibility =
-            if (count > 0) IMPORTANT_FOR_ACCESSIBILITY_YES else IMPORTANT_FOR_ACCESSIBILITY_NO
+        // What the developer chose, in XML or from code, is theirs: the badge only replaces
+        // what is unset or what it wrote itself.
+        writing = true
+        try {
+            if (ownsDescription) contentDescription = text.ifEmpty { null }
+            if (ownsImportance) {
+                // Only a number can be spoken; the dot and the hidden badge are decoration.
+                importantForAccessibility =
+                    if (count > 0) IMPORTANT_FOR_ACCESSIBILITY_YES else IMPORTANT_FOR_ACCESSIBILITY_NO
+            }
+        } finally {
+            writing = false
+        }
         requestLayout()
         invalidate()
         host?.let { anchor ->

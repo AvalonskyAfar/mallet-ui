@@ -150,7 +150,8 @@ is between. The control therefore answers "which option" by position and "how st
 colour at once.
 
 For options that are not levels (a theme picker, a platform picker) pour one glaze under all
-of them: `SancaiGlazes.uniform(count, glaze)`. Mist is the quiet default for that.
+of them: `SancaiGlazes.uniform(count, glaze)`. Mist is the quiet choice for that; pass it
+explicitly, because `glaze` defaults to cobalt.
 *(Extended: the original special-cased one theme picker.)*
 
 ### 3.3 Glaze at night
@@ -257,6 +258,10 @@ it needs no icon and no container. *(Extracted)*
 
 ### 5.1 Page rhythm
 
+A page is one column. It is no wider than 560 dp (`SancaiPage.maxContentWidthDp`) and stands
+in the middle of a wider screen, so that on a tablet, or on a phone lying on its side, a
+title and its control do not drift to opposite ends of a row. *(New)*
+
 `SancaiSpacing` holds the vertical rhythm of a page, in dp. *(Extracted)*
 
 | Token | dp | Meaning |
@@ -296,13 +301,14 @@ number of options so that every track gets room for its labels: 2 : 1 for two op
 ### 5.3 Centring and independence
 
 The title of a row is centred on the **row**, not on the space left over beside an icon or
-chevron. Leading icons, trailing values and chevrons are positioned on their own, 12 dp from
-the edge. Adding or removing one never moves the text. The same rule holds for the title of
+chevron. Leading icons and chevrons are positioned on their own, 12 dp from the edge; a
+trailing value stands 14 dp from the edge, or next to the chevron. Adding or removing one
+never moves the text. The same rule holds for the title of
 the top bar and for the label of a link row. *(Extracted; top bar New)*
 
 Centred text suits short rows that lead somewhere or carry a wide track. A list of switches,
 or rows with long text, reads better from one edge: entry rows and control rows can align
-their text to the start instead (`Alignment.START`), 12 dp from the edge, and a card should
+their text to the start instead (`Alignment.START`), 14 dp from the edge, and a card should
 use one alignment for all of its rows. *(New)*
 
 ### 5.4 Touch targets
@@ -353,7 +359,7 @@ on screen is a little lighter than a free blur of the same numbers.
 | Outer lift | shadow 0 / 3.52 dp / blur 8 dp, `ink` at 9 % | four black shells, 10 to 25 alpha |
 | Body | flat `surface` | vertical gradient: `surface` +2.8 % ink, `surface`, `surface` 15 % towards canvas |
 | Inner depth | top shade 1.6 dp at 4 % ink, bottom shade at 5 % ink | none |
-| Rim | 0.85 dp `hairline` | 0.85 dp gradient: white 26 %, hairline tone, shadow 31 % |
+| Rim | 0.85 dp `hairline` | 0.85 dp gradient: white 26 %, canvas +8.2 % ink, shadow 31 % |
 
 A **glazed body** (primary or destructive capsule) uses the dark recipe in both themes: a
 three-stop gradient of the tint (+10 % white, tint, +5.5 % black in light) and a gradient
@@ -393,7 +399,8 @@ shadow outside the capsule.
 ### 7.4 Well — `drawWell`, `SancaiWellDrawable`
 
 Text fields, editors, media frames. A neutral recess: a body slightly darker at the top, and
-a rim that runs from a dark top edge to a light bottom edge. Replacing the rim with a solid
+a rim that runs from a dark top edge to a light bottom edge (in the light theme, to a
+hairline tone). Replacing the rim with a solid
 colour is how a field shows focus (`ink`) or an error (`danger`). *(Extracted; solid rims
 New)*
 
@@ -452,7 +459,7 @@ never cut off, whatever clips the parent.
 | `THEME_FADE_MS` | 300, cubic-bezier(0.2, 0, 0, 1) | old palette fading over the new one | Extracted |
 | `COMMIT_FRACTION` | 0.28 | a drag past this share of the travel commits | Extracted |
 | `COMMIT_VELOCITY_DP` | 320 dp/s | a flick faster than this commits | Extended: the original used a fixed 850 px/s, which is 310 to 325 dp/s on common phones; Sancai scales with density |
-| `REDUCED_MS` / `FEEDBACK_REDUCED_MS` | 120 / 90 | every duration when motion is reduced | Extracted |
+| `REDUCED_MS` / `FEEDBACK_REDUCED_MS` | 120 / 90 | moving controls, pages and sheets / small feedback when motion is reduced; dialogs and the theme fade do not animate at all | Extracted |
 
 Rules:
 
@@ -467,7 +474,8 @@ Rules:
 - **Colour moves with position.** The bed blends between glazes as the thumb travels, not
   after it arrives.
 - **Reduced motion** shortens every animation to a brief settle and removes decorative
-  movement. It follows the system animator scale unless the theme says otherwise.
+  movement. It is on when the system has animations switched off, unless the theme says
+  otherwise.
 
 ---
 
@@ -576,7 +584,7 @@ Measured with the WCAG 2 formula on the default palettes.
 |---|---|---|
 | `ink` on canvas | 17.1 : 1 | 14.7 : 1 |
 | `muted` on canvas | 3.2 : 1 | 7.4 : 1 |
-| `muted` on canvas, high contrast | 8.4 : 1 | 11.0 : 1 |
+| `muted` on canvas, high contrast | 8.4 : 1 | 10.9 : 1 |
 | `accent` on canvas | 6.9 : 1 | 4.0 : 1 |
 | `danger` on canvas | 4.2 : 1 | 3.2 : 1 |
 | `warning` on canvas | 4.7 : 1 | 4.5 : 1 |
@@ -602,8 +610,9 @@ bead (17 : 1) and the state is also carried by position, so no information depen
 weak pairs alone, but small resting labels are hard to read for some people.
 
 `sancaiHighContrast` brings every pair in the tables above to at least 4.5 : 1, in both
-themes; this is checked by unit tests (`SancaiFoundationTest`). It switches on by itself
-when the user has enabled high-contrast text in the system settings of Android 16 or later.
+themes; this is checked by unit tests (`SancaiFoundationTest`). When the theme comes from
+the Android theme (not from `wrap` or the resolver) it switches on by itself when the user
+has enabled high-contrast text in the system settings of Android 16 or later.
 If your audience needs AA by default, set it in your theme.
 
 ### 12.2 Other commitments
@@ -618,7 +627,8 @@ If your audience needs AA by default, set it in your theme.
   an accessibility action: a reveal row offers its action directly, a page host answers
   Back, a sheet has a dismiss action.
 - **Touch targets** are at least 44 dp (section 5.4).
-- **Text scale.** Layouts are tested at the system font scale 1.3 and `textScale` 1.13.
+- **Text scale.** The unit tests draw every page of the showcase at the system font scale
+  1.3 together with `textScale` 1.13; those pictures are judged by eye, not by assertion.
 - **Right to left.** Start and end are respected everywhere, including the direction pages
   lie in, the side a row reveals from, and directional icons.
 - **Motion.** Reduced motion is honoured (section 9). Nothing flashes, and nothing loops

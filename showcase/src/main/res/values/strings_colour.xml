@@ -11,7 +11,7 @@
     <string name="colour_role_divider">Lines between rows</string>
 
     <string name="colour_semantic_title">Semantic roles</string>
-    <string name="colour_semantic_detail">Four colours that mean something. They are used for words and icons, not for fills.</string>
+    <string name="colour_semantic_detail">Four colours that mean something. They colour words and icons; only the primary and destructive buttons and the badge are filled with them.</string>
     <string name="colour_accent_line">Show all 24 entries</string>
     <string name="colour_danger_line">This list will be deleted for good.</string>
     <string name="colour_warning_line">The backup is nine days old.</string>

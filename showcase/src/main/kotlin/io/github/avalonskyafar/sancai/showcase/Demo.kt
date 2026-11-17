@@ -8,10 +8,8 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
@@ -23,7 +21,7 @@ import io.github.avalonskyafar.sancai.material.SancaiWellDrawable
 import io.github.avalonskyafar.sancai.theme.SancaiTextRole
 import io.github.avalonskyafar.sancai.theme.SancaiTextTone
 import io.github.avalonskyafar.sancai.theme.SancaiTheme
-import io.github.avalonskyafar.sancai.theme.SancaiWindow
+import io.github.avalonskyafar.sancai.widget.SancaiPage
 import io.github.avalonskyafar.sancai.widget.SancaiSurface
 import io.github.avalonskyafar.sancai.widget.SancaiText
 import kotlin.math.min
@@ -74,25 +72,21 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
     val context: Context = host.activity
     val theme: SancaiTheme = SancaiTheme.of(context)
     private val density = context.resources.displayMetrics.density
-    private val column = ContentColumn(context)
     private var hasContent = false
 
-    /** The finished page. */
-    val view: View = ScrollView(context).apply {
+    /**
+     * The finished page: a [SancaiPage], which brings the page padding, the system-bar and
+     * keyboard insets, the widest a column may grow, and the saved scroll position.
+     */
+    val view: View = SancaiPage(context).apply {
         // With an id the page keeps its scroll position when the screen is rebuilt, for
         // example after a theme change. The host stores the state of each page separately.
         id = R.id.showcase_page_scroll
-        setBackgroundColor(theme.colors.canvas)
-        isFillViewport = true
-        clipToPadding = false
-        isVerticalScrollBarEnabled = false
-        overScrollMode = View.OVER_SCROLL_IF_CONTENT_SCROLLS
-        addView(column, FrameLayout.LayoutParams(MATCH, WRAP, Gravity.CENTER_HORIZONTAL))
-        SancaiWindow.padForSystemBars(this, includeIme = true)
     }
 
+    private val column: LinearLayout = (view as SancaiPage).content
+
     init {
-        column.setPadding(dp(PAGE_SIDE), dp(PAGE_TOP), dp(PAGE_SIDE), dp(PAGE_BOTTOM))
         addWayBack(atTop = true)
     }
 
@@ -102,7 +96,7 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
     private fun columnWidthPx(): Int {
         val windowDp = context.resources.configuration.screenWidthDp
         val window = if (windowDp > 0) dp(windowDp) else context.resources.displayMetrics.widthPixels
-        return min(window, dp(MAX_WIDTH_DP))
+        return min(window, dp(SancaiPage.DEFAULT_MAX_CONTENT_WIDTH_DP.toInt()) + dp(PAGE_SIDE) * 2)
     }
 
     fun str(@StringRes id: Int): String = context.getString(id)
@@ -256,24 +250,6 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
         column.addView(row, params)
     }
 
-    /** A vertical column that stays readable on wide screens. */
-    private class ContentColumn(context: Context) : LinearLayout(context) {
-        private val maxWidth = (MAX_WIDTH_DP * resources.displayMetrics.density).roundToInt()
-
-        init {
-            orientation = VERTICAL
-            clipChildren = false
-            clipToPadding = false
-        }
-
-        override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-            val available = MeasureSpec.getSize(widthMeasureSpec)
-            val mode = MeasureSpec.getMode(widthMeasureSpec)
-            val width = if (mode == MeasureSpec.UNSPECIFIED) maxWidth else min(available, maxWidth)
-            super.onMeasure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), heightMeasureSpec)
-        }
-    }
-
     companion object {
         const val MATCH: Int = ViewGroup.LayoutParams.MATCH_PARENT
         const val WRAP: Int = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -286,7 +262,6 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
         const val HEADING_GAP = 10
         const val SECTION_GAP = 22
         const val BUTTON_SIDE = 30
-        private const val MAX_WIDTH_DP = 560
         private const val CODE_PADDING = 13
 
         /** Room the gutter and the rim of a well take at each side, in dp. */

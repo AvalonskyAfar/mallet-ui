@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="reveal_swipe_title">Swipe a row aside</string>
-    <string name="reveal_swipe_detail">Drag a row away from the start side. Past two fifths of the strip it stays open; a tap on the row closes it. The switches keep their own drag.</string>
+    <string name="reveal_swipe_detail" formatted="false">Drag a row away from the start side. Past 42 % of the strip it stays open; a tap on the row closes it. The switches keep their own drag.</string>
     <string name="reveal_rule_ads">Block ads</string>
     <string name="reveal_rule_trackers">Block trackers</string>
     <string name="reveal_rule_popups">Block pop-ups</string>

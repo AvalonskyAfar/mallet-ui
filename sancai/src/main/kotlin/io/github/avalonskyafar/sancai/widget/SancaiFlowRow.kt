@@ -94,6 +94,14 @@ public class SancaiFlowRow @JvmOverloads constructor(
         this.steps = steps.map { Step(it.first, it.second) }
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY || childCount == 0) return
+        // Without an exact width, Android 6 leaves every column as wide as its own text. A second
+        // pass at the width found shares it out equally on every version.
+        super.onMeasure(MeasureSpec.makeMeasureSpec(measuredWidth, MeasureSpec.EXACTLY), heightMeasureSpec)
+    }
+
     override fun getAccessibilityClassName(): CharSequence = SancaiFlowRow::class.java.name
 
     override fun onInitializeAccessibilityNodeInfo(info: AccessibilityNodeInfo) {

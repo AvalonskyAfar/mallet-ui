@@ -36,5 +36,5 @@
     <string name="fields_locked_enable">Enable the field</string>
     <string name="fields_locked_disable">Disable the field</string>
 
-    <string name="fields_origin">The recessed well, its padding, the 15 sp text and the label above it were extracted from the original app. Helper, error and counter, the two end actions and the focus and error rims are new in Sancai.</string>
+    <string name="fields_origin">The recessed well, its padding and the label above it were extracted from the original app; its text was 15 sp there and is 15.5 sp here, a step of the type scale. Helper, error and counter, the two end actions and the focus and error rims are new in Sancai.</string>
 </resources>

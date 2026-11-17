@@ -272,6 +272,51 @@ class SancaiPageTest {
     }
 
     @Test
+    fun `on a wide page the column keeps its limit and stands in the middle`() {
+        val page = SancaiPage(context)
+        page.addView(block(40))
+        // Narrow: the column fills the room between the paddings.
+        Snapshots.layout(page, 360, 600)
+        assertThat(page.content.width).isEqualTo(px(360f) - 2 * px(SancaiSpacing.PAGE_SIDE))
+
+        // Wide (a tablet, a phone on its side): 560 dp, centred, also when the page is short
+        // and the scroll view stretches the column to the viewport.
+        Snapshots.layout(page, 900, 600)
+        assertThat(page.content.width).isEqualTo(px(560f))
+        assertThat(page.content.left).isEqualTo((px(900f) - px(560f)) / 2)
+        assertThat(page.content.height).isEqualTo(px(600f) - px(22f) - px(34f))
+
+        page.maxContentWidthDp = 700f
+        Snapshots.layout(page, 900, 600)
+        assertThat(page.content.width).isEqualTo(px(700f))
+
+        page.maxContentWidthDp = 0f
+        Snapshots.layout(page, 900, 600)
+        assertThat(page.content.width).isEqualTo(px(900f) - 2 * px(SancaiSpacing.PAGE_SIDE))
+    }
+
+    @Test
+    fun `a page that joins a screen late asks for the window insets`() {
+        var asked = 0
+        val parent = object : android.widget.FrameLayout(context) {
+            @Suppress("OVERRIDE_DEPRECATION")
+            override fun requestFitSystemWindows() {
+                asked++
+                super.requestFitSystemWindows()
+            }
+        }
+        Snapshots.attach(parent, 300)
+        asked = 0
+
+        parent.addView(SancaiPage(context))
+        assertThat(asked).isEqualTo(1)
+
+        // A page that keeps clear of the bars by other means does not ask.
+        parent.addView(SancaiPage(context).apply { fitSystemBars = false })
+        assertThat(asked).isEqualTo(1)
+    }
+
+    @Test
     fun `scroll position is saved and restored`() {
         val first = tallPage(101)
         first.scrollTo(0, 777)

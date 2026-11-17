@@ -24,7 +24,7 @@
     <string name="appearance_large_text">字体放大</string>
     <string name="appearance_large_text_detail">所有文字放大至 1.13 倍</string>
     <string name="appearance_contrast">增强对比度</string>
-    <string name="appearance_contrast_detail">文字与控件更易辨认</string>
+    <string name="appearance_contrast_detail">描边与文字更醒目</string>
 
     <string name="appearance_feel_title">交互体验</string>
     <string name="appearance_feel_detail">调整界面对触摸的反馈</string>
@@ -35,5 +35,5 @@
 
     <string name="appearance_off">关闭</string>
     <string name="appearance_on">开启</string>
-    <string name="appearance_provenance">这六项设置、1 : 1.35 的行比例，以及主题切换时的淡入过渡，均取自原应用的设置页。第二套釉色为新增，用来说明色阶是可替换的设计变量，而不是一组写死的颜色。</string>
+    <string name="appearance_provenance">其余五项设置、1 : 1.35 的行比例，以及主题切换时的淡入过渡，均取自原应用的设置页。釉色这一项及第二套釉色为新增，用来说明色阶是可替换的设计变量，而不是一组写死的颜色。</string>
 </resources>

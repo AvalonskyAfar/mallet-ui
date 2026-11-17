@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tracks_segmented_title">分段轨道</string>
-    <string name="tracks_segmented_detail">在二到四个选项里选一个。点选项，或者拖动滑块。每个位置有自己的釉色。</string>
+    <string name="tracks_segmented_detail">在两个或更多选项里选一个。点选项，或者拖动滑块。前四个位置各有自己的釉色。</string>
     <string name="tracks_off">关闭</string>
     <string name="tracks_on">开启</string>
     <string name="tracks_day">日</string>
     <string name="tracks_week">周</string>
     <string name="tracks_month">月</string>
-    <string name="tracks_gentle">宽松</string>
+    <string name="tracks_gentle">轻度</string>
     <string name="tracks_standard">标准</string>
     <string name="tracks_strict">严格</string>
     <string name="tracks_status_filter">过滤：%1$s</string>

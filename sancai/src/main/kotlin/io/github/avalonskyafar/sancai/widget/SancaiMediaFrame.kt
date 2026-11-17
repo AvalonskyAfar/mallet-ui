@@ -32,7 +32,7 @@ import kotlin.math.roundToInt
  * ```
  *
  * The well stays visible on all four sides: the picture is inset by 4 dp and its corners are
- * clipped to a 4 dp radius, concentric with the 7 dp radius of the well. The picture is
+ * clipped to a 4 dp radius, inside the 7 dp radius of the well. The picture is
  * centre-cropped unless [scaleType] says otherwise.
  *
  * Height: with an [aspectRatio] the picture keeps that shape at whatever width the frame is

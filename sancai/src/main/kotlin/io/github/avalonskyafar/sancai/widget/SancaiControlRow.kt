@@ -425,7 +425,8 @@ public class SancaiControlRow @JvmOverloads constructor(
         private const val TEXT_GAP_DP = 10f
 
         /** Inset of start-aligned text, the same as in an entry row. */
-        private const val START_INSET_DP = 12f
+        // The start inset of the original's one start-aligned row, and of a start-aligned entry row.
+        private const val START_INSET_DP = 14f
         private const val DETAIL_GAP_DP = 3f
 
         private const val STATE_SUPER = "sancai:super"

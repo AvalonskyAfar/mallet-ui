@@ -262,6 +262,29 @@ class SancaiSpatialHostTest {
     }
 
     @Test
+    fun `a page that arrives later is given the window insets`() {
+        var asked = 0
+        val outer = object : FrameLayout(context) {
+            @Suppress("OVERRIDE_DEPRECATION")
+            override fun requestFitSystemWindows() {
+                asked++
+                super.requestFitSystemWindows()
+            }
+        }
+        val host = host()
+        outer.addView(host)
+        asked = 0
+        // A page shown without a glide, and one dragged in: both are attached late.
+        host.navigate("settings", animate = false)
+        assertThat(asked).isEqualTo(1)
+        host.navigate("main", animate = false)
+        asked = 0
+        Touch.drag(host, host.width * 0.25f, 100f, host.width * 0.8f, 100f, release = false)
+        assertThat(host.isMoving).isTrue()
+        assertThat(asked).isEqualTo(1)
+    }
+
+    @Test
     fun `a navigation request during a drag adopts the nearer page first`() {
         val host = host()
         // 70 % of the way to the settings page, finger still down.

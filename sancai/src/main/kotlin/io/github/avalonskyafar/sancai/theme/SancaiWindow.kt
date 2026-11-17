@@ -31,7 +31,8 @@ public object SancaiWindow {
      *
      * With [edgeToEdge] (the default) the content is laid out behind transparent system bars,
      * which is also what Android 15 and later enforce; pad your root view with
-     * [padForSystemBars]. Without it the bars take the canvas colour instead.
+     * [padForSystemBars]. Without it the bars take the canvas colour instead (before Android 8
+     * the navigation bar of a light theme stays black, because its icons cannot be darkened).
      */
     @JvmStatic
     @JvmOverloads
@@ -66,8 +67,9 @@ public object SancaiWindow {
 
     /**
      * Adds the system-bar and display-cutout insets to the padding [view] has right now, and
-     * keeps doing so when the insets change. With [includeIme] the on-screen keyboard is
-     * treated the same way, so the content stays above it.
+     * keeps doing so when the insets change and whenever the view is attached to a window.
+     * With [includeIme] the on-screen keyboard is treated the same way, so the content stays
+     * above it. Call it once per view.
      */
     @JvmStatic
     @JvmOverloads
@@ -83,6 +85,15 @@ public object SancaiWindow {
             target.setPadding(left + bars.left, top + bars.top, right + bars.right, bottom + bars.bottom)
             insets
         }
+        // Android hands the insets down when they change, not when a view arrives: a view that
+        // is attached later, or attached again, has to ask for them each time.
+        view.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(attached: View) {
+                ViewCompat.requestApplyInsets(attached)
+            }
+
+            override fun onViewDetachedFromWindow(detached: View) = Unit
+        })
         ViewCompat.requestApplyInsets(view)
     }
 

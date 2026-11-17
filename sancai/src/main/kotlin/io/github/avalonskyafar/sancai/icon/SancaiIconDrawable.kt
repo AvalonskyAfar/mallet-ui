@@ -20,7 +20,7 @@ import kotlin.math.roundToInt
  * right-to-left layouts.
  *
  * @param color stroke colour; defaults to the muted colour of the theme
- * @param sizeDp intrinsic size
+ * @param sizeDp intrinsic size; must be positive (anything smaller counts as one pixel)
  * @param strokeDp stroke width at that size
  */
 public class SancaiIconDrawable @JvmOverloads constructor(
@@ -32,7 +32,7 @@ public class SancaiIconDrawable @JvmOverloads constructor(
 ) : Drawable() {
 
     private val density = context.resources.displayMetrics.density
-    private val sizePx = (sizeDp * density).roundToInt()
+    private val sizePx = maxOf(1, (sizeDp * density).roundToInt())
     private val strokePx = strokeDp * density
     private var baseColor = color
     private var tint: ColorStateList? = null

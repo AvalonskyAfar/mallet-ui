@@ -436,6 +436,78 @@ class SancaiNavBarTest {
     }
 
     @Test
+    fun `a row disabled under the finger lets the item rise at once`() {
+        val view = bar(theme = SancaiTheme.light().copy(reduceMotion = true))
+        val rest = view.inkRows(Snapshots.render(view, WIDTH_DP), 1, 40f, 72f)
+        var picked = -1
+        view.setOnItemSelectedListener { _, index -> picked = index }
+        Touch.dispatch(view, android.view.MotionEvent.ACTION_DOWN, view.slotCentre(1), view.height / 2f)
+        view.isEnabled = false
+        Touch.dispatch(view, android.view.MotionEvent.ACTION_UP, view.slotCentre(1), view.height / 2f)
+        assertThat(view.inkRows(Snapshots.render(view, WIDTH_DP), 1, 40f, 72f)).isEqualTo(rest)
+        view.isEnabled = true
+        assertThat(view.inkRows(Snapshots.render(view, WIDTH_DP), 1, 40f, 72f)).isEqualTo(rest)
+        assertThat(picked).isEqualTo(-1)
+    }
+
+    @Test
+    fun `a held confirm key activates once and its repeats are swallowed`() {
+        val view = bar()
+        var calls = 0
+        view.setOnItemSelectedListener { _, _ -> calls++ }
+        fun down(repeat: Int): Boolean =
+            view.onKeyDown(KeyEvent.KEYCODE_ENTER, KeyEvent(0L, 0L, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER, repeat))
+        assertThat(down(0)).isTrue()
+        assertThat(down(1)).isTrue()
+        assertThat(down(2)).isTrue()
+        assertThat(calls).isEqualTo(1)
+
+        val tabs = bar(SancaiNavBar.Mode.TABS)
+        var reselected = 0
+        tabs.setOnItemReselectedListener { _, _ -> reselected++ }
+        val space = KeyEvent(0L, 0L, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SPACE, 3)
+        assertThat(tabs.onKeyDown(KeyEvent.KEYCODE_SPACE, space)).isTrue()
+        assertThat(reselected).isEqualTo(0)
+    }
+
+    @Test
+    fun `the row itself offers no click to accessibility, its items do`() {
+        for (mode in SancaiNavBar.Mode.values()) {
+            val view = bar(mode)
+            // Without a window the platform fills in nothing, and the test would pass on its own.
+            Snapshots.attach(view)
+            val host = android.view.accessibility.AccessibilityNodeInfo.obtain()
+            view.onInitializeAccessibilityNodeInfo(host)
+            assertThat(host.isFocusable).isTrue()
+            assertThat(host.isClickable).isFalse()
+            assertThat(host.actionList)
+                .doesNotContain(android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK)
+            val item = view.accessibilityNodeProvider.createAccessibilityNodeInfo(0)!!
+            assertThat(item.isClickable).isTrue()
+            assertThat(item.actionList)
+                .contains(android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK)
+            // Touch still needs the view to be clickable.
+            assertThat(view.isClickable).isTrue()
+        }
+    }
+
+    @Test
+    fun `a bar that joins a screen late asks for the window insets`() {
+        var asked = 0
+        val parent = object : android.widget.FrameLayout(Snapshots.context()) {
+            @Suppress("OVERRIDE_DEPRECATION")
+            override fun requestFitSystemWindows() {
+                asked++
+                super.requestFitSystemWindows()
+            }
+        }
+        Snapshots.attach(parent, 360)
+        asked = 0
+        parent.addView(SancaiNavBar(Snapshots.context()))
+        assertThat(asked).isEqualTo(1)
+    }
+
+    @Test
     fun `row grows by the navigation bar inset`() {
         val view = bar()
         val bare = view.height

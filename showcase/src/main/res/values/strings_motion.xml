@@ -19,7 +19,7 @@
     <string name="motion_use_dialog">Dialogs and sheets, in and out</string>
     <string name="motion_use_feedback">Toasts, reveal rows and other small feedback</string>
     <string name="motion_use_press">Pressed content sinking</string>
-    <string name="motion_use_reduced">Any animation while motion is reduced</string>
+    <string name="motion_use_reduced">Controls, pages and sheets while motion is reduced</string>
 
     <string name="motion_settle_title">Settle</string>
     <string name="motion_settle_detail">When a finger lets go of a page, the time to land depends on the distance left.</string>

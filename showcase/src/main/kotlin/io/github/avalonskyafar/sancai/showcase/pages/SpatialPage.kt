@@ -187,7 +187,7 @@ object SpatialPage : DemoPage("i_spatial", R.string.page_i_spatial_title, R.stri
             // In onCreate, after host.setGraph(...)
             back = SancaiBack.attach(this, host)
 
-            // Only needed below Android 13
+            // Below Android 13, or without enableOnBackInvokedCallback
             override fun onBackPressed() {
                 if (back.onBackPressed()) return
                 super.onBackPressed()

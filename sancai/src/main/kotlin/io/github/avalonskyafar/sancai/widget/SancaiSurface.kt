@@ -74,7 +74,7 @@ public class SancaiDivider @JvmOverloads constructor(
  * The Sancai card: a porcelain body that groups rows and controls.
  *
  * It is a [LinearLayout] (vertical unless told otherwise) with the porcelain material as its
- * background. Two things differ from a plain layout:
+ * background. Three things differ from a plain layout:
  *
  * - The view is slightly larger than the card the eye sees, because the shadow is drawn inside
  *   the view: 1.4 dp on each side, 1 dp above and 4.8 dp below. Content padding (9 dp by
@@ -167,7 +167,10 @@ public open class SancaiSurface @JvmOverloads constructor(
         requestLayout()
     }
 
-    /** Adds a full-bleed divider with [verticalMarginDp] of space above and below it. */
+    /**
+     * Adds a full-bleed divider. In a vertical surface it gets [verticalMarginDp] of space
+     * above and below; a horizontal surface gets a vertical line without margins.
+     */
     @JvmOverloads
     public fun addDivider(verticalMarginDp: Float = 0f): SancaiDivider {
         val divider = SancaiDivider(context)

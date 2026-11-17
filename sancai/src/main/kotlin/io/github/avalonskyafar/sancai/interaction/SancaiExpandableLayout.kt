@@ -19,6 +19,7 @@ import android.widget.LinearLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat
 import io.github.avalonskyafar.sancai.R
+import io.github.avalonskyafar.sancai.internal.useOwnFocusRim
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
 import io.github.avalonskyafar.sancai.theme.SancaiTheme
@@ -443,6 +444,7 @@ public class SancaiExpandableLayout @JvmOverloads constructor(
             val sink = resources.displayMetrics.density * SancaiMotion.PRESS_SINK_DP
             first.isClickable = true
             first.isFocusable = true
+            first.useOwnFocusRim()
             first.setOnTouchListener { view, event ->
                 when (event.actionMasked) {
                     MotionEvent.ACTION_DOWN -> if (view.isEnabled) SancaiPress.sink(view, sink)
@@ -532,6 +534,11 @@ public class SancaiExpandableLayout @JvmOverloads constructor(
         val changed = enabled != isEnabled
         super.setEnabled(enabled)
         if (!ready || !changed) return
+        if (!enabled) {
+            // A header disabled under the finger or the key gets no release: put it back here.
+            keyHeld = false
+            boundHeader?.let { if (pressInstalled) SancaiPress.release(it) }
+        }
         syncHeader()
     }
 

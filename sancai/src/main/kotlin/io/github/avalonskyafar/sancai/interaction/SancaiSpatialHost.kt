@@ -50,6 +50,9 @@ import kotlin.math.sign
  *   stops; the page only follows a sideways drag that nothing under the finger can use.
  * - Horizontal drags that begin within 24 dp of a screen edge are left to the system.
  *
+ * A page is given the window insets (system bars, keyboard) when it is attached, however late
+ * that is, so a page that pads itself for the bars is right from its first frame.
+ *
  * Page views come from the [PageFactory] and are kept while detached, so returning to a page
  * restores it exactly; see [setKeepAlive] and [invalidatePage].
  */
@@ -440,6 +443,13 @@ public class SancaiSpatialHost @JvmOverloads constructor(
     // ---------------------------------------------------------------------------------------
     // Gestures
     // ---------------------------------------------------------------------------------------
+
+    override fun onViewAdded(child: View) {
+        super.onViewAdded(child)
+        // Android hands the window insets down when they change, not when a view arrives. A
+        // page attached after the first layout pass would never hear of the system bars.
+        child.requestApplyInsets()
+    }
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         // A touch is a stronger signal than a warm-up timer: page building waits.

@@ -99,8 +99,8 @@ Rules, all from the original:
 
 **Extracted.** Origin: `UiKit.SegmentControl`, `CompactToggle`, `PowerSwitch`.
 
-All horizontal controls (`SancaiSegmentedTrack`, `SancaiSwitch`, `SancaiPowerSwitch`,
-`SancaiSlider`, `SancaiStepper`) share one touch model:
+The dragged controls (`SancaiSegmentedTrack`, `SancaiSwitch`, `SancaiPowerSwitch`,
+`SancaiSlider`) share one touch model; `SancaiStepper` is tapped or held instead:
 
 | Phase | What happens |
 |---|---|
@@ -110,7 +110,7 @@ All horizontal controls (`SancaiSegmentedTrack`, `SancaiSwitch`, `SancaiPowerSwi
 | Move, mostly vertical | the control lets go for good: the gesture belongs to the scrolling parent and the value is untouched |
 | Up after a drag | commits the option under the finger (a switch commits the nearer side) and glides the last bit |
 | Up without a drag | a tap: selects the tapped option, or toggles |
-| Cancel | returns to the committed value |
+| Cancel | returns to the committed value (a slider keeps the value it was dragged to) |
 
 Listeners:
 
@@ -126,8 +126,10 @@ track.setOnSelectionChangeListener { t, index ->
 - A drag reports once, on release. Use a slider and its `setOnValueChangeListener` when
   you need continuous values.
 
-Every control also answers the keyboard (arrows step, Space and Enter act), mirrors in
-right-to-left layouts, saves its state, and exposes itself to accessibility services with a
+Every control also answers the keyboard (arrows step; Space and Enter act on tracks and
+switches), mirrors in
+right-to-left layouts (except the stepper, whose minus stays left), saves its state, and
+exposes itself to accessibility services with a
 platform role.
 
 ---
@@ -162,8 +164,9 @@ val graph = SancaiSpatialGraph.Builder(root = "home")
 | `child(parent, side, child)` | `child` is opened from `parent` (a row, a button) and slides in from that side; it can be dragged back, but not dragged to |
 | `parent(key, parentKey)` | overrides where Back leads from a page |
 
-`Side.START` and `Side.END` follow the layout direction. `build()` rejects two draggable
-pages on one side and pages that cannot get back to the root.
+`Side.START` and `Side.END` follow the layout direction. `connect()` and `child()` reject
+two draggable
+pages on one side; `build()` rejects pages that cannot get back to the root.
 
 ### 5.2 Host it
 
@@ -204,7 +207,8 @@ process death.
 5. Release commits past `SancaiMotion.COMMIT_FRACTION` (28 %) of the travel or with a flick
    faster than `COMMIT_VELOCITY_DP` (320 dp/s) in the direction of the move; otherwise the
    pages return.
-6. The landing lasts `SancaiMotion.settleDuration(remaining)`: 220 ms for a short remainder,
+6. The landing lasts `SancaiMotion.settleDuration(remaining, reduceMotion)`: 220 ms for a
+   short remainder,
    420 ms for the full distance.
 7. A touch during the landing ends it at once. The page that is at least half way in becomes
    the current page.
@@ -276,8 +280,9 @@ window animation, and the real screen below is exactly where the picture was.
   `SancaiSpatialTransition.SwipeGate` on the activity (or set one with `setSwipeGate`) to
   refuse it while the page is in the middle of something.
 - Without a picture (a direct launch, a restored process, a screen larger than 16 MB of
-  pixels) the page appears at once and leaving uses the plain slide animations in
-  `res/anim`.
+  pixels) the wrapper does not move the page: entering through `start` and leaving both use
+  the plain
+  slide animations in `res/anim`.
 - Only `Side.START` and `Side.END` are supported between activities.
 
 Prefer one activity with a `SancaiSpatialHost` when you can. Use this for a screen that has
@@ -376,7 +381,7 @@ and made generic.
 Three mechanisms implement this:
 
 1. **`SancaiHorizontalDragOwner`.** A marker interface on tracks, switches, sliders and
-   steppers. Hosts leave a gesture that starts on such a view to it, unless the gesture
+   tabs. Hosts leave a gesture that starts on such a view to it, unless the gesture
    turns out to be vertical. Put it on your own horizontally draggable views.
 2. **`canScrollHorizontally` / `canScrollVertically`.** Hosts ask the views under the finger
    whether they can still move in the drag direction. Lists and scroll views answer

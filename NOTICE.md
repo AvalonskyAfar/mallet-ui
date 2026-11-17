@@ -31,8 +31,9 @@ in any built artifact:
 | LiteRT, Google ML Kit text recognition | Apache-2.0 / Google ML Kit terms | not used |
 | Product name, mascot and application copy | — | not used |
 
-Every picture in the library and in the Showcase app is drawn by code that belongs to this
-project. No raster image, font or third-party icon file is bundled.
+Every picture in the library and in the Showcase app is drawn by this project (canvas code,
+plus the Showcase's vector launcher icon). The sources hold no raster image, font or
+third-party icon file; a built Showcase APK may carry `androidx.core`'s own PNG resources.
 
 ## Third-party software
 

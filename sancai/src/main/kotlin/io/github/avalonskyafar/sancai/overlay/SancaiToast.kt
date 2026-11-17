@@ -24,6 +24,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat
 import io.github.avalonskyafar.sancai.R
 import io.github.avalonskyafar.sancai.interaction.SancaiPress
+import io.github.avalonskyafar.sancai.internal.useOwnFocusRim
 import io.github.avalonskyafar.sancai.material.SancaiGutters
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.theme.SancaiColors
@@ -495,6 +496,7 @@ public class SancaiToastView @JvmOverloads constructor(
         actionView.visibility = GONE
         SancaiPress.attach(actionView) { actionClick?.invoke() }
         actionView.setOnFocusChangeListener { _, _ -> invalidate() }
+        actionView.useOwnFocusRim()
         addView(actionView, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT))
 
         ViewCompat.setAccessibilityLiveRegion(this, ViewCompat.ACCESSIBILITY_LIVE_REGION_POLITE)

@@ -88,8 +88,9 @@ private const val SCRIM_ALPHA = 69
  * - It glides up over [SancaiMotion.DIALOG_MS] and glides down again; only the scrim fades,
  *   in proportion to the position of the sheet.
  * - Dragging down on the grabber, the header, or on content that is scrolled to its top
- *   moves the sheet. Letting go past [SancaiMotion.COMMIT_FRACTION] of its height, or faster
- *   than [SancaiMotion.COMMIT_VELOCITY_DP], dismisses it; otherwise it returns.
+ *   moves a cancelable sheet (one built with `cancelable(false)` does not follow the
+ *   finger). Letting go past [SancaiMotion.COMMIT_FRACTION] of its height, or faster than
+ *   [SancaiMotion.COMMIT_VELOCITY_DP], dismisses it; otherwise it returns.
  * - A tap on the scrim, the back key and the accessibility "dismiss" action dismiss it
  *   unless it was built with `cancelable(false)`.
  * - An action ticks, runs its callback, and then dismisses the sheet.

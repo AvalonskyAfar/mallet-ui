@@ -283,9 +283,9 @@ class SancaiControlRowTest {
 
         row.alignment = SancaiControlRow.Alignment.START
         Snapshots.layout(row, 340)
-        assertThat(copyOf(row).paddingStart).isEqualTo(px(12f))
+        assertThat(copyOf(row).paddingStart).isEqualTo(px(14f))
         assertThat(title.layout.getLineLeft(0)).isWithin(1f).of(0f)
-        assertThat(title.left).isEqualTo(px(12f))
+        assertThat(title.left).isEqualTo(px(14f))
         // The control stays at the end edge and the row keeps its height.
         assertThat(row.control!!.right).isEqualTo(row.width)
         assertThat(row.height).isEqualTo(px(72f))
@@ -306,7 +306,7 @@ class SancaiControlRowTest {
         assertThat(row.alignment).isEqualTo(SancaiControlRow.Alignment.START)
         row.setSegmented(LABELS.take(3), 0, null)
         Snapshots.layout(row, 340)
-        assertThat(copyOf(row).paddingStart).isEqualTo(px(12f))
+        assertThat(copyOf(row).paddingStart).isEqualTo(px(14f))
         assertThat(copyOf(row).paddingBottom).isEqualTo(px(5f))
     }
 

@@ -43,7 +43,8 @@ import kotlin.math.roundToInt
  *
  * - Standalone use: set [count] and [selectedIndex] (or `app:sancaiPageIndicatorCount` and
  *   `app:sancaiSelectedIndex`) and listen with [setOnSelectionChangeListener]. While a
- *   pager is attached, both properties mirror the pager and setting them moves the pager.
+ *   pager is attached, both mirror the pager: setting [selectedIndex] moves it, setting
+ *   [count] is ignored.
  * - The listener fires for user input only (tap, keyboard, accessibility action); the pager's
  *   own `onPageSelected` fires as well, because the tap is the user's.
  * - The indicator is the keyboard handle of its pager: it takes focus, and Left / Right move
@@ -112,7 +113,7 @@ public class SancaiPageIndicator @JvmOverloads constructor(
 
     /**
      * Index of the accent dot. With a pager attached this is the pager's current page and
-     * setting it jumps the pager there. Never calls [setOnSelectionChangeListener].
+     * setting it jumps the pager there. Never calls the selection listener.
      */
     public var selectedIndex: Int
         get() = pager?.currentPage ?: ownSelected

@@ -501,6 +501,83 @@ class SancaiDialogTest {
     }
 
     @Test
+    fun `window taken away during the exit motion closes the dialog without a crash`() {
+        val flags = ArrayList<Boolean>()
+        val dialog = shown(builder().positive().negative().onDismiss { _, positive -> flags.add(positive) })
+        click(dialog, ACTION_POSITIVE)
+        assertThat(dialog.isShowing).isTrue()
+        // What the destruction of the activity does to a window that is still attached.
+        val decor = checkNotNull(dialog.dialog.window).decorView
+        activity.windowManager.removeViewImmediate(decor)
+        assertThat(dialog.isShowing).isFalse()
+        settle()
+        assertThat(dialog.isShowing).isFalse()
+        assertThat(flags).containsExactly(true)
+    }
+
+    @Test
+    fun `platform dismissal during the exit motion reports the dismissal once`() {
+        val flags = ArrayList<Boolean>()
+        val dialog = shown(builder().positive().negative().onDismiss { _, positive -> flags.add(positive) })
+        click(dialog, ACTION_POSITIVE)
+        dialog.dialog.dismiss()
+        assertThat(dialog.isShowing).isFalse()
+        settle()
+        assertThat(flags).containsExactly(true)
+    }
+
+    @Test
+    fun `dismiss after the window was taken away from an open dialog does not crash`() {
+        val flags = ArrayList<Boolean>()
+        val dialog = shown(builder().positive().negative().onDismiss { _, positive -> flags.add(positive) })
+        activity.windowManager.removeViewImmediate(checkNotNull(dialog.dialog.window).decorView)
+        dialog.dismiss()
+        assertThat(dialog.isShowing).isFalse()
+        settle()
+        assertThat(flags).containsExactly(false)
+    }
+
+    @Test
+    fun `dismiss removes the window at once when the activity is finishing`() {
+        val flags = ArrayList<Boolean>()
+        val dialog = shown(builder().positive().negative().onDismiss { _, positive -> flags.add(positive) })
+        activity.finish()
+        dialog.dismiss()
+        assertThat(dialog.isShowing).isFalse()
+        settle()
+        assertThat(flags).containsExactly(false)
+    }
+
+    @Test
+    fun `short overloads take the callback right after the required arguments`() {
+        var confirmed = 0
+        val confirm = SancaiDialog.confirm(context, "Delete rule?", Runnable { confirmed++ })
+        settle()
+        assertThat(confirm.actionView(ACTION_NEGATIVE)).isNotNull()
+        click(confirm, ACTION_POSITIVE)
+        settle()
+        assertThat(confirmed).isEqualTo(1)
+        assertThat(confirm.isShowing).isFalse()
+
+        var calls = 0
+        val listener = SancaiDialog.OnActionListener { calls++; true }
+        val dialog = shown(builder().positive("Go", listener))
+        assertThat(label(dialog, ACTION_POSITIVE).currentTextColor).isEqualTo(theme.colors.accent)
+        click(dialog, ACTION_POSITIVE)
+        settle()
+        assertThat(calls).isEqualTo(1)
+        assertThat(dialog.isShowing).isFalse()
+    }
+
+    @Test
+    fun `actions draw their own focus rim without the platform highlight`() {
+        val dialog = shown(builder().positive().negative())
+        val action = checkNotNull(dialog.actionView(ACTION_POSITIVE))
+        assertThat(action.isFocusable).isTrue()
+        if (android.os.Build.VERSION.SDK_INT >= 26) assertThat(action.defaultFocusHighlightEnabled).isFalse()
+    }
+
+    @Test
     fun `dialog can be shown again after it closed and the next attempt clears the error`() {
         var dismissals = 0
         var reject = true

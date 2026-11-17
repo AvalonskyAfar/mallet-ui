@@ -7,14 +7,15 @@ import kotlin.math.roundToLong
 /**
  * Timing and distance tokens shared by every Sancai interaction.
  *
- * There is exactly one easing curve. Everything that moves either follows the finger or
- * settles along [glide], which starts fast and lands softly; nothing bounces.
+ * There is one easing curve for movement. Everything that moves either follows the finger or
+ * settles along [glide], which starts fast and lands softly; nothing bounces. Only the theme
+ * cross-fade has its own curve, [fade].
  */
 public object SancaiMotion {
     /** Thumb and glaze settle after a tap or release. */
     public const val CONTROL_MS: Long = 260L
 
-    /** Any animation while motion is reduced. */
+    /** Controls, pages, sheets and sections while motion is reduced. Dialogs then do not move at all. */
     public const val REDUCED_MS: Long = 120L
 
     /** Programmatic full-distance page transition. */
@@ -29,7 +30,7 @@ public object SancaiMotion {
     /** Dialog and sheet entrance and exit. */
     public const val DIALOG_MS: Long = 320L
 
-    /** Toasts, reveal rows, expanders and other small feedback. */
+    /** Toasts, menus, reveal rows, banners and other small feedback. */
     public const val FEEDBACK_MS: Long = 220L
 
     /** Small feedback while motion is reduced. */

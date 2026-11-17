@@ -43,5 +43,5 @@
     <string name="arbitrate_land_edge">Within 24 dp of a screen edge</string>
     <string name="arbitrate_owner_edge">The system back gesture</string>
     <string name="arbitrate_edge_note">The page host never starts a sideways drag in the 24 dp zones at the two screen edges. They are left to the system, so the back gesture works the same on every page.</string>
-    <string name="arbitrate_origin">The track that keeps a sideways drag and hands a vertical one back to the page, the row that slides aside and the page that follows the finger were extracted from the original app. The pager and one shared rule that any view can join through SancaiHorizontalDragOwner are new in Sancai.</string>
+    <string name="arbitrate_origin">The track that keeps a sideways drag and hands a vertical one back to the page, the row that slides aside and the page that follows the finger were extracted from the original app. The pager was extracted from the first-launch flow of the original app. The one shared rule that any view can join through SancaiHorizontalDragOwner is new in Sancai.</string>
 </resources>

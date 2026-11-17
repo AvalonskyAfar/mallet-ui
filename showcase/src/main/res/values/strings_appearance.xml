@@ -35,5 +35,5 @@
 
     <string name="appearance_off">Off</string>
     <string name="appearance_on">On</string>
-    <string name="appearance_provenance">These six settings, the 1 : 1.35 rows and the fade between themes come from the settings page of the original app. The second glaze set is new: it shows that the scale is a token, not a fixed palette.</string>
+    <string name="appearance_provenance">The other five settings, the 1 : 1.35 rows and the fade between themes come from the settings page of the original app. The glaze setting and its second set are new: they show that the scale is a token, not a fixed palette.</string>
 </resources>

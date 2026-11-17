@@ -6,5 +6,10 @@
             padding (default true). Switch it off inside a host that already handles insets.
         -->
         <attr name="sancaiPageFitSystemBars" format="boolean" />
+        <!--
+            The widest the column of the page gets (default 560dp); on a wider page it is
+            centred. 0dp lets the column fill the page.
+        -->
+        <attr name="sancaiPageMaxContentWidth" format="dimension" />
     </declare-styleable>
 </resources>

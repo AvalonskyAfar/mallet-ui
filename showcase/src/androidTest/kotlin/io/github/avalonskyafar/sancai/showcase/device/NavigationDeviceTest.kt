@@ -1,5 +1,6 @@
 package io.github.avalonskyafar.sancai.showcase.device
 
+import android.widget.ScrollView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.github.avalonskyafar.sancai.showcase.MainActivity
 import io.github.avalonskyafar.sancai.showcase.NeighbourActivity
@@ -83,6 +84,41 @@ class NavigationDeviceTest : DeviceTest() {
         Device.waitForPage("components")
         Device.ui.pressBack()
         Device.waitForPage(Pages.HOME)
+    }
+
+    @Test
+    fun aPageThatArrivesLaterKeepsClearOfTheSystemBars() {
+        // Android hands window insets down when they change, not when a view arrives. A page
+        // built and attached long after the first layout pass has to ask for them itself.
+        Device.launch("components")
+        Device.tap(Device.all<SancaiEntryRow>().first())
+        Device.waitForPage(Pages.components.first().key)
+
+        val page = Device.pageView() as ScrollView
+        @Suppress("DEPRECATION")
+        val statusBar = Device.onMain { page.rootWindowInsets.systemWindowInsetTop }
+        val firstTop = Device.onMain {
+            val origin = IntArray(2)
+            page.getChildAt(0).getLocationInWindow(origin)
+            origin[1]
+        }
+        assertTrue("the window is laid out behind a status bar", statusBar > 0)
+        assertTrue("the page starts below the status bar ($firstTop >= $statusBar)", firstTop >= statusBar)
+
+        // The same holds for a page reached by dragging.
+        Device.ui.pressBack()
+        Device.waitForPage("components")
+        Device.ui.pressBack()
+        Device.waitForPage(Pages.HOME)
+        Device.swipeScreen(0.75f, 0.25f, 0.25f, 0.25f)
+        Device.waitForPage("interactions")
+        val dragged = Device.pageView() as ScrollView
+        val draggedTop = Device.onMain {
+            val origin = IntArray(2)
+            dragged.getChildAt(0).getLocationInWindow(origin)
+            origin[1]
+        }
+        assertTrue("a page dragged in starts below the status bar ($draggedTop >= $statusBar)", draggedTop >= statusBar)
     }
 
     @Test

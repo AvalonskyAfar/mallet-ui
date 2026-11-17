@@ -346,23 +346,25 @@ public class SancaiPowerSwitch @JvmOverloads constructor(
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!isEnabled) return false
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
+        val action = event.actionMasked
+        when {
+            action == MotionEvent.ACTION_DOWN -> {
                 animator?.cancel()
                 gate.down(event)
                 startThumbPosition = thumbPosition
                 down = true
                 invalidate()
             }
-            MotionEvent.ACTION_MOVE -> when (gate.move(this, event)) {
-                HorizontalDragGate.State.DRAGGING -> follow(event.x)
+            action == MotionEvent.ACTION_MOVE -> when (gate.move(this, event)) {
+                HorizontalDragGate.State.DRAGGING -> follow(gate.x(event))
                 HorizontalDragGate.State.ABORTED -> if (down) {
                     down = false
                     invalidate()
                 }
                 HorizontalDragGate.State.UNDECIDED -> Unit
             }
-            MotionEvent.ACTION_UP -> {
+            // The followed finger lifts; fingers that stay down do nothing afterwards.
+            gate.isRelease(event) -> {
                 gate.finish(this)
                 down = false
                 if (gate.isAborted) {
@@ -373,7 +375,7 @@ public class SancaiPowerSwitch @JvmOverloads constructor(
                     performClick()
                 }
             }
-            MotionEvent.ACTION_CANCEL -> {
+            action == MotionEvent.ACTION_CANCEL -> {
                 gate.finish(this)
                 down = false
                 animateTo(checked)

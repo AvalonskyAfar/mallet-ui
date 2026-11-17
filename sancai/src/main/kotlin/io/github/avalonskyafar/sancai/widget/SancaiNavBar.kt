@@ -464,6 +464,12 @@ public class SancaiNavBar @JvmOverloads constructor(
         invalidate()
     }
 
+    /** A row disabled under the finger gets no further touch events: the item rises now. */
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        if (!enabled) release()
+    }
+
     /** A user-driven activation: show it, then tell the listener, then tick. */
     private fun activate(index: Int) {
         if (index !in entries.indices) return
@@ -497,7 +503,8 @@ public class SancaiNavBar @JvmOverloads constructor(
                 }
                 KeyEvent.KEYCODE_SPACE, KeyEvent.KEYCODE_ENTER, KeyEvent.KEYCODE_DPAD_CENTER,
                 KeyEvent.KEYCODE_NUMPAD_ENTER -> {
-                    activate(cursor)
+                    // A held key repeats; only the first press acts, the repeats are swallowed.
+                    if (event.repeatCount == 0) activate(cursor)
                     return true
                 }
             }
@@ -528,6 +535,13 @@ public class SancaiNavBar @JvmOverloads constructor(
             requestLayout()
         }
         return super.onApplyWindowInsets(insets)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        // Android hands the window insets down when they change, not when a view arrives. A
+        // bar on a page that is attached later has to ask for them.
+        if (fitNavigationBar) ViewCompat.requestApplyInsets(this)
     }
 
     override fun onDetachedFromWindow() {
@@ -614,6 +628,9 @@ public class SancaiNavBar @JvmOverloads constructor(
         }
 
         override fun onPopulateNodeForHost(node: AccessibilityNodeInfoCompat) {
+            // The row itself does nothing on a click; its items do.
+            node.isClickable = false
+            node.removeAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CLICK)
             if (mode != Mode.TABS) return
             node.setCollectionInfo(
                 AccessibilityNodeInfoCompat.CollectionInfoCompat.obtain(

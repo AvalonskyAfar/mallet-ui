@@ -24,7 +24,7 @@
 
     <string name="spatial_neighbour_title">把另一个 Activity 当作邻页</string>
     <string name="spatial_neighbour_detail">第二个 Activity 也可以像地图上的页面一样进出。</string>
-    <string name="spatial_neighbour_body">这个按钮会启动一个独立的 Activity。它盖着当前画面的快照从结束侧滑入，可以拖回去，也可以用系统返回离开。</string>
+    <string name="spatial_neighbour_body">这个按钮会启动一个独立的 Activity。它从结束侧滑入，当前画面的快照同时向另一侧滑出；可以拖回去，也可以用系统返回离开。</string>
     <string name="spatial_neighbour_open">打开邻页</string>
 
     <string name="spatial_back_title">系统返回</string>

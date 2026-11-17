@@ -7,8 +7,10 @@ plugins {
     `maven-publish`
 }
 
-group = providers.gradleProperty("GROUP").get()
-version = providers.gradleProperty("VERSION_NAME").get()
+// The coordinates of the published artifact. A build that includes this module as a source
+// module need not define them.
+group = providers.gradleProperty("GROUP").getOrElse("io.github.avalonskyafar")
+version = providers.gradleProperty("VERSION_NAME").getOrElse("0.0.0-SNAPSHOT")
 
 android {
     namespace = "io.github.avalonskyafar.sancai"

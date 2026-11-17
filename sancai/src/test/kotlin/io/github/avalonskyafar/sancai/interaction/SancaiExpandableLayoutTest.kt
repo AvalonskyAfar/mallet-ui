@@ -557,6 +557,48 @@ class SancaiExpandableLayoutTest {
         assertThat(body.top).isEqualTo(px(56f))
     }
 
+    @Test
+    fun `a header disabled under the finger comes back up`() {
+        val s = section()
+        Snapshots.attach(s.layout, 300)
+        Touch.dispatch(s.layout, MotionEvent.ACTION_DOWN, s.layout.width / 2f, 20f)
+        advance(SancaiMotion.PRESS_MS + 30)
+        assertThat(s.header.translationY).isGreaterThan(0f)
+        s.layout.isEnabled = false
+        assertThat(s.header.translationY).isEqualTo(0f)
+        Touch.dispatch(s.layout, MotionEvent.ACTION_UP, s.layout.width / 2f, 20f)
+        s.layout.isEnabled = true
+        advance(SancaiMotion.PRESS_MS + 30)
+        assertThat(s.header.translationY).isEqualTo(0f)
+        assertThat(s.layout.isExpanded).isTrue()
+    }
+
+    @Test
+    fun `a header disabled under a held key comes back up and the key does not toggle`() {
+        val s = section()
+        Snapshots.attach(s.layout, 300)
+        val changes = ArrayList<Boolean>()
+        s.layout.setOnExpansionChangeListener { _, expanded -> changes += expanded }
+        s.header.isFocusableInTouchMode = true
+        assertThat(s.header.requestFocus()).isTrue()
+        s.layout.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER))
+        advance(SancaiMotion.PRESS_MS + 30)
+        assertThat(s.header.translationY).isGreaterThan(0f)
+        s.layout.isEnabled = false
+        assertThat(s.header.translationY).isEqualTo(0f)
+        s.layout.isEnabled = true
+        s.header.requestFocus()
+        s.layout.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_ENTER))
+        Snapshots.idle()
+        assertThat(changes).isEmpty()
+        assertThat(s.header.translationY).isEqualTo(0f)
+    }
+
+    @Test
+    fun `the platform focus highlight is off under the header's own rim`() {
+        assertThat(section().header.defaultFocusHighlightEnabled).isFalse()
+    }
+
     private fun gallery(context: Context): View {
         val pad = (16 * context.resources.displayMetrics.density).roundToInt()
         val frame = FrameLayout(context)

@@ -17,7 +17,7 @@
     <string name="numbers_slider_strictness">沿釉色阶变化</string>
     <string-array name="numbers_slider_strictness_names">
         <item>关闭</item>
-        <item>宽松</item>
+        <item>轻度</item>
         <item>标准</item>
         <item>严格</item>
     </string-array>

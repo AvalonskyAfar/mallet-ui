@@ -15,6 +15,8 @@ import io.github.avalonskyafar.sancai.R
 import io.github.avalonskyafar.sancai.icon.SancaiIcon
 import io.github.avalonskyafar.sancai.icon.SancaiIconDrawable
 import io.github.avalonskyafar.sancai.interaction.SancaiHaptics
+import io.github.avalonskyafar.sancai.internal.useOwnFocusRim
+import io.github.avalonskyafar.sancai.material.SancaiGutters
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.material.SancaiSurfaceDrawable
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
@@ -105,8 +107,15 @@ public class SancaiButton @JvmOverloads constructor(
         SancaiTextRole.LABEL.applyTo(this, theme)
         gravity = Gravity.CENTER
         textAlignment = TEXT_ALIGNMENT_CENTER
-        isClickable = true
-        isFocusable = true
+        // Clickable and focusable, unless the layout says otherwise.
+        val defaults = context.obtainStyledAttributes(attrs, R.styleable.SancaiButton, defStyleAttr, 0)
+        try {
+            if (!defaults.hasValue(R.styleable.SancaiButton_android_focusable)) isFocusable = true
+            if (!defaults.hasValue(R.styleable.SancaiButton_android_clickable)) isClickable = true
+        } finally {
+            defaults.recycle()
+        }
+        useOwnFocusRim()
         var initialVariant = Variant.NEUTRAL
         var initialTone = SancaiTextTone.ACCENT
         var initialIcon: SancaiIcon? = null
@@ -207,19 +216,31 @@ public class SancaiButton @JvmOverloads constructor(
         canvas.restoreToCount(save)
     }
 
-    /** Width the icon and its gap add to the label, in pixels. */
+    /** Width the icon adds to the label, in pixels: the icon, and the gap when there is a label. */
     private val iconExtra: Int
-        get() = if (iconDrawable == null) 0 else ((ICON_DP + ICON_GAP_DP) * density).roundToInt()
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        val extra = iconExtra
-        if (extra == 0 || MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY) return
-        var width = measuredWidth + extra
-        if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.AT_MOST) {
-            width = minOf(width, MeasureSpec.getSize(widthMeasureSpec))
+        get() = when {
+            iconDrawable == null -> 0
+            text.isNullOrEmpty() -> (ICON_DP * density).roundToInt()
+            else -> ((ICON_DP + ICON_GAP_DP) * density).roundToInt()
         }
-        setMeasuredDimension(width, measuredHeight)
+
+    // The icon's room is taken out of the label's box at the start side, so the label is
+    // measured, wrapped and centred in what is left. (Also called by the TextView constructor,
+    // before this class is initialised: there is no icon yet then.)
+    override fun getCompoundPaddingLeft(): Int =
+        super.getCompoundPaddingLeft() + if (layoutDirection == LAYOUT_DIRECTION_RTL) 0 else iconExtra
+
+    override fun getCompoundPaddingRight(): Int =
+        super.getCompoundPaddingRight() + if (layoutDirection == LAYOUT_DIRECTION_RTL) iconExtra else 0
+
+    /** How far label, icon and spinner are lifted so they centre on the capsule, not on the view. */
+    private val bodyLift: Float
+        get() = if (body == null) 0f else (SancaiGutters.SURFACE_BOTTOM_DP - SancaiGutters.SURFACE_TOP_DP) / 2f * density
+
+    override fun onTextChanged(text: CharSequence?, start: Int, lengthBefore: Int, lengthAfter: Int) {
+        super.onTextChanged(text, start, lengthBefore, lengthAfter)
+        // The gap beside the icon comes and goes with the label, and with it the label's box.
+        if (iconDrawable != null) requestLayout()
     }
 
     /** The icon sits right before the label, and the pair is centred as one group. */
@@ -252,13 +273,12 @@ public class SancaiButton @JvmOverloads constructor(
             material.drawFocusRim(canvas, bodyBounds, bodyBounds.height() / 2f)
         }
         val save = canvas.save()
-        canvas.translate(0f, sink)
+        // The capsule leaves more room below (shadow) than above: lift the content to its centre.
+        canvas.translate(0f, sink - bodyLift)
         if (isLoading) {
             drawSpinner(canvas)
         } else {
             drawIcon(canvas)
-            val shift = iconExtra / 2f
-            canvas.translate(if (layoutDirection == LAYOUT_DIRECTION_RTL) -shift else shift, 0f)
             super.onDraw(canvas)
         }
         canvas.restoreToCount(save)
@@ -266,7 +286,7 @@ public class SancaiButton @JvmOverloads constructor(
 
     private fun drawSpinner(canvas: Canvas) {
         val radius = SPINNER_RADIUS_DP * density
-        // Centre on the label box, which sits above the shadow gutter of the body.
+        // Centre on the label box; onDraw lifts it to the centre of the capsule.
         val centreX = (paddingLeft + width - paddingRight) / 2f + scrollX
         val centreY = (paddingTop + height - paddingBottom) / 2f + scrollY
         spinnerBounds.set(centreX - radius, centreY - radius, centreX + radius, centreY + radius)

@@ -1,8 +1,10 @@
 package io.github.avalonskyafar.sancai.overlay
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.content.ContextWrapper
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -25,6 +27,7 @@ import io.github.avalonskyafar.sancai.interaction.SancaiHaptics
 import io.github.avalonskyafar.sancai.interaction.SancaiPress
 import io.github.avalonskyafar.sancai.internal.dp
 import io.github.avalonskyafar.sancai.internal.dpInt
+import io.github.avalonskyafar.sancai.internal.useOwnFocusRim
 import io.github.avalonskyafar.sancai.material.SancaiGutters
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.material.SancaiSurfaceDrawable
@@ -256,6 +259,16 @@ public class SancaiDialog private constructor(private val context: Context, buil
             card.setLayerType(View.LAYER_TYPE_NONE, null)
             dismissListener?.onDismiss(this, closedByPositive)
         }
+        card.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(view: View) = Unit
+
+            override fun onViewDetachedFromWindow(view: View) {
+                // The window can be taken away underneath the card (its activity was destroyed).
+                // No motion outlives it, and a close that was under way is finished here.
+                card.animate().cancel()
+                if (isClosing && platformDialog.isShowing) dismissWindow()
+            }
+        })
     }
 
     private fun block(sideMargin: Int, topMargin: Int): LinearLayout.LayoutParams {
@@ -327,6 +340,10 @@ public class SancaiDialog private constructor(private val context: Context, buil
     /**
      * Closes the dialog with the exit motion. The dismiss listener reports `positive = false`.
      * Ignored when the dialog is not showing or is already closing.
+     *
+     * When the activity of the dialog is finishing or destroyed, the window is removed at once,
+     * without the motion, so `dismiss()` in `onDestroy` does not leak the window. A dialog whose
+     * window is taken away while the exit motion runs is closed at that moment.
      */
     public fun dismiss() {
         close(positive = false)
@@ -343,16 +360,31 @@ public class SancaiDialog private constructor(private val context: Context, buil
         isClosing = true
         closedByPositive = positive
         card.animate().cancel()
-        if (theme.reduceMotion || !card.isLaidOut) {
-            platformDialog.dismiss()
+        if (theme.reduceMotion || !card.isLaidOut || !card.isAttachedToWindow || hostIsGoing()) {
+            dismissWindow()
             return
         }
         card.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         card.animate().alpha(0f).translationY(context.dp(RISE_DP)).scaleX(START_SCALE).scaleY(START_SCALE)
             .setDuration(SancaiMotion.DIALOG_MS)
             .setInterpolator(SancaiMotion.glide())
-            .withEndAction { platformDialog.dismiss() }
+            .withEndAction { dismissWindow() }
             .start()
+    }
+
+    /** Removes the window now. Safe when the window has already gone with its activity. */
+    private fun dismissWindow() {
+        platformDialog.dismiss()
+    }
+
+    /** Whether the activity that owns the window is on its way out, so no motion can finish. */
+    private fun hostIsGoing(): Boolean {
+        var host: Context? = context
+        while (host is ContextWrapper) {
+            if (host is Activity) return host.isFinishing || host.isDestroyed
+            host = host.baseContext
+        }
+        return false
     }
 
     private fun performAction(which: Int) {
@@ -427,7 +459,14 @@ public class SancaiDialog private constructor(private val context: Context, buil
         /** Centred, muted explanation below the title. A long message scrolls inside the card. */
         public fun message(message: CharSequence?): Builder = apply { this.message = message }
 
-        /** Custom content (a form, a list) between the message and the actions. */
+        /**
+         * Custom content (a form, a few rows) between the message and the actions.
+         *
+         * The view is placed, at its own height, in the column that scrolls inside the card
+         * together with the message. It must therefore not scroll by itself: a `ListView`,
+         * `GridView`, `RecyclerView` or `ScrollView` does not work here (a `ListView` shows a
+         * single row). Build a short list as a plain vertical layout of rows.
+         */
         public fun view(view: View?): Builder = apply { this.view = view }
 
         /**
@@ -445,6 +484,16 @@ public class SancaiDialog private constructor(private val context: Context, buil
         ): Builder = apply {
             positive = Action(ACTION_POSITIVE, label ?: "", tone, listener)
         }
+
+        /**
+         * The confirming action in the accent tone with its [listener], for callers that cannot
+         * skip the tone (Java): `positive("Save", dialog -> save())`.
+         *
+         * @param label defaults to the library's "OK" ("Save" for an input dialog)
+         * @param listener returns `true` to close
+         */
+        public fun positive(label: CharSequence?, listener: OnActionListener): Builder =
+            positive(label, SancaiTextTone.ACCENT, listener)
 
         /** The dismissive action in the muted tone, at the start of the row. [label] defaults to "Cancel". */
         @JvmOverloads
@@ -552,6 +601,17 @@ public class SancaiDialog private constructor(private val context: Context, buil
             .negative()
             .show()
 
+        /**
+         * Asks for a confirmation of [title] alone, with "Cancel" and "OK", and shows it. The
+         * short form for callers that cannot skip the optional arguments (Java):
+         * `SancaiDialog.confirm(context, "Delete?", () -> delete())`.
+         *
+         * @param onConfirm runs when the user confirms; the dialog then closes
+         */
+        @JvmStatic
+        public fun confirm(context: Context, title: CharSequence?, onConfirm: Runnable): SancaiDialog =
+            confirm(context, title, null, null, false, onConfirm)
+
         /** Shows a notice with a single "OK" action. */
         @JvmStatic
         @JvmOverloads
@@ -582,8 +642,28 @@ public class SancaiDialog private constructor(private val context: Context, buil
 
 /** The window. Back and outside touches are routed through the owner so they animate and are guarded. */
 private class CardDialog(context: Context, private val owner: SancaiDialog) : Dialog(context) {
+    private var dismissing = false
+
     override fun cancel() {
         owner.cancelFromWindow()
+    }
+
+    /**
+     * Every dismissal ends here, also one the application asks of the platform dialog itself.
+     * Removing the window detaches the card, which asks for the dismissal again while a close
+     * is under way: that second call is dropped, so the dismiss listener fires once.
+     */
+    override fun dismiss() {
+        if (dismissing) return
+        dismissing = true
+        try {
+            super.dismiss()
+        } catch (ignored: IllegalArgumentException) {
+            // The window was removed underneath the dialog; the platform dialog has still
+            // cleared its showing state and sent the dismiss message.
+        } finally {
+            dismissing = false
+        }
     }
 }
 
@@ -629,6 +709,7 @@ private class ActionView(context: Context, private val material: SancaiMaterial)
         val vertical = context.dpInt(ACTION_PADDING_Y_DP)
         setPadding(side, vertical, side, vertical)
         minimumHeight = context.dpInt(SancaiDialog.ACTION_ROW_DP)
+        useOwnFocusRim()
     }
 
     /** Width this label needs to stay on one line. */

@@ -91,6 +91,31 @@ class SancaiWindowTest {
     }
 
     @Test
+    fun `a padded view asks for the insets each time it is attached`() {
+        var asked = 0
+        val activity = activity()
+        val parent = object : android.widget.FrameLayout(activity) {
+            @Suppress("OVERRIDE_DEPRECATION")
+            override fun requestFitSystemWindows() {
+                asked++
+                super.requestFitSystemWindows()
+            }
+        }
+        activity.setContentView(parent)
+        org.robolectric.shadows.ShadowLooper.idleMainLooper()
+        val view = View(activity)
+        SancaiWindow.padForSystemBars(view)
+        asked = 0
+
+        // Attached long after the window was first laid out, taken away, and brought back.
+        parent.addView(view)
+        assertThat(asked).isEqualTo(1)
+        parent.removeView(view)
+        parent.addView(view)
+        assertThat(asked).isEqualTo(2)
+    }
+
+    @Test
     fun `asking for a high refresh rate never fails`() {
         SancaiWindow.preferHighestRefreshRate(activity())
     }
