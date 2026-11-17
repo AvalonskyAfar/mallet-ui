@@ -144,13 +144,17 @@ public object SancaiThemeTransition {
      *
      * Repeated calls for the same activity coalesce: the earlier request is dropped and the
      * delay starts again, so a quick run of changes recreates once. Returns `false` when
-     * [view] does not live in an activity.
+     * [view] does not live in an activity or that activity is finishing or destroyed; nothing
+     * is requested then.
      */
     @JvmStatic
     @JvmOverloads
     @MainThread
     public fun recreateAfter(view: View, delayMs: Long = DEFAULT_DELAY_MS): Boolean {
         val activity = activityOf(view.context) ?: return false
+        // A request for a destroyed activity would never run: its window is gone, so the
+        // post stays parked in the view and this map would hold the activity for good.
+        if (activity.isFinishing || activity.isDestroyed) return false
         val host = activity.window.decorView
         pending.remove(host)?.let(host::removeCallbacks)
         val request = object : Runnable {

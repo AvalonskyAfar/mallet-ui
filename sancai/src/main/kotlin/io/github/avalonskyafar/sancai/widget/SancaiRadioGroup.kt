@@ -20,7 +20,7 @@ import io.github.avalonskyafar.sancai.R
  *
  * Only direct children take part. Give every radio an `android:id`: [checkedId] reports it and
  * the saved state is keyed by it. A radio without an id receives a generated one, which does
- * not survive re-creation of the screen.
+ * not survive re-creation of the screen: the group then keeps the choice it was built with.
  *
  * ```xml
  * <io.github.avalonskyafar.sancai.widget.SancaiRadioGroup
@@ -54,7 +54,12 @@ public class SancaiRadioGroup @JvmOverloads constructor(
     }
 
     private var current = View.NO_ID
-    private var adjusting = false
+
+    /** An id asked for before a child had it; applied when that child is added. */
+    private var pendingId = View.NO_ID
+
+    /** Depth of the group's own unchecking: nested calls from listeners must not end it early. */
+    private var adjusting = 0
 
     private var checkedChangeListener: OnCheckedChangeListener? = null
 
@@ -72,7 +77,7 @@ public class SancaiRadioGroup @JvmOverloads constructor(
             val a = context.obtainStyledAttributes(attrs, R.styleable.SancaiRadioGroup, defStyleAttr, 0)
             try {
                 // Applied as soon as the child with this id is added.
-                current = a.getResourceId(R.styleable.SancaiRadioGroup_sancaiRadioCheckedButton, View.NO_ID)
+                pendingId = a.getResourceId(R.styleable.SancaiRadioGroup_sancaiRadioCheckedButton, View.NO_ID)
             } finally {
                 a.recycle()
             }
@@ -83,7 +88,7 @@ public class SancaiRadioGroup @JvmOverloads constructor(
      * Moves the choice to the radio with [id] from code; [View.NO_ID] clears it. The listeners
      * of the group and of the radios are not called, which makes this safe for rolling back a
      * change a listener refused. An id that no child has yet is remembered and applied when
-     * that child is added.
+     * that child is added; until then nothing is checked and [checkedId] is [View.NO_ID].
      */
     @JvmOverloads
     public fun check(id: Int, animate: Boolean = true) {
@@ -93,12 +98,14 @@ public class SancaiRadioGroup @JvmOverloads constructor(
         }
         val target = radio(id)
         if (target != null) {
+            pendingId = View.NO_ID
             // The hook moves `current` and unchecks the previous radio.
             if (target.isChecked) current = id else target.setChecked(true, animate)
             return
         }
         uncheckCurrent(animate, fromUser = false)
-        current = id
+        current = View.NO_ID
+        pendingId = id
     }
 
     /** Leaves no radio checked. Listeners are not called. */
@@ -106,6 +113,7 @@ public class SancaiRadioGroup @JvmOverloads constructor(
     public fun clearCheck(animate: Boolean = true) {
         uncheckCurrent(animate, fromUser = false)
         current = View.NO_ID
+        pendingId = View.NO_ID
     }
 
     private fun radio(id: Int): SancaiRadioButton? {
@@ -118,7 +126,7 @@ public class SancaiRadioGroup @JvmOverloads constructor(
     }
 
     private fun uncheckCurrent(animate: Boolean, fromUser: Boolean, except: SancaiRadioButton? = null) {
-        adjusting = true
+        adjusting++
         try {
             // Every other checked radio, not just `current`: ids may repeat or change.
             for (i in 0 until childCount) {
@@ -130,17 +138,32 @@ public class SancaiRadioGroup @JvmOverloads constructor(
                     if (child.isChecked) child.setCheckedFromGroup(false, animate, fromUser = false)
                 }
             }
+            // Nor can its listener hand the choice to another sibling: whatever it checked
+            // meanwhile is unchecked again, silently.
+            for (i in 0 until childCount) {
+                val child = getChildAt(i)
+                if (child is SancaiRadioButton && child !== except && child.isChecked) {
+                    child.setCheckedFromGroup(false, animate, fromUser = false)
+                }
+            }
         } finally {
-            adjusting = false
+            adjusting--
         }
     }
 
     private val hook = { button: SancaiRadioButton, checked: Boolean, animate: Boolean, fromUser: Boolean ->
-        if (!adjusting) {
+        if (adjusting == 0) {
             if (checked) {
                 uncheckCurrent(animate, fromUser, except = button)
-                current = button.id
-                if (fromUser) checkedChangeListener?.onCheckedChanged(this, current)
+                // A sibling's listener may have cleared the group meanwhile: then nothing is
+                // chosen and there is no change to report.
+                if (button.isChecked) {
+                    current = button.id
+                    pendingId = View.NO_ID
+                    if (fromUser) checkedChangeListener?.onCheckedChanged(this, current)
+                } else if (current == button.id) {
+                    current = View.NO_ID
+                }
             } else if (button.id == current) {
                 current = View.NO_ID
             }
@@ -155,7 +178,9 @@ public class SancaiRadioGroup @JvmOverloads constructor(
         if (child.isChecked) {
             uncheckCurrent(animate = false, fromUser = false, except = child)
             current = child.id
-        } else if (child.id == current) {
+            pendingId = View.NO_ID
+        } else if (child.id == pendingId) {
+            pendingId = View.NO_ID
             child.setChecked(true, animate = false)
         }
     }
@@ -169,7 +194,8 @@ public class SancaiRadioGroup @JvmOverloads constructor(
 
     override fun onSaveInstanceState(): Parcelable = Bundle().apply {
         putParcelable(STATE_SUPER, super.onSaveInstanceState())
-        putInt(STATE_CHECKED_ID, current)
+        // A choice still waiting for its child is kept as well.
+        putInt(STATE_CHECKED_ID, if (current != View.NO_ID) current else pendingId)
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
@@ -178,7 +204,14 @@ public class SancaiRadioGroup @JvmOverloads constructor(
             return
         }
         super.onRestoreInstanceState(BundleCompat.getParcelable(state, STATE_SUPER, Parcelable::class.java))
-        check(state.getInt(STATE_CHECKED_ID, current), animate = false)
+        if (!state.containsKey(STATE_CHECKED_ID)) return
+        val id = state.getInt(STATE_CHECKED_ID)
+        when {
+            id == View.NO_ID || radio(id) != null -> check(id, animate = false)
+            // An id no child has (a generated one from before the screen was re-created) must
+            // not wipe the present choice; with nothing chosen it waits for its child.
+            radio(current) == null -> pendingId = id
+        }
     }
 
     override fun getAccessibilityClassName(): CharSequence = "android.widget.RadioGroup"

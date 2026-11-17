@@ -10,6 +10,7 @@ import android.graphics.RectF
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Layout
+import android.text.Spanned
 import android.text.StaticLayout
 import android.text.TextDirectionHeuristics
 import android.text.TextPaint
@@ -95,7 +96,8 @@ public class SancaiCheckbox @JvmOverloads constructor(
     public var text: CharSequence
         get() = label
         set(value) {
-            if (label.toString() == value.toString()) return
+            // Styled text is always taken: equal characters may carry other spans.
+            if (value !is Spanned && label !is Spanned && label.toString() == value.toString()) return
             label = value
             labelLayout = null
             requestLayout()
@@ -315,6 +317,12 @@ public class SancaiCheckbox @JvmOverloads constructor(
             MotionEvent.ACTION_CANCEL -> setDown(false)
         }
         return true
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        // A box disabled under the finger must not stay sunk, nor flip when that finger lifts.
+        if (!enabled) setDown(false)
     }
 
     private fun setDown(value: Boolean) {

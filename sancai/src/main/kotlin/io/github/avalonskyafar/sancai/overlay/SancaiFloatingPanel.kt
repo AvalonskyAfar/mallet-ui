@@ -1,5 +1,7 @@
 package io.github.avalonskyafar.sancai.overlay
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Context
@@ -22,6 +24,7 @@ import androidx.core.view.ViewCompat
 import io.github.avalonskyafar.sancai.R
 import io.github.avalonskyafar.sancai.interaction.SancaiHaptics
 import io.github.avalonskyafar.sancai.interaction.SancaiHorizontalDragOwner
+import io.github.avalonskyafar.sancai.internal.useOwnFocusRim
 import io.github.avalonskyafar.sancai.material.SancaiGutters
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.material.SancaiSurfaceDrawable
@@ -56,7 +59,9 @@ import kotlin.math.roundToInt
  * **Moving.** A drag that starts anywhere on the panel, including on its content, moves it. The
  * panel cannot leave the padded bounds of its parent. On release it stays where it is, or glides
  * to the nearer side when [snapToEdge] is set. While it is dragged it draws the tightened shadow
- * of a pressed body. A touch that stays inside the touch slop is a click.
+ * of a pressed body. A touch that stays inside the touch slop is a click. A drag that is
+ * cancelled (by the system, by disabling or removing the panel under the finger) is undone: the
+ * panel returns to where the drag found it and the listener is not called.
  *
  * **Position.** [positionX] and [positionY] are fractions of the free travel: 0 is the start
  * (or top) edge of the parent, 1 the end (or bottom) edge, whatever the sizes of panel and
@@ -113,6 +118,15 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
     private var tracking = false
     private var activePointerId = MotionEvent.INVALID_POINTER_ID
     private var snapAnimator: ValueAnimator? = null
+
+    // Where a glide is heading, NaN when none: a touch stops the glide, and a gesture that
+    // does not become a drag lets it go on.
+    private var glideToX = Float.NaN
+    private var glideToY = Float.NaN
+
+    // Where a cancelled drag goes back to.
+    private var dragStartX = 0f
+    private var dragStartY = 0f
 
     private var windowManager: WindowManager? = null
     private var windowParams: WindowManager.LayoutParams? = null
@@ -183,6 +197,7 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
         }
         background = surface
         isFocusable = true
+        useOwnFocusRim()
         registerMoveActions()
     }
 
@@ -197,11 +212,15 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
         val toY = if (y.isNaN()) 0f else y.coerceIn(0f, 1f)
         snapAnimator?.cancel()
         if (!animate || theme.reduceMotion || !isLaidOut || !isAttachedToWindow) {
+            glideToX = Float.NaN
+            glideToY = Float.NaN
             fractionX = toX
             fractionY = toY
             applyPosition()
             return
         }
+        glideToX = toX
+        glideToY = toY
         val fromX = fractionX
         val fromY = fractionY
         snapAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
@@ -213,8 +232,28 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
                 fractionY = fromY + (toY - fromY) * t
                 applyPosition()
             }
+            addListener(object : AnimatorListenerAdapter() {
+                private var cancelled = false
+
+                override fun onAnimationCancel(animation: Animator) {
+                    cancelled = true
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    if (snapAnimator === animation) snapAnimator = null
+                    if (cancelled) return
+                    glideToX = Float.NaN
+                    glideToY = Float.NaN
+                }
+            })
             start()
         }
+    }
+
+    /** Lets a glide that a touch stopped go on to where it was heading. */
+    private fun resumeGlide() {
+        if (glideToX.isNaN() || glideToY.isNaN() || snapAnimator != null) return
+        setPosition(glideToX, glideToY, animate = true)
     }
 
     // ---------------------------------------------------------------------------------------
@@ -251,8 +290,11 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
         val params = windowParams
         val manager = windowManager
         if (params != null && manager != null) {
-            if (params.x == offsetX && params.y == offsetY) return
-            params.x = offsetX
+            // The window manager measures x from the left whatever the layout direction, so
+            // the start edge is mirrored here.
+            val x = if (isRtl) travelX().roundToInt() - offsetX else offsetX
+            if (params.x == x && params.y == offsetY) return
+            params.x = x
             params.y = offsetY
             if (isAttachedToWindow) {
                 try {
@@ -356,7 +398,10 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
                 return true
             }
             MotionEvent.ACTION_POINTER_UP -> handOver(event)
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> tracking = false
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                tracking = false
+                resumeGlide()
+            }
         }
         return false
     }
@@ -383,6 +428,7 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
                     endDrag(cancelled = false)
                 } else if (tracking) {
                     tracking = false
+                    resumeGlide()
                     click()
                 }
             }
@@ -428,25 +474,39 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
     }
 
     private fun startDrag() {
+        // A drag that is cancelled goes back to where the panel was, or was gliding to.
+        dragStartX = if (glideToX.isNaN()) fractionX else glideToX
+        dragStartY = if (glideToY.isNaN()) fractionY else glideToY
+        glideToX = Float.NaN
+        glideToY = Float.NaN
         isDragging = true
         surface.pressed = true
         invalidate()
         parent?.requestDisallowInterceptTouchEvent(true)
     }
 
-    /** Ends a drag. The panel stays put or snaps; the listener hears about it unless [cancelled]. */
+    /**
+     * Ends a drag. The panel stays put or snaps and the listener hears about it; a [cancelled]
+     * drag is undone instead: the panel returns to where the drag found it and the listener
+     * hears nothing. A gesture that never became a drag lets a glide it stopped go on.
+     */
     private fun endDrag(cancelled: Boolean) {
         tracking = false
-        if (!isDragging) return
+        if (!isDragging) {
+            resumeGlide()
+            return
+        }
         isDragging = false
         surface.pressed = false
         invalidate()
-        if (snapToEdge) {
+        if (cancelled) {
+            setPosition(dragStartX, dragStartY)
+        } else if (snapToEdge) {
             val side = if (fractionX < 0.5f) 0f else 1f
-            setPosition(side, fractionY, animate = !cancelled)
+            setPosition(side, fractionY, animate = true)
             // Report where the panel comes to rest, not where the glide starts.
-            if (!cancelled) positionChangeListener?.onPositionChanged(this, side, fractionY)
-        } else if (!cancelled) {
+            positionChangeListener?.onPositionChanged(this, side, fractionY)
+        } else {
             positionChangeListener?.onPositionChanged(this, fractionX, fractionY)
         }
     }
@@ -518,8 +578,11 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
 
     override fun onSaveInstanceState(): Parcelable = Bundle().apply {
         putParcelable(STATE_SUPER, super.onSaveInstanceState())
-        putFloat(STATE_X, fractionX)
-        putFloat(STATE_Y, fractionY)
+        // Where the panel will rest: a drag still under the finger may yet be cancelled, and a
+        // glide is on its way to the place the listener was told.
+        val gliding = !glideToX.isNaN() && !glideToY.isNaN()
+        putFloat(STATE_X, if (isDragging) dragStartX else if (gliding) glideToX else fractionX)
+        putFloat(STATE_Y, if (isDragging) dragStartY else if (gliding) glideToY else fractionY)
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
@@ -540,7 +603,9 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
      * Makes the panel a window of its own: from now on a drag updates the position of [params]
      * through [windowManager] instead of translating the view, and the fractions refer to the
      * screen. Call it before `windowManager.addView(panel, params)`, with params whose gravity
-     * is top-start (see [overlayLayoutParams]). The x and y of [params] are overwritten from
+     * is top-left (see [overlayLayoutParams]): the window manager measures x from the left
+     * whatever the layout direction, and the panel mirrors the start edge itself in a
+     * right-to-left layout. The x and y of [params] are overwritten from
      * [positionX] and [positionY].
      */
     public fun bindToWindow(windowManager: WindowManager, params: WindowManager.LayoutParams) {
@@ -589,6 +654,11 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
          * it. The panel is created with the context of [content], so it wears the same Sancai
          * theme, starts in the top-start corner and carries the id `sancai_floating_panel`, which
          * lets the activity save its position. Take it away with [remove].
+         *
+         * Every panel attached this way carries the same id. When an activity attaches more
+         * than one, give each further panel an id of its own from resources
+         * (`panel.id = R.id.my_panel`) right after this call, or their positions are saved
+         * under one key and all of them come back where the last one was.
          */
         @JvmStatic
         public fun attach(activity: Activity, content: View): SancaiFloatingPanel {
@@ -604,7 +674,8 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
 
         /**
          * Layout params for hosting a panel in a `WindowManager` overlay: wrap-content, anchored
-         * top-start, translucent, not focusable (the app below keeps the keyboard) but touchable
+         * top-left (the panel itself puts the start edge on the right in a right-to-left
+         * layout), translucent, not focusable (the app below keeps the keyboard) but touchable
          * so the panel can be dragged. [type] is
          * [WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY] (the default, for accessibility
          * services) or [WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY] (API 26, needs the
@@ -622,6 +693,6 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
                 WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT,
-        ).apply { gravity = Gravity.TOP or Gravity.START }
+        ).apply { gravity = Gravity.TOP or Gravity.LEFT }
     }
 }

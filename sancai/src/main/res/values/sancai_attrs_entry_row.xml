@@ -2,6 +2,7 @@
 <resources>
     <!-- SancaiEntryRow: a row of a card that leads somewhere. -->
     <declare-styleable name="SancaiEntryRow">
+        <attr name="android:enabled" />
         <attr name="sancaiTitle" />
         <attr name="sancaiDetail" />
         <!-- Icon at the start of the row. -->

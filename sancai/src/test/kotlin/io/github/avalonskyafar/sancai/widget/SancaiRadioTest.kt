@@ -462,6 +462,60 @@ class SancaiRadioTest {
     }
 
     @Test
+    fun `a key reaches the click listener after the checked listener, as a tap does`() {
+        val view = radio()
+        val order = mutableListOf<String>()
+        view.setOnCheckedChangeListener { _, c -> order += "checked=$c" }
+        view.setOnClickListener { order += "click" }
+        assertThat(key(view, KeyEvent.KEYCODE_SPACE)).isTrue()
+        assertThat(view.isChecked).isTrue()
+        // Checked already: the key is not consumed and nothing is clicked.
+        assertThat(key(view, KeyEvent.KEYCODE_ENTER)).isFalse()
+        assertThat(order).containsExactly("checked=true", "click").inOrder()
+    }
+
+    @Test
+    fun `styled text with the same characters replaces the label`() {
+        val view = radio("Accept terms")
+        val plain = Snapshots.render(view, WIDTH_DP)
+        val styled = android.text.SpannableString("Accept terms").apply {
+            setSpan(android.text.style.ForegroundColorSpan(Color.RED), 0, length, 0)
+        }
+        view.text = styled
+        assertThat(view.text).isSameInstanceAs(styled)
+        Snapshots.layout(view, WIDTH_DP)
+        assertThat(Snapshots.render(view, WIDTH_DP).sameAs(plain)).isFalse()
+        // Plain text equal to the plain label is still skipped: no new layout pass is asked for.
+        val other = radio("Accept terms")
+        other.text = "Accept terms"
+        assertThat(other.isLayoutRequested).isFalse()
+    }
+
+    @Test
+    fun `a latin label in right to left keeps its short line next to the bed`() {
+        val app = ApplicationProvider.getApplicationContext<Context>()
+        app.applicationInfo.flags = app.applicationInfo.flags or ApplicationInfo.FLAG_SUPPORTS_RTL
+        val view = SancaiRadioButton(Snapshots.context()).apply {
+            layoutDirection = View.LAYOUT_DIRECTION_RTL
+            text = "Every day of the week\nNo"
+            Snapshots.layout(this, WIDTH_DP)
+        }
+        val bitmap = Snapshots.render(view, WIDTH_DP)
+        val canvas = bitmap.getPixel(1, 1)
+        // The label box ends 10 dp before the bed; the second line is the lower half of it.
+        val labelEnd = ((WIDTH_DP - 1.5f - 26f - 10f) * view.density).toInt()
+        fun ink(fromX: Int, toX: Int): Int {
+            var count = 0
+            for (y in bitmap.height / 2 + 1 until bitmap.height) {
+                for (x in fromX until toX) if (bitmap.getPixel(x, y) != canvas) count++
+            }
+            return count
+        }
+        assertThat(ink(labelEnd - (40 * view.density).toInt(), labelEnd)).isGreaterThan(0)
+        assertThat(ink(0, labelEnd - (60 * view.density).toInt())).isEqualTo(0)
+    }
+
+    @Test
     fun `a radio disabled under the finger does not check on release`() {
         val view = radio()
         Touch.dispatch(view, android.view.MotionEvent.ACTION_DOWN, 40f, view.height / 2f)
@@ -482,6 +536,63 @@ class SancaiRadioTest {
         assertThat((0..1).map { view.radioAt(it).isChecked }).containsExactly(false, true).inOrder()
         assertThat(view.checkedId).isEqualTo(FIRST_ID + 1)
         assertThat(calls).isEqualTo(1)
+    }
+
+    @Test
+    fun `a sibling cannot hand the choice to another radio from inside its listener`() {
+        val view = group("Never", "Daily", "Weekly", checked = 1)
+        val reported = mutableListOf<Int>()
+        view.setOnCheckedChangeListener { _, id -> reported += id }
+        view.radioAt(1).setOnCheckedChangeListener { _, checked -> if (!checked) view.check(FIRST_ID) }
+        Touch.tap(view.radioAt(2), 40f)
+        assertThat((0..2).map { view.radioAt(it).isChecked }).containsExactly(false, false, true).inOrder()
+        assertThat(view.checkedId).isEqualTo(FIRST_ID + 2)
+        assertThat(reported).containsExactly(FIRST_ID + 2)
+    }
+
+    @Test
+    fun `a sibling that clears the group from inside its listener leaves no choice`() {
+        val view = group("Never", "Daily", "Weekly", checked = 1)
+        val reported = mutableListOf<Int>()
+        view.setOnCheckedChangeListener { _, id -> reported += id }
+        view.radioAt(1).setOnCheckedChangeListener { _, checked -> if (!checked) view.clearCheck() }
+        Touch.tap(view.radioAt(2), 40f)
+        assertThat((0..2).map { view.radioAt(it).isChecked }).containsExactly(false, false, false).inOrder()
+        assertThat(view.checkedId).isEqualTo(View.NO_ID)
+        assertThat(reported).isEmpty()
+        // The group still works afterwards.
+        Touch.tap(view.radioAt(0), 40f)
+        assertThat(view.checkedId).isEqualTo(FIRST_ID)
+        assertThat(reported).containsExactly(FIRST_ID)
+    }
+
+    @Test
+    fun `an id no radio has is not reported as the choice`() {
+        val view = group("Daily", "Weekly", checked = 0)
+        view.check(FIRST_ID + 40)
+        assertThat((0..1).map { view.radioAt(it).isChecked }).containsExactly(false, false).inOrder()
+        assertThat(view.checkedId).isEqualTo(View.NO_ID)
+        view.addView(SancaiRadioButton(view.context).apply { id = FIRST_ID + 40 })
+        assertThat(view.radioAt(2).isChecked).isTrue()
+        assertThat(view.checkedId).isEqualTo(FIRST_ID + 40)
+    }
+
+    @Test
+    fun `restoring an id no radio has keeps the present choice`() {
+        // Radios without ids get generated ones, which differ after the screen is re-created.
+        val view = SancaiRadioGroup(Snapshots.context()).apply {
+            id = GROUP_ID
+            addView(SancaiRadioButton(context))
+            addView(SancaiRadioButton(context).apply { isChecked = true })
+        }
+        assertThat(view.checkedId).isEqualTo(view.radioAt(1).id)
+        val saved = SparseArray<Parcelable>()
+        view.saveHierarchyState(saved)
+
+        val restored = group("Daily", "Weekly", checked = 0)
+        restored.restoreHierarchyState(saved)
+        assertThat((0..1).map { restored.radioAt(it).isChecked }).containsExactly(true, false).inOrder()
+        assertThat(restored.checkedId).isEqualTo(FIRST_ID)
     }
 
     @Test

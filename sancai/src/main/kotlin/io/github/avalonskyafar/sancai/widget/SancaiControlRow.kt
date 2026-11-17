@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.os.BundleCompat
 import io.github.avalonskyafar.sancai.R
 import io.github.avalonskyafar.sancai.theme.SancaiTextRole
@@ -30,8 +31,10 @@ import kotlin.math.roundToInt
  *
  * The row is 64 dp high, or 72 dp with a detail line, and grows with large text. It is not
  * focusable itself: focus and keys go to the control. The control is announced with the title
- * and detail of the row, unless it brings a content description of its own. Disabling the row
- * disables the control and pales the text.
+ * and detail of the row, unless it brings a content description or text of its own (a button,
+ * any text view, a labelled checkbox, radio button or chip): such a control names itself and
+ * the text of the row is read as an element of its own. Disabling the row disables the control
+ * and pales the text.
  *
  * A track created by the row has no id; the row saves and restores its selection, provided the
  * row has an id.
@@ -209,7 +212,7 @@ public class SancaiControlRow @JvmOverloads constructor(
         track.setOnSelectionChangeListener(listener)
         val (text, control) = weightsFor(options.size)
         if (existing == null) {
-            install(track, text, control, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            install(track, text, control, null)
             segmented = true
         } else {
             applyWeights(text, control)
@@ -231,30 +234,32 @@ public class SancaiControlRow @JvmOverloads constructor(
             removeControl()
             return
         }
-        install(view, textWeight, controlWeight, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+        install(view, textWeight, controlWeight, null)
     }
 
     /**
      * A child added from XML or with `addView` becomes the control. Its `layout_weight`, when
-     * set, is the control weight. The row holds a single control.
+     * set, is the control weight; its margins and `layout_gravity` are kept. The row holds a
+     * single control.
      */
     override fun addView(child: View, index: Int, params: ViewGroup.LayoutParams?) {
         check(control == null) { "SancaiControlRow holds a single control; use setControl to replace it" }
         val given = params as? LayoutParams
         val weight = if (given != null && given.weight > 0f) given.weight else xmlControlWeight
-        install(
-            child,
-            xmlTextWeight,
-            weight,
-            params?.width ?: LayoutParams.WRAP_CONTENT,
-            params?.height ?: LayoutParams.WRAP_CONTENT,
-        )
+        install(child, xmlTextWeight, weight, params)
     }
 
-    private fun install(view: View, textWeight: Float, controlWeight: Float, width: Int, height: Int) {
+    private fun install(view: View, textWeight: Float, controlWeight: Float, given: ViewGroup.LayoutParams?) {
         removeControl()
         control = view
-        super.addView(view, -1, LayoutParams(width, height))
+        // A copy, so that the weight and width set below never write into the caller's object.
+        val params = when (given) {
+            null -> LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            is LayoutParams -> LayoutParams(given)
+            is MarginLayoutParams -> LayoutParams(given)
+            else -> LayoutParams(given)
+        }
+        super.addView(view, -1, params)
         applyWeights(textWeight, controlWeight)
         if (!isEnabled) view.isEnabled = false
         describe()
@@ -263,6 +268,14 @@ public class SancaiControlRow @JvmOverloads constructor(
     private fun removeControl() {
         val old = control ?: return
         super.removeView(old)
+    }
+
+    /**
+     * Removes the control. The title and the detail are part of the row and stay.
+     * (`removeAllViews` arrives here as well.)
+     */
+    override fun removeAllViewsInLayout() {
+        control?.let { super.removeViewInLayout(it) }
     }
 
     /** Forgets the control however it left the row, `removeView` and `removeAllViews` included. */
@@ -324,7 +337,8 @@ public class SancaiControlRow @JvmOverloads constructor(
     /**
      * Hands the text of the row to the control, so that a screen reader meets one element
      * ("title, detail", then the state of the control) instead of a label and an unnamed
-     * control. A description the control brought itself is left alone.
+     * control. A description the control brought itself is left alone, and so is a control
+     * that shows text of its own.
      */
     private fun describe() {
         if (!ready) return
@@ -341,8 +355,23 @@ public class SancaiControlRow @JvmOverloads constructor(
             copy.contentDescription = spoken
             return
         }
-        val current = view.contentDescription
-        if (current == null || current == appliedDescription) {
+        var current = view.contentDescription
+        // A control with text of its own (a button, any text view, a labelled checkbox, radio
+        // or chip) names itself: a content description would replace that text for a screen
+        // reader.
+        val ownText = when (view) {
+            is TextView -> !view.text.isNullOrEmpty()
+            is SancaiCheckbox -> view.text.isNotEmpty()
+            is SancaiRadioButton -> !view.text.isNullOrEmpty()
+            is SancaiChip -> view.text.isNotEmpty()
+            else -> false
+        }
+        if (ownText && appliedDescription != null && current == appliedDescription) {
+            view.contentDescription = null
+            appliedDescription = null
+            current = null
+        }
+        if (!ownText && (current == null || current == appliedDescription)) {
             view.contentDescription = spoken
             appliedDescription = spoken
             copy.contentDescription = null

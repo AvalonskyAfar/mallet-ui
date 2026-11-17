@@ -447,6 +447,102 @@ class SancaiStepperTest {
         assertThat(view.formattedValue.toString()).isEqualTo("-0.5")
     }
 
+    @Test
+    fun `a negative value keeps its sign in a locale with its own digits`() {
+        val before = java.util.Locale.getDefault()
+        java.util.Locale.setDefault(java.util.Locale.forLanguageTag("fa-IR"))
+        try {
+            val view = stepper(value = -5f, from = -50f, to = 50f, step = 1f)
+            assertThat(view.formattedValue.toString()).startsWith("-")
+            view.stepSize = 0.25f
+            view.value = -0.25f
+            assertThat(view.formattedValue.toString()).doesNotContain("-")
+        } finally {
+            java.util.Locale.setDefault(before)
+        }
+    }
+
+    @Test
+    fun `a hold withdrawn by a lost window focus or by disabling stays over for the rest of the gesture`() {
+        val view = stepper(value = 0f, to = 1000f, step = 1f, layout = false)
+        Snapshots.attach(view, WIDTH_DP)
+        val y = view.height / 2f
+        Touch.dispatch(view, MotionEvent.ACTION_DOWN, view.plusX, y)
+        advance(480)
+        assertThat(view.value).isEqualTo(2f)
+        view.onWindowFocusChanged(false)
+        Touch.dispatch(view, MotionEvent.ACTION_MOVE, view.plusX + 1f, y)
+        advance(2000)
+        Touch.dispatch(view, MotionEvent.ACTION_UP, view.plusX + 1f, y)
+        assertThat(view.value).isEqualTo(2f)
+
+        // A plain press, disabled and enabled again under the finger: the release is not a tap.
+        Touch.dispatch(view, MotionEvent.ACTION_DOWN, view.plusX, y)
+        view.isEnabled = false
+        view.isEnabled = true
+        Touch.dispatch(view, MotionEvent.ACTION_MOVE, view.plusX + 1f, y)
+        advance(2000)
+        Touch.dispatch(view, MotionEvent.ACTION_UP, view.plusX + 1f, y)
+        assertThat(view.value).isEqualTo(2f)
+
+        // The next gesture works again.
+        Touch.tap(view, view.plusX)
+        assertThat(view.value).isEqualTo(3f)
+    }
+
+    @Test
+    fun `after a hold, lifting over another zone neither edits nor steps back`() {
+        val view = stepper(value = 0f, to = 1000f, step = 1f, layout = false)
+        Snapshots.attach(view, WIDTH_DP)
+        val y = view.height / 2f
+        Touch.dispatch(view, MotionEvent.ACTION_DOWN, view.plusX, y)
+        advance(480)
+        Touch.dispatch(view, MotionEvent.ACTION_MOVE, view.valueX, y)
+        Touch.dispatch(view, MotionEvent.ACTION_UP, view.valueX, y)
+        assertThat(edits).isEqualTo(0)
+        assertThat(view.value).isEqualTo(2f)
+
+        Touch.dispatch(view, MotionEvent.ACTION_DOWN, view.plusX, y)
+        advance(400)
+        Touch.dispatch(view, MotionEvent.ACTION_MOVE, view.minusX, y)
+        Touch.dispatch(view, MotionEvent.ACTION_UP, view.minusX, y)
+        assertThat(view.value).isEqualTo(3f)
+    }
+
+    @Test
+    fun `a second finger changes nothing and the first finger's lift ends the gesture`() {
+        val view = stepper(value = 0f, to = 1000f, step = 1f, layout = false)
+        Snapshots.attach(view, WIDTH_DP)
+        val y = view.height / 2f
+        val a = Touch.Finger(0, view.plusX, y)
+        Touch.dispatch(view, MotionEvent.ACTION_DOWN, view.plusX, y)
+        Touch.multi(view, MotionEvent.ACTION_POINTER_DOWN, 1, a, Touch.Finger(1, view.minusX, y))
+        Touch.multi(view, MotionEvent.ACTION_MOVE, 1, a, Touch.Finger(1, view.minusX + 2f, y))
+        Touch.multi(view, MotionEvent.ACTION_POINTER_UP, 0, a, Touch.Finger(1, view.minusX + 2f, y))
+        assertThat(view.value).isEqualTo(1f)
+        Touch.multi(view, MotionEvent.ACTION_MOVE, 0, Touch.Finger(1, view.minusX, y))
+        advance(2000)
+        Touch.multi(view, MotionEvent.ACTION_UP, 0, Touch.Finger(1, view.valueX, y))
+        assertThat(view.value).isEqualTo(1f)
+        assertThat(changes).containsExactly(1f)
+        assertThat(edits).isEqualTo(0)
+    }
+
+    @Test
+    fun `the accessibility node offers a click only while someone listens for it`() {
+        // The platform fills in the click only for a view that is in a window.
+        val view = stepper(layout = false)
+        Snapshots.attach(view, WIDTH_DP)
+        fun node(): AccessibilityNodeInfo = AccessibilityNodeInfo.obtain().also { view.onInitializeAccessibilityNodeInfo(it) }
+        assertThat(node().actionList.map { it.id }).contains(AccessibilityNodeInfo.ACTION_CLICK)
+        assertThat(node().isClickable).isTrue()
+        view.setOnEditRequestListener(null)
+        assertThat(node().isClickable).isFalse()
+        assertThat(node().actionList.map { it.id }).doesNotContain(AccessibilityNodeInfo.ACTION_CLICK)
+        view.setOnClickListener { }
+        assertThat(node().isClickable).isTrue()
+    }
+
     private fun gallery(theme: SancaiTheme): View {
         val context = Snapshots.context(theme)
         val density = context.resources.displayMetrics.density

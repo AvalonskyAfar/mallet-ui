@@ -15,6 +15,7 @@ import io.github.avalonskyafar.sancai.icon.SancaiIcon
 import io.github.avalonskyafar.sancai.icon.SancaiIconView
 import io.github.avalonskyafar.sancai.interaction.SancaiHaptics
 import io.github.avalonskyafar.sancai.interaction.SancaiPress
+import io.github.avalonskyafar.sancai.internal.useOwnFocusRim
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
 import io.github.avalonskyafar.sancai.theme.SancaiTextRole
@@ -154,6 +155,8 @@ public class SancaiEntryRow @JvmOverloads constructor(
         // An explicit android:contentDescription was applied by the super constructor.
         ownDescription = contentDescription == null
         setWillNotDraw(false)
+        // The row draws its own focus rim.
+        useOwnFocusRim()
         valueView.maxLines = 1
         valueView.ellipsize = TextUtils.TruncateAt.END
         alignText(titleView, Alignment.CENTER)
@@ -175,6 +178,8 @@ public class SancaiEntryRow @JvmOverloads constructor(
         }
         if (::declaredClick.isInitialized) userClick = declaredClick
 
+        // The platform reads android:enabled for text views only.
+        var enabledFromXml = true
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.SancaiEntryRow, defStyleAttr, 0)
             try {
@@ -184,11 +189,13 @@ public class SancaiEntryRow @JvmOverloads constructor(
                 leadingIcon = SancaiIcon.fromAttr(a.getInt(R.styleable.SancaiEntryRow_sancaiIcon, -1))
                 arrow = ARROWS.getOrElse(a.getInt(R.styleable.SancaiEntryRow_sancaiEntryArrow, 0)) { Arrow.NONE }
                 alignment = ALIGNMENTS.getOrElse(a.getInt(R.styleable.SancaiEntryRow_sancaiEntryAlignment, 0)) { Alignment.CENTER }
+                enabledFromXml = a.getBoolean(R.styleable.SancaiEntryRow_android_enabled, true)
             } finally {
                 a.recycle()
             }
         }
         constructed = true
+        if (!enabledFromXml) isEnabled = false
         refresh()
     }
 

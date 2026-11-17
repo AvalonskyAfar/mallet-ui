@@ -42,8 +42,12 @@ import kotlin.math.sign
  *
  * - A drag that starts on a [SancaiHorizontalDragOwner] (a track, a switch, a slider) belongs
  *   to that control, unless it turns out to be vertical.
- * - Content that can still scroll towards the finger's origin scrolls first; when it reaches
- *   its limit within the same gesture, the page starts to follow.
+ * - Content that can still scroll up or down scrolls first; when it reaches its limit within
+ *   the same gesture, the page starts to follow.
+ * - Sideways, a gesture has one owner from start to finish. Content that can move in the
+ *   direction of the drag when the drag begins (a pager with a page left that way, a row that
+ *   slides aside, a horizontal list) keeps the whole gesture, also beyond the point where it
+ *   stops; the page only follows a sideways drag that nothing under the finger can use.
  * - Horizontal drags that begin within 24 dp of a screen edge are left to the system.
  *
  * Page views come from the [PageFactory] and are kept while detached, so returning to a page
@@ -99,6 +103,9 @@ public class SancaiSpatialHost @JvmOverloads constructor(
     // Per-gesture bookkeeping.
     private var downX = 0f
     private var downY = 0f
+    private var activePointerId = -1
+    private var handoverX = 0f
+    private var handoverY = 0f
     private var axisLocked = false
     private var rejected = false
     private var ownerGesture = false
@@ -124,9 +131,18 @@ public class SancaiSpatialHost @JvmOverloads constructor(
         isSaveEnabled = true
     }
 
-    /** Sets the places and how to build them. Call [show] afterwards. */
+    /**
+     * Sets the places and how to build them. Call [show] afterwards: the page on screen and
+     * every kept view came from the previous factory and are removed, so the host is empty
+     * ([currentKey] is `null`) until then. State restored for pages that have not been built
+     * yet is kept and handed to the views of the new factory.
+     */
     public fun setGraph(graph: SancaiSpatialGraph, factory: PageFactory) {
         stabilise()
+        cancelWarmups()
+        currentView?.let { removeView(it) }
+        currentView = null
+        current = null
         this.graph = graph
         this.factory = factory
         cache.clear()
@@ -269,6 +285,11 @@ public class SancaiSpatialHost @JvmOverloads constructor(
             kept.translationY = 0f
             return kept
         }
+        return buildPage(key)
+    }
+
+    /** A new view for [key], free of any parent and carrying the state saved for the page. */
+    private fun buildPage(key: String): View {
         val created = checkNotNull(factory) { "Call setGraph() before showing pages" }.createPage(key)
         (created.parent as? ViewGroup)?.removeView(created)
         savedPages.remove(key)?.let { created.restoreHierarchyState(it) }
@@ -430,10 +451,32 @@ public class SancaiSpatialHost @JvmOverloads constructor(
         if (dragging || settling) adoptNearest()
         downX = event.x
         downY = event.y
+        activePointerId = event.getPointerId(0)
+        handoverX = 0f
+        handoverY = 0f
         axisLocked = false
         rejected = false
         waitingForContent = false
         resetVelocity(event)
+    }
+
+    // The gesture follows one finger. Its position is reported less the distance to the fingers
+    // it took over from, so a hand-over never moves the pages.
+    private fun fingerIndex(event: MotionEvent): Int = max(0, event.findPointerIndex(activePointerId))
+
+    private fun fingerX(event: MotionEvent): Float = event.getX(fingerIndex(event)) - handoverX
+
+    private fun fingerY(event: MotionEvent): Float = event.getY(fingerIndex(event)) - handoverY
+
+    /** When the followed finger lifts while another is down, the gesture goes on with that one. */
+    private fun handOver(event: MotionEvent) {
+        if (event.actionMasked != MotionEvent.ACTION_POINTER_UP) return
+        val lifted = event.actionIndex
+        if (event.getPointerId(lifted) != activePointerId) return
+        val next = if (lifted == 0) 1 else 0
+        handoverX += event.getX(next) - event.getX(lifted)
+        handoverY += event.getY(next) - event.getY(lifted)
+        activePointerId = event.getPointerId(next)
     }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
@@ -444,28 +487,32 @@ public class SancaiSpatialHost @JvmOverloads constructor(
             ownerGesture = page != null && ownerUnder(page, downX - page.left, downY - page.top)
             return false
         }
+        handOver(event)
         if (ownerGesture) {
             // The control keeps a horizontal gesture. Once the finger has clearly gone
             // vertical the control has let go, and normal arbitration resumes.
             if (action != MotionEvent.ACTION_MOVE) return false
-            val dx = event.x - downX
-            val dy = event.y - downY
+            val dx = fingerX(event) - downX
+            val dy = fingerY(event) - downY
             if (max(abs(dx), abs(dy)) < slop || abs(dx) > abs(dy)) return false
             ownerGesture = false
         }
         velocity?.addMovement(event)
         if (action != MotionEvent.ACTION_MOVE) return false
         if (waitingForContent) {
-            if (contentCanScroll(waitHorizontal, -waitSign)) return false
+            if (contentCanScroll(false, -waitSign)) return false
             // The content has reached its limit: the page takes over from here.
             waitingForContent = false
             axisLocked = false
-            downX = event.x
-            downY = event.y
+            // A fresh start where the followed finger really is: the point is hit tested.
+            handoverX = 0f
+            handoverY = 0f
+            downX = fingerX(event)
+            downY = fingerY(event)
             resetVelocity(event)
             return false
         }
-        return tryBeginDrag(event.x - downX, event.y - downY)
+        return tryBeginDrag(fingerX(event) - downX, fingerY(event) - downY)
     }
 
     // Lint: the host only drags; it has no click of its own.
@@ -477,9 +524,10 @@ public class SancaiSpatialHost @JvmOverloads constructor(
             ownerGesture = false
             return true
         }
+        handOver(event)
         velocity?.addMovement(event)
-        val dx = event.x - downX
-        val dy = event.y - downY
+        val dx = fingerX(event) - downX
+        val dy = fingerY(event) - downY
         if (!dragging && action == MotionEvent.ACTION_MOVE) {
             waitingForContent = false
             tryBeginDrag(dx, dy)
@@ -495,7 +543,9 @@ public class SancaiSpatialHost @JvmOverloads constructor(
             var speed = 0f
             velocity?.let {
                 it.computeCurrentVelocity(1000)
-                speed = if (horizontal) it.xVelocity else it.yVelocity
+                // Of the finger the gesture follows, which is not always the first one.
+                val id = event.getPointerId(fingerIndex(event))
+                speed = if (horizontal) it.getXVelocity(id) else it.getYVelocity(id)
             }
             val far = abs(delta) > travel() * SancaiMotion.COMMIT_FRACTION && sign(delta) == direction.toFloat()
             val fast = abs(speed) > commitVelocityPx && sign(speed) == direction.toFloat()
@@ -508,11 +558,15 @@ public class SancaiSpatialHost @JvmOverloads constructor(
 
     override fun requestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
         // Only a drag owner may keep the host out of a gesture. Scrolling content may not,
-        // or the host could never take over when that content reaches its limit.
-        super.requestDisallowInterceptTouchEvent(ownerGesture && disallowIntercept)
+        // or the host could never take over when that content reaches its limit. Its request
+        // still goes up, so that the ancestors of the host stay out of the content's gesture.
+        if (ownerGesture) {
+            super.requestDisallowInterceptTouchEvent(disallowIntercept)
+        } else {
+            parent?.requestDisallowInterceptTouchEvent(disallowIntercept)
+        }
     }
 
-    private var waitHorizontal = false
     private var waitSign = 1
 
     private fun tryBeginDrag(dx: Float, dy: Float): Boolean {
@@ -530,8 +584,13 @@ public class SancaiSpatialHost @JvmOverloads constructor(
                 return false
             }
             if (contentCanScroll(horizontal, -fingerSign)) {
+                if (horizontal) {
+                    // Sideways there is no taking over: a row that has slid as far as it goes
+                    // would otherwise be cancelled, and shut, by the very drag that opened it.
+                    rejected = true
+                    return false
+                }
                 waitingForContent = true
-                waitHorizontal = horizontal
                 waitSign = fingerSign
                 return false
             }
@@ -638,8 +697,8 @@ public class SancaiSpatialHost @JvmOverloads constructor(
                     warmups.remove(this)
                     if (generation != warmupGeneration || current != key || isMoving) return
                     if (cache.containsKey(target)) return
-                    val build = factory ?: return
-                    cache[target] = build.createPage(target)
+                    if (factory == null) return
+                    cache[target] = buildPage(target)
                 }
             }
             warmups.add(task)
@@ -701,6 +760,8 @@ public class SancaiSpatialHost @JvmOverloads constructor(
     override fun onSaveInstanceState(): Parcelable {
         stabilise()
         val pages = Bundle()
+        // State still waiting for a page that has not been built since the last restore.
+        for ((key, pending) in savedPages) pages.putSparseParcelableArray(key, pending)
         for ((key, view) in cache) savePage(pages, key, view)
         savePage(pages, current, currentView)
         return Bundle().apply {
@@ -729,6 +790,13 @@ public class SancaiSpatialHost @JvmOverloads constructor(
                 BundleCompat.getSparseParcelableArray(pages, key, Parcelable::class.java)?.let { savedPages[key] = it }
             }
         }
+        // Pages built before the restore (the usual setGraph + show in onCreate) take theirs now.
+        val shownKey = current
+        val shownView = currentView
+        if (shownKey != null && shownView != null) {
+            savedPages.remove(shownKey)?.let { shownView.restoreHierarchyState(it) }
+        }
+        for ((kept, view) in cache) savedPages.remove(kept)?.let { view.restoreHierarchyState(it) }
         val key = state.getString(STATE_CURRENT) ?: return
         val g = graph ?: return
         if (!g.contains(key)) return

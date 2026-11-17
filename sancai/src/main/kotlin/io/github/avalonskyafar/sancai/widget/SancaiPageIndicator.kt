@@ -101,6 +101,7 @@ public class SancaiPageIndicator @JvmOverloads constructor(
         get() = pager?.pageCount ?: ownCount
         set(value) {
             if (pager != null || value.coerceAtLeast(0) == ownCount) return
+            animator?.cancel()
             ownCount = value.coerceAtLeast(0)
             ownSelected = ownSelected.coerceIn(0, (ownCount - 1).coerceAtLeast(0))
             position = ownSelected.toFloat()
@@ -163,7 +164,8 @@ public class SancaiPageIndicator @JvmOverloads constructor(
 
     private fun syncWithPager() {
         val attached = pager
-        if (attached != null) position = attached.scrollPosition
+        // Without a pager the dots rest on the selection, also when the pager was let go mid-way.
+        position = attached?.scrollPosition ?: ownSelected.toFloat()
         describe()
         requestLayout()
         invalidate()
@@ -349,8 +351,23 @@ public class SancaiPageIndicator @JvmOverloads constructor(
         if (pager == null) selectedIndex = state.getInt(STATE_SELECTED, ownSelected)
     }
 
+    /** Disabling under the finger lets the pressed dot come back up. */
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        if (!enabled) press(NO_DOT)
+    }
+
+    override fun onRtlPropertiesChanged(layoutDirection: Int) {
+        super.onRtlPropertiesChanged(layoutDirection)
+        // The dots are mirrored when drawn.
+        invalidate()
+    }
+
     override fun onDetachedFromWindow() {
         animator?.cancel()
+        animator = null
+        // Without a pager to follow, a cancelled glide lands on the selection.
+        if (pager == null) position = ownSelected.toFloat()
         press(NO_DOT)
         super.onDetachedFromWindow()
     }

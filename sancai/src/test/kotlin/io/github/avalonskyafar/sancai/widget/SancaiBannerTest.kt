@@ -515,6 +515,65 @@ class SancaiBannerTest {
         assertThat(other.isShowing).isFalse()
     }
 
+    @Test
+    fun `a banner that starts hidden grows from zero on its first show`() {
+        val column = LinearLayout(context)
+        column.orientation = LinearLayout.VERTICAL
+        val view = banner()
+        view.dismiss(animate = false)
+        val below = View(context)
+        column.addView(view, LinearLayout.LayoutParams(-1, -2))
+        column.addView(below, LinearLayout.LayoutParams(-1, px(40f)))
+        attachPaused(column)
+        assertThat(view.visibility).isEqualTo(View.GONE)
+        assertThat(below.top).isEqualTo(0)
+
+        view.show()
+        assertThat(view.isShowing).isTrue()
+        advance(60)
+        val partly = view.height
+        assertThat(partly).isGreaterThan(0)
+        assertThat(below.top).isEqualTo(partly)
+        advance(400)
+        assertThat(view.height).isGreaterThan(partly)
+        assertThat(below.top).isEqualTo(view.height)
+    }
+
+    @Test
+    fun `a banner hidden through its visibility stays hidden after a restore`() {
+        val id = View.generateViewId()
+        val view = banner()
+        view.id = id
+        view.visibility = View.GONE
+        val saved = SparseArray<Parcelable>()
+        view.saveHierarchyState(saved)
+
+        val restored = banner()
+        restored.id = id
+        restored.visibility = View.GONE
+        restored.restoreHierarchyState(saved)
+        assertThat(restored.isShowing).isTrue()
+        assertThat(restored.visibility).isEqualTo(View.GONE)
+
+        // The banner's own collapse is still undone when the saved banner was on screen.
+        view.visibility = View.VISIBLE
+        view.saveHierarchyState(saved)
+        val collapsed = banner()
+        collapsed.id = id
+        collapsed.dismiss(animate = false)
+        collapsed.restoreHierarchyState(saved)
+        assertThat(collapsed.isShowing).isTrue()
+        assertThat(collapsed.visibility).isEqualTo(View.VISIBLE)
+    }
+
+    @Test
+    fun `the close icon draws its own focus rim only`() {
+        val close = closeOf(banner().also { it.isDismissible = true })
+        if (android.os.Build.VERSION.SDK_INT >= 26) {
+            assertThat(close.defaultFocusHighlightEnabled).isFalse()
+        }
+    }
+
     private fun sheet(ctx: Context): View {
         val theme = SancaiTheme.of(ctx)
         val page = LinearLayout(ctx)

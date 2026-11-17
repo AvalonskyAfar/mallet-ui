@@ -219,6 +219,21 @@ class SancaiMenuTest {
     }
 
     @Test
+    fun `click ticks before it runs the callback`() {
+        var hapticSeenInside = 0
+        var item: View? = null
+        val menu = SancaiMenu(context).add("Copy") {
+            hapticSeenInside = org.robolectric.Shadows.shadowOf(item).lastHapticFeedbackPerformed()
+        }
+        menu.show(anchor())
+        item = menu.showingPanel!!.items[0]
+        Touch.tap(item, item.width / 2f, item.height / 2f)
+        settle()
+        assertThat(SancaiTheme.of(context).haptics).isTrue()
+        assertThat(hapticSeenInside).isEqualTo(android.view.HapticFeedbackConstants.CLOCK_TICK)
+    }
+
+    @Test
     fun `pressing sinks the content and release restores it`() {
         val menu = SancaiMenu(context).add("Copy").add("Paste")
         menu.show(anchor())

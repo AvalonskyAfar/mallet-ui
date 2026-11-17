@@ -255,6 +255,37 @@ class SancaiSpatialTransitionTest {
     }
 
     @Test
+    fun `a swipe that starts on a row which can slide that way belongs to the row`() {
+        lateinit var row: SancaiRevealLayout
+        val page = FrameLayout(context).apply {
+            row = SancaiRevealLayout(context).apply {
+                addView(View(context), FrameLayout.LayoutParams(-1, 160))
+                setAction("Delete") {}
+            }
+            addView(row, FrameLayout.LayoutParams(-1, -2).apply { topMargin = 300 })
+        }
+        val host = host(page = page)
+        Snapshots.attach(host, 360)
+        advance()
+        val width = host.width.toFloat()
+        val y = 380f
+        // The page came from the end side, so a drag towards the end would take it back; the
+        // row under the finger slides the same way, and it is the row that goes.
+        Touch.drag(host, width * 0.3f, y, width * 0.9f, y, steps = 20, release = false)
+        assertThat(host.pageOffset).isEqualTo(0f)
+        assertThat(row.row!!.translationX).isGreaterThan(0f)
+        Touch.dispatch(host, MotionEvent.ACTION_UP, width * 0.9f, y)
+        advance()
+        assertThat(row.isOpen).isTrue()
+        assertThat(finished).isEqualTo(0)
+
+        // Open, the row has nowhere left to go that way: the same swipe now takes the page back.
+        Touch.drag(host, width * 0.3f, y, width * 0.9f, y, steps = 20)
+        advance()
+        assertThat(finished).isEqualTo(1)
+    }
+
+    @Test
     fun `gate refuses the swipe and is asked once per gesture`() {
         val host = settledHost()
         val width = host.width.toFloat()
@@ -619,7 +650,8 @@ class SancaiSpatialTransitionTest {
 
     @Test
     fun `page and picture meet edge to edge with nothing in between`() {
-        val host = settledHost()
+        // The picture is not stretched, so it has to be at least as large as the host.
+        val host = settledHost(snapshot = solid(width = 2000, height = 2000))
         val canvasColor = SancaiTheme.of(context).colors.canvas
         val width = host.width
         // At rest the picture is entirely off screen.
@@ -637,6 +669,50 @@ class SancaiSpatialTransitionTest {
         assertThat(dragged.getPixel(300, 4)).isEqualTo(canvasColor)
         assertThat(dragged.getPixel(300, host.height - 4)).isEqualTo(canvasColor)
         assertThat(dragged.getPixel(width - 4, 4)).isEqualTo(canvasColor)
+    }
+
+    @Test
+    fun `a picture of another size than the host is not stretched`() {
+        // The page below was 100 px high when it was captured; this host is higher. A density
+        // on the picture that differs from the screen's must not scale it either.
+        val picture = solid(width = 2000, height = 100)
+        picture.density = context.resources.displayMetrics.densityDpi * 3
+        val host = settledHost(snapshot = picture)
+        assertThat(host.height).isGreaterThan(200)
+        val canvasColor = SancaiTheme.of(context).colors.canvas
+        val y = titleY(host)
+        Touch.drag(host, 300f, y, 600f, y, release = false)
+        val dragged = draw(host)
+        assertThat(dragged.getPixel(4, 4)).isEqualTo(BACKDROP)
+        assertThat(dragged.getPixel(296, 99)).isEqualTo(BACKDROP)
+        // Below the picture the host shows its own canvas colour, not a stretched picture.
+        assertThat(dragged.getPixel(4, 100)).isEqualTo(canvasColor)
+        assertThat(dragged.getPixel(296, host.height - 4)).isEqualTo(canvasColor)
+    }
+
+    @Test
+    fun `start falls back to the slide when the page cannot be drawn in software`() {
+        val activity = Snapshots.attach(Page(context, "Overview"), 360)
+        val broken = object : View(activity) {
+            override fun onDraw(canvas: android.graphics.Canvas) {
+                throw IllegalArgumentException("Software rendering doesn't support hardware bitmaps")
+            }
+        }
+        broken.setWillNotDraw(false)
+        activity.findViewById<ViewGroup>(android.R.id.content).addView(broken, ViewGroup.LayoutParams(-1, -1))
+        advance()
+        val intent = Intent(activity, Activity::class.java).putExtra(SancaiSpatialTransition.EXTRA_SNAPSHOT, 7)
+
+        SancaiSpatialTransition.start(activity, intent)
+
+        val started = shadowOf(activity).nextStartedActivity
+        assertThat(started).isNotNull()
+        assertThat(started.hasExtra(SancaiSpatialTransition.EXTRA_SNAPSHOT)).isFalse()
+        assertThat(SancaiSpatialSnapshots.size).isEqualTo(0)
+        assertThat(shadowOf(activity).pendingTransitionEnterAnimationResourceId)
+            .isEqualTo(R.anim.sancai_slide_in_end)
+        assertThat(shadowOf(activity).pendingTransitionExitAnimationResourceId)
+            .isEqualTo(R.anim.sancai_slide_out_start)
     }
 
     private fun snapshotScene(theme: SancaiTheme, name: String) {

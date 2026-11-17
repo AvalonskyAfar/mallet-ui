@@ -5,7 +5,12 @@ import android.graphics.RectF
 import android.os.Parcelable
 import android.util.SparseArray
 import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
+import android.view.accessibility.AccessibilityManager
+import android.view.accessibility.AccessibilityNodeInfo
+import android.view.accessibility.AccessibilityNodeProvider
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.google.common.truth.Truth.assertThat
 import io.github.avalonskyafar.sancai.interaction.SancaiPager
@@ -15,6 +20,7 @@ import io.github.avalonskyafar.sancai.theme.SancaiTheme
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.GraphicsMode
 import org.robolectric.shadows.ShadowLooper
 import java.util.concurrent.TimeUnit
@@ -471,6 +477,171 @@ class SancaiTabsTest {
         assertThat(rtl.scrollOffset).isEqualTo(0f)
         assertThat(indicator(rtl).left).isAtLeast(0f)
         assertThat(indicator(rtl).right).isLessThan(rtl.width * 0.5f)
+    }
+
+    @Test
+    fun `a disabled pager is not moved through its tabs`() {
+        val heard = mutableListOf<Int>()
+        val (view, pager) = withPager(heard)
+        pager.isEnabled = false
+        Touch.tap(view, view.width * 5f / 6f)
+        assertThat(view.onKeyDown(KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT)))
+            .isFalse()
+        val provider = checkNotNull(view.accessibilityNodeProvider)
+        assertThat(provider.performAction(1, AccessibilityNodeInfo.ACTION_CLICK, null)).isFalse()
+        assertThat(view.selectedIndex).isEqualTo(0)
+        assertThat(pager.currentPage).isEqualTo(0)
+        assertThat(pager.isMoving).isFalse()
+        assertThat(heard).isEmpty()
+    }
+
+    @Test
+    fun `a key or click the busy pager refuses is not consumed`() {
+        val heard = mutableListOf<Int>()
+        val (view, pager) = withPager(heard)
+        Touch.tap(view, view.width * 5f / 6f)
+        assertThat(pager.isMoving).isTrue()
+        assertThat(view.onKeyDown(KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_LEFT)))
+            .isFalse()
+        assertThat(view.onKeyDown(KeyEvent.KEYCODE_MOVE_HOME, KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_MOVE_HOME)))
+            .isFalse()
+        val provider = checkNotNull(view.accessibilityNodeProvider)
+        assertThat(provider.performAction(0, AccessibilityNodeInfo.ACTION_CLICK, null)).isFalse()
+        assertThat(view.selectedIndex).isEqualTo(2)
+        assertThat(heard).containsExactly(2)
+    }
+
+    @Test
+    fun `a tab that takes accessibility focus is scrolled into view`() {
+        val manager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+        shadowOf(manager).setEnabled(true)
+        shadowOf(manager).setTouchExplorationEnabled(true)
+        val view = SancaiTabs(context).apply {
+            layout = SancaiTabs.Layout.SCROLL
+            setTabs(*many)
+        }
+        Snapshots.attach(view, 300)
+        val provider = checkNotNull(view.accessibilityNodeProvider)
+        assertThat(view.scrollOffset).isEqualTo(0f)
+        assertThat(provider.performAction(8, AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null)).isTrue()
+        assertThat(view.scrollOffset).isGreaterThan(0f)
+        val bounds = android.graphics.Rect()
+        @Suppress("DEPRECATION")
+        checkNotNull(provider.createAccessibilityNodeInfo(8)).getBoundsInParent(bounds)
+        assertThat(bounds.width().toFloat()).isWithin(1.5f).of(labelWidth("Section 9") + dp(32f))
+        assertThat(bounds.left).isAtLeast(0)
+        assertThat(bounds.right).isAtMost(view.width)
+        // The selection stays where it was.
+        assertThat(view.selectedIndex).isEqualTo(0)
+    }
+
+    @Test
+    fun `a tab explored by touch at the edge does not pull the row along`() {
+        val manager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+        shadowOf(manager).setEnabled(true)
+        shadowOf(manager).setTouchExplorationEnabled(true)
+        val view = SancaiTabs(context).apply {
+            layout = SancaiTabs.Layout.SCROLL
+            setTabs(*many)
+        }
+        Snapshots.attach(view, 300)
+        val provider = checkNotNull(view.accessibilityNodeProvider)
+        val x = view.width - 2
+        val y = view.height / 2
+        val bounds = android.graphics.Rect()
+        val atEdge = many.indices.first {
+            @Suppress("DEPRECATION")
+            checkNotNull(provider.createAccessibilityNodeInfo(it)).getBoundsInParent(bounds)
+            bounds.contains(x, y)
+        }
+        fun hover(action: Int) {
+            val event = MotionEvent.obtain(0L, 0L, action, x.toFloat(), y.toFloat(), 0)
+            event.source = android.view.InputDevice.SOURCE_TOUCHSCREEN
+            view.dispatchGenericMotionEvent(event)
+            event.recycle()
+        }
+        // A screen reader focuses what the finger touches: the row stays under the finger.
+        hover(MotionEvent.ACTION_HOVER_ENTER)
+        assertThat(provider.performAction(atEdge, AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null)).isTrue()
+        assertThat(view.scrollOffset).isEqualTo(0f)
+        // The same tab reached by a swipe, with no finger on it, is shown whole.
+        hover(MotionEvent.ACTION_HOVER_EXIT)
+        provider.performAction(atEdge, AccessibilityNodeInfo.ACTION_CLEAR_ACCESSIBILITY_FOCUS, null)
+        assertThat(provider.performAction(atEdge, AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS, null)).isTrue()
+        assertThat(view.scrollOffset).isGreaterThan(0f)
+    }
+
+    @Test
+    fun `the tab list itself offers no click but its tabs do`() {
+        val view = tabs("Recent", "All", "Starred")
+        val provider = checkNotNull(view.accessibilityNodeProvider)
+        val host = checkNotNull(provider.createAccessibilityNodeInfo(AccessibilityNodeProvider.HOST_VIEW_ID))
+        assertThat(host.isClickable).isFalse()
+        assertThat(host.actionList).doesNotContain(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK)
+        val child = checkNotNull(provider.createAccessibilityNodeInfo(1))
+        assertThat(child.isClickable).isTrue()
+        assertThat(child.actionList).contains(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK)
+    }
+
+    @Test
+    fun `disabling under the finger lets the pressed label come back up`() {
+        val held = tabs("Recent", "All", "Starred")
+        Touch.dispatch(held, MotionEvent.ACTION_DOWN, held.width / 2f, held.height / 2f)
+        held.isEnabled = false
+        val never = tabs("Recent", "All", "Starred").apply { isEnabled = false }
+        assertThat(Snapshots.render(held, 360).sameAs(Snapshots.render(never, 360))).isTrue()
+        // The rest of that gesture does nothing, also when the tabs are enabled again.
+        held.isEnabled = true
+        Touch.dispatch(held, MotionEvent.ACTION_UP, held.width / 2f, held.height / 2f)
+        assertThat(held.selectedIndex).isEqualTo(0)
+    }
+
+    @Test
+    fun `tabs are placed anew when an ancestor changes the layout direction`() {
+        supportRtl()
+        val view = SancaiTabs(context).apply { setTabs("Recent", "All", "Starred") }
+        val frame = FrameLayout(context)
+        frame.addView(view, FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.WRAP_CONTENT)
+        Snapshots.layout(frame, 360)
+        assertThat(indicator(view).centerX()).isWithin(0.6f).of(view.width / 6f)
+        frame.layoutDirection = View.LAYOUT_DIRECTION_RTL
+        Snapshots.layout(frame, 360)
+        // The first tab now stands at the right, and the arrows agree with what is drawn.
+        assertThat(indicator(view).centerX()).isWithin(0.6f).of(view.width * 5f / 6f)
+        Touch.tap(view, view.width / 6f)
+        assertThat(view.selectedIndex).isEqualTo(2)
+    }
+
+    @Test
+    fun `only the first finger counts and a second one does nothing`() {
+        val view = tabs(*many, layout = SancaiTabs.Layout.SCROLL, widthDp = 300)
+        val heard = mutableListOf<Int>()
+        view.setOnTabSelectedListener { _, index -> heard += index }
+        val y = view.height / 2f
+        val w = view.width.toFloat()
+        Touch.drag(view, w * 0.8f, y, w * 0.5f, y, release = false)
+        val left = view.scrollOffset
+        assertThat(left).isGreaterThan(w * 0.2f)
+        Touch.multi(view, MotionEvent.ACTION_POINTER_DOWN, 1, Touch.Finger(0, w * 0.5f, y), Touch.Finger(1, w * 0.1f, y))
+        Touch.multi(view, MotionEvent.ACTION_POINTER_UP, 0, Touch.Finger(0, w * 0.5f, y), Touch.Finger(1, w * 0.1f, y))
+        Touch.multi(view, MotionEvent.ACTION_MOVE, 0, Touch.Finger(1, w * 0.9f, y))
+        Touch.multi(view, MotionEvent.ACTION_UP, 0, Touch.Finger(1, w * 0.9f, y))
+        assertThat(view.scrollOffset).isEqualTo(left)
+        assertThat(view.selectedIndex).isEqualTo(0)
+        assertThat(heard).isEmpty()
+
+        // A tap of the first finger is a tap where it lifted; the second finger chooses nothing.
+        val few = tabs("Recent", "All", "Starred")
+        few.setOnTabSelectedListener { _, index -> heard += index }
+        val a = Touch.Finger(0, few.width * 5f / 6f, y)
+        Touch.dispatch(few, MotionEvent.ACTION_DOWN, a.x, y)
+        Touch.multi(few, MotionEvent.ACTION_POINTER_DOWN, 1, a, Touch.Finger(1, few.width / 2f, y))
+        Touch.multi(few, MotionEvent.ACTION_POINTER_UP, 0, a, Touch.Finger(1, few.width / 2f, y))
+        assertThat(few.selectedIndex).isEqualTo(2)
+        Touch.multi(few, MotionEvent.ACTION_MOVE, 0, Touch.Finger(1, few.width / 6f, y))
+        Touch.multi(few, MotionEvent.ACTION_UP, 0, Touch.Finger(1, few.width / 6f, y))
+        assertThat(few.selectedIndex).isEqualTo(2)
+        assertThat(heard).containsExactly(2)
     }
 
     @Test

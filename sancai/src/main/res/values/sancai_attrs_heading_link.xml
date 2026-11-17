@@ -11,6 +11,7 @@
     </declare-styleable>
 
     <declare-styleable name="SancaiLinkRow">
+        <attr name="android:enabled" />
         <!-- The label of the link. -->
         <attr name="sancaiTitle" />
         <!-- Colour role of the label and the chevron. Default: muted. -->

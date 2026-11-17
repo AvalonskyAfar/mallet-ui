@@ -459,6 +459,103 @@ class SancaiFloatingPanelTest {
         assertThat(s.moves).hasSize(1)
     }
 
+    @Test
+    fun `bound to a window right to left keeps the start edge on the right and follows the finger`() {
+        val info = context.applicationContext.applicationInfo
+        info.flags = info.flags or android.content.pm.ApplicationInfo.FLAG_SUPPORTS_RTL
+        val params = SancaiFloatingPanel.overlayLayoutParams()
+        // x is measured from the left whatever the layout direction.
+        assertThat(params.gravity).isEqualTo(android.view.Gravity.TOP or android.view.Gravity.LEFT)
+        val panel = SancaiFloatingPanel(context)
+        panel.layoutDirection = View.LAYOUT_DIRECTION_RTL
+        panel.addView(SancaiText.create(context, "Capturing", SancaiTextRole.CAPTION, SancaiTextTone.INK))
+        panel.bindToWindow(context.getSystemService(Context.WINDOW_SERVICE) as WindowManager, params)
+        Snapshots.layout(panel, 120)
+        val travel = context.resources.displayMetrics.widthPixels - panel.width
+
+        assertThat(params.x).isEqualTo(travel)
+        Touch.drag(panel, 200f, 20f, 50f, 20f)
+        assertThat(params.x).isEqualTo(travel - 150)
+        assertThat(panel.positionX).isWithin(0.001f).of(150f / travel)
+        Touch.drag(panel, 20f, 20f, 80f, 20f)
+        assertThat(params.x).isEqualTo(travel - 90)
+        panel.positionX = 1f
+        assertThat(params.x).isEqualTo(0)
+    }
+
+    @Test
+    fun `a touch during the snap glide does not strand the panel`() {
+        val s = scene()
+        s.panel.snapToEdge = true
+        Touch.drag(s.panel, 20f, 20f, 20f + dp(60f), 20f)
+        assertThat(s.moves).containsExactly(0f to s.panel.positionY)
+
+        // A tap stops the glide under the finger; it goes on when the finger lifts.
+        Touch.dispatch(s.panel, MotionEvent.ACTION_DOWN, 20f, 20f)
+        val held = s.panel.positionX
+        assertThat(held).isGreaterThan(0f)
+        ShadowLooper.idleMainLooper(100, TimeUnit.MILLISECONDS)
+        assertThat(s.panel.positionX).isEqualTo(held)
+        Touch.dispatch(s.panel, MotionEvent.ACTION_UP, 20f, 20f)
+        glide()
+        assertThat(s.panel.positionX).isEqualTo(0f)
+        assertThat(s.panel.x).isEqualTo(dp(10f).toFloat())
+        assertThat(s.moves).hasSize(1)
+    }
+
+    @Test
+    fun `a cancelled drag is undone and tells nobody`() {
+        val s = scene()
+        s.panel.setPosition(0.25f, 0.5f)
+        Touch.drag(s.panel, 20f, 20f, 20f + dp(100f), 20f + dp(50f), release = false)
+        assertThat(s.panel.positionX).isGreaterThan(0.25f)
+        Touch.dispatch(s.panel, MotionEvent.ACTION_CANCEL, 20f, 20f)
+        assertThat(s.panel.isDragging).isFalse()
+        assertThat(s.panel.positionX).isEqualTo(0.25f)
+        assertThat(s.panel.positionY).isEqualTo(0.5f)
+
+        // Disabled under the finger, with snapping on: back as well, not to an edge.
+        s.panel.snapToEdge = true
+        Touch.drag(s.panel, 20f, 20f, 20f + dp(150f), 20f - dp(50f), release = false)
+        assertThat(s.panel.positionX).isGreaterThan(0.5f)
+        s.panel.isEnabled = false
+        glide()
+        assertThat(s.panel.positionX).isEqualTo(0.25f)
+        assertThat(s.panel.positionY).isEqualTo(0.5f)
+        assertThat(s.moves).isEmpty()
+    }
+
+    @Test
+    fun `state saved under the finger is where the panel will rest`() {
+        val s = scene()
+        s.panel.setPosition(0.25f, 0.5f)
+        Touch.drag(s.panel, 20f, 20f, 20f + dp(100f), 20f + dp(50f), release = false)
+        val dragged = SparseArray<Parcelable>().also { s.host.saveHierarchyState(it) }
+        val fresh = scene()
+        fresh.host.restoreHierarchyState(dragged)
+        assertThat(fresh.panel.positionX).isEqualTo(0.25f)
+        assertThat(fresh.panel.positionY).isEqualTo(0.5f)
+
+        // Released with snapping on: the edge the listener was told, not a point of the glide.
+        s.panel.snapToEdge = true
+        Touch.dispatch(s.panel, MotionEvent.ACTION_UP, 20f + dp(100f), 20f + dp(50f))
+        val side = s.moves.single().first
+        assertThat(s.panel.positionX).isNotEqualTo(side)
+        val gliding = SparseArray<Parcelable>().also { s.host.saveHierarchyState(it) }
+        val other = scene()
+        other.host.restoreHierarchyState(gliding)
+        assertThat(other.panel.positionX).isEqualTo(side)
+        glide()
+        assertThat(s.panel.positionX).isEqualTo(side)
+    }
+
+    @Test
+    fun `the focus rim is the only focus highlight`() {
+        val panel = SancaiFloatingPanel(context)
+        assertThat(panel.isFocusable).isTrue()
+        if (android.os.Build.VERSION.SDK_INT >= 26) assertThat(panel.defaultFocusHighlightEnabled).isFalse()
+    }
+
     private fun secondFinger(action: Int, x: Float, y: Float): MotionEvent {
         val props = arrayOf(MotionEvent.PointerProperties().apply { id = 1 })
         val coords = arrayOf(MotionEvent.PointerCoords().apply { this.x = x; this.y = y })

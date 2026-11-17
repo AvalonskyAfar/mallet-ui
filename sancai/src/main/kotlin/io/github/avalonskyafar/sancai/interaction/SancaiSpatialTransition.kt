@@ -60,9 +60,11 @@ import kotlin.math.sign
  * `R.anim.sancai_slide_*` are used instead; the swipe back still works.
  *
  * The swipe leaves alone what needs horizontal drags itself: anything that is a
- * [SancaiHorizontalDragOwner], every `EditText`, and the 24 dp zones at both screen edges,
- * which belong to the system. A page that is in the middle of something can refuse the swipe
- * with a [SwipeGate].
+ * [SancaiHorizontalDragOwner], every `EditText`, whatever can itself scroll the way the finger
+ * goes when the drag begins (a pager with a page left that way, a row that slides aside, a
+ * sideways list; they answer through `canScrollHorizontally`), and the 24 dp zones at both
+ * screen edges, which belong to the system. A page that is in the middle of something can
+ * refuse the swipe with a [SwipeGate].
  *
  * Only [Side.START] and [Side.END] are supported; they follow the layout direction.
  */
@@ -231,12 +233,26 @@ internal object SancaiSpatialSnapshots {
     val size: Int
         @Synchronized get() = pending.size
 
-    /** Draws [content] into a new bitmap and stores it. Returns its token, or 0 without one. */
+    /**
+     * Draws [content] into a new bitmap and stores it. Returns its token, or 0 without one:
+     * no size, too large, no memory for it, or content that cannot be drawn in software.
+     */
     fun capture(content: View?): Int {
         if (content == null || content.width <= 0 || content.height <= 0) return 0
         if (content.width.toLong() * content.height * 4L > SancaiSpatialTransition.MAX_SNAPSHOT_BYTES) return 0
-        val bitmap = Bitmap.createBitmap(content.width, content.height, Bitmap.Config.ARGB_8888)
-        content.draw(Canvas(bitmap))
+        val bitmap = try {
+            Bitmap.createBitmap(content.width, content.height, Bitmap.Config.ARGB_8888)
+        } catch (tooLarge: OutOfMemoryError) {
+            return 0
+        }
+        try {
+            content.draw(Canvas(bitmap))
+        } catch (undrawable: RuntimeException) {
+            // Some content cannot be drawn in software (hardware bitmaps, for one). The page
+            // then comes in with the window slide instead of crashing the navigation.
+            bitmap.recycle()
+            return 0
+        }
         return put(bitmap)
     }
 
@@ -336,7 +352,11 @@ internal class SancaiSpatialSwipeHost(
     init {
         setBackgroundColor(theme.colors.canvas)
         clipChildren = true
-        backdrop.scaleType = ImageView.ScaleType.FIT_XY
+        // The picture is drawn pixel for pixel from the top left corner and never stretched:
+        // when this host is smaller than the page below was (keyboard open, window resized)
+        // the rest is clipped, and where it is larger the canvas colour shows.
+        backdrop.scaleType = ImageView.ScaleType.MATRIX
+        this.snapshot?.density = resources.displayMetrics.densityDpi
         backdrop.importantForAccessibility = IMPORTANT_FOR_ACCESSIBILITY_NO
         addView(backdrop, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
         (page.parent as? ViewGroup)?.removeView(page)
@@ -483,6 +503,10 @@ internal class SancaiSpatialSwipeHost(
                     if (abs(dy) >= abs(dx) || sign(dx).toInt() != direction) {
                         // Vertical, or away from where the page came from: not ours.
                         eligible = false
+                    } else if (contentMovesWith(downX, downY, -direction)) {
+                        // Something under the finger can itself go this way (a pager, a row
+                        // that slides aside, a sideways list): the drag is its own, to the end.
+                        eligible = false
                     } else {
                         dragging = true
                         parent?.requestDisallowInterceptTouchEvent(true)
@@ -547,6 +571,27 @@ internal class SancaiSpatialSwipeHost(
         if (candidate !is ViewGroup) return false
         for (index in candidate.childCount - 1 downTo 0) {
             if (excluded(candidate.getChildAt(index), rawX, rawY)) return true
+        }
+        return false
+    }
+
+    /**
+     * True when something under the point, in this view's coordinates, can itself scroll in
+     * [scrollDirection] (the opposite of where the finger goes), as views report it through
+     * `canScrollHorizontally`.
+     */
+    private fun contentMovesWith(x: Float, y: Float, scrollDirection: Int): Boolean {
+        if (!getGlobalVisibleRect(hitBounds)) return false
+        return movable(page, hitBounds.left + x.roundToInt(), hitBounds.top + y.roundToInt(), scrollDirection)
+    }
+
+    private fun movable(candidate: View, rawX: Int, rawY: Int, scrollDirection: Int): Boolean {
+        if (!candidate.isShown) return false
+        if (!candidate.getGlobalVisibleRect(hitBounds) || !hitBounds.contains(rawX, rawY)) return false
+        if (candidate.canScrollHorizontally(scrollDirection)) return true
+        if (candidate !is ViewGroup) return false
+        for (index in candidate.childCount - 1 downTo 0) {
+            if (movable(candidate.getChildAt(index), rawX, rawY, scrollDirection)) return true
         }
         return false
     }

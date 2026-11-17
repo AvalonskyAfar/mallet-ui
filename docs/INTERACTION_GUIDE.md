@@ -270,9 +270,11 @@ real page; the page glides in while the picture glides out, and during a swipe b
 move together under the finger. When the swipe commits, the activity finishes without a
 window animation, and the real screen below is exactly where the picture was.
 
-- A swipe back starts anywhere inside the page except the 24 dp edge zones, text fields and
-  horizontal controls. Implement `SancaiSpatialTransition.SwipeGate` on the activity (or
-  set one with `setSwipeGate`) to refuse it while the page is in the middle of something.
+- A swipe back starts anywhere inside the page except the 24 dp edge zones, text fields,
+  horizontal controls, and content that can itself move the way the finger goes (a pager
+  with a page left that way, a row that slides aside). Implement
+  `SancaiSpatialTransition.SwipeGate` on the activity (or set one with `setSwipeGate`) to
+  refuse it while the page is in the middle of something.
 - Without a picture (a direct launch, a restored process, a screen larger than 16 MB of
   pixels) the page appears at once and leaving uses the plain slide animations in
   `res/anim`.
@@ -364,9 +366,10 @@ and made generic.
 |---|---|---|
 | a horizontal control | sideways | the control, for the whole gesture |
 | a horizontal control | up or down | the control lets go; then the scrolling content, then the page |
-| a reveal row or a pager | sideways, where it can still move | the row or pager |
-| scrolling content | along its axis, where it can still scroll | the content |
-| scrolling content at its limit | further in the same direction | the page host takes over **within the same gesture** |
+| a reveal row, a pager, a sideways list | sideways, where it can move when the drag begins | the row, pager or list, **for the whole gesture** |
+| the same, with nowhere left to go that way | sideways | the page host |
+| scrolling content | up or down, where it can still scroll | the content |
+| scrolling content at its top or bottom | further in the same direction | the page host takes over **within the same gesture** |
 | anything else | towards a neighbouring page | the page host |
 | within 24 dp of a screen edge | sideways | the system back gesture |
 
@@ -379,9 +382,14 @@ Three mechanisms implement this:
    whether they can still move in the drag direction. Lists and scroll views answer
    correctly by themselves; `SancaiRevealLayout` and `SancaiPager` answer for their own
    movement. Implement these on custom scrolling views and they take part automatically.
-3. **Hand-over at the limit.** When the content under the finger reaches its limit, the page
-   host re-anchors the gesture at that point and begins its own move. Pull down a list that
-   is already at its top and the page above comes with it, in one motion.
+3. **Hand-over at the limit, up and down only.** When the content under the finger reaches
+   its top or bottom, the page host re-anchors the gesture at that point and begins its own
+   move. Pull down a list that is already at its top and the page above comes with it, in
+   one motion. Sideways there is no hand-over: a drag that a row or a pager has taken stays
+   with it until the finger lifts, however far the finger goes. A row slides only as far as
+   its action is wide, and a page that took over there would shut the row with the very
+   drag that opened it. *(Extended: the original hands over in one case only, a scrolled
+   page pulled down at its top.)*
 
 Only a drag owner may ask a host not to intercept
 (`requestDisallowInterceptTouchEvent`). Requests from ordinary scrolling content are

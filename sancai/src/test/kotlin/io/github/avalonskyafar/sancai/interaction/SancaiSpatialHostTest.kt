@@ -1,5 +1,6 @@
 package io.github.avalonskyafar.sancai.interaction
 
+import android.app.Activity
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.graphics.Color
@@ -18,6 +19,7 @@ import io.github.avalonskyafar.sancai.widget.SancaiSegmentedTrack
 import java.util.concurrent.TimeUnit
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.GraphicsMode
 import org.robolectric.shadows.ShadowLooper
@@ -209,6 +211,56 @@ class SancaiSpatialHostTest {
         assertThat(host.currentKey).isEqualTo("main")
     }
 
+    /** A host on a page that has a neighbour at its start side and a row that slides aside. */
+    private fun hostWithRevealRow(): Pair<SancaiSpatialHost, SancaiRevealLayout> {
+        lateinit var row: SancaiRevealLayout
+        val graph = SancaiSpatialGraph.Builder("main").connect("main", Side.END, "list").build()
+        val host = SancaiSpatialHost(context).apply {
+            setGraph(graph) { key ->
+                if (key != "list") {
+                    View(context)
+                } else {
+                    FrameLayout(context).apply {
+                        row = SancaiRevealLayout(context).apply {
+                            addView(View(context), FrameLayout.LayoutParams(-1, 160))
+                            setAction("Delete") {}
+                        }
+                        addView(row, FrameLayout.LayoutParams(-1, -2).apply { topMargin = 200 })
+                    }
+                }
+            }
+            Snapshots.layout(this, 360, 640)
+            show("list")
+            Snapshots.layout(this, 360, 640)
+        }
+        return host to row
+    }
+
+    @Test
+    fun `sideways content keeps the gesture it began, also beyond its limit`() {
+        val (host, row) = hostWithRevealRow()
+        val y = 280f
+        // The finger travels much further than the strip is wide. The row goes as far as it
+        // can and stays there; the page, whose neighbour lies the same way, does not move.
+        Touch.drag(host, host.width * 0.2f, y, host.width * 0.9f, y, steps = 24, release = false)
+        assertThat(host.isMoving).isFalse()
+        assertThat(row.row!!.translationX).isGreaterThan(0f)
+        Touch.dispatch(host, MotionEvent.ACTION_UP, host.width * 0.9f, y)
+        land()
+        assertThat(row.isOpen).isTrue()
+        assertThat(host.currentKey).isEqualTo("list")
+    }
+
+    @Test
+    fun `sideways content that has nowhere left to go leaves the drag to the page`() {
+        val (host, row) = hostWithRevealRow()
+        row.open(animate = false)
+        val y = 280f
+        // The open row cannot move further this way: the same drag now moves the page.
+        Touch.drag(host, host.width * 0.3f, y, host.width * 0.8f, y, steps = 12, release = false)
+        assertThat(host.isMoving).isTrue()
+    }
+
     @Test
     fun `a navigation request during a drag adopts the nearer page first`() {
         val host = host()
@@ -334,6 +386,151 @@ class SancaiSpatialHostTest {
         })
         Touch.drag(host, host.midX(), 1500f, host.midX(), 1500f - host.height * 0.5f, release = false)
         assertThat(fractions.last()).isWithin(0.01f).of(0.5f)
+    }
+
+    @Test
+    fun `a new graph removes the page on screen so that show builds it again`() {
+        val host = host()
+        host.setGraph(graph()) { page(it) }
+        assertThat(host.currentKey).isNull()
+        assertThat(host.childCount).isEqualTo(0)
+        host.show("main")
+        assertThat(created["main"]).isEqualTo(2)
+        assertThat(host.childCount).isEqualTo(1)
+        assertThat(host.currentKey).isEqualTo("main")
+    }
+
+    @Test
+    fun `the drag goes on with the second finger when the first one lifts`() {
+        val host = host()
+        val start = host.width * 0.6f
+        val pulled = host.width * 0.1f
+        val other = host.width * 0.3f
+        Touch.dispatch(host, MotionEvent.ACTION_DOWN, start, 300f)
+        Touch.multi(host, MotionEvent.ACTION_MOVE, 0, Touch.Finger(0, start - pulled, 300f))
+        val outgoing = host.getChildAt(1)
+        assertThat(outgoing.translationX).isWithin(0.01f).of(-pulled)
+        val both = arrayOf(Touch.Finger(0, start - pulled, 300f), Touch.Finger(1, other, 500f))
+        Touch.multi(host, MotionEvent.ACTION_POINTER_DOWN, 1, *both)
+        Touch.multi(host, MotionEvent.ACTION_POINTER_UP, 0, *both)
+        Touch.multi(host, MotionEvent.ACTION_MOVE, 0, Touch.Finger(1, other, 500f))
+        assertThat(outgoing.translationX).isWithin(0.01f).of(-pulled)
+        Touch.multi(host, MotionEvent.ACTION_MOVE, 0, Touch.Finger(1, other - 10f, 500f))
+        assertThat(outgoing.translationX).isWithin(0.01f).of(-pulled - 10f)
+        Touch.multi(host, MotionEvent.ACTION_UP, 0, Touch.Finger(1, other - 10f, 500f))
+        land()
+        assertThat(host.currentKey).isEqualTo("main")
+    }
+
+    @Test
+    fun `a flick with the finger that took over lands`() {
+        val host = host()
+        val both = arrayOf(Touch.Finger(0, host.midX(), 600f), Touch.Finger(1, 100f, 600f))
+        Touch.dispatch(host, MotionEvent.ACTION_DOWN, host.midX(), 600f)
+        Touch.multi(host, MotionEvent.ACTION_POINTER_DOWN, 1, *both)
+        Touch.multi(host, MotionEvent.ACTION_POINTER_UP, 0, *both)
+        for (step in 1..6) {
+            android.os.SystemClock.sleep(8)
+            Touch.multi(host, MotionEvent.ACTION_MOVE, 0, Touch.Finger(1, 100f, 600f - step * 25f))
+        }
+        android.os.SystemClock.sleep(8)
+        Touch.multi(host, MotionEvent.ACTION_UP, 0, Touch.Finger(1, 100f, 450f))
+        land()
+        assertThat(host.currentKey).isEqualTo("settings")
+    }
+
+    @Test
+    fun `scrolling content can keep the ancestors of the host out of its gesture`() {
+        val asked = ArrayList<Boolean>()
+        val outer = object : FrameLayout(context) {
+            override fun requestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+                asked += disallowIntercept
+                super.requestDisallowInterceptTouchEvent(disallowIntercept)
+            }
+        }
+        val host = host("settings")
+        outer.addView(host)
+        Touch.dispatch(host, MotionEvent.ACTION_DOWN, host.midX(), 300f)
+        // What a list inside the page does once it starts to scroll.
+        host.requestDisallowInterceptTouchEvent(true)
+        assertThat(asked).containsExactly(true)
+        // The host itself still watches, to take over when the content reaches its limit.
+        Touch.drag(host, host.midX(), 300f, host.midX(), 900f, release = false)
+        assertThat(host.isMoving).isTrue()
+    }
+
+    /** Scrolls "settings", returns to "main" and saves the host. */
+    private fun savedWithSettingsScrolled(): SparseArray<Parcelable> {
+        val host = host()
+        host.navigate("settings", animate = false)
+        Snapshots.layout(host, 360, 640)
+        scroller!!.scrollTo(0, 420)
+        host.navigate("main", animate = false)
+        return SparseArray<Parcelable>().also { host.saveHierarchyState(it) }
+    }
+
+    @Test
+    fun `a page warmed up after a restore still gets its saved state`() {
+        val state = savedWithSettingsScrolled()
+        val activity = Robolectric.buildActivity(Activity::class.java).setup().get()
+        val restored = SancaiSpatialHost(context).apply {
+            id = 7
+            prewarmNeighbours = true
+            setGraph(graph()) { page(it) }
+        }
+        activity.setContentView(restored)
+        restored.restoreHierarchyState(state)
+        Snapshots.idle()
+        // The warm-up has built the neighbour: the visit below takes that view.
+        assertThat(created["settings"]).isEqualTo(2)
+        restored.navigate("settings", animate = false)
+        Snapshots.idle()
+        assertThat(created["settings"]).isEqualTo(2)
+        assertThat(scroller!!.parent).isSameInstanceAs(restored)
+        assertThat(scroller!!.scrollY).isEqualTo(420)
+    }
+
+    @Test
+    fun `state of a page that is not visited between two restores is kept`() {
+        val first = savedWithSettingsScrolled()
+        val between = host()
+        between.restoreHierarchyState(first)
+        val second = SparseArray<Parcelable>()
+        between.saveHierarchyState(second)
+
+        val restored = host()
+        restored.restoreHierarchyState(second)
+        restored.navigate("settings", animate = false)
+        Snapshots.layout(restored, 360, 640)
+        assertThat(scroller!!.parent).isSameInstanceAs(restored)
+        assertThat(scroller!!.scrollY).isEqualTo(420)
+    }
+
+    @Test
+    fun `a page built before the restore gets its saved state too`() {
+        val host = host()
+        host.navigate("settings", animate = false)
+        Snapshots.layout(host, 360, 640)
+        scroller!!.scrollTo(0, 420)
+        host.navigate("advanced", animate = false)
+        val state = SparseArray<Parcelable>()
+        host.saveHierarchyState(state)
+
+        // The usual onCreate: the start page is shown before the saved state arrives, and
+        // nothing has been laid out yet (a ScrollView takes its position on its first layout).
+        val restored = SancaiSpatialHost(context).apply {
+            id = 7
+            setGraph(graph()) { page(it) }
+            show("settings")
+        }
+        val early = scroller!!
+        restored.restoreHierarchyState(state)
+        assertThat(restored.currentKey).isEqualTo("advanced")
+        restored.navigate("settings", animate = false)
+        Snapshots.layout(restored, 360, 640)
+        assertThat(scroller).isSameInstanceAs(early)
+        assertThat(early.parent).isSameInstanceAs(restored)
+        assertThat(early.scrollY).isEqualTo(420)
     }
 
     @Test

@@ -382,6 +382,40 @@ class SancaiCheckboxTest {
     }
 
     @Test
+    fun `a box disabled under the finger rises again and does not flip on release`() {
+        val view = checkbox(checked = true)
+        val recorder = Recorder()
+        view.setOnCheckedChangeListener(recorder)
+        val onBed = light.labelOnBed(light.glazes.cobalt)
+        Touch.dispatch(view, MotionEvent.ACTION_DOWN, view.width / 2f, view.height / 2f)
+        assertThat(view.boxPixel(11.1f, 18.5f, BARE_DP)).isEqualTo(onBed)
+        view.isEnabled = false
+        view.isEnabled = true
+        // Enabled again while the finger is still down: the check is back at rest.
+        assertThat(view.boxPixel(11.1f, 18.5f, BARE_DP)).isNotEqualTo(onBed)
+        Touch.dispatch(view, MotionEvent.ACTION_UP, view.width / 2f, view.height / 2f)
+        assertThat(view.isChecked).isTrue()
+        assertThat(recorder.calls).isEmpty()
+    }
+
+    @Test
+    fun `styled text with the same characters replaces the label`() {
+        val view = checkbox("Accept terms")
+        val plain = Snapshots.render(view, WIDTH_DP)
+        val styled = android.text.SpannableString("Accept terms").apply {
+            setSpan(android.text.style.ForegroundColorSpan(0xFFFF0000.toInt()), 0, length, 0)
+        }
+        view.text = styled
+        assertThat(view.text).isSameInstanceAs(styled)
+        Snapshots.layout(view, WIDTH_DP)
+        assertThat(Snapshots.render(view, WIDTH_DP).sameAs(plain)).isFalse()
+        // Plain text equal to the plain label is still skipped: no new layout pass is asked for.
+        val other = checkbox("Accept terms")
+        other.text = "Accept terms"
+        assertThat(other.isLayoutRequested).isFalse()
+    }
+
+    @Test
     fun `snapshot of the checkbox in light and dark`() {
         val app = ApplicationProvider.getApplicationContext<Context>()
         app.applicationInfo.flags = app.applicationInfo.flags or ApplicationInfo.FLAG_SUPPORTS_RTL

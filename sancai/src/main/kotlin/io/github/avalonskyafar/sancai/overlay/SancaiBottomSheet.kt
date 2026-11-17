@@ -36,6 +36,7 @@ import io.github.avalonskyafar.sancai.icon.SancaiIcon
 import io.github.avalonskyafar.sancai.icon.SancaiIconView
 import io.github.avalonskyafar.sancai.interaction.SancaiHaptics
 import io.github.avalonskyafar.sancai.interaction.SancaiPress
+import io.github.avalonskyafar.sancai.internal.useOwnFocusRim
 import io.github.avalonskyafar.sancai.material.SancaiCorners
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
@@ -91,7 +92,7 @@ private const val SCRIM_ALPHA = 69
  *   than [SancaiMotion.COMMIT_VELOCITY_DP], dismisses it; otherwise it returns.
  * - A tap on the scrim, the back key and the accessibility "dismiss" action dismiss it
  *   unless it was built with `cancelable(false)`.
- * - An action runs its callback, ticks, and then dismisses the sheet.
+ * - An action ticks, runs its callback, and then dismisses the sheet.
  * - The sheet pads itself for the navigation bar and rises above the keyboard.
  * - It is a transient surface: it is not restored after the activity is recreated. Dismiss
  *   it in `onDestroy` if it can outlive a configuration change.
@@ -142,6 +143,8 @@ public class SancaiBottomSheet private constructor(
         leaving = false
         val sheetDialog = SheetDialog(context, this)
         dialog = sheetDialog
+        // The dialog before this one lets go of the root only in its posted dismiss callback.
+        (root.parent as? ViewGroup)?.removeView(root)
         sheetDialog.setContentView(
             root,
             ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT),
@@ -157,9 +160,12 @@ public class SancaiBottomSheet private constructor(
             styleSystemBars(window)
         }
         sheetDialog.setOnDismissListener {
-            root.cancelMotion()
-            (root.parent as? ViewGroup)?.removeView(root)
-            if (dialog === sheetDialog) dialog = null
+            // Shown again in the meantime: the root belongs to the new dialog by now.
+            if (dialog === sheetDialog) {
+                root.cancelMotion()
+                (root.parent as? ViewGroup)?.removeView(root)
+                dialog = null
+            }
             dismissListener?.onDismiss(this)
         }
         root.prepareEnter()
@@ -270,7 +276,7 @@ public class SancaiBottomSheet private constructor(
          * own and never shifts the label. Use [SancaiTextTone.DANGER] for a destructive
          * action. A row that is not [enabled] pales and cannot be operated.
          *
-         * [onClick] runs first, then the sheet dismisses itself.
+         * A tap ticks, runs [onClick], and then the sheet dismisses itself.
          */
         @JvmOverloads
         public fun action(
@@ -320,6 +326,11 @@ public class SancaiBottomSheet private constructor(
         private var dragStartY = 0f
         private var dragStartOffset = 0f
         private var downOnSheet = false
+
+        /** The finger the gesture follows: the one that went down first. */
+        private var pointerId = MotionEvent.INVALID_POINTER_ID
+        private var lastX = 0f
+        private var lastY = 0f
 
         /** The porcelain body. */
         val sheet: SheetView = SheetView(context, owner)
@@ -424,6 +435,8 @@ public class SancaiBottomSheet private constructor(
         /** Glides the sheet below the edge, then calls [end]. */
         fun leave(end: () -> Unit) {
             enterPending = false
+            // A finger that is still down lets go of the sheet: its release must not stop the glide.
+            isDragging = false
             val duration = if (offset > 0f) {
                 SancaiMotion.settleDuration(shownFraction(), theme.reduceMotion)
             } else {
@@ -475,9 +488,32 @@ public class SancaiBottomSheet private constructor(
             super.onDetachedFromWindow()
         }
 
+        /** x of the followed finger; where it was last seen when it is not part of [event]. */
+        private fun fingerX(event: MotionEvent): Float {
+            val index = event.findPointerIndex(pointerId)
+            if (index >= 0) lastX = event.getX(index)
+            return lastX
+        }
+
+        /** y of the followed finger; where it was last seen when it is not part of [event]. */
+        private fun fingerY(event: MotionEvent): Float {
+            val index = event.findPointerIndex(pointerId)
+            if (index >= 0) lastY = event.getY(index)
+            return lastY
+        }
+
+        /** Whether [event] lifts the followed finger while another one stays down. */
+        private fun liftsFollowed(event: MotionEvent): Boolean =
+            event.actionMasked == MotionEvent.ACTION_POINTER_UP &&
+                pointerId != MotionEvent.INVALID_POINTER_ID &&
+                event.getPointerId(event.actionIndex) == pointerId
+
         private fun begin(event: MotionEvent) {
+            pointerId = event.getPointerId(0)
             downX = event.x
             downY = event.y
+            lastX = downX
+            lastY = downY
             downOnSheet = event.x >= sheet.left && event.x < sheet.right && event.y >= sheet.top + offset
             velocity?.recycle()
             velocity = VelocityTracker.obtain().also { it.addMovement(event) }
@@ -485,8 +521,10 @@ public class SancaiBottomSheet private constructor(
 
         private fun wantsDrag(event: MotionEvent): Boolean {
             if (isDragging || !downOnSheet || !owner.isCancelable || owner.leaving) return false
-            val dx = event.x - downX
-            val dy = event.y - downY
+            // The followed finger is gone: what another finger does is not this gesture.
+            if (event.findPointerIndex(pointerId) < 0) return false
+            val dx = fingerX(event) - downX
+            val dy = fingerY(event) - downY
             if (dy <= touchSlop || dy <= abs(dx)) return false
             return !sheetCanScrollUp(sheet, downX - sheet.left, downY - sheet.top - offset)
         }
@@ -495,7 +533,7 @@ public class SancaiBottomSheet private constructor(
             cancelMotion()
             enterPending = false
             isDragging = true
-            dragStartY = event.y
+            dragStartY = fingerY(event)
             dragStartOffset = offset
             parent?.requestDisallowInterceptTouchEvent(true)
         }
@@ -510,6 +548,8 @@ public class SancaiBottomSheet private constructor(
                         return true
                     }
                 }
+                // The other finger must not start a drag of its own later in this gesture.
+                MotionEvent.ACTION_POINTER_UP -> if (liftsFollowed(event) && !isDragging) endGesture()
             }
             return isDragging
         }
@@ -522,13 +562,19 @@ public class SancaiBottomSheet private constructor(
                     velocity?.addMovement(event)
                     if (wantsDrag(event)) startDrag(event)
                     // Never above the rest position: the sheet only follows the finger down.
-                    if (isDragging) offset = max(0f, dragStartOffset + event.y - dragStartY)
+                    if (isDragging) offset = max(0f, dragStartOffset + fingerY(event) - dragStartY)
+                }
+                // The followed finger lifting ends the gesture, whether or not another is down.
+                MotionEvent.ACTION_POINTER_UP -> if (liftsFollowed(event)) {
+                    velocity?.addMovement(event)
+                    if (isDragging) finishDrag(cancelled = false)
+                    endGesture()
                 }
                 MotionEvent.ACTION_UP -> {
                     velocity?.addMovement(event)
                     if (isDragging) {
                         finishDrag(cancelled = false)
-                    } else if (!downOnSheet && isTap(event)) {
+                    } else if (pointerId != MotionEvent.INVALID_POINTER_ID && !downOnSheet && isTap(event)) {
                         owner.cancel()
                     }
                     endGesture()
@@ -548,7 +594,7 @@ public class SancaiBottomSheet private constructor(
             isDragging = false
             val tracker = velocity
             tracker?.computeCurrentVelocity(1000)
-            val speed = (tracker?.yVelocity ?: 0f).let { if (it.isNaN()) 0f else it }
+            val speed = (tracker?.getYVelocity(pointerId) ?: 0f).let { if (it.isNaN()) 0f else it }
             val fling = SancaiMotion.COMMIT_VELOCITY_DP * density
             val far = offset > sheet.height * SancaiMotion.COMMIT_FRACTION
             // A quick flick back up keeps the sheet, however far it was pulled.
@@ -558,6 +604,7 @@ public class SancaiBottomSheet private constructor(
         }
 
         private fun endGesture() {
+            pointerId = MotionEvent.INVALID_POINTER_ID
             velocity?.recycle()
             velocity = null
         }
@@ -738,6 +785,7 @@ public class SancaiBottomSheet private constructor(
             isEnabled = action.enabled
             isClickable = true
             isFocusable = action.enabled
+            useOwnFocusRim()
             if (!action.enabled) alpha = SancaiControl.DISABLED_ALPHA / 255f
             val sink = SancaiMotion.PRESS_SINK_DP * density
             setOnTouchListener { view, event ->
@@ -749,9 +797,9 @@ public class SancaiBottomSheet private constructor(
             }
             setOnClickListener { view ->
                 if (owner.leaving) return@setOnClickListener
-                // Listener first, haptic second, and only then does the sheet leave.
-                action.onClick?.run()
+                // An action: tick first, then run it, and only then does the sheet leave.
                 SancaiHaptics.tick(view)
+                action.onClick?.run()
                 // The cancel row is an explicit choice, so it works on a non-cancelable sheet too.
                 owner.dismiss()
             }

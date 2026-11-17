@@ -78,6 +78,16 @@ class SancaiSpatialGraphTest {
     }
 
     @Test
+    fun `a one way connection also gives the new page its parent`() {
+        val g = SancaiSpatialGraph.Builder("main")
+            .connect("main", Side.END, "more", reciprocal = false)
+            .build()
+        assertThat(g.parentOf("more")).isEqualTo("main")
+        assertThat(g.neighbour("main", Side.END)).isEqualTo("more")
+        assertThat(g.neighbour("more", Side.START)).isNull()
+    }
+
+    @Test
     fun `sides know their opposite and axis`() {
         assertThat(Side.START.opposite).isEqualTo(Side.END)
         assertThat(Side.ABOVE.opposite).isEqualTo(Side.BELOW)

@@ -101,10 +101,8 @@ public class SancaiSpatialGraph private constructor(
         public fun connect(from: String, side: Side, to: String, reciprocal: Boolean = true): Builder {
             require(from != to) { "A page cannot be its own neighbour: \"$from\"" }
             drag(from, side, to)
-            if (reciprocal) {
-                drag(to, side.opposite, from)
-                adopt(from, to)
-            }
+            if (reciprocal) drag(to, side.opposite, from)
+            adopt(from, to)
             return this
         }
 

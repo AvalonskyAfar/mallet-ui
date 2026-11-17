@@ -8,6 +8,7 @@ import android.graphics.RectF
 import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
+import android.view.KeyEvent
 import android.view.MotionEvent
 import io.github.avalonskyafar.sancai.R
 import io.github.avalonskyafar.sancai.icon.SancaiIcon
@@ -42,7 +43,7 @@ import kotlin.math.min
  *
  * The row has no body of its own. Pressing sinks the label and the chevron by 1.5 dp and
  * nothing changes colour; keyboard focus is shown as a rim inside the row. Set the action with
- * [setOnClickListener]; the click is followed by a haptic tick. Start and end follow the
+ * [setOnClickListener]; the row ticks first and then calls the listener. Start and end follow the
  * layout direction, so in a right-to-left layout an [ArrowDirection.END] chevron sits on, and
  * points to, the left. A label that does not fit on one line is ellipsized.
  */
@@ -78,12 +79,21 @@ public class SancaiLinkRow @JvmOverloads constructor(
     private var sinkPx = 0f
     private var sinkAnimator: ValueAnimator? = null
     private var down = false
+    private var ownDescription = true
+    private var settingDescription = false
 
-    /** The text of the link. It is also what accessibility services announce. */
+    /**
+     * The text of the link. It is also what accessibility services announce, unless a content
+     * description is set explicitly.
+     */
     public var label: CharSequence? = null
         set(value) {
             field = value
-            contentDescription = value
+            if (ownDescription) {
+                settingDescription = true
+                contentDescription = value
+                settingDescription = false
+            }
             requestLayout()
             invalidate()
         }
@@ -114,6 +124,8 @@ public class SancaiLinkRow @JvmOverloads constructor(
         }
 
     init {
+        // An explicit android:contentDescription was applied by the super constructor.
+        ownDescription = contentDescription == null
         labelPaint.typeface = SancaiWeight.MEDIUM.typeface()
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.SancaiLinkRow, defStyleAttr, 0)
@@ -128,6 +140,8 @@ public class SancaiLinkRow @JvmOverloads constructor(
                 tone = TONES.getOrElse(
                     a.getInt(R.styleable.SancaiLinkRow_sancaiTone, SancaiTextTone.MUTED.ordinal),
                 ) { SancaiTextTone.MUTED }
+                // The platform reads android:enabled for text views only.
+                if (!a.getBoolean(R.styleable.SancaiLinkRow_android_enabled, true)) isEnabled = false
             } finally {
                 a.recycle()
             }
@@ -263,6 +277,35 @@ public class SancaiLinkRow @JvmOverloads constructor(
             sinkPx = 0f
             invalidate()
         }
+    }
+
+    // Space confirms like Enter. The platform only does this by itself on newer versions.
+    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode != KeyEvent.KEYCODE_SPACE) return super.onKeyDown(keyCode, event)
+        if (!isEnabled || !isClickable) return false
+        if (event.repeatCount == 0) isPressed = true
+        return true
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode != KeyEvent.KEYCODE_SPACE) return super.onKeyUp(keyCode, event)
+        if (!isEnabled || !isPressed) return false
+        isPressed = false
+        performClick()
+        return true
+    }
+
+    /**
+     * Replaces the [label] as what accessibility services announce. Pass `null` to go back
+     * to the label.
+     */
+    override fun setContentDescription(contentDescription: CharSequence?) {
+        if (settingDescription) {
+            super.setContentDescription(contentDescription)
+            return
+        }
+        ownDescription = contentDescription == null
+        super.setContentDescription(contentDescription ?: label)
     }
 
     override fun performClick(): Boolean {

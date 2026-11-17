@@ -326,6 +326,31 @@ class SancaiEntryRowTest {
         assertThat(plain.alignment).isEqualTo(SancaiEntryRow.Alignment.CENTER)
         assertThat(plain.leadingIcon).isNull()
         assertThat(plain.contentDescription).isNull()
+        assertThat(plain.isEnabled).isTrue()
+    }
+
+    @Test
+    fun `android enabled false in XML disables and pales the row`() {
+        val attrs = Robolectric.buildAttributeSet()
+            .addAttribute(R.attr.sancaiTitle, "Language")
+            .addAttribute(android.R.attr.enabled, "false")
+            .build()
+        val row = SancaiEntryRow(context, attrs)
+        assertThat(row.isEnabled).isFalse()
+        assertThat(content(row).alpha).isWithin(0.001f).of(107 / 255f)
+        var clicks = 0
+        row.setOnClickListener { clicks++ }
+        Snapshots.attach(row)
+        Touch.tap(row, row.width / 2f)
+        Snapshots.idle()
+        assertThat(clicks).isEqualTo(0)
+        row.isEnabled = true
+        assertThat(content(row).alpha).isEqualTo(1f)
+    }
+
+    @Test
+    fun `the platform focus highlight is off because the row draws its own rim`() {
+        assertThat(SancaiEntryRow(context).defaultFocusHighlightEnabled).isFalse()
     }
 
     @Test

@@ -330,6 +330,83 @@ class SancaiBottomSheetTest {
         assertThat(root.offset).isEqualTo(0f)
     }
 
+    @Test
+    fun `sheet follows the first finger and lets go when it lifts`() {
+        val sheet = shown()
+        val root = sheet.root
+        val x = root.width / 2f
+        val y = root.sheet.top + 12f
+        val travel = root.sheet.height * 0.2f
+        dragHeader(sheet, 0.2f, release = false)
+        val dragged = root.offset
+        assertThat(dragged).isGreaterThan(0f)
+        // A second finger lands far below and the first one lifts: nothing jumps.
+        val first = Touch.Finger(0, x, y + travel)
+        val second = Touch.Finger(1, x, y + travel + 300f)
+        Touch.multi(root, MotionEvent.ACTION_POINTER_DOWN, 1, first, second)
+        Touch.multi(root, MotionEvent.ACTION_MOVE, 0, first, Touch.Finger(1, x, y + travel + 340f))
+        assertThat(root.offset).isEqualTo(dragged)
+        ShadowSystemClock.advanceBy(150, TimeUnit.MILLISECONDS)
+        Touch.multi(root, MotionEvent.ACTION_POINTER_UP, 0, first, second)
+        assertThat(root.isDragging).isFalse()
+        assertThat(root.offset).isAtMost(dragged)
+        // The finger that stayed moves on and lifts: it is not part of the gesture.
+        Touch.multi(root, MotionEvent.ACTION_MOVE, 0, Touch.Finger(1, x, y + travel + 500f))
+        assertThat(root.isDragging).isFalse()
+        Touch.multi(root, MotionEvent.ACTION_UP, 0, Touch.Finger(1, x, y + travel + 500f))
+        settle()
+        assertThat(sheet.isShowing).isTrue()
+        assertThat(root.offset).isEqualTo(0f)
+    }
+
+    @Test
+    fun `second finger lifting first leaves the drag with the first`() {
+        val sheet = shown()
+        val root = sheet.root
+        val x = root.width / 2f
+        val y = root.sheet.top + 12f
+        val travel = root.sheet.height * 0.2f
+        dragHeader(sheet, 0.2f, release = false)
+        val dragged = root.offset
+        val first = Touch.Finger(0, x, y + travel)
+        val second = Touch.Finger(1, x, y + travel + 300f)
+        Touch.multi(root, MotionEvent.ACTION_POINTER_DOWN, 1, first, second)
+        Touch.multi(root, MotionEvent.ACTION_POINTER_UP, 1, first, second)
+        assertThat(root.isDragging).isTrue()
+        Touch.multi(root, MotionEvent.ACTION_MOVE, 0, Touch.Finger(0, x, y + travel + 20f))
+        assertThat(root.offset).isWithin(0.5f).of(dragged + 20f)
+    }
+
+    @Test
+    fun `dismiss during a drag still removes the sheet when the finger lets go`() {
+        var dismissed = 0
+        val sheet = shown(actionSheet().onDismiss { dismissed++ })
+        val root = sheet.root
+        dragHeader(sheet, 0.1f, release = false)
+        assertThat(root.isDragging).isTrue()
+        sheet.dismiss()
+        assertThat(root.isDragging).isFalse()
+        // The finger moves on and lifts slowly, close to rest: the sheet leaves all the same.
+        val x = root.width / 2f
+        val y = root.sheet.top + 12f + root.sheet.height * 0.1f
+        Touch.dispatch(root, MotionEvent.ACTION_MOVE, x, y - 5f)
+        ShadowSystemClock.advanceBy(150, TimeUnit.MILLISECONDS)
+        Touch.dispatch(root, MotionEvent.ACTION_UP, x, y - 5f)
+        settle()
+        assertThat(sheet.isShowing).isFalse()
+        assertThat(dismissed).isEqualTo(1)
+    }
+
+    @Test
+    fun `dismiss during a drag survives a cancelled gesture`() {
+        val sheet = shown()
+        dragHeader(sheet, 0.1f, release = false)
+        sheet.dismiss()
+        Touch.dispatch(sheet.root, MotionEvent.ACTION_CANCEL, 0f, 0f)
+        settle()
+        assertThat(sheet.isShowing).isFalse()
+    }
+
     private fun tallContent(context: Context): ScrollView {
         val scroller = ScrollView(context)
         val tall = View(context)
@@ -395,6 +472,49 @@ class SancaiBottomSheetTest {
         sheet.dismiss()
         settle()
         assertThat(dismissed).isEqualTo(2)
+    }
+
+    @Test
+    fun `sheet can be shown again in the same turn as a dismiss before its first layout`() {
+        var dismissed = 0
+        val sheet = actionSheet().onDismiss { dismissed++ }.show()
+        sheet.dismiss()
+        assertThat(sheet.isShowing).isFalse()
+        sheet.show()
+        settle()
+        // The late callback of the first dialog must not take the root out of the second.
+        assertThat(sheet.isShowing).isTrue()
+        assertThat(sheet.root.isAttachedToWindow).isTrue()
+        assertThat(sheet.root.offset).isEqualTo(0f)
+        assertThat(dismissed).isEqualTo(1)
+        sheet.dismiss()
+        settle()
+        assertThat(sheet.isShowing).isFalse()
+        assertThat(sheet.root.parent).isNull()
+        assertThat(dismissed).isEqualTo(2)
+    }
+
+    @Test
+    fun `action ticks before it runs its callback`() {
+        val context = activityContext()
+        var hapticSeenInside = 0
+        var row: View? = null
+        val sheet = shown(
+            SancaiBottomSheet.Builder(context).action("Share") {
+                hapticSeenInside = org.robolectric.Shadows.shadowOf(row).lastHapticFeedbackPerformed()
+            },
+        )
+        row = sheet.root.sheet.actionRows[0]
+        row.performClick()
+        assertThat(SancaiTheme.of(context).haptics).isTrue()
+        assertThat(hapticSeenInside).isEqualTo(android.view.HapticFeedbackConstants.CLOCK_TICK)
+    }
+
+    @Test
+    fun `action row shows its own focus rim, not the platform highlight`() {
+        val row = shown().root.sheet.actionRows[0]
+        assertThat(row.isFocusable).isTrue()
+        if (android.os.Build.VERSION.SDK_INT >= 26) assertThat(row.defaultFocusHighlightEnabled).isFalse()
     }
 
     @Test

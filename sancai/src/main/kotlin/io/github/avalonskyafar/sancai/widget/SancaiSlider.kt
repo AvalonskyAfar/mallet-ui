@@ -129,27 +129,32 @@ public class SancaiSlider @JvmOverloads constructor(
         get() = current
         set(value) = setValue(value, animate = false)
 
-    /** Lower bound, at the start of the track. Changing it re-clamps [value]. */
+    /** Lower bound, at the start of the track. Changing it re-clamps [value]. NaN and infinity are ignored. */
     public var valueFrom: Float
         get() = from
         set(value) {
+            if (!value.isFinite()) return
             from = value
             rangeChanged()
         }
 
-    /** Upper bound, at the end of the track. Changing it re-clamps [value]. */
+    /** Upper bound, at the end of the track. Changing it re-clamps [value]. NaN and infinity are ignored. */
     public var valueTo: Float
         get() = to
         set(value) {
+            if (!value.isFinite()) return
             to = value
             rangeChanged()
         }
 
-    /** Distance between two stops, counted from [valueFrom]; `0` makes the slider continuous. */
+    /**
+     * Distance between two stops, counted from [valueFrom]; `0` makes the slider continuous, and
+     * so does a negative, NaN or infinite step.
+     */
     public var stepSize: Float
         get() = step
         set(value) {
-            step = max(0f, value)
+            step = cleanStep(value)
             rangeChanged()
         }
 
@@ -169,9 +174,9 @@ public class SancaiSlider @JvmOverloads constructor(
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.SancaiSlider, defStyleAttr, 0)
             try {
-                from = a.getFloat(R.styleable.SancaiSlider_sancaiValueFrom, from)
-                to = a.getFloat(R.styleable.SancaiSlider_sancaiValueTo, to)
-                step = max(0f, a.getFloat(R.styleable.SancaiSlider_sancaiStepSize, step))
+                from = a.getFloat(R.styleable.SancaiSlider_sancaiValueFrom, from).takeIf { it.isFinite() } ?: from
+                to = a.getFloat(R.styleable.SancaiSlider_sancaiValueTo, to).takeIf { it.isFinite() } ?: to
+                step = cleanStep(a.getFloat(R.styleable.SancaiSlider_sancaiStepSize, step))
                 current = a.getFloat(R.styleable.SancaiSlider_sancaiValue, from)
                 singleGlaze = theme.glazes.fromAttr(a.getInt(R.styleable.SancaiSlider_sancaiGlaze, 2))
                 if (a.getInt(R.styleable.SancaiSlider_sancaiSliderGlazeMode, MODE_SINGLE) == MODE_SCALE) {
@@ -208,6 +213,9 @@ public class SancaiSlider @JvmOverloads constructor(
         syncPour(animate = false)
         invalidate()
     }
+
+    /** A usable step: anything that is not a positive finite number means "continuous". */
+    private fun cleanStep(raw: Float): Float = if (raw.isFinite()) max(0f, raw) else 0f
 
     private fun rangeChanged() {
         animator?.cancel()
@@ -325,17 +333,18 @@ public class SancaiSlider @JvmOverloads constructor(
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!isEnabled) return false
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
+        val action = event.actionMasked
+        when {
+            action == MotionEvent.ACTION_DOWN -> {
                 gate.down(event)
                 down = true
                 moved = false
                 invalidate()
             }
-            MotionEvent.ACTION_MOVE -> when (gate.move(this, event)) {
+            action == MotionEvent.ACTION_MOVE -> when (gate.move(this, event)) {
                 HorizontalDragGate.State.DRAGGING -> {
                     moved = true
-                    change(valueAt(event.x), glide = false, tap = false)
+                    change(valueAt(gate.x(event)), glide = false, tap = false)
                 }
                 HorizontalDragGate.State.ABORTED -> if (down) {
                     down = false
@@ -343,21 +352,26 @@ public class SancaiSlider @JvmOverloads constructor(
                 }
                 HorizontalDragGate.State.UNDECIDED -> Unit
             }
-            MotionEvent.ACTION_UP -> {
+            // The followed finger lifts, alone or with another one still down. Once the gesture
+            // has ended (here, by cancel or by disabling) the gate ignores what is left of it.
+            gate.isRelease(event) -> {
+                val x = gate.x(event)
                 gate.finish(this)
                 down = false
                 invalidate()
                 if (!gate.isAborted) {
-                    if (!gate.isDragging) change(valueAt(event.x), glide = true, tap = true)
+                    if (!gate.isDragging) change(valueAt(x), glide = true, tap = true)
                     stopTrackingTouchListener?.onStopTrackingTouch(this)
                 }
             }
-            MotionEvent.ACTION_CANCEL -> {
+            action == MotionEvent.ACTION_CANCEL -> {
+                // A gesture that has already ended (see above) was reported then, not again.
+                val live = gate.isActive
                 gate.finish(this)
                 down = false
                 invalidate()
                 // A drag that was taken away has still moved the value: the gesture ends here.
-                if (moved) stopTrackingTouchListener?.onStopTrackingTouch(this)
+                if (live && moved) stopTrackingTouchListener?.onStopTrackingTouch(this)
             }
         }
         return true
@@ -380,9 +394,12 @@ public class SancaiSlider @JvmOverloads constructor(
     }
 
     /** One keyboard or accessibility step: a stop, or 5 % of the range when continuous. */
-    private fun stepBy(direction: Int): Boolean {
+    private fun stepBy(direction: Int): Boolean = change(stepTarget(direction), glide = true, tap = true)
+
+    /** Where one step in [direction] leads; the current value when an end is in the way. */
+    private fun stepTarget(direction: Int): Float {
         val amount = if (step > 0f) step else (to - from) * CONTINUOUS_KEY_SHARE
-        return change(snap(current + direction * amount), glide = true, tap = true)
+        return snap(current + direction * amount)
     }
 
     /**
@@ -497,8 +514,9 @@ public class SancaiSlider @JvmOverloads constructor(
         node.isClickable = false
         if (!isEnabled || to <= from) return
         node.addAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SET_PROGRESS)
-        if (current < to) node.addAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_FORWARD)
-        if (current > from) node.addAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_BACKWARD)
+        // Offered only where a step leads: the last stop may lie below valueTo.
+        if (stepTarget(1) != current) node.addAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_FORWARD)
+        if (stepTarget(-1) != current) node.addAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_SCROLL_BACKWARD)
     }
 
     override fun performAccessibilityAction(action: Int, arguments: Bundle?): Boolean {

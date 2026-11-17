@@ -54,8 +54,8 @@ import kotlin.math.roundToInt
  *   there is no room below and always stays 8 dp inside the window. A menu taller than the
  *   window scrolls.
  * - Items are indexed in the order they were added; dividers do not count.
- * - Pressing an item sinks its content; nothing is tinted. A click runs the item's callback,
- *   ticks, then dismisses the menu. Touching outside and Back (or Escape) dismiss it as well.
+ * - Pressing an item sinks its content; nothing is tinted. A click ticks, runs the
+ *   item's callback, then dismisses the menu. Touching outside and Back (or Escape) dismiss it as well.
  * - With a keyboard, focus moves into the menu (to the first checked item, else the first
  *   enabled one), Up and Down walk the enabled items, Enter or Space activates, and focus
  *   returns to the anchor when the menu closes.

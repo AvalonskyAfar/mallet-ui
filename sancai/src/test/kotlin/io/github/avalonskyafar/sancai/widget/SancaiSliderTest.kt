@@ -444,6 +444,116 @@ class SancaiSliderTest {
     }
 
     @Test
+    fun `a second finger changes nothing and the first finger's lift ends the drag`() {
+        val view = slider()
+        val seen = mutableListOf<Float>()
+        var stops = 0
+        view.setOnValueChangeListener { _, value -> seen += value }
+        view.setOnStopTrackingTouchListener { stops++ }
+        val y = view.height / 2f
+        Touch.drag(view, view.xAt(0.1f), y, view.xAt(0.5f), y, release = false)
+        val a = Touch.Finger(0, view.xAt(0.5f), y)
+        Touch.multi(view, MotionEvent.ACTION_POINTER_DOWN, 1, a, Touch.Finger(1, view.xAt(0.9f), y))
+        Touch.multi(view, MotionEvent.ACTION_MOVE, 1, a, Touch.Finger(1, view.xAt(0.8f), y))
+        assertThat(view.value).isWithin(0.5f).of(50f)
+        Touch.multi(view, MotionEvent.ACTION_POINTER_UP, 0, a, Touch.Finger(1, view.xAt(0.8f), y))
+        assertThat(stops).isEqualTo(1)
+        val count = seen.size
+        Touch.multi(view, MotionEvent.ACTION_MOVE, 0, Touch.Finger(1, view.xAt(0.95f), y))
+        Touch.multi(view, MotionEvent.ACTION_UP, 0, Touch.Finger(1, view.xAt(0.95f), y))
+        assertThat(view.value).isWithin(0.5f).of(50f)
+        assertThat(seen).hasSize(count)
+        assertThat(stops).isEqualTo(1)
+    }
+
+    @Test
+    fun `a cancel after the gesture has ended does not report the end again`() {
+        val view = slider()
+        var stops = 0
+        view.setOnStopTrackingTouchListener { stops++ }
+        val y = view.height / 2f
+        Touch.drag(view, view.xAt(0.1f), y, view.xAt(0.5f), y, release = false)
+        val a = Touch.Finger(0, view.xAt(0.5f), y)
+        val b = Touch.Finger(1, view.xAt(0.9f), y)
+        Touch.multi(view, MotionEvent.ACTION_POINTER_DOWN, 1, a, b)
+        Touch.multi(view, MotionEvent.ACTION_POINTER_UP, 0, a, b)
+        Touch.multi(view, MotionEvent.ACTION_CANCEL, 0, b)
+        assertThat(stops).isEqualTo(1)
+
+        Touch.drag(view, view.xAt(0.1f), y, view.xAt(0.4f), y, release = false)
+        view.isEnabled = false
+        view.isEnabled = true
+        Touch.dispatch(view, MotionEvent.ACTION_CANCEL, view.xAt(0.4f), y)
+        assertThat(stops).isEqualTo(2)
+    }
+
+    @Test
+    fun `a tap with a second finger down lands where the first finger was`() {
+        val view = slider()
+        val seen = mutableListOf<Float>()
+        var stops = 0
+        view.setOnValueChangeListener { _, value -> seen += value }
+        view.setOnStopTrackingTouchListener { stops++ }
+        val y = view.height / 2f
+        val a = Touch.Finger(0, view.xAt(0.3f), y)
+        val b = Touch.Finger(1, view.xAt(0.9f), y)
+        Touch.dispatch(view, MotionEvent.ACTION_DOWN, a.x, y)
+        Touch.multi(view, MotionEvent.ACTION_POINTER_DOWN, 1, a, b)
+        Touch.multi(view, MotionEvent.ACTION_POINTER_UP, 0, a, b)
+        Touch.multi(view, MotionEvent.ACTION_UP, 0, b)
+        assertThat(view.value).isWithin(0.5f).of(30f)
+        assertThat(seen).hasSize(1)
+        assertThat(stops).isEqualTo(1)
+    }
+
+    @Test
+    fun `disabling and enabling again mid drag ends tracking once and ignores the rest`() {
+        val view = slider()
+        var stops = 0
+        view.setOnStopTrackingTouchListener { stops++ }
+        val y = view.height / 2f
+        Touch.drag(view, view.xAt(0.1f), y, view.xAt(0.4f), y, release = false)
+        view.isEnabled = false
+        view.isEnabled = true
+        Touch.dispatch(view, MotionEvent.ACTION_MOVE, view.xAt(0.9f), y)
+        Touch.dispatch(view, MotionEvent.ACTION_UP, view.xAt(0.9f), y)
+        assertThat(view.value).isWithin(0.5f).of(40f)
+        assertThat(stops).isEqualTo(1)
+    }
+
+    @Test
+    fun `a NaN or infinite step is continuous and non-finite bounds are ignored`() {
+        val view = slider(value = 30f)
+        view.setGlazeScale(SancaiTheme.light().glazes.scale(4))
+        view.stepSize = Float.NaN
+        assertThat(view.stepSize).isEqualTo(0f)
+        assertThat(view.value).isEqualTo(30f)
+        view.stepSize = Float.POSITIVE_INFINITY
+        assertThat(view.stepSize).isEqualTo(0f)
+        assertThat(view.value).isEqualTo(30f)
+        view.valueFrom = Float.NaN
+        view.valueTo = Float.POSITIVE_INFINITY
+        assertThat(view.valueFrom).isEqualTo(0f)
+        assertThat(view.valueTo).isEqualTo(100f)
+        assertThat(view.value).isEqualTo(30f)
+    }
+
+    @Test
+    fun `a step action is offered only where a step leads, also when valueTo is off the grid`() {
+        val view = slider(from = 0f, to = 10f, step = 3f, value = 9f)
+        fun actions(): List<Int> = AccessibilityNodeInfo.obtain().let { info ->
+            view.onInitializeAccessibilityNodeInfo(info)
+            info.actionList.map { it.id }
+        }
+        assertThat(actions()).contains(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD)
+        assertThat(actions()).doesNotContain(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
+        view.value = 6f
+        assertThat(actions()).contains(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
+        view.value = 0f
+        assertThat(actions()).doesNotContain(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD)
+    }
+
+    @Test
     fun `snapshot of sliders in light and dark`() {
         for ((name, theme) in listOf("light" to SancaiTheme.light(), "dark" to SancaiTheme.dark())) {
             val context = Snapshots.context(theme)

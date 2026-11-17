@@ -392,6 +392,68 @@ class SancaiControlRowTest {
 
         row.removeAllViews()
         assertThat(row.control).isNull()
+        // The text column is part of the row: it stays, and a new control stands next to it.
+        assertThat(copyOf(row).parent).isSameInstanceAs(row)
+        assertThat(row.childCount).isEqualTo(1)
+        val switch = SancaiSwitch(context)
+        row.setControl(switch)
+        Snapshots.layout(row, 340)
+        assertThat(row.childCount).isEqualTo(2)
+        assertThat(copyOf(row).width).isGreaterThan(0)
+        assertThat(switch.left).isAtLeast(copyOf(row).right)
+    }
+
+    @Test
+    fun `a control with text of its own keeps it and the row text stays readable`() {
+        val row = SancaiControlRow(context)
+        row.title = "Backup"
+        val button = SancaiButton(context)
+        button.text = "Run now"
+        row.setControl(button)
+        // A content description would replace "Run now" for a screen reader.
+        assertThat(button.contentDescription).isNull()
+        assertThat(copyOf(row).importantForAccessibility).isEqualTo(View.IMPORTANT_FOR_ACCESSIBILITY_YES)
+        assertThat(copyOf(row).contentDescription.toString()).isEqualTo("Backup")
+
+        // A text view that gets its text after the row described it gives the description back.
+        val late = TextView(context)
+        row.setControl(late)
+        assertThat(late.contentDescription.toString()).isEqualTo("Backup")
+        late.text = "On"
+        row.title = "Sync"
+        assertThat(late.contentDescription).isNull()
+        assertThat(copyOf(row).contentDescription.toString()).isEqualTo("Sync")
+        assertThat(copyOf(row).importantForAccessibility).isEqualTo(View.IMPORTANT_FOR_ACCESSIBILITY_YES)
+
+        // The labelled controls of the library that are not text views name themselves too.
+        val box = SancaiCheckbox(context)
+        box.text = "Daily"
+        row.setControl(box)
+        assertThat(box.contentDescription).isNull()
+        assertThat(copyOf(row).importantForAccessibility).isEqualTo(View.IMPORTANT_FOR_ACCESSIBILITY_YES)
+        // A bare box has no name, so it takes the text of the row.
+        val bare = SancaiCheckbox(context)
+        row.setControl(bare)
+        assertThat(bare.contentDescription.toString()).isEqualTo("Sync")
+    }
+
+    @Test
+    fun `margins and gravity of an added control are kept`() {
+        val row = SancaiControlRow(context)
+        row.title = "Haptics"
+        val switch = SancaiSwitch(context)
+        val given = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT,
+        )
+        given.marginEnd = px(8f)
+        given.gravity = android.view.Gravity.BOTTOM
+        row.addView(switch, given)
+        val applied = switch.layoutParams as LinearLayout.LayoutParams
+        assertThat(applied.marginEnd).isEqualTo(px(8f))
+        assertThat(applied.gravity).isEqualTo(android.view.Gravity.BOTTOM)
+        Snapshots.layout(row, 340)
+        assertThat(switch.right).isEqualTo(row.width - row.paddingRight - px(8f))
+        assertThat(switch.bottom).isEqualTo(row.height - row.paddingBottom)
     }
 
     @Test

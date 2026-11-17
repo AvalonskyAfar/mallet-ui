@@ -12,6 +12,7 @@ import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.os.BundleCompat
 import androidx.core.view.ViewCompat
@@ -75,6 +76,12 @@ public class SancaiStepper @JvmOverloads constructor(
     private var current = 0f
     private var pressedZone = ZONE_NONE
     private var repeats = 0
+
+    // The finger this gesture follows, whether the gesture has auto-repeated, and whether it was
+    // ended early (released, withdrawn or cancelled): then its remaining events do nothing.
+    private var pointerId = MotionEvent.INVALID_POINTER_ID
+    private var hasRepeated = false
+    private var gestureOver = false
     private val trackBounds = RectF()
     private val thumbBounds = RectF()
     private val trackClip = Path()
@@ -92,6 +99,8 @@ public class SancaiStepper @JvmOverloads constructor(
     /** Listener for a tap on the value. Without one the centre zone only shows its press. */
     public fun setOnEditRequestListener(listener: OnEditRequestListener?) {
         editRequestListener = listener
+        // The accessibility node offers activation only while someone listens.
+        sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
     }
 
     /**
@@ -165,7 +174,7 @@ public class SancaiStepper @JvmOverloads constructor(
     /** The number with [decimals] digits; a value that rounds to zero is written without a sign. */
     private fun number(): String {
         val text = String.format(Locale.getDefault(), "%.${decimals}f", current)
-        return if (current < 0f && text.none { it in '1'..'9' }) text.removePrefix("-") else text
+        return if (current < 0f && text.none { Character.digit(it, 10) in 1..9 }) text.removePrefix("-") else text
     }
 
     init {
@@ -320,15 +329,28 @@ public class SancaiStepper @JvmOverloads constructor(
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!isEnabled) return false
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> press(zoneAt(event.x, event.y))
-            MotionEvent.ACTION_MOVE -> {
-                val zone = zoneAt(event.x, event.y)
+        val action = event.actionMasked
+        if (action == MotionEvent.ACTION_DOWN) {
+            pointerId = event.getPointerId(0)
+            hasRepeated = false
+            gestureOver = false
+            press(zoneAt(event.x, event.y))
+            return true
+        }
+        // A gesture that was released or withdrawn stays over until the next finger goes down.
+        if (gestureOver) return true
+        // The gesture follows the finger that went down first; other fingers change nothing.
+        val index = event.findPointerIndex(pointerId)
+        when {
+            action == MotionEvent.ACTION_MOVE -> if (index >= 0) {
+                val zone = zoneAt(event.getX(index), event.getY(index))
                 if (zone != pressedZone) press(zone)
             }
-            MotionEvent.ACTION_UP -> {
+            action == MotionEvent.ACTION_UP ||
+                (action == MotionEvent.ACTION_POINTER_UP && event.actionIndex == index) -> {
                 val zone = pressedZone
-                val held = repeats > 0
+                val held = hasRepeated
+                gestureOver = true
                 press(ZONE_NONE)
                 // A hold has already stepped; only a plain tap acts on release.
                 if (!held) {
@@ -339,7 +361,7 @@ public class SancaiStepper @JvmOverloads constructor(
                 }
                 if (zone != ZONE_NONE) performClick()
             }
-            MotionEvent.ACTION_CANCEL -> press(ZONE_NONE)
+            action == MotionEvent.ACTION_CANCEL -> endGesture()
         }
         return true
     }
@@ -354,6 +376,12 @@ public class SancaiStepper @JvmOverloads constructor(
         invalidate()
     }
 
+    /** Withdraws the press for good: later events of the same gesture neither step nor edit. */
+    private fun endGesture() {
+        gestureOver = true
+        press(ZONE_NONE)
+    }
+
     private fun repeat() {
         val direction = directionOf(pressedZone)
         if (direction == 0 || !isEnabled || !stepBy(direction)) return
@@ -362,6 +390,7 @@ public class SancaiStepper @JvmOverloads constructor(
         // From the first repeat on the gesture is a hold: a scrolling parent may not steal it.
         if (repeats == 0) parent?.requestDisallowInterceptTouchEvent(true)
         repeats++
+        hasRepeated = true
         SancaiHaptics.detent(this)
         if (canStep(direction)) postDelayed(repeater, if (repeats >= REPEAT_FAST_AFTER) REPEAT_FAST_MS else REPEAT_MS)
     }
@@ -409,18 +438,18 @@ public class SancaiStepper @JvmOverloads constructor(
     }
 
     override fun setEnabled(enabled: Boolean) {
-        if (!enabled) press(ZONE_NONE)
+        if (!enabled) endGesture()
         super.setEnabled(enabled)
     }
 
     override fun onDetachedFromWindow() {
-        press(ZONE_NONE)
+        endGesture()
         super.onDetachedFromWindow()
     }
 
     override fun onWindowFocusChanged(hasWindowFocus: Boolean) {
         // A hold must not keep counting behind a dialog that the listener opened.
-        if (!hasWindowFocus) press(ZONE_NONE)
+        if (!hasWindowFocus) endGesture()
         super.onWindowFocusChanged(hasWindowFocus)
     }
 
@@ -449,6 +478,11 @@ public class SancaiStepper @JvmOverloads constructor(
         info.rangeInfo = AccessibilityNodeInfo.RangeInfo.obtain(
             AccessibilityNodeInfo.RangeInfo.RANGE_TYPE_FLOAT, from, to, current,
         )
+        // Without an edit listener (or a click listener) activating does nothing: do not offer it.
+        if (editRequestListener == null && !hasOnClickListeners()) {
+            info.isClickable = false
+            info.removeAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK)
+        }
         if (!isEnabled) return
         if (canStep(-1)) info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD)
         if (canStep(1)) info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD)

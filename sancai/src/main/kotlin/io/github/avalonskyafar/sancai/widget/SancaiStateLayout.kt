@@ -9,6 +9,7 @@ import android.os.Parcelable
 import android.os.SystemClock
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
@@ -47,11 +48,14 @@ import kotlin.math.roundToInt
  *
  * Changing [state] lets the outgoing view sink 8 dp while the incoming view rises 8 dp into
  * place; the two overlap and only the last part of the way out is faded. With reduced
- * motion, or before the layout is on screen, the views are swapped at once.
+ * motion, or before the layout is on screen, the views are swapped at once. While the
+ * outgoing view is on its way out the layout takes no touches, so an action in it cannot be
+ * pressed a second time.
  *
  * Loading never flashes: once the loading state is on screen it stays for at least
  * [minimumLoadingMs]. A state asked for earlier is remembered ([state] returns it at once)
- * and shown when the time is up ([displayedState] follows then).
+ * and shown when the time is up ([displayedState] follows then). A layout taken off screen
+ * meanwhile stops waiting and shows that state as soon as the detach is over.
  *
  * [state] is saved and restored. Each change on screen is announced to accessibility
  * services as a pane change, and keyboard focus that was inside the outgoing view moves
@@ -424,6 +428,22 @@ public class SancaiStateLayout @JvmOverloads constructor(
         super.addView(child, index, params)
     }
 
+    /**
+     * Removes the content child only. The view of the state on screen belongs to the layout
+     * and stays, so swapping the content with `removeAllViews()` and `addView()` while a
+     * message or the spinner shows leaves that state on screen.
+     */
+    override fun removeAllViewsInLayout() {
+        contentView?.let(::removeViewInLayout)
+    }
+
+    /**
+     * While the outgoing view sinks away the layout takes the touches itself: a second tap
+     * on an action that is leaving (a double tap on Retry) does not reach it.
+     */
+    override fun onInterceptTouchEvent(event: MotionEvent): Boolean =
+        (transition != null && outgoing != null) || super.onInterceptTouchEvent(event)
+
     override fun onViewRemoved(child: View) {
         super.onViewRemoved(child)
         if (child === contentView) contentView = null
@@ -444,7 +464,11 @@ public class SancaiStateLayout @JvmOverloads constructor(
         // Nothing may keep running or waiting for a view that is off screen: settle now.
         cancelPending()
         finishTransition()
-        if (requested != displayed) show(requested, animate = false)
+        // A held state is shown once the detach is over: a view added during it would be
+        // attached to the window being left and never detached again.
+        if (requested != displayed) {
+            post { if (pendingShow == null && requested != displayed) show(requested, animate = false) }
+        }
         super.onDetachedFromWindow()
     }
 

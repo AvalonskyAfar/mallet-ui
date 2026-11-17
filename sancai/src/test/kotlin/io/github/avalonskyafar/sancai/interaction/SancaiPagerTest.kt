@@ -731,6 +731,172 @@ class SancaiPagerTest {
     }
 
     @Test
+    fun `disabling under a finger that has not started to drag gives the gesture up`() {
+        val pager = attached()
+        Touch.dispatch(pager, MotionEvent.ACTION_DOWN, width * 0.9f, midY)
+        pager.isEnabled = false
+        for (i in 1..4) Touch.dispatch(pager, MotionEvent.ACTION_MOVE, width * (0.9f - 0.1f * i), midY)
+        assertThat(pager.isMoving).isFalse()
+        Touch.dispatch(pager, MotionEvent.ACTION_UP, width * 0.5f, midY)
+        finishMotion()
+        assertThat(pager.currentPage).isEqualTo(0)
+        assertThat(selections).isEmpty()
+        assertThat(created).containsExactly(0)
+    }
+
+    @Test
+    fun `a second finger changes nothing and the drag commits where the first one lifts`() {
+        val pager = attached()
+        // The dragging finger has the higher pointer id, so it is not the first in the events.
+        val a = { x: Float -> Touch.Finger(1, x, midY) }
+        val b = { x: Float -> Touch.Finger(0, x, midY) }
+        Touch.multi(pager, MotionEvent.ACTION_DOWN, 0, a(width * 0.9f))
+        for (i in 1..4) Touch.multi(pager, MotionEvent.ACTION_MOVE, 0, a(width * (0.9f - 0.05f * i)))
+        Touch.multi(pager, MotionEvent.ACTION_POINTER_DOWN, 0, b(width * 0.1f), a(width * 0.7f))
+        assertThat(pager.scrollPosition).isWithin(0.01f).of(0.2f)
+        Touch.multi(pager, MotionEvent.ACTION_MOVE, 0, b(width * 0.1f), a(width * 0.6f))
+        assertThat(pager.scrollPosition).isWithin(0.01f).of(0.3f)
+        Touch.multi(pager, MotionEvent.ACTION_POINTER_UP, 1, b(width * 0.1f), a(width * 0.6f))
+        assertThat(pager.currentPage).isEqualTo(1)
+        assertThat(selections).containsExactly(1)
+
+        // Nothing at all happens for the finger that stays.
+        Touch.multi(pager, MotionEvent.ACTION_MOVE, 0, b(width * 0.8f))
+        Touch.multi(pager, MotionEvent.ACTION_UP, 0, b(width * 0.8f))
+        finishMotion()
+        assertThat(pager.isMoving).isFalse()
+        assertThat(pager.currentPage).isEqualTo(1)
+        assertThat(selections).containsExactly(1)
+        assertThat(pager.findViewById<View>(101).translationX).isEqualTo(0f)
+    }
+
+    @Test
+    fun `unlinking during a move lets the follower land instead of freezing it`() {
+        val heading = pager()
+        val content = pager()
+        val column = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(heading, LinearLayout.LayoutParams(dp(200), dp(60)))
+            addView(content, LinearLayout.LayoutParams.MATCH_PARENT, dp(120))
+        }
+        Snapshots.attach(column, widthDp)
+        content.linkWith(heading)
+
+        // Unlinked under the finger, before the move is committed: back where it began.
+        Touch.drag(content, width * 0.9f, midY, width * 0.5f, midY, release = false)
+        assertThat(heading.isMoving).isTrue()
+        content.unlink(heading)
+        assertThat(heading.isMoving).isFalse()
+        assertThat(heading.currentPage).isEqualTo(0)
+        assertThat(heading.findViewById<View>(100).translationX).isEqualTo(0f)
+        Touch.dispatch(content, MotionEvent.ACTION_UP, width * 0.5f, midY)
+        finishMotion()
+        assertThat(content.currentPage).isEqualTo(1)
+        assertThat(heading.currentPage).isEqualTo(0)
+        heading.currentPage = 3
+        assertThat(heading.currentPage).isEqualTo(3)
+
+        // Unlinked while the committed move settles: on the page the move lands on.
+        heading.currentPage = 1
+        content.linkWith(heading)
+        content.setCurrentPage(2, animate = true)
+        assertThat(heading.isMoving).isTrue()
+        content.unlink(heading)
+        assertThat(heading.isMoving).isFalse()
+        assertThat(heading.currentPage).isEqualTo(2)
+        finishMotion()
+        heading.currentPage = 0
+        assertThat(heading.currentPage).isEqualTo(0)
+    }
+
+    @Test
+    fun `a follower that unlinks from its own callback does not trip up the others`() {
+        val content = attached()
+        val first = pager()
+        val second = pager()
+        content.linkWith(first)
+        content.linkWith(second)
+        for (follower in listOf(first, second)) {
+            follower.addOnPageChangeListener(object : SancaiPager.OnPageChangeListener {
+                override fun onPageSelected(index: Int) = Unit
+
+                override fun onPageScrolled(index: Int, offset: Float) {
+                    if (offset > 0f) content.unlink(follower)
+                }
+            })
+        }
+        Touch.drag(content, width * 0.9f, midY, width * 0.5f, midY, release = false)
+        assertThat(first.isMoving).isFalse()
+        assertThat(second.isMoving).isFalse()
+        Touch.dispatch(content, MotionEvent.ACTION_UP, width * 0.5f, midY)
+        finishMotion()
+        assertThat(content.currentPage).isEqualTo(1)
+        assertThat(first.currentPage).isEqualTo(0)
+        assertThat(second.currentPage).isEqualTo(0)
+    }
+
+    @Test
+    fun `a restore before the pages waits through an empty placeholder`() {
+        val pager = pager(page = ::textPage)
+        Snapshots.attach(pager, widthDp)
+        pager.currentPage = 2
+        pager.findViewById<android.widget.EditText>(102).setText("old")
+        val saved = SparseArray<Parcelable>().also { pager.saveHierarchyState(it) }
+
+        val late = SancaiPager(context).apply { id = 7 }
+        late.setPages(0) { index, _ -> textPage(context, index) }
+        late.restoreHierarchyState(saved)
+        late.setPages(0) { index, _ -> textPage(context, index) }
+        late.setPages(4) { index, _ -> textPage(context, index) }
+        assertThat(late.currentPage).isEqualTo(2)
+        assertThat(textOf(late, 2)).isEqualTo("old")
+    }
+
+    private fun textPage(context: Context, index: Int): View =
+        android.widget.EditText(context).apply { id = 100 + index }
+
+    private fun textOf(pager: SancaiPager, index: Int): String =
+        pager.findViewById<android.widget.EditText>(100 + index).text.toString()
+
+    @Test
+    fun `replacing the pages discards the saved state of the earlier ones`() {
+        val pager = pager(page = ::textPage)
+        Snapshots.attach(pager, widthDp)
+        pager.currentPage = 2
+        pager.findViewById<android.widget.EditText>(102).setText("old")
+        pager.currentPage = 0
+        // Saved anew for each pager: a pager takes what it restores out of the state it is given.
+        val saved = { SparseArray<Parcelable>().also { pager.saveHierarchyState(it) } }
+
+        // Page 2 is not rebuilt by the restore: its state waits for the page.
+        val restored = pager(page = ::textPage)
+        restored.restoreHierarchyState(saved())
+        restored.currentPage = 2
+        assertThat(textOf(restored, 2)).isEqualTo("old")
+
+        // New pages before that page was rebuilt: they do not inherit it.
+        val replaced = pager(page = ::textPage)
+        replaced.restoreHierarchyState(saved())
+        replaced.setPages(4) { index, _ -> textPage(context, index) }
+        replaced.currentPage = 2
+        assertThat(textOf(replaced, 2)).isEmpty()
+        val again = SparseArray<Parcelable>()
+        replaced.saveHierarchyState(again)
+        val afterwards = pager(page = ::textPage)
+        afterwards.restoreHierarchyState(again)
+        afterwards.currentPage = 3
+        afterwards.currentPage = 2
+        assertThat(textOf(afterwards, 2)).isEmpty()
+
+        // Restored before the pages exist: the first setPages still hands the state out.
+        val late = SancaiPager(context).apply { id = 7 }
+        late.restoreHierarchyState(saved())
+        late.setPages(4) { index, _ -> textPage(context, index) }
+        late.currentPage = 2
+        assertThat(textOf(late, 2)).isEqualTo("old")
+    }
+
+    @Test
     fun `a disabled pager is not moved through its indicator`() {
         val (pager, indicator) = withIndicator()
         val chosen = ArrayList<Int>()

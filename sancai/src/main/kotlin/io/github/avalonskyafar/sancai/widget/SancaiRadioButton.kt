@@ -9,6 +9,7 @@ import android.graphics.RectF
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Layout
+import android.text.Spanned
 import android.text.StaticLayout
 import android.text.TextDirectionHeuristics
 import android.text.TextPaint
@@ -104,7 +105,8 @@ public class SancaiRadioButton @JvmOverloads constructor(
     public var text: CharSequence?
         get() = label
         set(value) {
-            if (label?.toString() == value?.toString()) return
+            // Styled text is always taken: equal characters may carry other spans.
+            if (value !is Spanned && label !is Spanned && label?.toString() == value?.toString()) return
             label = value
             labelLayout = null
             requestLayout()
@@ -226,9 +228,19 @@ public class SancaiRadioButton @JvmOverloads constructor(
         labelPaint.typeface = SancaiWeight.REGULAR.typeface()
     }
 
-    private fun buildLabel(text: CharSequence, width: Int): StaticLayout =
+    /**
+     * Lays the label out so that it starts next to the bed: a label written against the
+     * direction of the view (Latin text in a right-to-left layout) is aligned to its far side.
+     */
+    private fun buildLabel(text: CharSequence, width: Int): StaticLayout {
+        val natural = buildLabel(text, width, Layout.Alignment.ALIGN_NORMAL)
+        val runsRtl = natural.getParagraphDirection(0) == Layout.DIR_RIGHT_TO_LEFT
+        return if (runsRtl == isRtl) natural else buildLabel(text, width, Layout.Alignment.ALIGN_OPPOSITE)
+    }
+
+    private fun buildLabel(text: CharSequence, width: Int, alignment: Layout.Alignment): StaticLayout =
         StaticLayout.Builder.obtain(text, 0, text.length, labelPaint, max(0, width))
-            .setAlignment(Layout.Alignment.ALIGN_NORMAL)
+            .setAlignment(alignment)
             .setIncludePad(false)
             .setTextDirection(
                 if (isRtl) TextDirectionHeuristics.FIRSTSTRONG_RTL else TextDirectionHeuristics.FIRSTSTRONG_LTR,
@@ -367,7 +379,8 @@ public class SancaiRadioButton @JvmOverloads constructor(
             KeyEvent.KEYCODE_NUMPAD_ENTER -> {
                 // A checked radio has nothing left to do, so the key is not consumed.
                 if (!isEnabled || checkedState) return false
-                checkByUser()
+                // Through performClick, so a key reaches the click listener as a tap does.
+                performClick()
                 return true
             }
         }

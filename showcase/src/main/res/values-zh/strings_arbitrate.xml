@@ -26,14 +26,14 @@
     <string name="arbitrate_rule_wait">手指落下时什么都不决定。所有候选者都等手指移动超过触摸容差，最初那一下的方向决定这次拖动归谁。</string>
     <string name="arbitrate_rule_inner">横向时，手指下最里层的候选者胜出。翻页器里的行、行里的轨道，由轨道留住拖动，行、翻页器和外面的页面都不动。</string>
     <string name="arbitrate_rule_scroll">上下时，控件彻底放弃这次手势，页面滚动。如果上方或下方还有邻页，滚动到头后，邻页会在同一次手势里跟着手指进来。</string>
-    <string name="arbitrate_rule_own">已经无处可去的候选者把拖动向外交：到了最后一页的翻页器，已经打开的行。你自己的视图只要带上一个标记接口，就加入这条规则。</string>
+    <string name="arbitrate_rule_own">拖动开始时已经无处可去的候选者把拖动向外交：到了最后一页的翻页器，已经打开的行。接下了横向拖动的候选者会一直留住它，直到手指抬起，哪怕自己已经滑到尽头。你自己的视图只要带上一个标记接口，就加入这条规则。</string>
     <string name="arbitrate_table_title">谁管什么</string>
     <string name="arbitrate_table_lands">手指落在</string>
     <string name="arbitrate_table_owner">归属</string>
     <string name="arbitrate_land_control">轨道、开关或滑杆</string>
     <string name="arbitrate_owner_control">控件本身，除非拖动其实是上下的</string>
     <string name="arbitrate_land_row">可滑开的行</string>
-    <string name="arbitrate_owner_row">这一行，最多滑出操作条的宽度</string>
+    <string name="arbitrate_owner_row">这一行，直到手指抬起</string>
     <string name="arbitrate_land_pager">那个方向还有页的翻页器</string>
     <string name="arbitrate_owner_pager">翻页器</string>
     <string name="arbitrate_land_pager_end">停在第一页或最后一页的翻页器</string>

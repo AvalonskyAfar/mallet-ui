@@ -350,6 +350,22 @@ class SancaiThemeTransitionTest {
     }
 
     @Test
+    fun `recreateAfter refuses a finishing or destroyed activity and keeps nothing waiting`() {
+        val controller = Robolectric.buildActivity(RecordingActivity::class.java).setup()
+        val activity = controller.get()
+        val view = View(activity)
+        activity.finish()
+        assertThat(SancaiThemeTransition.recreateAfter(view, 50)).isFalse()
+        assertThat(SancaiThemeTransition.cancelRecreate(view)).isFalse()
+
+        controller.pause().stop().destroy()
+        assertThat(SancaiThemeTransition.recreateAfter(view, 50)).isFalse()
+        assertThat(SancaiThemeTransition.cancelRecreate(view)).isFalse()
+        advance(100)
+        assertThat(activity.recreations).isEqualTo(0)
+    }
+
+    @Test
     fun `content that cannot be drawn in software is not captured`() {
         val activity = open(SancaiTheme.light())
         var armed = false

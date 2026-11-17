@@ -13,6 +13,7 @@ import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import io.github.avalonskyafar.sancai.R
 import io.github.avalonskyafar.sancai.testing.Snapshots
+import io.github.avalonskyafar.sancai.testing.Touch
 import io.github.avalonskyafar.sancai.theme.SancaiTextRole
 import io.github.avalonskyafar.sancai.theme.SancaiTextTone
 import io.github.avalonskyafar.sancai.theme.SancaiTheme
@@ -334,6 +335,8 @@ class SancaiStateLayoutTest {
         layout.state = State.ERROR
         assertThat(layout.displayedState).isEqualTo(State.LOADING)
         (layout.parent as FrameLayout).removeView(layout)
+        // The held state is shown as soon as the detach is over, not during it.
+        Snapshots.idle()
         assertThat(layout.displayedState).isEqualTo(State.ERROR)
         assertThat(shown(layout)).containsExactly(layout.stateView(State.ERROR))
         advance(1000)
@@ -558,6 +561,95 @@ class SancaiStateLayoutTest {
         val row = loading.top + loading.paddingTop + loading.getChildAt(0).height / 2
         val muted = SancaiTheme.light().colors.muted
         assertThat((0 until asLoading.width).any { asLoading.getPixel(it, row) == muted }).isTrue()
+    }
+
+    @Test
+    fun `a second tap on an action that is leaving does not reach it`() {
+        val layout = stateLayout()
+        var retries = 0
+        layout.setError("Could not load", null, "Retry") {
+            retries++
+            layout.state = State.LOADING
+        }
+        layout.setState(State.ERROR, animate = false)
+        Snapshots.attach(layout)
+        ShadowChoreographer.setPaused(true)
+        ShadowChoreographer.setFrameDelay(Duration.ofMillis(16))
+        // With frames paused a posted click waits for the next frame: each tap is followed by one.
+        val error = layout.stateView(State.ERROR) as SancaiStateView
+        val button = error.actionButton
+        val spot = android.graphics.Rect(0, 0, button.width, button.height)
+        layout.offsetDescendantRectToMyCoords(button, spot)
+        val x = spot.exactCenterX()
+        val y = spot.exactCenterY()
+
+        Touch.tap(layout, x, y)
+        advance(32)
+        assertThat(retries).isEqualTo(1)
+        // The error view is still there, sinking: the same spot is tapped again.
+        assertThat(error.parent).isSameInstanceAs(layout)
+        Touch.tap(layout, x, y)
+        advance(32)
+        assertThat(retries).isEqualTo(1)
+
+        // Once the swap is over the layout passes touches on again.
+        advance(400)
+        layout.setState(State.ERROR, animate = false)
+        advance(2000)
+        assertThat(layout.displayedState).isEqualTo(State.ERROR)
+        Touch.tap(layout, x, y)
+        advance(32)
+        assertThat(retries).isEqualTo(2)
+    }
+
+    @Test
+    fun `removeAllViews swaps the content and keeps the state on screen`() {
+        val layout = stateLayout()
+        layout.setState(State.ERROR, animate = false)
+        Snapshots.attach(layout)
+        val error = layout.stateView(State.ERROR)!!
+        layout.removeAllViews()
+        assertThat(layout.contentView).isNull()
+        val fresh = View(context)
+        layout.addView(fresh, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, px(120f)))
+        Snapshots.idle()
+        assertThat(layout.contentView).isSameInstanceAs(fresh)
+        assertThat(shown(layout)).containsExactly(error)
+        layout.setState(State.CONTENT, animate = false)
+        assertThat(shown(layout)).containsExactly(fresh)
+    }
+
+    @Test
+    fun `a held state shown on detach is not attached to the window being left`() {
+        var attached = 0
+        var detached = 0
+        val custom = object : View(context) {
+            override fun onAttachedToWindow() {
+                super.onAttachedToWindow()
+                attached++
+            }
+
+            override fun onDetachedFromWindow() {
+                super.onDetachedFromWindow()
+                detached++
+            }
+        }
+        val layout = stateLayout()
+        layout.setErrorView(custom)
+        Snapshots.attach(layout)
+        layout.setState(State.LOADING, animate = false)
+        layout.state = State.ERROR
+        val frame = layout.parent as FrameLayout
+        frame.removeView(layout)
+        Snapshots.idle()
+        assertThat(layout.displayedState).isEqualTo(State.ERROR)
+        assertThat(custom.parent).isSameInstanceAs(layout)
+        assertThat(attached).isEqualTo(0)
+        assertThat(custom.isAttachedToWindow).isFalse()
+
+        frame.addView(layout)
+        assertThat(attached).isEqualTo(1)
+        assertThat(detached).isEqualTo(0)
     }
 
     /** One page: the four states on the canvas, then loading inside the card that will hold the result. */

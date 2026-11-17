@@ -369,6 +369,66 @@ class SancaiHeadingLinkTest {
         assertThat(view.accessibilityClassName.toString()).isEqualTo("android.widget.Button")
         view.label = "Developer"
         assertThat(view.contentDescription.toString()).isEqualTo("Developer")
+
+        // An explicit description wins until it is cleared again.
+        view.contentDescription = "Developer options"
+        view.label = "More"
+        assertThat(view.contentDescription.toString()).isEqualTo("Developer options")
+        view.contentDescription = null
+        assertThat(view.contentDescription.toString()).isEqualTo("More")
+    }
+
+    @Test
+    fun `a content description from XML is kept and android enabled is read`() {
+        val described = org.robolectric.Robolectric.buildAttributeSet()
+            .addAttribute(io.github.avalonskyafar.sancai.R.attr.sancaiTitle, "More")
+            .addAttribute(android.R.attr.contentDescription, "More privacy settings")
+            .build()
+        val row = SancaiLinkRow(context, described)
+        assertThat(row.label.toString()).isEqualTo("More")
+        assertThat(row.contentDescription.toString()).isEqualTo("More privacy settings")
+        assertThat(row.isEnabled).isTrue()
+
+        val untitled = org.robolectric.Robolectric.buildAttributeSet()
+            .addAttribute(android.R.attr.contentDescription, "More privacy settings")
+            .build()
+        assertThat(SancaiLinkRow(context, untitled).contentDescription.toString())
+            .isEqualTo("More privacy settings")
+
+        val disabled = org.robolectric.Robolectric.buildAttributeSet()
+            .addAttribute(io.github.avalonskyafar.sancai.R.attr.sancaiTitle, "More")
+            .addAttribute(android.R.attr.enabled, "false")
+            .build()
+        val off = SancaiLinkRow(context, disabled)
+        assertThat(off.isEnabled).isFalse()
+        var clicks = 0
+        off.setOnClickListener { clicks++ }
+        Snapshots.attach(off)
+        Touch.tap(off, off.width / 2f)
+        Snapshots.idle()
+        assertThat(clicks).isEqualTo(0)
+    }
+
+    @Test
+    fun `space is handled by the row itself and is not consumed when it cannot click`() {
+        // The platform confirms with Space only on newer versions, where it also swallows the
+        // key of a disabled view. The row's own handling shows in the second half.
+        val view = link()
+        var clicks = 0
+        view.setOnClickListener { clicks++ }
+        Snapshots.attach(view)
+        val space = KeyEvent.KEYCODE_SPACE
+        assertThat(view.onKeyUp(space, KeyEvent(KeyEvent.ACTION_UP, space))).isFalse()
+        assertThat(view.onKeyDown(space, KeyEvent(KeyEvent.ACTION_DOWN, space))).isTrue()
+        assertThat(view.isPressed).isTrue()
+        assertThat(view.onKeyUp(space, KeyEvent(KeyEvent.ACTION_UP, space))).isTrue()
+        assertThat(clicks).isEqualTo(1)
+        assertThat(view.isPressed).isFalse()
+
+        view.isEnabled = false
+        assertThat(view.onKeyDown(space, KeyEvent(KeyEvent.ACTION_DOWN, space))).isFalse()
+        assertThat(view.onKeyUp(space, KeyEvent(KeyEvent.ACTION_UP, space))).isFalse()
+        assertThat(clicks).isEqualTo(1)
     }
 
     @Test

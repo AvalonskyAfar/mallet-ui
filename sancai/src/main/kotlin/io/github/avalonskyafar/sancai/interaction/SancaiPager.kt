@@ -118,6 +118,7 @@ public class SancaiPager @JvmOverloads constructor(
     // The gesture in progress.
     private var tracking = false
     private var dragging = false
+    private var pointerId = MotionEvent.INVALID_POINTER_ID
     private var velocity: VelocityTracker? = null
 
     /** Number of pages, as given to [setPages]. */
@@ -178,16 +179,21 @@ public class SancaiPager @JvmOverloads constructor(
      * Sets the pages: [count] of them, created by [provider] when they are first needed.
      * Replaces earlier pages, keeps the current index if it still exists (or takes the one
      * restored from saved state) and calls no listener except
-     * [OnPageChangeListener.onPageScrolled].
+     * [OnPageChangeListener.onPageScrolled]. Saved view state waiting for pages that were not
+     * rebuilt yet is kept only by the first call with pages after a restore that found none;
+     * replacing pages discards it, so new pages never receive the state of the ones they replace.
      */
     public fun setPages(count: Int, provider: PageProvider) {
         finishMoveNow()
         for (i in 0 until pages.size()) removeView(pages.valueAt(i))
         pages.clear()
+        // pendingPage is set only by a restore that found no pages to give the state to.
+        if (pendingPage == NO_PAGE) savedPages = null
         this.provider = provider
         pageCount = count.coerceAtLeast(0)
         val wanted = if (pendingPage != NO_PAGE) pendingPage else page
-        pendingPage = NO_PAGE
+        // No pages yet: what the restore brought goes on waiting for the first real ones.
+        if (pageCount > 0) pendingPage = NO_PAGE
         page = wanted.coerceIn(0, (pageCount - 1).coerceAtLeast(0))
         if (pageCount > 0) showOnly(page)
         updateStateDescription()
@@ -227,9 +233,12 @@ public class SancaiPager @JvmOverloads constructor(
         if (!isMoving && !other.isMoving) other.moveToPage(page, animate = false, fromUser = false)
     }
 
-    /** Ends the link made with [linkWith]. */
+    /**
+     * Ends the link made with [linkWith]. A move this pager is leading [other] through ends for
+     * [other] at once: it lands on the page the move is committed to, else back where it began.
+     */
     public fun unlink(other: SancaiPager) {
-        followers.remove(other)
+        if (followers.remove(other) && isMoving && !led && other.led) other.finishMoveNow()
     }
 
     // ---- Moves -------------------------------------------------------------------------------
@@ -328,7 +337,8 @@ public class SancaiPager @JvmOverloads constructor(
 
     private inline fun eachFollower(action: (SancaiPager) -> Unit) {
         if (led) return
-        for (i in followers.indices) action(followers[i])
+        // A follower's listener may unlink followers while they are being told.
+        for (i in followers.indices.reversed()) followers.getOrNull(i)?.let(action)
     }
 
     private fun followBegin(from: Int, to: Int) {
@@ -439,30 +449,28 @@ public class SancaiPager @JvmOverloads constructor(
     // ---- Touch -------------------------------------------------------------------------------
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> startTracking(event)
-            MotionEvent.ACTION_MOVE -> return tracking && trackMove(event)
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> if (!dragging) releaseGesture()
-            MotionEvent.ACTION_POINTER_UP -> if (!dragging && event.actionIndex == 0) releaseGesture()
+        val action = event.actionMasked
+        when {
+            action == MotionEvent.ACTION_DOWN -> startTracking(event)
+            action == MotionEvent.ACTION_MOVE -> return tracking && trackMove(event)
+            gate.isRelease(event) || action == MotionEvent.ACTION_CANCEL ->
+                if (!dragging) releaseGesture()
         }
         return false
     }
 
     @Suppress("ClickableViewAccessibility") // paging is offered as accessibility scroll actions
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> return tracking
-            MotionEvent.ACTION_MOVE -> {
+        val action = event.actionMasked
+        when {
+            action == MotionEvent.ACTION_DOWN -> return tracking
+            action == MotionEvent.ACTION_MOVE -> {
                 if (tracking) trackMove(event)
                 return tracking
             }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                if (dragging) finishDrag(event) else releaseGesture()
-                return true
-            }
-            MotionEvent.ACTION_POINTER_UP -> if (event.actionIndex == 0) {
-                // The finger the pages followed is gone: the gesture ends here instead of
-                // jumping to another finger.
+            // The finger the pages followed lifts, alone or with another one still down: the
+            // gesture ends here instead of jumping to another finger.
+            gate.isRelease(event) || action == MotionEvent.ACTION_CANCEL -> {
                 if (dragging) finishDrag(event) else releaseGesture()
                 return true
             }
@@ -475,13 +483,14 @@ public class SancaiPager @JvmOverloads constructor(
         tracking = isEnabled && pageCount > 1 && !isMoving && !hitsDragOwner(this, event.x, event.y)
         if (!tracking) return
         gate.down(event)
+        pointerId = event.getPointerId(0)
         velocity = VelocityTracker.obtain().also { it.addMovement(event) }
     }
 
     /** Feeds a move; returns true while the pager owns the gesture. */
     private fun trackMove(event: MotionEvent): Boolean {
         velocity?.addMovement(event)
-        val dx = event.x - gate.downX
+        val dx = gate.x(event) - gate.downX
         if (!dragging) {
             when (gate.move(this, event)) {
                 HorizontalDragGate.State.UNDECIDED -> return false
@@ -511,10 +520,12 @@ public class SancaiPager @JvmOverloads constructor(
         val tracker = velocity
         var speed = 0f
         if (tracker != null) {
-            tracker.addMovement(event)
+            // A finger lifting beside another one says nothing new about where it was.
+            if (event.actionMasked != MotionEvent.ACTION_POINTER_UP) tracker.addMovement(event)
             tracker.computeCurrentVelocity(1000)
             val towardsTarget = if (moveTo > moveFrom) forwardSign else -forwardSign
-            speed = tracker.xVelocity * towardsTarget / width.coerceAtLeast(1)
+            // The speed of the followed finger, not of whichever finger is first in the event.
+            speed = tracker.getXVelocity(pointerId) * towardsTarget / width.coerceAtLeast(1)
         }
         val complete = event.actionMasked != MotionEvent.ACTION_CANCEL &&
             (moveFraction >= COMMIT_FRACTION || speed >= COMMIT_VELOCITY_WIDTHS)
@@ -524,17 +535,25 @@ public class SancaiPager @JvmOverloads constructor(
         settleTo(if (complete) 1f else 0f)
     }
 
-    /** Disabling the pager in the middle of a drag lets the page glide back. */
+    /**
+     * Disabling the pager in the middle of a drag lets the page glide back; disabling it under
+     * a finger that has not started to drag yet gives that gesture up.
+     */
     override fun setEnabled(enabled: Boolean) {
-        if (!enabled && dragging) {
-            gate.finish(this)
-            releaseGesture()
-            settleTo(0f)
+        if (!enabled) {
+            if (dragging) {
+                releaseGesture()
+                settleTo(0f)
+            } else if (tracking) {
+                releaseGesture()
+            }
         }
         super.setEnabled(enabled)
     }
 
     private fun releaseGesture() {
+        // Fingers that stay down after this are answered with "not this gesture" by the gate.
+        if (gate.isActive) gate.finish(this)
         tracking = false
         dragging = false
         velocity?.recycle()

@@ -24,6 +24,7 @@ import io.github.avalonskyafar.sancai.icon.SancaiIcon
 import io.github.avalonskyafar.sancai.icon.SancaiIconPainter
 import io.github.avalonskyafar.sancai.icon.SancaiIconView
 import io.github.avalonskyafar.sancai.interaction.SancaiPress
+import io.github.avalonskyafar.sancai.internal.useOwnFocusRim
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.theme.SancaiColors
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
@@ -377,8 +378,9 @@ public class SancaiBanner @JvmOverloads constructor(
 
     /**
      * Shows the banner by growing its height from where it is to its full height, pushing the
-     * content below it. With [animate] off, with reduced motion handled by the shorter
-     * duration, or before the first layout, it simply appears.
+     * content below it; a banner that started hidden, or was dismissed, grows from zero. With
+     * [animate] off, or before the screen it is in has been laid out, it simply appears;
+     * reduced motion shortens the glide.
      */
     @JvmOverloads
     public fun show(animate: Boolean = true) {
@@ -418,7 +420,10 @@ public class SancaiBanner @JvmOverloads constructor(
         animator?.cancel()
         animator = null
         syncFocusability()
-        if (!animate || !isLaidOut || !isAttachedToWindow || reveal == target) {
+        // A collapsed banner is GONE, and a parent never lays out a GONE child: for it, the
+        // screen being laid out is what says a glide can be seen.
+        val onScreen = isLaidOut || (reveal == 0f && (parent as? View)?.isLaidOut == true)
+        if (!animate || !onScreen || !isAttachedToWindow || reveal == target) {
             jumpTo(target == 1f)
             return
         }
@@ -578,6 +583,8 @@ public class SancaiBanner @JvmOverloads constructor(
     override fun onSaveInstanceState(): Parcelable = Bundle().apply {
         putParcelable(STATE_SUPER, super.onSaveInstanceState())
         putBoolean(STATE_SHOWING, showing)
+        // A banner the app hid through its visibility is not brought back by a restore.
+        putBoolean(STATE_HIDDEN, showing && visibility != VISIBLE)
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
@@ -590,7 +597,7 @@ public class SancaiBanner @JvmOverloads constructor(
         animator?.cancel()
         animator = null
         val shown = state.getBoolean(STATE_SHOWING, true)
-        if (shown) visibility = VISIBLE
+        if (shown && !state.getBoolean(STATE_HIDDEN, false)) visibility = VISIBLE
         jumpTo(shown)
     }
 
@@ -621,6 +628,10 @@ public class SancaiBanner @JvmOverloads constructor(
     /** The close icon: a 16 dp cross in the muted colour inside a 44 dp touch target. */
     private inner class CloseView(context: Context) : View(context) {
         private val bounds = RectF()
+
+        init {
+            useOwnFocusRim()
+        }
 
         override fun onDraw(canvas: Canvas) {
             val side = CLOSE_ICON_DP * density
@@ -654,6 +665,7 @@ private val TONES = SancaiBanner.Tone.values()
 
 private const val STATE_SUPER = "sancai:banner:super"
 private const val STATE_SHOWING = "sancai:banner:showing"
+private const val STATE_HIDDEN = "sancai:banner:hidden"
 
 private const val BAR_WIDTH_DP = 3f
 private const val PADDING_START_DP = 12f

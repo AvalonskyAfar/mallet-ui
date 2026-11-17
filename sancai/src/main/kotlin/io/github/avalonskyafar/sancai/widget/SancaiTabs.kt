@@ -16,6 +16,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.VelocityTracker
 import android.view.ViewConfiguration
+import android.view.accessibility.AccessibilityEvent
 import android.widget.OverScroller
 import androidx.annotation.VisibleForTesting
 import androidx.core.os.BundleCompat
@@ -61,7 +62,8 @@ import kotlin.math.roundToInt
  * and always brings the selected tab into view.
  *
  * Left and right arrows move the selection (mirrored in right-to-left layouts), Home and End
- * jump to the first and last tab. Accessibility services see a tab list with one tab per label.
+ * jump to the first and last tab. Accessibility services see a tab list with one tab per label;
+ * a tab that takes accessibility focus while scrolled out of view is scrolled into view.
  * The view is 44 dp tall.
  */
 public class SancaiTabs @JvmOverloads constructor(
@@ -112,6 +114,12 @@ public class SancaiTabs @JvmOverloads constructor(
     private var velocity: VelocityTracker? = null
     private var downScroll = 0f
     private var stripDragged = false
+
+    /** The tab under a hovering pointer (a finger exploring by touch), or [NONE]. */
+    private var hovered = NONE
+
+    /** The direction the tabs were last placed for. */
+    private var placedRtl = false
 
     private var pager: SancaiPager? = null
     private val pagerListener = object : SancaiPager.OnPageChangeListener {
@@ -301,6 +309,7 @@ public class SancaiTabs @JvmOverloads constructor(
             total += tabWidth[i]
         }
         contentWidth = total
+        placedRtl = isRtl
         // A row shorter than the view starts at the start edge: on the right in RTL.
         var x = if (isRtl) max(0f, room - total) else 0f
         for (slot in 0 until count) {
@@ -334,6 +343,21 @@ public class SancaiTabs @JvmOverloads constructor(
         val right = between(position) { tabLeft[it] + tabWidth[it] } + dp(PEEK_DP)
         if (left < scrollPx) scrollPx = left else if (right > scrollPx + available) scrollPx = right - available
         scrollPx = scrollPx.coerceIn(0f, range)
+    }
+
+    /** Scrolls a row that scrolls until tab [index] is inside the view; true if it moved. */
+    private fun revealTab(index: Int): Boolean {
+        val range = scrollRange
+        if (range <= 0f || index !in labels.indices || tabLeft.size != labels.size) return false
+        val before = scrollPx
+        scroller.abortAnimation()
+        val left = tabLeft[index] - dp(PEEK_DP)
+        val right = tabLeft[index] + tabWidth[index] + dp(PEEK_DP)
+        if (left < scrollPx) scrollPx = left else if (right > scrollPx + available) scrollPx = right - available
+        scrollPx = scrollPx.coerceIn(0f, range)
+        if (scrollPx == before) return false
+        invalidate()
+        return true
     }
 
     /** Logical index of the tab at view coordinate [x], or [NONE] beside the row. */
@@ -372,7 +396,8 @@ public class SancaiTabs @JvmOverloads constructor(
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
         // Also after a change of padding, text scale or layout direction, which leave the size
-        // alone. (Not from onRtlPropertiesChanged: reading the padding there re-enters it.)
+        // alone. (Not from onRtlPropertiesChanged: reading the padding there re-enters it, so
+        // that asks for this layout instead.)
         computeTabs()
     }
 
@@ -439,8 +464,9 @@ public class SancaiTabs @JvmOverloads constructor(
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!isEnabled || labels.isEmpty()) return false
-        when (event.actionMasked) {
-            MotionEvent.ACTION_DOWN -> {
+        val action = event.actionMasked
+        when {
+            action == MotionEvent.ACTION_DOWN -> {
                 scroller.abortAnimation()
                 gate.down(event)
                 downScroll = scrollPx
@@ -451,40 +477,44 @@ public class SancaiTabs @JvmOverloads constructor(
                 velocity = VelocityTracker.obtain().also { it.addMovement(event) }
                 invalidate()
             }
-            MotionEvent.ACTION_MOVE -> {
+            // Only the finger that went down first counts; once it has lifted, the others do nothing.
+            action == MotionEvent.ACTION_MOVE && gate.isActive -> {
                 velocity?.addMovement(event)
+                val x = gate.x(event)
                 if (scrollRange > 0f) {
                     // A row that scrolls follows the finger; a vertical gesture is handed on.
                     when (gate.move(this, event)) {
                         HorizontalDragGate.State.DRAGGING -> {
                             stripDragged = true
-                            scrollPx = (downScroll - (event.x - gate.downX)).coerceIn(0f, scrollRange)
+                            scrollPx = (downScroll - (x - gate.downX)).coerceIn(0f, scrollRange)
                             releasePress()
                             accessibility.invalidateRoot()
                         }
                         HorizontalDragGate.State.ABORTED -> releasePress()
                         HorizontalDragGate.State.UNDECIDED -> Unit
                     }
-                } else if (abs(event.x - gate.downX) > touchSlop || indexAt(event.x) != pressed) {
+                } else if (abs(x - gate.downX) > touchSlop || indexAt(x) != pressed) {
                     // Nothing to drag here: a finger that wanders off is no longer a tap.
                     releasePress()
                 }
                 // Neither is one that moves up or down: that gesture belongs to a scrolling parent.
-                if (abs(event.y - downY) > touchSlop && !stripDragged) releasePress()
+                if (abs(gate.y(event) - downY) > touchSlop && !stripDragged) releasePress()
             }
-            MotionEvent.ACTION_UP -> {
+            gate.isRelease(event) -> {
+                val x = gate.x(event)
+                val y = gate.y(event)
                 gate.finish(this)
                 val chosen = pressed
                 releasePress()
                 if (stripDragged) {
                     fling()
-                } else if (chosen != NONE && chosen == indexAt(event.x) && abs(event.y - downY) <= touchSlop) {
+                } else if (chosen != NONE && chosen == indexAt(x) && abs(y - downY) <= touchSlop) {
                     choose(chosen)
                     performClick()
                 }
                 endGesture()
             }
-            MotionEvent.ACTION_CANCEL -> {
+            action == MotionEvent.ACTION_CANCEL -> {
                 gate.finish(this)
                 releasePress()
                 endGesture()
@@ -535,36 +565,57 @@ public class SancaiTabs @JvmOverloads constructor(
                 else -> NONE
             }
             // At either end an arrow falls through, so focus can leave the tabs.
-            if (next in labels.indices && next != selected) {
-                choose(next)
-                return true
-            }
+            // A move the attached pager refuses falls through as well: the key did nothing.
+            if (next in labels.indices && next != selected && choose(next)) return true
         }
         return super.onKeyDown(keyCode, event)
     }
 
-    /** A user-driven change: move, then tell the listener, then tick. */
-    private fun choose(index: Int) {
+    /** A user-driven change: move, then tell the listener, then tick. False if nothing moved. */
+    private fun choose(index: Int): Boolean {
         val old = selected
         if (index == old) {
             animateTo(index.toFloat())
-            return
+            return true
         }
-        selected = index
         val attached = pager
         if (attached != null && index < attached.pageCount) {
+            // A disabled pager keeps its page, whoever asks on the user's behalf.
+            if (!attached.isEnabled) return false
+            selected = index
             // The pager glides and the indicator follows its scroll callbacks. A pager that is
             // busy with another move refuses, and then the tabs stay where the pager is.
             if (!attached.moveToPage(index, animate = true, fromUser = true) && attached.currentPage != index) {
                 selected = old
-                return
+                return false
             }
         } else {
+            selected = index
             animateTo(index.toFloat())
         }
         announceState()
         tabSelectedListener?.onTabSelected(this, index)
         SancaiHaptics.tick(this)
+        return true
+    }
+
+    /** Disabling under the finger lets the pressed label come back up and ends the gesture. */
+    override fun setEnabled(enabled: Boolean) {
+        super.setEnabled(enabled)
+        if (!enabled && gate.isActive) {
+            gate.finish(this)
+            releasePress()
+            endGesture()
+        }
+    }
+
+    override fun onRtlPropertiesChanged(layoutDirection: Int) {
+        super.onRtlPropertiesChanged(layoutDirection)
+        // The tabs are placed in onLayout, which a change of direction alone does not run.
+        if ((layoutDirection == LAYOUT_DIRECTION_RTL) != placedRtl) {
+            requestLayout()
+            invalidate()
+        }
     }
 
     private fun followPager(at: Float) {
@@ -645,8 +696,10 @@ public class SancaiTabs @JvmOverloads constructor(
         accessibility.invalidateRoot()
     }
 
-    override fun dispatchHoverEvent(event: MotionEvent): Boolean =
-        accessibility.dispatchHoverEvent(event) || super.dispatchHoverEvent(event)
+    override fun dispatchHoverEvent(event: MotionEvent): Boolean {
+        hovered = if (event.actionMasked == MotionEvent.ACTION_HOVER_EXIT) NONE else indexAt(event.x)
+        return accessibility.dispatchHoverEvent(event) || super.dispatchHoverEvent(event)
+    }
 
     override fun getAccessibilityClassName(): CharSequence = "android.widget.TabWidget"
 
@@ -715,6 +768,9 @@ public class SancaiTabs @JvmOverloads constructor(
         }
 
         override fun onPopulateNodeForHost(node: AccessibilityNodeInfoCompat) {
+            // The tabs take the click, each for itself; the list as a whole has none.
+            node.isClickable = false
+            node.removeAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_CLICK)
             node.setCollectionInfo(
                 AccessibilityNodeInfoCompat.CollectionInfoCompat.obtain(
                     1, labels.size, false, AccessibilityNodeInfoCompat.CollectionInfoCompat.SELECTION_MODE_SINGLE,
@@ -725,8 +781,16 @@ public class SancaiTabs @JvmOverloads constructor(
         override fun onPerformActionForVirtualView(virtualViewId: Int, action: Int, arguments: Bundle?): Boolean {
             if (action != AccessibilityNodeInfoCompat.ACTION_CLICK || !isEnabled) return false
             if (virtualViewId !in labels.indices) return false
-            choose(virtualViewId)
-            return true
+            return choose(virtualViewId)
+        }
+
+        override fun onPopulateEventForVirtualView(virtualViewId: Int, event: AccessibilityEvent) {
+            // A tab that takes accessibility focus while scrolled off is brought into view, so
+            // that the focus highlight has a place to stand. Not the tab under an exploring
+            // finger: it shows already, and a row that moved under the finger would hand the
+            // focus on to the next tab, and the next.
+            if (event.eventType != AccessibilityEvent.TYPE_VIEW_ACCESSIBILITY_FOCUSED) return
+            if (virtualViewId != hovered && revealTab(virtualViewId)) invalidateRoot()
         }
     }
 

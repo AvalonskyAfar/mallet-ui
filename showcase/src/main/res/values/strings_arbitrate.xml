@@ -26,14 +26,14 @@
     <string name="arbitrate_rule_wait">Nothing is decided when the finger lands. Every candidate waits until the finger has left the touch slop, and the direction of that first movement settles who owns the drag.</string>
     <string name="arbitrate_rule_inner">Sideways, the innermost candidate under the finger wins. A track inside a reveal row inside a pager keeps the drag, and the row, the pager and the page around them stay still.</string>
     <string name="arbitrate_rule_scroll">Up or down, the controls give the gesture up for good and the page scrolls. If the page has a neighbour above or below, that neighbour starts to follow once the scrolling reaches its limit in the same gesture.</string>
-    <string name="arbitrate_rule_own">A candidate that has nowhere left to go passes the drag outwards: a pager at its last page, a row that is already open. A view of your own joins the rule by carrying one marker interface.</string>
+    <string name="arbitrate_rule_own">A candidate that has nowhere left to go when the drag begins passes it outwards: a pager at its last page, a row that is already open. One that has taken a sideways drag keeps it until the finger lifts, also beyond the point where it stops. A view of your own joins the rule by carrying one marker interface.</string>
     <string name="arbitrate_table_title">Who owns what</string>
     <string name="arbitrate_table_lands">The finger lands on</string>
     <string name="arbitrate_table_owner">Owner</string>
     <string name="arbitrate_land_control">A track, switch or slider</string>
     <string name="arbitrate_owner_control">The control, unless the drag turns out to be vertical</string>
     <string name="arbitrate_land_row">A reveal row</string>
-    <string name="arbitrate_owner_row">The row, for as far as its action strip is wide</string>
+    <string name="arbitrate_owner_row">The row, until the finger lifts</string>
     <string name="arbitrate_land_pager">A pager with a page left that way</string>
     <string name="arbitrate_owner_pager">The pager</string>
     <string name="arbitrate_land_pager_end">A pager at its first or last page</string>
