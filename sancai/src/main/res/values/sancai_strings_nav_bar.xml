@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Spoken for a navigation item with a count badge: label, then the count ("99+" beyond 99). -->
+    <string name="sancai_nav_bar_item_with_count">%1$s, %2$s new</string>
+    <!-- Spoken for a navigation item with a dot badge. -->
+    <string name="sancai_nav_bar_item_with_dot">%1$s, new</string>
+</resources>
