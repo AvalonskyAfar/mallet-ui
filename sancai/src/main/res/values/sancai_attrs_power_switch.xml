@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SancaiPowerSwitch">
+        <attr name="android:enabled" />
+        <!-- Whether the switch starts on. -->
+        <attr name="sancaiChecked" />
+        <!-- State label on the thumb while the switch is on. Default "On". -->
+        <attr name="sancaiPowerSwitchOnLabel" format="string" />
+        <!-- State label on the thumb while the switch is off. Default "Off". -->
+        <attr name="sancaiPowerSwitchOffLabel" format="string" />
+        <!-- Action label on the bed while the switch is off. Default "Turn on". -->
+        <attr name="sancaiPowerSwitchTurnOnLabel" format="string" />
+        <!-- Action label on the bed while the switch is on. Default "Turn off". -->
+        <attr name="sancaiPowerSwitchTurnOffLabel" format="string" />
+        <!-- Glaze of the bed while the switch is on. Default cobalt. -->
+        <attr name="sancaiPowerSwitchOnGlaze" format="enum">
+            <enum name="terracotta" value="0" />
+            <enum name="ochre" value="1" />
+            <enum name="cobalt" value="2" />
+            <enum name="celadon" value="3" />
+            <enum name="mist" value="4" />
+        </attr>
+        <!-- Glaze of the bed while the switch is off. Default terracotta. -->
+        <attr name="sancaiPowerSwitchOffGlaze" format="enum">
+            <enum name="terracotta" value="0" />
+            <enum name="ochre" value="1" />
+            <enum name="cobalt" value="2" />
+            <enum name="celadon" value="3" />
+            <enum name="mist" value="4" />
+        </attr>
+    </declare-styleable>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SancaiCheckbox">
+        <!-- Label at the end of the box. -->
+        <attr name="android:text" />
+        <attr name="android:enabled" />
+        <!-- Whether the box starts checked. -->
+        <attr name="sancaiChecked" />
+        <!-- Glaze poured into the checked box. Cobalt when absent. -->
+        <attr name="sancaiGlaze" />
+    </declare-styleable>
+</resources>
