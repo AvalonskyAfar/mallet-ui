@@ -21,8 +21,10 @@ has to satisfy, and how new design is judged.
 ```
 sancai/      the library; public API in io.github.avalonskyafar.sancai.*
 showcase/    the demo app; it uses the library exactly as another app would
+samples/     minimal: a project of its own, in Java and XML, that uses the published binary
 docs/        the published documentation, and docs/dev for contributors
-tools/       catalog.py, pictures.py, device.py
+tools/       catalog.py and api_index.py (generated documents), pictures.py, films.py and
+             gallery.py (pictures and clips), device.py (tests and tours on a device)
 ```
 
 `docs/dev/CONVENTIONS.md` is the rule book for library code: the anatomy of a widget, the

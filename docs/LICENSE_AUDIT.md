@@ -65,3 +65,6 @@ These need a human decision before the project is published; none blocks local u
   trademark search.
 - If illustrations from the original app are wanted in the project later, state their
   licence explicitly first.
+- The demo APK of a release is signed with the Android debug key unless a release key is
+  supplied (`SHOWCASE_KEYSTORE` and its companions). Supply one before the APK is offered
+  for download.

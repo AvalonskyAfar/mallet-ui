@@ -1,0 +1,14 @@
+Sancai showcase: motion tour (slowed 1x)
+device: Google sdk_gphone64_x86_64, Android 16 (API 36), x86_64, Physical size: 1080x2400, Physical density: 420
+date:   2026-11-18 02:24 +0800
+
+passed   MotionTour.sliders
+passed   MotionTour.places
+passed   MotionTour.reveal
+passed   MotionTour.tracks
+passed   MotionTour.switches
+passed   MotionTour.pager
+passed   MotionTour.overlays
+passed   MotionTour.appearance
+
+8 tests in 142 s: 8 passed

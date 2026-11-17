@@ -1,0 +1,41 @@
+Sancai showcase: device tests
+device: unknown Android SDK built for x86_64, Android 6.0 (API 23), x86_64, Physical size: 1080x1920, Physical density: 420
+date:   2026-11-18 02:38 +0800
+
+passed   AppearanceDeviceTest.largerTextScalesTheTypeOfTheRebuiltPage
+passed   AppearanceDeviceTest.choosingDarkRebuildsTheScreenInTheDarkPaletteAndLightBringsItBack
+passed   ControlsDeviceTest.aChangeTheListenerRefusesGlidesBack
+passed   ControlsDeviceTest.typingIntoAFieldClearsItsError
+passed   ControlsDeviceTest.aVerticalDragThatStartsOnATrackScrollsThePage
+passed   ControlsDeviceTest.aTrackTakesATapAndFollowsADragToItsEnd
+passed   ControlsDeviceTest.aSliderBeadFollowsTheFinger
+passed   ControlsDeviceTest.aSwitchAnswersATapAndADrag
+passed   ControlsDeviceTest.checkboxesAndRadiosFollowTheirRules
+passed   ControlsDeviceTest.withAKeyboardFocusWalksIntoThePageAndATrackAnswersTheArrowKeys
+passed   ControlsDeviceTest.aStepperStepsOnATapAndRepeatsWhileHeld
+passed   GesturesDeviceTest.aPagerFollowsTheFingerAndItsLinkedHeadingStaysInStep
+passed   GesturesDeviceTest.aSectionOpensAndClosesUnderATap
+passed   GesturesDeviceTest.aDetailPageIsDraggedBackToItsParent
+passed   GesturesDeviceTest.atItsFirstPageAPagerHandsTheDragToThePageAroundIt
+passed   GesturesDeviceTest.aSwitchInsideASlidingRowKeepsItsOwnDrag
+passed   GesturesDeviceTest.aRowSlidesAsideAndItsActionRemovesIt
+passed   GesturesDeviceTest.aShortDragLetsTheRowGlideShut
+passed   NavigationDeviceTest.aShortSlowDragGlidesBack
+passed   NavigationDeviceTest.theAppStartsOnHomeAndThePowerSwitchAnswersTapAndDrag
+passed   NavigationDeviceTest.draggingTowardsANeighbourTravelsThereAndBackReturns
+passed   NavigationDeviceTest.aPageThatArrivesLaterKeepsClearOfTheSystemBars
+passed   NavigationDeviceTest.aRowOpensItsPageAndBackWalksUpTheMap
+passed   NavigationDeviceTest.aSecondActivityArrivesLikeAPageAndIsSwipedBack
+passed   NavigationDeviceTest.rotatingTheDeviceKeepsThePage
+passed   OverlaysDeviceTest.aDialogWithThreeActionsReportsTheOneThatWasPicked
+passed   OverlaysDeviceTest.anInputDialogKeepsARejectedNameAndClosesOnAGoodOne
+passed   OverlaysDeviceTest.aMenuGrowsFromItsButtonAndAnItemIsPicked
+passed   OverlaysDeviceTest.aSheetRisesAndFollowsTheFingerBackDown
+passed   OverlaysDeviceTest.aDialogRisesAndItsConfirmingActionCloses
+passed   OverlaysDeviceTest.aToastRisesAndLeavesByItself
+passed   OverlaysDeviceTest.anActionOfASheetIsPicked
+passed   OverlaysDeviceTest.backClosesADialogWithoutConfirmingAndStaysOnThePage
+passed   PagesDeviceTest.everyPageOpensAndDrawsInTheDarkTheme
+passed   PagesDeviceTest.everyPageOpensAndDrawsInTheLightTheme
+
+35 tests in 229 s: 35 passed
