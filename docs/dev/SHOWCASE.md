@@ -87,9 +87,13 @@ Inside a card use `LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP)`.
 ## Building and looking
 
 ```
-bash /d/DeepSeek/android-toolchain/work.sh pages <key> <page-key>
+bash /d/DeepSeek/android-toolchain/work.sh pages <work-copy-key> page_<page-key>_
 ```
 
-`ShowcasePagesTest` builds every page in light and dark with Robolectric, fails if a page
-throws, and writes `showcase/build/snapshots/page_<key>_light.png` and `..._dark.png`. Open
-your two files with the Read tool and judge them as a designer would.
+This compiles the library and the showcase and runs `ShowcasePagesTest`, which builds the
+pages whose snapshot name matches the filter (a regular expression; leave it out to build
+all pages), in light and in dark, with Robolectric. A page that throws or comes out blank
+fails the test. The pictures are written to
+`showcase/build/snapshots/page_<page-key>_light.png` and `..._dark.png` in the work copy.
+Pages taller than 3200 dp are cut there. Open your two files with the Read tool and judge
+them as a designer would.

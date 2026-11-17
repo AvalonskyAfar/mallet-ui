@@ -112,13 +112,18 @@ class ShowcasePagesTest {
     @Test
     fun `every page builds and draws in light and dark`() {
         val failures = ArrayList<String>()
+        // -PsancaiPages=<regex> renders only the pages whose snapshot name matches.
+        val only = System.getProperty("sancai.pages")?.takeIf { it.isNotBlank() }?.toRegex()
         for (key in Pages.graph.keys.sorted()) {
             for (appearance in listOf(ShowcaseSettings.Appearance.LIGHT, ShowcaseSettings.Appearance.DARK)) {
                 val name = "page_${key}_${appearance.name.lowercase()}"
+                if (only != null && !only.containsMatchIn(name)) continue
                 try {
                     val bitmap = render(key, appearance)
                     save(bitmap, name)
-                    if (inkShare(bitmap) < 0.002f) failures += "$name is blank"
+                    val blank = inkShare(bitmap) < 0.002f
+                    bitmap.recycle()
+                    if (blank) failures += "$name is blank"
                 } catch (error: Throwable) {
                     failures += "$name threw ${error::class.java.simpleName}: ${error.message}\n" +
                         error.stackTrace.take(6).joinToString("\n") { "      at $it" }

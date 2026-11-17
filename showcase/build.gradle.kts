@@ -61,6 +61,8 @@ android {
                 System.getProperty("https.proxyPort")?.let {
                     test.systemProperty("robolectric.dependency.proxy.port", it)
                 }
+                // -PsancaiPages=<regex> limits ShowcasePagesTest to the pages whose snapshot name matches.
+                providers.gradleProperty("sancaiPages").orNull?.let { test.systemProperty("sancai.pages", it) }
                 test.systemProperty(
                     "sancai.snapshot.dir",
                     layout.buildDirectory.dir("snapshots").get().asFile.absolutePath,
