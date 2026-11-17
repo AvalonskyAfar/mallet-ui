@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="follow_drag_title">拖动，而不是点按</string>
+    <string name="follow_drag_detail">整个手势里，滑块始终跟在指尖下面。</string>
+    <string name="follow_level_off">关闭</string>
+    <string name="follow_level_gentle">温和</string>
+    <string name="follow_level_standard">标准</string>
+    <string name="follow_level_strict">严格</string>
+    <string name="follow_drag_track_status">过滤：%1$s</string>
+    <string name="follow_power_on">开关已打开。</string>
+    <string name="follow_power_off">开关已关闭。</string>
+    <string name="follow_drag_note">手指按住滑块慢慢移动。停在半路松手，它会落到较近的一侧。</string>
+
+    <string name="follow_colour_title">颜色随位置流动</string>
+    <string name="follow_colour_detail">数值升高时，珠子身后的那一段会在四种釉色之间依次过渡。</string>
+    <string name="follow_colour_label">强度</string>
+    <string name="follow_colour_value">%1$d%% · %2$s</string>
+    <string name="follow_colour_percent">%1$d%%</string>
+
+    <string name="follow_vertical_title">竖向移动，把手势还给页面</string>
+    <string name="follow_vertical_detail">轨道只接管横向的手势。</string>
+    <string name="follow_speed_slow">慢</string>
+    <string name="follow_speed_normal">正常</string>
+    <string name="follow_speed_fast">快</string>
+    <string name="follow_vertical_status">速度：%1$s</string>
+    <string name="follow_vertical_note">在轨道上按下，再向上或向下移动。页面跟着滚动，数值不变。</string>
+
+    <string name="follow_code_title">用代码移动</string>
+    <string name="follow_code_detail">同样的移动，不需要手指。</string>
+    <string name="follow_code_low">低</string>
+    <string name="follow_code_mid">中</string>
+    <string name="follow_code_high">高</string>
+    <string name="follow_code_jump">不带动画回到“关闭”</string>
+    <string name="follow_code_idle">按下面的按钮，或者自己拖动轨道。</string>
+    <string name="follow_code_glided">select(%1$d)：滑块滑到了“%2$s”。</string>
+    <string name="follow_code_jumped">select(0, animate = false)：滑块直接跳到了“%1$s”。</string>
+    <string name="follow_code_dragged">手动移到了“%1$s”。</string>
+
+    <string name="follow_origin">跟手的滑块、松手后的归位、随滑块流动的颜色，以及把竖向移动交还给页面的做法，都取自原应用的轨道和总开关。滑杆及其釉色渐变是为三彩新设计的。</string>
+</resources>

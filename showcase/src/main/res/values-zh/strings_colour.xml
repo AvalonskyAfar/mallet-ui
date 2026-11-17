@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="colour_neutral_title">中性色</string>
+    <string name="colour_neutral_detail">七个角色撑起每一屏。下面的色值取自当前主题。</string>
+    <string name="colour_role_canvas">最底层的页面</string>
+    <string name="colour_role_surface">卡片与列表行</string>
+    <string name="colour_role_raised">滑块、对话框等浮起的部分</string>
+    <string name="colour_role_ink">文字与图标</string>
+    <string name="colour_role_muted">说明与提示</string>
+    <string name="colour_role_hairline">边缘与描边</string>
+    <string name="colour_role_divider">行与行之间的分隔线</string>
+
+    <string name="colour_semantic_title">语义色</string>
+    <string name="colour_semantic_detail">四种带含义的颜色，用在文字和图标上，不用来铺底。</string>
+    <string name="colour_accent_line">查看全部 24 条</string>
+    <string name="colour_danger_line">这份清单将被永久删除。</string>
+    <string name="colour_warning_line">上次备份已是九天前。</string>
+    <string name="colour_success_line">已保存，内容都是最新的。</string>
+
+    <string name="colour_glaze_title">釉色</string>
+    <string name="colour_glaze_detail">五种釉色浇在下凹的槽里。每条槽显示它在当前主题下的颜色，上面是落在釉面上的文字。</string>
+
+    <string name="colour_scale_title">釉色阶</string>
+    <string name="colour_scale_detail">选项有先后次序时，轨道按色阶取釉：起点偏暖，终点偏冷。</string>
+    <string name="colour_scale_idle">拨动任意一个滑块，这里会显示结果。</string>
+    <string name="colour_scale_status">%1$s，第 %2$d 档，共 %3$d 档</string>
+    <string name="colour_scale_note">慢慢拖动滑块，可以看到两种釉色彼此交融。</string>
+    <string name="colour_opt_off">关闭</string>
+    <string name="colour_opt_on">开启</string>
+    <string name="colour_opt_gentle">宽松</string>
+    <string name="colour_opt_standard">标准</string>
+    <string name="colour_opt_strict">严格</string>
+
+    <string name="colour_plain_title">不分次序的选择</string>
+    <string name="colour_plain_detail">选项之间没有次序时，全部用同一种釉色。</string>
+    <string name="colour_plain_status">分组方式：%1$s</string>
+    <string name="colour_opt_day">按日</string>
+    <string name="colour_opt_week">按周</string>
+    <string name="colour_opt_month">按月</string>
+
+    <string name="colour_daynight_title">日与夜</string>
+    <string name="colour_daynight_detail">同一个开关和轨道放在两套主题里，各自衬着自己的底色。拨动一边，另一边跟着动。</string>
+    <string name="colour_day">日间</string>
+    <string name="colour_night">夜间</string>
+    <string name="colour_opt_low">低</string>
+    <string name="colour_opt_mid">中</string>
+    <string name="colour_opt_high">高</string>
+
+    <string name="colour_origin">中性色与语义色的色值、五种釉色，以及二、三、四档的色阶，都提取自原应用，只有日间的 warning 调深了一些。角色命名、不分次序时的单一釉色、任意档数的色阶，以及夜间轨道里保留的釉色，是为三彩新设计的。</string>
+</resources>

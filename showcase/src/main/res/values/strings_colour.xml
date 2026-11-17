@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="colour_neutral_title">Neutral roles</string>
+    <string name="colour_neutral_detail">Seven roles carry every screen. The values below are read from the theme in use.</string>
+    <string name="colour_role_canvas">The page behind everything</string>
+    <string name="colour_role_surface">Cards and rows</string>
+    <string name="colour_role_raised">Thumbs, dialogs and what floats</string>
+    <string name="colour_role_ink">Text and icons</string>
+    <string name="colour_role_muted">Captions and hints</string>
+    <string name="colour_role_hairline">Rims and outlines</string>
+    <string name="colour_role_divider">Lines between rows</string>
+
+    <string name="colour_semantic_title">Semantic roles</string>
+    <string name="colour_semantic_detail">Four colours that mean something. They are used for words and icons, not for fills.</string>
+    <string name="colour_accent_line">Show all 24 entries</string>
+    <string name="colour_danger_line">This list will be deleted for good.</string>
+    <string name="colour_warning_line">The backup is nine days old.</string>
+    <string name="colour_success_line">Saved. Everything is up to date.</string>
+
+    <string name="colour_glaze_title">Glazes</string>
+    <string name="colour_glaze_detail">Five glazes are poured into recessed beds. Each bed shows its colour in this theme, with a label resting on it.</string>
+
+    <string name="colour_scale_title">The scale</string>
+    <string name="colour_scale_detail">A track with ordered options takes its glazes from the scale: warm at the start, cool at the end.</string>
+    <string name="colour_scale_idle">Move a thumb to see what it reports.</string>
+    <string name="colour_scale_status">%1$s, step %2$d of %3$d</string>
+    <string name="colour_scale_note">Drag a thumb slowly and watch one glaze blend into the next.</string>
+    <string name="colour_opt_off">Off</string>
+    <string name="colour_opt_on">On</string>
+    <string name="colour_opt_gentle">Gentle</string>
+    <string name="colour_opt_standard">Standard</string>
+    <string name="colour_opt_strict">Strict</string>
+
+    <string name="colour_plain_title">A plain choice</string>
+    <string name="colour_plain_detail">When the options have no order, one glaze under all of them says so.</string>
+    <string name="colour_plain_status">Grouped by: %1$s</string>
+    <string name="colour_opt_day">Day</string>
+    <string name="colour_opt_week">Week</string>
+    <string name="colour_opt_month">Month</string>
+
+    <string name="colour_daynight_title">Day and night</string>
+    <string name="colour_daynight_detail">The same switch and track in both themes, each on its own canvas. Move one and its twin follows.</string>
+    <string name="colour_day">Day</string>
+    <string name="colour_night">Night</string>
+    <string name="colour_opt_low">Low</string>
+    <string name="colour_opt_mid">Mid</string>
+    <string name="colour_opt_high">High</string>
+
+    <string name="colour_origin">The neutral and semantic values, the five glazes and the two, three and four step scale were extracted from the original app; only warning was darkened for the light theme. The role names, one glaze for a plain choice, scales of any length and the glaze kept in night tracks were designed for Sancai.</string>
+</resources>

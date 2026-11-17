@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="follow_drag_title">Drag, do not tap</string>
+    <string name="follow_drag_detail">The thumb stays under the finger for the whole gesture.</string>
+    <string name="follow_level_off">Off</string>
+    <string name="follow_level_gentle">Gentle</string>
+    <string name="follow_level_standard">Standard</string>
+    <string name="follow_level_strict">Strict</string>
+    <string name="follow_drag_track_status">Filter: %1$s</string>
+    <string name="follow_power_on">The switch is on.</string>
+    <string name="follow_power_off">The switch is off.</string>
+    <string name="follow_drag_note">Put a finger on the thumb and move slowly. Let go half way and it settles on the nearer side.</string>
+
+    <string name="follow_colour_title">Colour moves with position</string>
+    <string name="follow_colour_detail">The stretch behind the bead blends through the four glazes as the value rises.</string>
+    <string name="follow_colour_label">Strength</string>
+    <string name="follow_colour_value">%1$d %% · %2$s</string>
+    <string name="follow_colour_percent">%1$d %%</string>
+
+    <string name="follow_vertical_title">Vertical movement gives the gesture back</string>
+    <string name="follow_vertical_detail">A track only keeps a gesture that runs sideways.</string>
+    <string name="follow_speed_slow">Slow</string>
+    <string name="follow_speed_normal">Normal</string>
+    <string name="follow_speed_fast">Fast</string>
+    <string name="follow_vertical_status">Speed: %1$s</string>
+    <string name="follow_vertical_note">Start on the track and move up or down. The page scrolls and the value stays.</string>
+
+    <string name="follow_code_title">From code</string>
+    <string name="follow_code_detail">The same movement without a finger.</string>
+    <string name="follow_code_low">Low</string>
+    <string name="follow_code_mid">Mid</string>
+    <string name="follow_code_high">High</string>
+    <string name="follow_code_jump">Back to Off without animation</string>
+    <string name="follow_code_idle">Press a button, or drag the track yourself.</string>
+    <string name="follow_code_glided">select(%1$d): the thumb glided to %2$s.</string>
+    <string name="follow_code_jumped">select(0, animate = false): the thumb jumped to %1$s.</string>
+    <string name="follow_code_dragged">Moved by hand to %1$s.</string>
+
+    <string name="follow_origin">The following thumb, the settling on release, the colour that travels with it and the hand-over of vertical movement to the page were extracted from the original app\'s track and power switch. The slider and its glaze scale were designed for Sancai.</string>
+</resources>

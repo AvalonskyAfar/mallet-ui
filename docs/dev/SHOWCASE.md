@@ -86,6 +86,29 @@ Inside a card use `LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP)`.
    from the scaffold, say so in your report.
 9. A page must look right in light and dark, at text scale 1.13, and in right-to-left.
 
+## Words (English and Chinese)
+
+Use the same word for the same thing on every page. The Chinese follows the vocabulary of
+the original app where it had one.
+
+| English | 中文 | | English | 中文 |
+|---|---|---|---|---|
+| Sancai | 三彩 | | glaze | 釉色 |
+| track | 轨道 | | bed (of a track) | 轨道底色 |
+| thumb | 滑块 | | bead (slider, radio) | 圆珠 |
+| porcelain | 瓷面 | | well | 凹槽 |
+| card | 卡片 | | capsule | 胶囊 |
+| rim | 描边 | | divider | 分隔线 |
+| shadow gutter | 阴影留边 | | canvas (page background) | 页面底色 |
+| press / sink | 按压 / 下沉 | | glide / settle | 滑行 / 归位 |
+| Off / On | 关闭 / 开启 | | Gentle / Standard / Strict | 轻度 / 标准 / 严格 |
+| segmented track | 分段轨道 | | switch / power switch | 开关 / 总开关 |
+| stepper / slider | 步进器 / 滑杆 | | progress bar / spinner | 进度条 / 加载环 |
+| checkbox / radio | 复选框 / 单选框 | | text field | 文本框 |
+| button / chip / tag / badge | 按钮 / 筛选片 / 状态标签 / 角标 | | entry row / control row / link row | 入口行 / 控制行 / 链接行 |
+| dialog / sheet / menu / toast | 对话框 / 底部面板 / 菜单 / 轻提示 | | page / neighbour | 页面 / 邻页 |
+| start side / end side | 起始侧 / 末端侧 | | extracted from the original app / new in Sancai | 取自原应用 / 三彩新增 |
+
 ## Building and looking
 
 ```
