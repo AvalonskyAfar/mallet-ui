@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SancaiPage">
+        <!--
+            Whether the page adds the system-bar, display-cutout and keyboard insets to its
+            padding (default true). Switch it off inside a host that already handles insets.
+        -->
+        <attr name="sancaiPageFitSystemBars" format="boolean" />
+    </declare-styleable>
+</resources>
