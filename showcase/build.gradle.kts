@@ -74,6 +74,9 @@ android {
                     "sancai.snapshot.dir",
                     layout.buildDirectory.dir("snapshots").get().asFile.absolutePath,
                 )
+                // -PsancaiFilms makes ShowcaseFilmTest draw its films, frame by frame, into build/films.
+                if (providers.gradleProperty("sancaiFilms").isPresent) test.systemProperty("sancai.films", "true")
+                test.systemProperty("sancai.film.dir", layout.buildDirectory.dir("films").get().asFile.absolutePath)
             }
         }
     }

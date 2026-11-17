@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.github.avalonskyafar.sancai.widget.SancaiPage xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <io.github.avalonskyafar.sancai.widget.SancaiHeading
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sancaiDetail="@string/summary"
+        app:sancaiHeadingLevel="page"
+        app:sancaiTitle="@string/title" />
+
+    <io.github.avalonskyafar.sancai.widget.SancaiSurface
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp">
+
+        <io.github.avalonskyafar.sancai.widget.SancaiControlRow
+            android:id="@+id/strength"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:sancaiOptions="@array/levels"
+            app:sancaiSelectedIndex="2"
+            app:sancaiTitle="@string/strength" />
+
+        <io.github.avalonskyafar.sancai.widget.SancaiControlRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:sancaiDetail="@string/wifi_detail"
+            app:sancaiTitle="@string/wifi">
+
+            <io.github.avalonskyafar.sancai.widget.SancaiSwitch
+                android:id="@+id/wifi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:sancaiChecked="true" />
+        </io.github.avalonskyafar.sancai.widget.SancaiControlRow>
+
+        <io.github.avalonskyafar.sancai.widget.SancaiDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp" />
+
+        <io.github.avalonskyafar.sancai.widget.SancaiEntryRow
+            android:id="@+id/exceptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:sancaiDetail="@string/exceptions_detail"
+            app:sancaiEntryArrow="end"
+            app:sancaiTitle="@string/exceptions" />
+    </io.github.avalonskyafar.sancai.widget.SancaiSurface>
+
+    <io.github.avalonskyafar.sancai.widget.SancaiSurface
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        app:sancaiContentPadding="14dp">
+
+        <io.github.avalonskyafar.sancai.widget.SancaiTextField
+            android:id="@+id/profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/profile_hint"
+            app:sancaiFieldCounter="24"
+            app:sancaiFieldEndAction="clear"
+            app:sancaiFieldLabel="@string/profile" />
+    </io.github.avalonskyafar.sancai.widget.SancaiSurface>
+
+    <io.github.avalonskyafar.sancai.widget.SancaiText
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:text="@string/status_idle"
+        app:sancaiTextRole="caption"
+        app:sancaiTone="muted" />
+
+    <io.github.avalonskyafar.sancai.widget.SancaiButton
+        android:id="@+id/save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="30dp"
+        android:text="@string/save"
+        app:sancaiButtonVariant="primary"
+        app:sancaiIcon="check" />
+
+    <io.github.avalonskyafar.sancai.widget.SancaiButton
+        android:id="@+id/restore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="30dp"
+        android:text="@string/restore"
+        app:sancaiButtonVariant="text" />
+</io.github.avalonskyafar.sancai.widget.SancaiPage>

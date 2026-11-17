@@ -27,7 +27,8 @@ Run-time dependencies, all resolved by Gradle from the library's POM:
 library. The library does **not** depend on AppCompat, Material Components or Compose, and
 does not require your activities to extend any particular class.
 
-Size: the AAR is a few hundred kilobytes and contains no images, fonts or native code.
+Size: the AAR is about 0.8 MB and contains no images, fonts or native code. A screen like
+the one in `samples/minimal`, shrunk with R8, makes an APK of about 170 KB.
 
 ---
 

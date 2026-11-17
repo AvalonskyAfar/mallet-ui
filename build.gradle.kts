@@ -30,7 +30,7 @@ val sourceZip = tasks.register<Zip>("sourceZip") {
     from(rootDir) {
         into("sancai-ui-$releaseVersion")
         exclude(
-            "**/build/**", ".gradle/**", ".git/**", ".kotlin/**", ".idea/**", ".claude/**",
+            "**/build/**", "**/.gradle/**", ".git/**", "**/.kotlin/**", ".idea/**", ".claude/**",
             "dist/**", "local.properties", "**/*.iml",
         )
         filesMatching("gradlew") { permissions { unix("rwxr-xr-x") } }

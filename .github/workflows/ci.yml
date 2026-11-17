@@ -25,8 +25,17 @@ jobs:
       - name: Unit tests (library and showcase, on the JVM)
         run: ./gradlew :sancai:testDebugUnitTest :showcase:testDebugUnitTest
 
+      - name: Static checks (warnings are errors)
+        run: ./gradlew :sancai:lintDebug :showcase:lintDebug
+
       - name: Build the library and the demo app
-        run: ./gradlew :sancai:assembleRelease :showcase:assembleDebug
+        run: ./gradlew :sancai:assembleRelease :showcase:assembleDebug :showcase:assembleDebugAndroidTest
+
+      - name: Integration (the Java sample resolves the library from a Maven repository and is shrunk)
+        run: |
+          ./gradlew :sancai:publishReleasePublicationToDistRepository
+          cd samples/minimal
+          ../../gradlew assembleRelease
 
       - name: Upload snapshot pictures
         if: always()

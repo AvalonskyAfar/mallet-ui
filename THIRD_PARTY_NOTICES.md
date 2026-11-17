@@ -15,7 +15,7 @@ declared in the POM and resolved by the consumer's build; none is bundled.
 | `androidx.annotation:annotation` | 1.9.1 | api | Apache-2.0 |
 | `androidx.core:core` | 1.13.1 | implementation | Apache-2.0 |
 | `androidx.customview:customview` | 1.1.0 | implementation | Apache-2.0 |
-| `org.jetbrains.kotlin:kotlin-stdlib` | 2.0.21 | implementation | Apache-2.0 |
+| `org.jetbrains.kotlin:kotlin-stdlib` | 2.0.21 | api (added by the Kotlin plugin) | Apache-2.0 |
 
 ## 2. The Showcase APK
 
