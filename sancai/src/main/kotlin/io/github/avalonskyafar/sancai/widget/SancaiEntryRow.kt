@@ -170,10 +170,10 @@ public class SancaiEntryRow @JvmOverloads constructor(
         installingPress = true
         SancaiPress.attach(this, content)
         installingPress = false
-        // Listener first, haptic second.
+        // An action: the tick confirms the press at once, then the listener runs.
         super.setOnClickListener { view ->
-            userClick?.onClick(view)
             SancaiHaptics.tick(view)
+            userClick?.onClick(view)
         }
         if (::declaredClick.isInitialized) userClick = declaredClick
 
@@ -235,7 +235,7 @@ public class SancaiEntryRow @JvmOverloads constructor(
 
     /**
      * Sets what a tap, Enter / Space or the accessibility click does. The content is back
-     * in place before [listener] runs, and the row ticks after it.
+     * in place and the row has ticked before [listener] runs.
      */
     override fun setOnClickListener(listener: OnClickListener?) {
         when {

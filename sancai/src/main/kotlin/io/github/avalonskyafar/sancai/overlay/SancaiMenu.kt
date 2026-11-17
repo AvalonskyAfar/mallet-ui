@@ -269,8 +269,9 @@ public class SancaiMenu(context: Context) {
 
     private fun picked(entry: Entry, view: View) {
         if (closing) return
-        entry.action?.run()
+        // An action: tick first, then run it.
         SancaiHaptics.tick(view)
+        entry.action?.run()
         dismiss()
     }
 

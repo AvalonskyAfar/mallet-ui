@@ -342,7 +342,7 @@ class SancaiEntryRowTest {
     }
 
     @Test
-    fun `listener runs before the tick and setters never call it`() {
+    fun `the tick comes before the listener and setters never call it`() {
         val row = row()
         var hapticSeenByListener: Int? = null
         var clicks = 0
@@ -362,8 +362,8 @@ class SancaiEntryRowTest {
 
         row.performClick()
         assertThat(clicks).isEqualTo(1)
-        assertThat(hapticSeenByListener).isNotEqualTo(HapticFeedbackConstants.CLOCK_TICK)
-        assertThat(Shadows.shadowOf(row).lastHapticFeedbackPerformed()).isEqualTo(HapticFeedbackConstants.CLOCK_TICK)
+        // The row is an action: its tick must not wait for what the listener starts.
+        assertThat(hapticSeenByListener).isEqualTo(HapticFeedbackConstants.CLOCK_TICK)
     }
 
     @Test

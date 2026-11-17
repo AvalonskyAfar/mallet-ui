@@ -3,6 +3,7 @@ package io.github.avalonskyafar.sancai.widget
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.os.Bundle
@@ -294,7 +295,15 @@ public class SancaiRadioButton @JvmOverloads constructor(
                 bedClip.rewind()
                 bedClip.addCircle(bedBounds.centerX(), bedBounds.centerY(), radius, Path.Direction.CW)
                 canvas.clipPath(bedClip)
-                material.drawThumb(canvas, beadBounds, down)
+                if (theme.isDark) {
+                    // A dark thumb would read as a hole in the glaze: the bead takes the pale
+                    // tone that labels have on this bed.
+                    textPaint.style = Paint.Style.FILL
+                    textPaint.color = theme.labelOnBed(glaze)
+                    canvas.drawCircle(beadBounds.centerX(), beadBounds.centerY(), bead / 2f, textPaint)
+                } else {
+                    material.drawThumb(canvas, beadBounds, down)
+                }
             }
         }
         canvas.restoreToCount(body)

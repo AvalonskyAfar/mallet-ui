@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Accessibility actions of SancaiFloatingPanel. -->
+    <string name="sancai_floating_panel_move_start">移到起始边</string>
+    <string name="sancai_floating_panel_move_end">移到末尾边</string>
+    <string name="sancai_floating_panel_move_top">移到顶部</string>
+    <string name="sancai_floating_panel_move_bottom">移到底部</string>
+</resources>

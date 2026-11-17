@@ -481,8 +481,9 @@ public class SancaiRevealLayout @JvmOverloads constructor(
 
     private fun performAction() {
         if (!hasAction) return
-        actionClick?.onClick(this)
+        // An action: tick first, then run it.
         SancaiHaptics.tick(this)
+        actionClick?.onClick(this)
     }
 
     private fun ownerUnder(view: View, x: Float, y: Float): Boolean {

@@ -343,10 +343,10 @@ public class SancaiTextField @JvmOverloads constructor(
         actionParams.marginEnd = px(ACTION_INSET_DP)
         well.addView(actionView, actionParams)
         SancaiPress.attach(actionView, actionView)
-        // Listener first, haptic second.
+        // An action: tick first, then act.
         actionView.setOnClickListener {
-            onEndActionClicked()
             SancaiHaptics.tick(actionView)
+            onEndActionClicked()
         }
         actionView.background = ActionFocusDrawable()
         actionView.setOnFocusChangeListener { _, _ -> actionView.invalidate() }

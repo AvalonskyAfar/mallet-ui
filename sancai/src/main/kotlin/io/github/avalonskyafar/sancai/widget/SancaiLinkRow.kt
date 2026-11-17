@@ -265,9 +265,9 @@ public class SancaiLinkRow @JvmOverloads constructor(
     }
 
     override fun performClick(): Boolean {
-        val handled = super.performClick()
+        // An action: tick first, then the listener.
         SancaiHaptics.tick(this)
-        return handled
+        return super.performClick()
     }
 
     override fun setEnabled(enabled: Boolean) {

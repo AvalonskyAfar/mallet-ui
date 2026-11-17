@@ -42,9 +42,9 @@ import kotlin.math.roundToInt
  *     app:sancaiChecked="true" />
  * ```
  *
- * The view is 61 x 34 dp by default: a 58 x 30 dp track plus the gutter its shadow needs. It
- * carries no label of its own; give it a `contentDescription`, or place it in a row that is
- * at least 44 dp tall and forwards its clicks with [performClick].
+ * The view is 61 x 44 dp by default: the 61 x 34 dp track of the original (a 58 x 30 dp bed
+ * plus the gutter its shadow needs), centred in a 44 dp touch target. A view forced to 34 dp
+ * is all track. It carries no label of its own: give it a `contentDescription`.
  *
  * The listener is called for user input only (touch, keyboard, accessibility action), never
  * for [setChecked] or [toggle], so a change can be rolled back from inside the listener.
@@ -155,17 +155,29 @@ public class SancaiSwitch @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         setMeasuredDimension(
             resolveSize(dp(WIDTH_DP).roundToInt() + paddingLeft + paddingRight, widthMeasureSpec),
-            resolveSize(dp(HEIGHT_DP).roundToInt() + paddingTop + paddingBottom, heightMeasureSpec),
+            resolveSize(dp(TARGET_HEIGHT_DP).roundToInt() + paddingTop + paddingBottom, heightMeasureSpec),
         )
     }
+
+    /**
+     * Height of the box the track is drawn in. A view taller than the track keeps up to
+     * 5 dp of touch margin above and below it, so the default 44 dp view shows the 34 dp
+     * track; taller views grow the track, and a view of 34 dp or less is all track.
+     */
+    private fun boxHeight(): Float {
+        val content = (height - paddingTop - paddingBottom).toFloat()
+        return min(content, max(dp(HEIGHT_DP), content - dp(TARGET_HEIGHT_DP - HEIGHT_DP)))
+    }
+
+    private fun boxTop(): Float = paddingTop + ((height - paddingTop - paddingBottom) - boxHeight()) / 2f
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         trackBounds.set(
             paddingLeft + dp(GUTTER_SIDE_DP),
-            paddingTop + dp(GUTTER_TOP_DP),
+            boxTop() + dp(GUTTER_TOP_DP),
             width - paddingRight - dp(GUTTER_SIDE_DP),
-            height - paddingBottom - dp(GUTTER_BOTTOM_DP),
+            boxTop() + boxHeight() - dp(GUTTER_BOTTOM_DP),
         )
         if (trackBounds.width() <= 0f || trackBounds.height() <= 0f) return
 
@@ -192,7 +204,7 @@ public class SancaiSwitch @JvmOverloads constructor(
 
     private fun trackWidth(): Float = width - paddingLeft - paddingRight - dp(GUTTER_SIDE_DP * 2f)
 
-    private fun trackHeight(): Float = height - paddingTop - paddingBottom - dp(GUTTER_TOP_DP + GUTTER_BOTTOM_DP)
+    private fun trackHeight(): Float = boxHeight() - dp(GUTTER_TOP_DP + GUTTER_BOTTOM_DP)
 
     /** A circle of 26.4 dp, or as much as the padded track height allows. */
     private fun thumbSize(): Float = max(0f, min(dp(THUMB_DP), trackHeight() - dp(INSET_DP) * 2f))
@@ -382,6 +394,9 @@ public class SancaiSwitch @JvmOverloads constructor(
 
         /** Default height of the view in dp: a 30 dp track plus its shadow gutter. */
         public const val HEIGHT_DP: Float = 34f
+
+        /** Height of the view on `wrap_content`, in dp: the track centred in a 44 dp touch target. */
+        public const val TARGET_HEIGHT_DP: Float = 44f
 
         private const val GUTTER_SIDE_DP = 1.5f
         private const val GUTTER_TOP_DP = 1f

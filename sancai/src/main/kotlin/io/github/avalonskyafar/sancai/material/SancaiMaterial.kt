@@ -485,13 +485,26 @@ public class SancaiMaterial @JvmOverloads constructor(
         paint.strokeWidth = dp(0.9f)
         if (rim != null) {
             paint.color = rim
-        } else {
+        } else if (dark) {
             paint.shader = LinearGradient(
                 0f, scratch.top, 0f, scratch.bottom,
                 intArrayOf(
-                    Color.argb(if (dark) 104 else 74, 0, 0, 0),
-                    SancaiColors.withAlpha(colors.hairline, if (dark) 132 else 156),
-                    Color.argb(if (dark) 30 else 96, 255, 255, 255),
+                    Color.argb(104, 0, 0, 0),
+                    SancaiColors.withAlpha(colors.hairline, 132),
+                    Color.argb(30, 255, 255, 255),
+                ),
+                floatArrayOf(0f, 0.58f, 1f),
+                Shader.TileMode.CLAMP,
+            )
+        } else {
+            // On a white canvas a light lower rim cannot be seen and the well would look open
+            // at the bottom. The rim keeps its shaded top edge and closes in a hairline tone.
+            paint.shader = LinearGradient(
+                0f, scratch.top, 0f, scratch.bottom,
+                intArrayOf(
+                    SancaiColors.blend(colors.canvas, Color.BLACK, 74f / 255f),
+                    SancaiColors.blend(colors.hairline, colors.ink, 0.14f),
+                    SancaiColors.blend(colors.hairline, colors.ink, 0.06f),
                 ),
                 floatArrayOf(0f, 0.58f, 1f),
                 Shader.TileMode.CLAMP,

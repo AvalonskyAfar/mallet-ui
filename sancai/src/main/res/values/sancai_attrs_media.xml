@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SancaiMediaFrame">
+        <attr name="android:src" />
+        <attr name="android:scaleType" />
+        <!--
+            Width divided by height of the picture inside the well, for example 1.7778 for
+            16:9. 0 (the default) uses the layout height instead.
+        -->
+        <attr name="sancaiMediaAspectRatio" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="SancaiParagraph">
+        <!--
+            Whether CJK closing punctuation is tied to the character before it, so that it
+            never starts a line. Defaults to true.
+        -->
+        <attr name="sancaiParagraphProtectClosingPunctuation" format="boolean" />
+    </declare-styleable>
+</resources>

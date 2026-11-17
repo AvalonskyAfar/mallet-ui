@@ -39,7 +39,8 @@ class SancaiSwitchTest {
     /** Bed colour on the vertical centre of the track, at [xFraction] of the view width. */
     private fun SancaiSwitch.bedPixel(xFraction: Float): Int {
         val density = resources.displayMetrics.density
-        val centreY = (1f * density + (height - 3f * density)) / 2f
+        // The track is 1 dp lower at the top than at the bottom of its box, which is centred.
+        val centreY = height / 2f - 1f * density
         return Snapshots.render(this, WIDTH_DP).getPixel((width * xFraction).toInt(), centreY.toInt())
     }
 
@@ -52,12 +53,24 @@ class SancaiSwitchTest {
     }
 
     @Test
-    fun `default size is 61 by 34 dp`() {
+    fun `default size is a 61 by 34 dp track in a 44 dp touch target`() {
         val view = SancaiSwitch(Snapshots.context())
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val density = view.resources.displayMetrics.density
         assertThat(view.measuredWidth / density).isWithin(0.5f).of(61f)
-        assertThat(view.measuredHeight / density).isWithin(0.5f).of(34f)
+        assertThat(view.measuredHeight / density).isWithin(0.5f).of(44f)
+
+        // The track itself is still 34 dp high (30 dp of bed between its gutters), centred.
+        val canvas = SancaiTheme.light().colors.canvas
+        val bitmap = Snapshots.render(view, 61)
+        val x = (view.width * 0.7f).toInt()
+        assertThat(bitmap.getPixel(x, (2f * density).toInt())).isEqualTo(canvas)
+        assertThat(bitmap.getPixel(x, (9f * density).toInt())).isNotEqualTo(canvas)
+        assertThat(bitmap.getPixel(x, (33f * density).toInt())).isNotEqualTo(canvas)
+
+        // A view forced to 34 dp is all track, as in the original.
+        val tight = Snapshots.render(SancaiSwitch(Snapshots.context()), 61, 34)
+        assertThat(tight.getPixel(x, (4f * density).toInt())).isNotEqualTo(canvas)
     }
 
     @Test
@@ -318,7 +331,7 @@ class SancaiSwitchTest {
         val big = SancaiSwitch(Snapshots.context()).apply { setChecked(true, animate = false) }
         val bitmap = Snapshots.render(big, 88, 44)
         val density = big.resources.displayMetrics.density
-        val centreY = ((1f * density + (big.height - 3f * density)) / 2f).toInt()
+        val centreY = (big.height / 2f - 1f * density).toInt()
         // Free cobalt bed on the left, neutral thumb at the right end, vertically centred.
         assertThat(bitmap.getPixel((big.width * 0.3f).toInt(), centreY)).isEqualTo(light.bedColor(light.glazes.cobalt))
         val thumb = bitmap.getPixel((big.width - 18f * density).toInt(), centreY)
