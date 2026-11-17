@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Announced as the name of a dialog that has no title. -->
+    <string name="sancai_dialog_pane_title">Dialog</string>
+</resources>
