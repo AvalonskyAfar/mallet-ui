@@ -135,7 +135,7 @@ private fun PageScope.settleSection() {
         status.text = context.getString(R.string.motion_settle_status, (slider.value * 100).roundToInt(), ms.toInt())
         groove.jump(1f - slider.value)
     }
-    slider.onValueChangeListener = SancaiSlider.OnValueChangeListener { _, _, _ -> show() }
+    slider.setOnValueChangeListener { _, _ -> show() }
     val play = SancaiButton(context).apply {
         text = str(R.string.motion_play)
         variant = SancaiButton.Variant.PRIMARY

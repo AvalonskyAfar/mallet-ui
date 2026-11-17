@@ -62,7 +62,7 @@ class SancaiFloatingPanelTest {
         panel.addView(SancaiText.create(context, "Capturing", SancaiTextRole.CAPTION, SancaiTextTone.INK))
         host.addView(panel, FrameLayout.LayoutParams(-2, -2))
         val scene = Scene(host, panel)
-        panel.onPositionChangedListener = { x, y -> scene.moves += x to y }
+        panel.setOnPositionChangeListener { _, x, y -> scene.moves += x to y }
         if (attach) Snapshots.attach(host, 300) else Snapshots.layout(host, 300, 400)
         return scene
     }
@@ -362,7 +362,7 @@ class SancaiFloatingPanelTest {
         val panel = SancaiFloatingPanel(context)
         panel.addView(SancaiText.create(context, "Capturing", SancaiTextRole.CAPTION, SancaiTextTone.INK))
         val moves = ArrayList<Pair<Float, Float>>()
-        panel.onPositionChangedListener = { x, y -> moves += x to y }
+        panel.setOnPositionChangeListener { _, x, y -> moves += x to y }
         val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         panel.bindToWindow(windowManager, params)
         Snapshots.layout(panel, 120)

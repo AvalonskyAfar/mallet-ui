@@ -176,13 +176,13 @@ public class SancaiControlRow @JvmOverloads constructor(
     public fun setSegmented(
         options: List<CharSequence>,
         selected: Int,
-        listener: SancaiSegmentedTrack.OnSelectionChangedListener?,
+        listener: SancaiSegmentedTrack.OnSelectionChangeListener?,
     ): SancaiSegmentedTrack {
         val existing = if (segmented) track else null
         val track = existing ?: SancaiSegmentedTrack(context)
         track.options = options
         track.select(selected, animate = false)
-        track.onSelectionChangedListener = listener
+        track.setOnSelectionChangeListener(listener)
         val (text, control) = weightsFor(options.size)
         if (existing == null) {
             install(track, text, control, LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
@@ -265,7 +265,8 @@ public class SancaiControlRow @JvmOverloads constructor(
         }
         // A segmented track keeps a deeper shadow gutter below its capsule than above it, so
         // the capsule sits above the middle of the track's view. The text follows the capsule.
-        copy.setPadding(0, 0, 0, if (view is SancaiSegmentedTrack) dp(TRACK_OPTICAL_LIFT_DP * 2f) else 0)
+        val lift = SancaiSegmentedTrack.GUTTER_BOTTOM_DP - SancaiSegmentedTrack.GUTTER_TOP_DP
+        copy.setPadding(0, 0, 0, if (view is SancaiSegmentedTrack) dp(lift) else 0)
         if (view != null) {
             (view.layoutParams as LayoutParams).apply {
                 weight = control
@@ -358,8 +359,6 @@ public class SancaiControlRow @JvmOverloads constructor(
         private const val TEXT_GAP_DP = 10f
         private const val DETAIL_GAP_DP = 3f
 
-        /** Half the difference between the track's bottom (6.5 dp) and top (1.5 dp) gutter. */
-        private const val TRACK_OPTICAL_LIFT_DP = 2.5f
         private const val STATE_SUPER = "sancai:super"
         private const val STATE_SELECTED = "sancai:selected"
         private val LAYOUTS = Layout.values()

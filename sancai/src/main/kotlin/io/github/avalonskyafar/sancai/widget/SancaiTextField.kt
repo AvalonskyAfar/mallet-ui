@@ -86,7 +86,7 @@ public class SancaiTextField @JvmOverloads constructor(
     }
 
     /** Hears about text the user typed, pasted or cleared. */
-    public fun interface OnTextChangedListener {
+    public fun interface OnTextChangeListener {
         /** Called after [text] of [field] changed through user input. */
         public fun onTextChanged(field: SancaiTextField, text: CharSequence)
     }
@@ -124,7 +124,7 @@ public class SancaiTextField @JvmOverloads constructor(
         override fun afterTextChanged(s: Editable?) {
             updateCounter()
             updateAction()
-            if (!programmatic) onTextChangedListener?.onTextChanged(this@SancaiTextField, editText.text)
+            if (!programmatic) textChangeListener?.onTextChanged(this@SancaiTextField, editText.text)
         }
     }
 
@@ -142,8 +142,12 @@ public class SancaiTextField @JvmOverloads constructor(
         }
     }
 
+    private var textChangeListener: OnTextChangeListener? = null
+
     /** Called after the user changed the text. Setting [text] from code does not call it. */
-    public var onTextChangedListener: OnTextChangedListener? = null
+    public fun setOnTextChangeListener(listener: OnTextChangeListener?) {
+        textChangeListener = listener
+    }
 
     /** The text in the field. Setting it moves the cursor to the end and calls no listener. */
     public var text: CharSequence
@@ -295,7 +299,7 @@ public class SancaiTextField @JvmOverloads constructor(
     }
 
     private fun buildLabel() {
-        labelView.setTextSize(TypedValue.COMPLEX_UNIT_SP, LABEL_SP * theme.textScale)
+        labelView.setTextSize(TypedValue.COMPLEX_UNIT_SP, SancaiTextRole.FOOTNOTE.sizeSp * theme.textScale)
         labelView.typeface = SancaiWeight.MEDIUM.typeface()
         labelView.includeFontPadding = false
         labelView.setTextColor(colors.ink)
@@ -435,7 +439,7 @@ public class SancaiTextField @JvmOverloads constructor(
     }
 
     private fun applyTextStyle() {
-        val size = if (isMonospace) MONO_TEXT_SP else TEXT_SP
+        val size = if (isMonospace) SancaiTextRole.FOOTNOTE.sizeSp else SancaiTextRole.BODY.sizeSp
         editText.setTextSize(TypedValue.COMPLEX_UNIT_SP, size * theme.textScale)
         editText.typeface = if (isMonospace) Typeface.MONOSPACE else SancaiWeight.REGULAR.typeface()
     }
@@ -756,10 +760,7 @@ public class SancaiTextField @JvmOverloads constructor(
     }
 
     private companion object {
-        const val LABEL_SP = 13f
         const val LABEL_GAP_DP = 7f
-        const val TEXT_SP = 15f
-        const val MONO_TEXT_SP = 13f
         const val PADDING_H_DP = 13f
         const val PADDING_V_DP = 11f
         const val MIN_HEIGHT_DP = 44f

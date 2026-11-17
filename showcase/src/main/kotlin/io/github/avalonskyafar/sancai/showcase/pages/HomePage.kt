@@ -67,7 +67,7 @@ object HomePage : DemoPage(Pages.HOME, R.string.page_home_title, 0) {
             status.text = scope.str(if (on) R.string.home_status_on else R.string.home_status_off)
         }
         describe(true)
-        power.onCheckedChangeListener = SancaiPowerSwitch.OnCheckedChangeListener { _, checked -> describe(checked) }
+        power.setOnCheckedChangeListener { _, checked -> describe(checked) }
 
         fun params(top: Int) = LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP).apply { topMargin = scope.dp(top) }
         centre.addView(wordmark, params(0))

@@ -201,8 +201,7 @@ class SancaiExpandableLayoutTest {
         val s = section()
         attachPaused(s.layout)
         val seen = ArrayList<Float>()
-        s.layout.onExpansionProgressListener =
-            SancaiExpandableLayout.OnExpansionProgressListener { _, fraction -> seen += fraction }
+        s.layout.setOnExpansionProgressListener { _, fraction -> seen += fraction }
         s.layout.setExpanded(false, animate = true)
         advance(SancaiMotion.PAGE_MS + 50)
         assertThat(seen.size).isGreaterThan(2)
@@ -226,8 +225,7 @@ class SancaiExpandableLayoutTest {
         val s = section()
         Snapshots.attach(s.layout, 300)
         val changes = ArrayList<Boolean>()
-        s.layout.onExpansionChangeListener =
-            SancaiExpandableLayout.OnExpansionChangeListener { _, expanded -> changes += expanded }
+        s.layout.setOnExpansionChangeListener { _, expanded -> changes += expanded }
 
         s.layout.setExpanded(false, animate = false)
         s.layout.toggle()
@@ -296,8 +294,7 @@ class SancaiExpandableLayoutTest {
         val s = section()
         Snapshots.attach(s.layout, 300)
         val changes = ArrayList<Boolean>()
-        s.layout.onExpansionChangeListener =
-            SancaiExpandableLayout.OnExpansionChangeListener { _, expanded -> changes += expanded }
+        s.layout.setOnExpansionChangeListener { _, expanded -> changes += expanded }
         assertThat(s.header.isFocusable).isTrue()
         s.header.isFocusableInTouchMode = true
         assertThat(s.header.requestFocus()).isTrue()
@@ -318,8 +315,7 @@ class SancaiExpandableLayoutTest {
         val s = section()
         Snapshots.attach(s.layout, 300)
         val changes = ArrayList<Boolean>()
-        s.layout.onExpansionChangeListener =
-            SancaiExpandableLayout.OnExpansionChangeListener { _, expanded -> changes += expanded }
+        s.layout.setOnExpansionChangeListener { _, expanded -> changes += expanded }
         assertThat(ViewCompat.getStateDescription(s.header).toString()).isEqualTo("Expanded")
 
         assertThat(s.header.performAccessibilityAction(AccessibilityNodeInfo.ACTION_EXPAND, null)).isFalse()
@@ -346,7 +342,7 @@ class SancaiExpandableLayoutTest {
         val other = section()
         other.layout.id = 7
         var calls = 0
-        other.layout.onExpansionChangeListener = SancaiExpandableLayout.OnExpansionChangeListener { _, _ -> calls++ }
+        other.layout.setOnExpansionChangeListener { _, _ -> calls++ }
         other.layout.restoreHierarchyState(saved)
         Snapshots.layout(other.layout, 300)
         assertThat(other.layout.isExpanded).isFalse()
@@ -464,7 +460,7 @@ class SancaiExpandableLayoutTest {
         val shadow = org.robolectric.Shadows.shadowOf(s.layout)
         var hapticSeenInside = 0
         var calls = 0
-        s.layout.onExpansionChangeListener = SancaiExpandableLayout.OnExpansionChangeListener { layout, expanded ->
+        s.layout.setOnExpansionChangeListener { layout, expanded ->
             calls++
             hapticSeenInside = shadow.lastHapticFeedbackPerformed()
             layout.setExpanded(!expanded, animate = false)

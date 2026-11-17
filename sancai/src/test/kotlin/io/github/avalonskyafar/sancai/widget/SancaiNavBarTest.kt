@@ -143,7 +143,7 @@ class SancaiNavBarTest {
     fun `launcher mode calls back on every tap, also twice on the same item`() {
         val view = bar()
         val taps = ArrayList<Int>()
-        view.onItemSelectedListener = SancaiNavBar.OnItemSelectedListener { _, index -> taps.add(index) }
+        view.setOnItemSelectedListener { _, index -> taps.add(index) }
         Touch.tap(view, view.slotCentre(1))
         Touch.tap(view, view.slotCentre(1))
         Touch.tap(view, view.slotCentre(2))
@@ -157,8 +157,8 @@ class SancaiNavBarTest {
         val colors = SancaiTheme.light().colors
         val selections = ArrayList<Int>()
         val reselections = ArrayList<Int>()
-        view.onItemSelectedListener = SancaiNavBar.OnItemSelectedListener { _, index -> selections.add(index) }
-        view.onItemReselectedListener = SancaiNavBar.OnItemReselectedListener { _, index -> reselections.add(index) }
+        view.setOnItemSelectedListener { _, index -> selections.add(index) }
+        view.setOnItemReselectedListener { _, index -> reselections.add(index) }
         assertThat(view.selectedIndex).isEqualTo(0)
 
         Touch.tap(view, view.slotCentre(2))
@@ -180,15 +180,15 @@ class SancaiNavBarTest {
     fun `setting the selection from code never calls the listeners`() {
         val view = bar(SancaiNavBar.Mode.TABS)
         var calls = 0
-        view.onItemSelectedListener = SancaiNavBar.OnItemSelectedListener { _, _ -> calls++ }
-        view.onItemReselectedListener = SancaiNavBar.OnItemReselectedListener { _, _ -> calls++ }
+        view.setOnItemSelectedListener { _, _ -> calls++ }
+        view.setOnItemReselectedListener { _, _ -> calls++ }
         view.select(1)
         view.selectedIndex = 2
         view.select(99, animate = false)
         assertThat(view.selectedIndex).isEqualTo(2)
         assertThat(calls).isEqualTo(0)
         // Rolling back inside the listener is safe.
-        view.onItemSelectedListener = SancaiNavBar.OnItemSelectedListener { nav, _ ->
+        view.setOnItemSelectedListener { nav, _ ->
             calls++
             nav.select(2, animate = false)
         }
@@ -201,7 +201,7 @@ class SancaiNavBarTest {
     fun `a finger that leaves the item or a disabled row does nothing`() {
         val view = bar(SancaiNavBar.Mode.TABS)
         var calls = 0
-        view.onItemSelectedListener = SancaiNavBar.OnItemSelectedListener { _, _ -> calls++ }
+        view.setOnItemSelectedListener { _, _ -> calls++ }
         Touch.drag(view, view.slotCentre(1), view.height / 2f, view.slotCentre(2), view.height / 2f)
         assertThat(calls).isEqualTo(0)
         assertThat(view.selectedIndex).isEqualTo(0)
@@ -216,7 +216,7 @@ class SancaiNavBarTest {
     fun `arrow keys walk the items and enter activates the one under the cursor`() {
         val view = bar(SancaiNavBar.Mode.TABS)
         val selections = ArrayList<Int>()
-        view.onItemSelectedListener = SancaiNavBar.OnItemSelectedListener { _, index -> selections.add(index) }
+        view.setOnItemSelectedListener { _, index -> selections.add(index) }
         // The cursor starts on the first item; moving it does not select yet.
         assertThat(view.press(KeyEvent.KEYCODE_DPAD_LEFT)).isFalse()
         assertThat(view.press(KeyEvent.KEYCODE_DPAD_RIGHT)).isTrue()
@@ -258,7 +258,7 @@ class SancaiNavBarTest {
         val restored = bar(SancaiNavBar.Mode.TABS)
         restored.id = view.id
         var calls = 0
-        restored.onItemSelectedListener = SancaiNavBar.OnItemSelectedListener { _, _ -> calls++ }
+        restored.setOnItemSelectedListener { _, _ -> calls++ }
         restored.restoreHierarchyState(container)
         assertThat(restored.selectedIndex).isEqualTo(2)
         assertThat(calls).isEqualTo(0)
@@ -388,7 +388,7 @@ class SancaiNavBarTest {
         assertThat(other!!.isSelected).isFalse()
         assertThat(selected.className.toString()).contains("Tab")
         var picked = -1
-        tabs.onItemSelectedListener = SancaiNavBar.OnItemSelectedListener { _, index -> picked = index }
+        tabs.setOnItemSelectedListener { _, index -> picked = index }
         assertThat(provider.performAction(2, android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK, null)).isTrue()
         assertThat(picked).isEqualTo(2)
         assertThat(tabs.selectedIndex).isEqualTo(2)
@@ -474,7 +474,7 @@ class SancaiNavBarTest {
         val view = bar(SancaiNavBar.Mode.TABS, labels = emptyList())
         val colors = SancaiTheme.light().colors
         var calls = 0
-        view.onItemSelectedListener = SancaiNavBar.OnItemSelectedListener { _, _ -> calls++ }
+        view.setOnItemSelectedListener { _, _ -> calls++ }
         assertThat(view.height / view.density).isWithin(0.5f).of(72f)
         assertThat(view.selectedIndex).isEqualTo(-1)
         Touch.tap(view, view.width / 2f)
@@ -498,7 +498,7 @@ class SancaiNavBarTest {
     fun `a vertical drag takes the press back and selects nothing`() {
         val view = bar(SancaiNavBar.Mode.TABS)
         var calls = 0
-        view.onItemSelectedListener = SancaiNavBar.OnItemSelectedListener { _, _ -> calls++ }
+        view.setOnItemSelectedListener { _, _ -> calls++ }
         val x = view.slotCentre(1)
         Touch.drag(view, x, view.height * 0.7f, x, view.height * 0.1f)
         assertThat(calls).isEqualTo(0)

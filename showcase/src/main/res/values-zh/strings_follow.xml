@@ -12,7 +12,7 @@
     <string name="follow_drag_note">手指按住滑块慢慢移动。停在半路松手，它会落到较近的一侧。</string>
 
     <string name="follow_colour_title">颜色随位置流动</string>
-    <string name="follow_colour_detail">数值升高时，珠子身后的那一段会在四种釉色之间依次过渡。</string>
+    <string name="follow_colour_detail">珠子身后的那一段，取离当前数值最近的釉色；滑过两种釉色的中点，下一种釉色随即倾注进来。</string>
     <string name="follow_colour_label">强度</string>
     <string name="follow_colour_value">%1$d%% · %2$s</string>
     <string name="follow_colour_percent">%1$d%%</string>

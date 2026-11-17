@@ -9,7 +9,6 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -29,6 +28,7 @@ import io.github.avalonskyafar.sancai.material.SancaiGutters
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.theme.SancaiColors
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
+import io.github.avalonskyafar.sancai.theme.SancaiTextRole
 import io.github.avalonskyafar.sancai.theme.SancaiTheme
 import io.github.avalonskyafar.sancai.theme.SancaiWeight
 import io.github.avalonskyafar.sancai.widget.SancaiControl
@@ -63,9 +63,18 @@ public class SancaiToast private constructor(
     /** The pill on screen. Exposed for tests and for hosts that want to style it further. */
     public val view: SancaiToastView,
     private val durationMs: Long,
-    private val onAction: (() -> Unit)?,
-    private val onDismissed: ((actionTaken: Boolean) -> Unit)?,
+    private val onAction: Runnable?,
+    private val dismissListener: OnDismissListener?,
 ) {
+
+    /** Told when a toast has left the screen. */
+    public fun interface OnDismissListener {
+        /**
+         * [toast] has left the screen for any reason: its time ran out, [SancaiToast.dismiss],
+         * a newer toast, or its action, in which case [actionTaken] is `true`.
+         */
+        public fun onDismiss(toast: SancaiToast, actionTaken: Boolean)
+    }
 
     /** What the colour of the pill says. */
     public enum class Tone {
@@ -183,7 +192,7 @@ public class SancaiToast private constructor(
     private fun takeAction() {
         if (state != STATE_SHOWN || actionTaken) return
         actionTaken = true
-        onAction?.invoke()
+        onAction?.run()
         dismiss()
     }
 
@@ -201,7 +210,7 @@ public class SancaiToast private constructor(
         if (remove) (view.parent as? ViewGroup)?.removeView(view)
         view.translationY = 0f
         view.setLayerType(View.LAYER_TYPE_NONE, null)
-        onDismissed?.invoke(actionTaken)
+        dismissListener?.onDismiss(this, actionTaken)
     }
 
     private fun schedulePlacement() {
@@ -236,9 +245,9 @@ public class SancaiToast private constructor(
         private var message: CharSequence = ""
         private var tone: Tone = Tone.NEUTRAL
         private var actionLabel: CharSequence? = null
-        private var onAction: (() -> Unit)? = null
+        private var onAction: Runnable? = null
         private var durationMs: Long = -1L
-        private var onDismissed: ((actionTaken: Boolean) -> Unit)? = null
+        private var dismissListener: OnDismissListener? = null
 
         /** The one thing the toast says. Long messages wrap to at most three lines. */
         public fun message(message: CharSequence): Builder = apply { this.message = message }
@@ -251,17 +260,17 @@ public class SancaiToast private constructor(
 
         /**
          * One text action at the end of the pill, for example "Undo". A tap ticks, runs
-         * [onAction] once and dismisses the toast. With an action the toast stays
+         * [onClick] once and dismisses the toast. With an action the toast stays
          * [ACTION_DURATION_MS] unless [duration] says otherwise.
          */
-        public fun action(label: CharSequence, onAction: () -> Unit): Builder = apply {
+        public fun action(label: CharSequence, onClick: Runnable): Builder = apply {
             this.actionLabel = label
-            this.onAction = onAction
+            this.onAction = onClick
         }
 
         /** The action label as a string resource. */
-        public fun action(@StringRes label: Int, onAction: () -> Unit): Builder =
-            action(activity.getText(label), onAction)
+        public fun action(@StringRes label: Int, onClick: Runnable): Builder =
+            action(activity.getText(label), onClick)
 
         /**
          * How long the toast stays, in milliseconds; 0 keeps it until [SancaiToast.dismiss].
@@ -270,12 +279,10 @@ public class SancaiToast private constructor(
         public fun duration(durationMs: Long): Builder = apply { this.durationMs = max(0L, durationMs) }
 
         /**
-         * Called once when the pill has left the screen for any reason: its time ran out,
-         * [SancaiToast.dismiss], a newer toast, or the action (`actionTaken` is then `true`).
-         * The place to commit what an "Undo" action would have reverted.
+         * Listener told once when the pill has left the screen, whatever made it leave. The
+         * place to commit what an "Undo" action would have reverted.
          */
-        public fun onDismissed(listener: (actionTaken: Boolean) -> Unit): Builder =
-            apply { this.onDismissed = listener }
+        public fun onDismiss(listener: OnDismissListener?): Builder = apply { dismissListener = listener }
 
         /** Creates the toast without showing it. */
         public fun build(): SancaiToast {
@@ -289,7 +296,7 @@ public class SancaiToast private constructor(
                 else -> ACTION_DURATION_MS
             }
             val host = activity.findViewById<View>(android.R.id.content) as? FrameLayout
-            return SancaiToast(host, pill, stay, onAction, onDismissed)
+            return SancaiToast(host, pill, stay, onAction, dismissListener)
         }
 
         /** Creates the toast and shows it. */
@@ -473,9 +480,8 @@ public class SancaiToastView @JvmOverloads constructor(
         linePaint.style = Paint.Style.FILL
 
         for (text in arrayOf<TextView>(messageView, actionView)) {
-            text.setTextSize(TypedValue.COMPLEX_UNIT_SP, TEXT_SP * theme.textScale)
+            SancaiTextRole.FOOTNOTE.applyTo(text, theme)
             text.typeface = SancaiWeight.MEDIUM.typeface()
-            text.includeFontPadding = false
             text.gravity = Gravity.CENTER
         }
         messageView.maxLines = MESSAGE_MAX_LINES
@@ -595,7 +601,6 @@ public class SancaiToastView @JvmOverloads constructor(
     }
 
     private companion object {
-        const val TEXT_SP = 13f
         const val PADDING_HORIZONTAL_DP = 18f
         const val PADDING_VERTICAL_DP = 12f
         const val ACTION_GAP_DP = 14f

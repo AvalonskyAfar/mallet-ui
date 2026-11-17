@@ -417,7 +417,7 @@ class SancaiEntryRowTest {
             assertThat(detailOf(row).currentTextColor).isEqualTo(colors.muted)
             val scaled = themed.resources.displayMetrics.scaledDensity
             assertThat(titleOf(row).textSize).isWithin(0.01f).of(15.5f * scaled)
-            assertThat(detailOf(row).textSize).isWithin(0.01f).of(11.8f * scaled)
+            assertThat(detailOf(row).textSize).isWithin(0.01f).of(11.5f * scaled)
             assertThat(titleOf(row).typeface).isEqualTo(SancaiTextRole.SUBHEAD.weight.typeface())
 
             val bitmap = Snapshots.render(row, 300)

@@ -8,10 +8,11 @@ import android.graphics.Path
 import android.graphics.RectF
 import android.os.Bundle
 import android.os.Parcelable
+import android.text.TextPaint
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.MotionEvent
-import android.view.View
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Checkable
@@ -60,10 +61,10 @@ public class SancaiPowerSwitch @JvmOverloads constructor(
     /** Called when the user turns the switch on or off. */
     public fun interface OnCheckedChangeListener {
         /**
-         * The user turned [view] on or off; [checked] is the new state. Calling
+         * The user turned [switch] on or off; [isChecked] is the new state. Calling
          * [setChecked] from here rolls the change back without a second callback.
          */
-        public fun onCheckedChanged(view: View, checked: Boolean)
+        public fun onCheckedChanged(switch: SancaiPowerSwitch, isChecked: Boolean)
     }
 
     private var checked = false
@@ -78,8 +79,12 @@ public class SancaiPowerSwitch @JvmOverloads constructor(
     private val thumbBounds = RectF()
     private val trackClip = Path()
 
+    private var checkedChangeListener: OnCheckedChangeListener? = null
+
     /** Listener for user-driven changes. Not called for [setChecked] or [toggle]. */
-    public var onCheckedChangeListener: OnCheckedChangeListener? = null
+    public fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?) {
+        checkedChangeListener = listener
+    }
 
     /** State label shown on the thumb while the switch is on. Defaults to "On". */
     public var onLabel: CharSequence = context.getString(R.string.sancai_power_switch_on)
@@ -251,8 +256,8 @@ public class SancaiPowerSwitch @JvmOverloads constructor(
         val label = (if (visualOn) onLabel else offLabel).toString()
         val glyph = dp(GLYPH_DP)
         val gap = if (label.isEmpty()) 0f else dp(GLYPH_GAP_DP)
-        fit(label, thumbWidth - glyph - gap - dp(THUMB_PADDING_DP * 2f), baseSize)
-        val text = textPaint.measureText(label)
+        val shown = fit(label, thumbWidth - glyph - gap - dp(THUMB_PADDING_DP * 2f), baseSize)
+        val text = textPaint.measureText(shown, 0, shown.length)
         val groupLeft = centerX - (glyph + gap + text) / 2f
         val glyphLeft = if (isRtl) groupLeft + text + gap else groupLeft
         val textLeft = if (isRtl) groupLeft else groupLeft + glyph + gap
@@ -270,7 +275,9 @@ public class SancaiPowerSwitch @JvmOverloads constructor(
         )
         textPaint.color = theme.colors.ink
         textPaint.textAlign = Paint.Align.LEFT
-        canvas.drawText(label, textLeft, centerY - (textPaint.ascent() + textPaint.descent()) / 2f, textPaint)
+        canvas.drawText(
+            shown, 0, shown.length, textLeft, centerY - (textPaint.ascent() + textPaint.descent()) / 2f, textPaint,
+        )
     }
 
     /** The action label, centred in the half of the bed the thumb leaves free. */
@@ -280,7 +287,7 @@ public class SancaiPowerSwitch @JvmOverloads constructor(
         // With the proportional thumb the centre of the free half is 22 % or 78 % of the track.
         val thumbAtEnd = visualOn != isRtl
         val freeLeft = if (thumbAtEnd) trackBounds.left else trackBounds.right - freeWidth()
-        fit(label, freeWidth() - dp(BED_PADDING_DP * 2f), baseSize)
+        val shown = fit(label, freeWidth() - dp(BED_PADDING_DP * 2f), baseSize)
         val inkShare = when {
             theme.highContrast -> INK_SHARE_CONTRAST
             theme.isDark -> INK_SHARE_DARK
@@ -289,7 +296,9 @@ public class SancaiPowerSwitch @JvmOverloads constructor(
         textPaint.color = SancaiColors.blend(bed, theme.colors.ink, inkShare)
         textPaint.textAlign = Paint.Align.CENTER
         canvas.drawText(
-            label,
+            shown,
+            0,
+            shown.length,
             freeLeft + freeWidth() / 2f,
             centerY - (textPaint.ascent() + textPaint.descent()) / 2f,
             textPaint,
@@ -299,12 +308,22 @@ public class SancaiPowerSwitch @JvmOverloads constructor(
     /** Width of the bed beside a resting thumb, from the track rim to the thumb. */
     private fun freeWidth(): Float = max(0f, trackBounds.width() - dp(INSET_DP) - thumbWidth())
 
-    /** Shrinks the label paint so [label] fits [room]; long translations never spill. */
-    private fun fit(label: String, room: Float, baseSize: Float) {
+    /**
+     * Makes [label] fit [room] and returns the text to draw. A label that is too long first
+     * shrinks, down to [MIN_LABEL_SCALE] of its size; what still does not fit ends in an
+     * ellipsis. Long translations therefore neither spill nor become unreadably small.
+     */
+    private fun fit(label: String, room: Float, baseSize: Float): CharSequence {
         textPaint.textSize = baseSize
         val measured = textPaint.measureText(label)
-        if (room > 0f && measured > room) textPaint.textSize = baseSize * room / measured
+        if (room <= 0f || measured <= room) return label
+        textPaint.textSize = baseSize * max(MIN_LABEL_SCALE, room / measured)
+        if (textPaint.measureText(label) <= room) return label
+        ellipsisPaint.set(textPaint)
+        return TextUtils.ellipsize(label, ellipsisPaint, room, TextUtils.TruncateAt.END)
     }
+
+    private val ellipsisPaint = TextPaint()
 
     private fun configureLabelPaint() {
         textPaint.typeface = SancaiWeight.MEDIUM.typeface()
@@ -402,7 +421,7 @@ public class SancaiPowerSwitch @JvmOverloads constructor(
         animateTo(next)
         if (changed) {
             announceState()
-            onCheckedChangeListener?.onCheckedChanged(this, next)
+            checkedChangeListener?.onCheckedChanged(this, next)
             SancaiHaptics.tick(this)
         }
     }
@@ -509,6 +528,7 @@ public class SancaiPowerSwitch @JvmOverloads constructor(
         const val MIN_THUMB_DP = 112f
         const val THUMB_SHARE = 0.56f
         const val LABEL_SP = 14f
+        const val MIN_LABEL_SCALE = 0.8f
         const val GLYPH_DP = 17f
         const val GLYPH_STROKE_DP = 1.8f
         const val GLYPH_GAP_DP = 6.5f

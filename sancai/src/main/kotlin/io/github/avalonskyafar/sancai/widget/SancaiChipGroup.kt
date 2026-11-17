@@ -22,7 +22,7 @@ import kotlin.math.roundToInt
  *
  * With [isSingleSelection] at most one filter chip is checked at a time: checking one unchecks
  * the others. [isSelectionRequired] also keeps the user from unchecking the last checked chip.
- * [onCheckedStateChangeListener] is called for user input only, never for [check],
+ * [setOnCheckedStateChangeListener] is called for user input only, never for [check],
  * [clearCheck] or [SancaiChip.setChecked].
  *
  * ```xml
@@ -58,8 +58,12 @@ public class SancaiChipGroup @JvmOverloads constructor(
     private var pendingId = View.NO_ID
     private var widest = 0
 
+    private var checkedStateChangeListener: OnCheckedStateChangeListener? = null
+
     /** Listener for user-driven changes of the checked chips. */
-    public var onCheckedStateChangeListener: OnCheckedStateChangeListener? = null
+    public fun setOnCheckedStateChangeListener(listener: OnCheckedStateChangeListener?) {
+        checkedStateChangeListener = listener
+    }
 
     /**
      * Whether at most one chip can be checked. Switching it on keeps the first checked chip
@@ -177,7 +181,7 @@ public class SancaiChipGroup @JvmOverloads constructor(
     internal fun onChipChecked(chip: SancaiChip, checked: Boolean, animate: Boolean, fromUser: Boolean) {
         if (adjusting) return
         if (checked && isSingleSelection) keepOnly(chip, animate, fromUser)
-        if (fromUser) onCheckedStateChangeListener?.onCheckedStateChanged(this, checkedChipIds)
+        if (fromUser) checkedStateChangeListener?.onCheckedStateChanged(this, checkedChipIds)
     }
 
     /** Whether the user may uncheck [chip] right now. */

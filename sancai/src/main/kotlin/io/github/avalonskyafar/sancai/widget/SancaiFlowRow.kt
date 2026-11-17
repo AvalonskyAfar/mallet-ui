@@ -2,7 +2,6 @@ package io.github.avalonskyafar.sancai.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.accessibility.AccessibilityNodeInfo
@@ -119,8 +118,7 @@ public class SancaiFlowRow @JvmOverloads constructor(
         title.textAlignment = View.TEXT_ALIGNMENT_CENTER
         column.addView(title, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
         if (!step.detail.isNullOrEmpty()) {
-            val detail = SancaiText.create(context, step.detail, SancaiTextRole.CAPTION, SancaiTextTone.MUTED)
-            detail.setTextSize(TypedValue.COMPLEX_UNIT_SP, DETAIL_SIZE_SP * theme.textScale)
+            val detail = SancaiText.create(context, step.detail, SancaiTextRole.FOOTNOTE, SancaiTextTone.MUTED)
             detail.gravity = Gravity.CENTER
             detail.textAlignment = View.TEXT_ALIGNMENT_CENTER
             val params = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
@@ -154,4 +152,3 @@ public class SancaiFlowRow @JvmOverloads constructor(
 private const val ARROW_SLOT_DP = 28f
 private const val ARROW_SIZE_DP = 18f
 private const val DETAIL_GAP_DP = 4f
-private const val DETAIL_SIZE_SP = 13.5f

@@ -204,7 +204,7 @@ render in the system CJK face, which is how the language was first drawn.
 
 ### 4.1 The scale
 
-`SancaiTextRole` names ten roles. The original application wrote about twenty different sizes
+`SancaiTextRole` names eleven roles. The original application wrote about twenty different sizes
 at its call sites; the roles below keep its recurring values and fold the near-duplicates
 into them. *(Extended)*
 
@@ -218,11 +218,15 @@ into them. *(Extended)*
 | `BODY` | 15.5 | regular | ×1.24 + 3 dp, tracking 0.01 | long-form copy |
 | `BODY_COMPACT` | 14.5 | regular | ×1.28 + 3 dp, tracking 0.01 | dense article copy |
 | `LABEL` | 14.5 | medium | ×1.16 | buttons and actions |
+| `FOOTNOTE` | 13.5 | regular | ×1.16 | facts, step details, the label of a revealed action |
 | `CAPTION` | 12.5 | regular | ×1.16 | supporting line under a title |
 | `MICRO` | 11.5 | regular | ×1.16 | detail line inside a row |
 
-Two sizes live inside controls rather than in the scale: track labels are bold 12.2 sp
-(11.2 sp with four or more options), and navigation labels are bold 12.5 sp. *(Extracted)*
+Every text in the library takes its size from this scale; a component changes only the
+weight (navigation labels are `CAPTION` in bold, tags `MICRO` in bold, chips and field labels
+`FOOTNOTE` in medium). Two signature controls keep the label sizes their geometry was drawn
+for: the segmented track (bold 12.2 sp, 11.2 sp with four or more options) and the power
+switch (medium 14 sp). *(Extracted)*
 
 ### 4.2 Rules
 

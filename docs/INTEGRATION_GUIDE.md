@@ -155,8 +155,7 @@ class SettingsActivity : Activity() {
         setContentView(R.layout.activity_settings)
 
         val strength = findViewById<SancaiSegmentedTrack>(R.id.strength)
-        strength.onSelectionChangedListener =
-            SancaiSegmentedTrack.OnSelectionChangedListener { _, index -> prefs.strength = index }
+        strength.setOnSelectionChangeListener { _, index -> prefs.strength = index }
 
         findViewById<SancaiButton>(R.id.restore).setOnClickListener {
             SancaiDialog.confirm(this, "Restore all defaults?", "Every setting returns to its original value.",
@@ -202,7 +201,7 @@ val card = SancaiSurface(context)
 val track = SancaiSegmentedTrack(context).apply {
     setOptions("Off", "Gentle", "Standard", "Strict")
     select(2, animate = false)
-    onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, index -> save(index) }
+    setOnSelectionChangeListener { _, index -> save(index) }
 }
 card.addView(track, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
 card.addDivider(verticalMarginDp = 5f)
@@ -234,7 +233,7 @@ interfaces.
 SancaiSegmentedTrack track = new SancaiSegmentedTrack(context);
 track.setOptions("Off", "On");
 track.select(1, false);
-track.setOnSelectionChangedListener((view, index) -> prefs.setEnabled(index == 1));
+track.setOnSelectionChangeListener((view, index) -> prefs.setEnabled(index == 1));
 
 SancaiTheme theme = SancaiTheme.of(context);
 int ink = theme.getColors().getInk();
@@ -304,7 +303,7 @@ When the user changes a setting, recreate the activity. `SancaiThemeTransition` 
 cut:
 
 ```kotlin
-appearanceTrack.onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { track, index ->
+appearanceTrack.setOnSelectionChangeListener { track, index ->
     settings.appearance = Appearance.values()[index]
     SancaiThemeTransition.recreateAfter(track)        // waits for the thumb, then recreates
 }

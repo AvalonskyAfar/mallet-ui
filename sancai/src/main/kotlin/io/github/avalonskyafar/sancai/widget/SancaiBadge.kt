@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
+import io.github.avalonskyafar.sancai.theme.SancaiTextRole
 import io.github.avalonskyafar.sancai.theme.SancaiTheme
 import io.github.avalonskyafar.sancai.theme.SancaiWeight
 import kotlin.math.max
@@ -109,7 +110,7 @@ public class SancaiBadge @JvmOverloads constructor(
 
     private fun configureTextPaint() {
         textPaint.textSize =
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, TEXT_SP, resources.displayMetrics) * theme.textScale
+            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, SancaiTextRole.MICRO.sizeSp, resources.displayMetrics) * theme.textScale
     }
 
     /** Natural width of the capsule or dot in pixels; zero when nothing shows. */
@@ -201,7 +202,6 @@ public class SancaiBadge @JvmOverloads constructor(
 
     public companion object {
         private const val TEXT_COLOR = 0xFFFFFFFF.toInt()
-        private const val TEXT_SP = 11f
         private const val MIN_SIZE_DP = 18f
         private const val DOT_DP = 8f
         private const val PADDING_DP = 5f

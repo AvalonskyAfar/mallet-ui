@@ -16,7 +16,7 @@ import io.github.avalonskyafar.sancai.widget.SancaiSurface
 import io.github.avalonskyafar.sancai.widget.SancaiSwitch
 import io.github.avalonskyafar.sancai.widget.SancaiText
 
-/** Typography: the ten roles, the six tones, reading copy and the larger text scale. */
+/** Typography: the eleven roles, the six tones, reading copy and the larger text scale. */
 object TypePage : DemoPage("f_type", R.string.page_f_type_title, R.string.page_f_type_summary) {
     override fun build(page: PageScope) {
         page.title()
@@ -176,7 +176,7 @@ private class ScaledSample(page: PageScope, private val themed: Context, scale: 
 
     /** The switch here also moves the one of [other], so the two scales stay comparable. */
     fun mirror(other: ScaledSample) {
-        toggle.onCheckedChangeListener = SancaiSwitch.OnCheckedChangeListener { _, checked ->
+        toggle.setOnCheckedChangeListener { _, checked ->
             show(checked)
             other.toggle.setChecked(checked, true)
             other.show(checked)

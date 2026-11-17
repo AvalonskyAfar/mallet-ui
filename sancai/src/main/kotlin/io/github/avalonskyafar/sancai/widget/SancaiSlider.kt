@@ -31,8 +31,9 @@ import kotlin.math.roundToInt
  *
  * The bead follows the finger anywhere on the track; a tap makes it glide to the touched
  * place. The glaze behind the bead is the value: either one glaze ([glaze], cobalt by default)
- * or a scale set with [setGlazeScale], through which the stretch blends as the value rises,
- * for example terracotta, ochre, cobalt, celadon. The rest of the track stays a neutral groove.
+ * or a scale set with [setGlazeScale], for example terracotta, ochre, cobalt, celadon: the
+ * stretch then wears the glaze nearest to the bead, and the next one is poured in as the bead
+ * passes. The rest of the track stays a neutral groove.
  *
  * With a [stepSize] above zero the bead snaps to the step grid and every crossed step gives a
  * detent haptic; with `0` the slider is continuous.
@@ -60,11 +61,11 @@ public class SancaiSlider @JvmOverloads constructor(
     /** Called when the user changes the value by touch, keyboard or an accessibility action. */
     public fun interface OnValueChangeListener {
         /**
-         * @param value the new value, already clamped and snapped.
-         * @param fromUser always `true`: changes made from code through [SancaiSlider.value],
-         * [SancaiSlider.setValue] or the range setters do not call the listener at all.
+         * The user moved the bead of [slider]; [value] is the new value, already clamped and
+         * snapped. Changes made from code through [SancaiSlider.value], [SancaiSlider.setValue]
+         * or the range setters do not come here.
          */
-        public fun onValueChange(slider: SancaiSlider, value: Float, fromUser: Boolean)
+        public fun onValueChanged(slider: SancaiSlider, value: Float)
     }
 
     /** Called when a touch that moved the bead ends: after a drag or a tap, once per gesture. */
@@ -86,15 +87,31 @@ public class SancaiSlider @JvmOverloads constructor(
     private var moved = false
     private val gate = HorizontalDragGate(touchSlop)
     private var animator: ValueAnimator? = null
+
+    // With a scale: the glaze that is poured right now, and the pour that is replacing the
+    // colour before it (1 = finished).
+    private var pouredIndex = 0
+    private var pour = 1f
+    private var pourFromBed = 0
+    private var pourFromEdge = 0
+    private var pourAnimator: ValueAnimator? = null
     private val trackBounds = RectF()
     private val beadBounds = RectF()
     private val trackClip = Path()
 
+    private var valueChangeListener: OnValueChangeListener? = null
+
     /** Listener for value changes made by the user. */
-    public var onValueChangeListener: OnValueChangeListener? = null
+    public fun setOnValueChangeListener(listener: OnValueChangeListener?) {
+        valueChangeListener = listener
+    }
+
+    private var stopTrackingTouchListener: OnStopTrackingTouchListener? = null
 
     /** Listener for the end of a touch gesture, the moment to commit an expensive change. */
-    public var onStopTrackingTouchListener: OnStopTrackingTouchListener? = null
+    public fun setOnStopTrackingTouchListener(listener: OnStopTrackingTouchListener?) {
+        stopTrackingTouchListener = listener
+    }
 
     /**
      * Turns a value into the text accessibility services read, for example `"40 %"`. With
@@ -141,6 +158,7 @@ public class SancaiSlider @JvmOverloads constructor(
         set(value) {
             singleGlaze = value
             scale = null
+            syncPour(animate = false)
             invalidate()
         }
 
@@ -173,17 +191,20 @@ public class SancaiSlider @JvmOverloads constructor(
      */
     public fun setValue(value: Float, animate: Boolean) {
         current = snap(value)
-        if (animate) glideTo(fractionOf(current)) else jumpTo(fractionOf(current))
+        if (animate) glideTo(fractionOf(current)) else jumpTo(fractionOf(current), pour = false)
         announceState()
     }
 
     /**
-     * Glazes the stretch with a scale instead of one glaze: at [valueFrom] it shows the first
-     * glaze of [glazes], at [valueTo] the last, and in between it blends through the list.
-     * `null` or an empty list returns to the single [glaze].
+     * Glazes the stretch with a scale instead of one glaze. The glazes of [glazes] stand at
+     * even distances along the track, the first at [valueFrom] and the last at [valueTo], and
+     * the stretch wears the one nearest to the bead. When the bead passes the half-way point
+     * between two of them, the next glaze is poured in over the old one; the stretch never
+     * rests on a mixture of two. `null` or an empty list returns to the single [glaze].
      */
     public fun setGlazeScale(glazes: List<SancaiGlaze>?) {
         scale = glazes?.takeIf { it.isNotEmpty() }?.toList()
+        syncPour(animate = false)
         invalidate()
     }
 
@@ -191,6 +212,7 @@ public class SancaiSlider @JvmOverloads constructor(
         animator?.cancel()
         current = snap(current)
         position = fractionOf(current)
+        syncPour(animate = false)
         announceState()
         invalidate()
     }
@@ -248,7 +270,7 @@ public class SancaiSlider @JvmOverloads constructor(
             canvas.clipRect(trackBounds.left, trackBounds.top, centreX, trackBounds.bottom)
         }
         material.drawTrack(
-            canvas, trackBounds, glazeAt(position, edge = false), glazeAt(position, edge = true), lifted = false,
+            canvas, trackBounds, stretchColor(edge = false), stretchColor(edge = true), lifted = false,
         )
         canvas.restoreToCount(save)
 
@@ -259,25 +281,39 @@ public class SancaiSlider @JvmOverloads constructor(
     }
 
     /** The unglazed recess: mist in light themes, the plain groove in dark ones. */
-    private fun grooveColor(edge: Boolean): Int = when {
-        !theme.isDark -> if (edge) theme.bedEdgeColor(theme.glazes.mist) else theme.bedColor(theme.glazes.mist)
-        edge -> SancaiColors.blend(theme.colors.ink, theme.colors.canvas, GROOVE_EDGE_CANVAS_SHARE)
-        else -> theme.groove
+    private fun grooveColor(edge: Boolean): Int = if (edge) theme.neutralBedEdge else theme.neutralBed
+
+    /** Bed or rim colour of the stretch right now: the poured glaze, or a pour on its way in. */
+    private fun stretchColor(edge: Boolean): Int {
+        val glazes = scale
+        val glaze = if (glazes == null) singleGlaze else glazes[pouredIndex.coerceIn(0, glazes.lastIndex)]
+        val target = if (edge) theme.bedEdgeColor(glaze) else theme.bedColor(glaze)
+        if (pour >= 1f) return target
+        return SancaiColors.blend(if (edge) pourFromEdge else pourFromBed, target, pour)
     }
 
-    /** Bed or rim colour of the stretch when the bead stands at [fraction] of the range. */
-    private fun glazeAt(fraction: Float, edge: Boolean): Int {
+    /**
+     * Makes the stretch wear the glaze of the scale that is nearest to the bead. With
+     * [animate] a change of glaze is poured in over the colour that is showing; without, it
+     * is there at once.
+     */
+    private fun syncPour(animate: Boolean) {
         val glazes = scale
-        if (glazes == null || glazes.size == 1) {
-            val only = glazes?.first() ?: singleGlaze
-            return if (edge) theme.bedEdgeColor(only) else theme.bedColor(only)
+        val nearest = if (glazes == null) 0 else (position.coerceIn(0f, 1f) * glazes.lastIndex).roundToInt()
+        if (!animate) {
+            pourAnimator?.cancel()
+            pourAnimator = null
+            pouredIndex = nearest
+            pour = 1f
+            return
         }
-        val at = fraction.coerceIn(0f, 1f) * (glazes.size - 1)
-        val low = floor(at).toInt().coerceIn(0, glazes.size - 1)
-        val high = (low + 1).coerceAtMost(glazes.size - 1)
-        val first = if (edge) theme.bedEdgeColor(glazes[low]) else theme.bedColor(glazes[low])
-        val second = if (edge) theme.bedEdgeColor(glazes[high]) else theme.bedColor(glazes[high])
-        return SancaiColors.blend(first, second, at - low)
+        if (nearest == pouredIndex) return
+        pourFromBed = stretchColor(edge = false)
+        pourFromEdge = stretchColor(edge = true)
+        pouredIndex = nearest
+        pourAnimator?.cancel()
+        pour = 0f
+        pourAnimator = settle(0f, 1f) { pour = it }
     }
 
     // ---------------------------------------------------------------------------------------
@@ -310,7 +346,7 @@ public class SancaiSlider @JvmOverloads constructor(
                 invalidate()
                 if (!gate.isAborted) {
                     if (!gate.isDragging) change(valueAt(event.x), glide = true, tap = true)
-                    onStopTrackingTouchListener?.onStopTrackingTouch(this)
+                    stopTrackingTouchListener?.onStopTrackingTouch(this)
                 }
             }
             MotionEvent.ACTION_CANCEL -> {
@@ -318,7 +354,7 @@ public class SancaiSlider @JvmOverloads constructor(
                 down = false
                 invalidate()
                 // A drag that was taken away has still moved the value: the gesture ends here.
-                if (moved) onStopTrackingTouchListener?.onStopTrackingTouch(this)
+                if (moved) stopTrackingTouchListener?.onStopTrackingTouch(this)
             }
         }
         return true
@@ -355,9 +391,9 @@ public class SancaiSlider @JvmOverloads constructor(
         if (next == current) return false
         val crossed = if (step > 0f) abs(Math.round((next - current) / step)) else 0
         current = next
-        if (glide) glideTo(fractionOf(next)) else jumpTo(fractionOf(next))
+        if (glide) glideTo(fractionOf(next)) else jumpTo(fractionOf(next), pour = true)
         announceState()
-        onValueChangeListener?.onValueChange(this, next, true)
+        valueChangeListener?.onValueChanged(this, next)
         if (tap) SancaiHaptics.tick(this) else repeat(crossed.coerceAtMost(MAX_DETENTS)) { SancaiHaptics.detent(this) }
         return true
     }
@@ -365,13 +401,18 @@ public class SancaiSlider @JvmOverloads constructor(
     private fun glideTo(target: Float) {
         animator?.cancel()
         val start = position
-        animator = settle(0f, 1f) { progress -> position = start + (target - start) * progress }
+        animator = settle(0f, 1f) { progress ->
+            position = start + (target - start) * progress
+            syncPour(animate = true)
+        }
     }
 
-    private fun jumpTo(target: Float) {
+    /** Puts the bead at [target] at once; [pour] says whether a new glaze is poured in or just there. */
+    private fun jumpTo(target: Float, pour: Boolean) {
         animator?.cancel()
         animator = null
         position = target
+        syncPour(animate = pour)
         invalidate()
     }
 
@@ -379,6 +420,7 @@ public class SancaiSlider @JvmOverloads constructor(
         animator?.cancel()
         animator = null
         position = fractionOf(current)
+        syncPour(animate = false)
         super.onDetachedFromWindow()
     }
 
@@ -387,7 +429,7 @@ public class SancaiSlider @JvmOverloads constructor(
         if (!enabled && down) {
             gate.finish(this)
             down = false
-            if (moved) onStopTrackingTouchListener?.onStopTrackingTouch(this)
+            if (moved) stopTrackingTouchListener?.onStopTrackingTouch(this)
         }
         super.setEnabled(enabled)
     }
@@ -477,8 +519,6 @@ public class SancaiSlider @JvmOverloads constructor(
         const val TRACK_DP = 14f
         const val BEAD_DP = 28f
 
-        /** Canvas share in the rim of the unglazed dark groove, as in the theme's neutral rim. */
-        const val GROOVE_EDGE_CANVAS_SHARE = 0.93f
         const val CONTINUOUS_KEY_SHARE = 0.05f
         const val SCALE_GLAZES = 4
         const val MODE_SINGLE = 0

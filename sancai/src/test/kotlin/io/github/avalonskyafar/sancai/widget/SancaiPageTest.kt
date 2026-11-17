@@ -8,7 +8,6 @@ import android.util.SparseArray
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.core.graphics.Insets
@@ -407,7 +406,9 @@ class SancaiPageTest {
         // Horizontal: text is inset 10 dp, the card spans the column, the button stands 30 dp in.
         assertThat(title.left).isEqualTo(px(10f))
         assertThat(title.right).isEqualTo(column.width - px(10f))
-        assertThat(heading.left).isEqualTo(px(10f))
+        assertThat(heading.left).isEqualTo(0)
+        assertThat(headingTitle.left).isEqualTo(px(10f))
+        assertThat(headingTitle.right).isEqualTo(column.width - px(10f))
         assertThat(card.left).isEqualTo(0)
         assertThat(card.width).isEqualTo(column.width)
         assertThat(button.left).isEqualTo(px(30f))
@@ -435,12 +436,15 @@ class SancaiPageTest {
 
         val column = page.content
         assertThat(column.childCount).isEqualTo(5)
-        val first = column.getChildAt(0) as LinearLayout
-        assertThat(first.childCount).isEqualTo(1)
-        val second = column.getChildAt(2) as LinearLayout
-        assertThat(second.childCount).isEqualTo(1)
+        val first = column.getChildAt(0) as SancaiHeading
+        assertThat(first.getChildAt(0).visibility).isEqualTo(View.VISIBLE)
+        assertThat(first.getChildAt(1).visibility).isEqualTo(View.GONE)
+        assertThat(first.height).isEqualTo(first.getChildAt(0).height)
+        val second = column.getChildAt(2) as SancaiHeading
+        assertThat(second.getChildAt(0).visibility).isEqualTo(View.GONE)
         // A lone detail line has no gap above it.
-        assertThat(second.getChildAt(0).top).isEqualTo(0)
+        assertThat(second.getChildAt(1).top).isEqualTo(0)
+        assertThat(second.height).isEqualTo(second.getChildAt(1).height)
         // No heading at all: the card follows the previous section directly.
         assertThat(column.getChildAt(4).top - column.getChildAt(3).bottom).isEqualTo(px(22f))
     }

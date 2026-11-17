@@ -9,7 +9,6 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.text.InputType
 import android.text.TextUtils
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -495,10 +494,10 @@ public class SancaiDialog private constructor(private val context: Context, buil
         public fun onDismiss(listener: OnDismissListener?): Builder = apply { dismissListener = listener }
 
         /** Builds the dialog without showing it. */
-        public fun create(): SancaiDialog = SancaiDialog(context, this)
+        public fun build(): SancaiDialog = SancaiDialog(context, this)
 
         /** Builds the dialog and shows it. */
-        public fun show(): SancaiDialog = create().also { it.show() }
+        public fun show(): SancaiDialog = build().also { it.show() }
 
         /** The actions in the order positive, neutral, negative, with default labels filled in. */
         internal fun resolveActions(context: Context): List<Action> {
@@ -623,7 +622,6 @@ private class ActionView(context: Context, private val material: SancaiMaterial)
 
     init {
         role = SancaiTextRole.LABEL
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, ACTION_TEXT_SP * theme.textScale)
         gravity = Gravity.CENTER
         maxLines = 2
         ellipsize = TextUtils.TruncateAt.END
@@ -660,7 +658,6 @@ private class ActionView(context: Context, private val material: SancaiMaterial)
     override fun getAccessibilityClassName(): CharSequence = Button::class.java.name
 }
 
-private const val ACTION_TEXT_SP = 14f
 private const val ACTION_PADDING_X_DP = 12f
 private const val ACTION_PADDING_Y_DP = 8f
 private const val FOCUS_INSET_DP = 5f

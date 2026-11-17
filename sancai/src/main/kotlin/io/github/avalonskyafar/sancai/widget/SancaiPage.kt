@@ -281,7 +281,7 @@ public open class SancaiPage @JvmOverloads constructor(
     }
 
     /**
-     * Adds a section: a heading ([title] over an optional muted [detail] line), then
+     * Adds a section: a [SancaiHeading] ([title] over an optional muted [detail] line), then
      * [SancaiSpacing.HEADING_GAP], then [card] across the full column, then
      * [SancaiSpacing.SECTION_GAP]. A `null` or blank [title] or [detail] leaves that line out;
      * with both missing the card is added without a heading. Returns [card].
@@ -290,18 +290,11 @@ public open class SancaiPage @JvmOverloads constructor(
         val hasTitle = !title.isNullOrBlank()
         val hasDetail = !detail.isNullOrBlank()
         if (hasTitle || hasDetail) {
-            val heading = LinearLayout(context)
-            heading.orientation = LinearLayout.VERTICAL
-            if (hasTitle) {
-                val titleView = looseText(title, SancaiTextRole.HEADING, SancaiTextTone.INK)
-                ViewCompat.setAccessibilityHeading(titleView, true)
-                heading.addView(titleView, matchWrap())
-            }
-            if (hasDetail) {
-                val detailView = looseText(detail, SancaiTextRole.CAPTION, SancaiTextTone.MUTED)
-                heading.addView(detailView, matchWrap().also { if (hasTitle) it.topMargin = px(HEADING_DETAIL_GAP_DP) })
-            }
-            content.addView(heading, insetParams(SancaiSpacing.HEADING_GAP))
+            // The heading insets its own text by SancaiSpacing.TEXT_INSET.
+            val heading = SancaiHeading(context)
+            heading.title = if (hasTitle) title else null
+            heading.detail = if (hasDetail) detail else null
+            content.addView(heading, matchWrap().also { it.bottomMargin = px(SancaiSpacing.HEADING_GAP) })
         }
         content.addView(card, matchWrap().also { it.bottomMargin = px(SancaiSpacing.SECTION_GAP) })
         return card
@@ -408,10 +401,7 @@ public open class SancaiPage @JvmOverloads constructor(
         if (delta != 0) scrollBy(0, delta)
     }
 
-    public companion object {
-        /** Gap between the title and the detail line of a section heading, in dp. */
-        public const val HEADING_DETAIL_GAP_DP: Float = 4f
-
+    private companion object {
         private const val STATE_SUPER = "sancai:page:super"
         private const val STATE_SCROLL = "sancai:page:scroll"
         private val WEIGHT_ATTR = intArrayOf(android.R.attr.layout_weight)

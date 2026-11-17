@@ -89,7 +89,7 @@ class SancaiSegmentedTrackTest {
     fun `tap selects the option under the finger and notifies once`() {
         val view = track("Off", "Gentle", "Standard", "Strict")
         val seen = mutableListOf<Int>()
-        view.onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, index -> seen += index }
+        view.setOnSelectionChangeListener { _, index -> seen += index }
         Touch.tap(view, view.slotCentre(2, 4))
         assertThat(view.selectedIndex).isEqualTo(2)
         Touch.tap(view, view.slotCentre(2, 4))
@@ -100,7 +100,7 @@ class SancaiSegmentedTrackTest {
     fun `selecting from code never calls the listener`() {
         val view = track("Off", "On")
         var calls = 0
-        view.onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, _ -> calls++ }
+        view.setOnSelectionChangeListener { _, _ -> calls++ }
         view.select(1)
         assertThat(view.selectedIndex).isEqualTo(1)
         assertThat(calls).isEqualTo(0)
@@ -109,7 +109,7 @@ class SancaiSegmentedTrackTest {
     @Test
     fun `a listener can roll the change back`() {
         val view = track("Off", "On")
-        view.onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { t, _ -> t.select(0) }
+        view.setOnSelectionChangeListener { t, _ -> t.select(0) }
         Touch.tap(view, view.slotCentre(1, 2))
         assertThat(view.selectedIndex).isEqualTo(0)
     }
@@ -130,7 +130,7 @@ class SancaiSegmentedTrackTest {
     fun `a drag that turns vertical leaves the selection untouched`() {
         val view = track("Off", "Gentle", "Standard", "Strict")
         var calls = 0
-        view.onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, _ -> calls++ }
+        view.setOnSelectionChangeListener { _, _ -> calls++ }
         val x = view.slotCentre(3, 4)
         Touch.drag(view, x, 10f, x + 4f, view.height * 3f)
         assertThat(view.selectedIndex).isEqualTo(0)

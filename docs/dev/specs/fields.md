@@ -52,7 +52,7 @@ API:
 - `editText: EditText` for everything else (IME options, filters, selection).
 - `fun validate(rule: (CharSequence) -> CharSequence?): Boolean` sets or clears the error
   and returns whether the text passed.
-- `doAfterTextChanged { }`-style listener: `OnTextChangedListener(field, text)`.
+- `doAfterTextChanged { }`-style listener: `OnTextChangeListener(field, text)`.
 - XML: `android:text`, `android:hint`, `android:inputType`, `android:maxLength`,
   `android:enabled`, `sancaiIcon` (common attribute, the leading icon) and new attributes
   `sancaiFieldLabel`, `sancaiFieldHelper`, `sancaiFieldError`, `sancaiFieldCounter`

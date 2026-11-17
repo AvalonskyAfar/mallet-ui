@@ -93,7 +93,7 @@ class SancaiToastTest {
     fun `a new toast replaces the one on screen at once`() {
         val activity = activity()
         var firstGone = 0
-        val first = SancaiToast.Builder(activity).message("One").onDismissed { firstGone++ }.show()
+        val first = SancaiToast.Builder(activity).message("One").onDismiss { _, _ -> firstGone++ }.show()
         val second = SancaiToast.error(activity, "Two")
 
         assertThat(first.isShowing).isFalse()
@@ -113,7 +113,7 @@ class SancaiToastTest {
     fun `a toast leaves after its duration without fading`() {
         val activity = activity()
         var gone: Boolean? = null
-        val toast = SancaiToast.Builder(activity).message("Saved").onDismissed { gone = it }.show()
+        val toast = SancaiToast.Builder(activity).message("Saved").onDismiss { _, actionTaken -> gone = actionTaken }.show()
         assertThat(toast.duration).isEqualTo(2600L)
 
         advance(2500)
@@ -165,7 +165,7 @@ class SancaiToastTest {
         val toast = SancaiToast.Builder(activity)
             .message("Entry deleted")
             .action("Undo") { undone++ }
-            .onDismissed { taken = it }
+            .onDismiss { _, actionTaken -> taken = actionTaken }
             .show()
         advance(300)
         assertThat(toast.duration).isEqualTo(5000L)
@@ -191,7 +191,7 @@ class SancaiToastTest {
         val toast = SancaiToast.Builder(activity)
             .message("Entry deleted")
             .action("Undo") { undone++ }
-            .onDismissed { taken = it }
+            .onDismiss { _, actionTaken -> taken = actionTaken }
             .show()
         advance(300)
         toast.dismiss()
@@ -281,7 +281,7 @@ class SancaiToastTest {
         val text = plain.getChildAt(0) as TextView
         assertThat(text.paddingLeft).isEqualTo((18 * density).roundToInt())
         assertThat(text.paddingTop).isEqualTo((12 * density).roundToInt())
-        assertThat(text.textSize).isWithin(0.01f).of(13f * plain.resources.displayMetrics.scaledDensity)
+        assertThat(text.textSize).isWithin(0.01f).of(13.5f * plain.resources.displayMetrics.scaledDensity)
         assertThat(plain.width).isLessThan((300 * density).roundToInt())
 
         // With an action the capsule is a 44 dp touch target.
@@ -352,12 +352,12 @@ class SancaiToastTest {
     fun `cancel removes the toast and a detached pill ends quietly`() {
         val activity = activity()
         var gone = 0
-        val toast = SancaiToast.Builder(activity).message("Saved").onDismissed { gone++ }.show()
+        val toast = SancaiToast.Builder(activity).message("Saved").onDismiss { _, _ -> gone++ }.show()
         SancaiToast.cancel(activity)
         assertThat(toast.view.parent).isNull()
         assertThat(gone).isEqualTo(1)
 
-        val other = SancaiToast.Builder(activity).message("Saved").onDismissed { gone++ }.show()
+        val other = SancaiToast.Builder(activity).message("Saved").onDismiss { _, _ -> gone++ }.show()
         content(activity).removeView(other.view)
         assertThat(other.isShowing).isFalse()
         advance(3_000)
@@ -369,7 +369,7 @@ class SancaiToastTest {
         val activity = activity()
         var gone = 0
         val current = SancaiToast.show(activity, "Saved")
-        val empty = SancaiToast.Builder(activity).message("  ").onDismissed { gone++ }.show()
+        val empty = SancaiToast.Builder(activity).message("  ").onDismiss { _, _ -> gone++ }.show()
 
         assertThat(empty.isShowing).isFalse()
         assertThat(empty.view.parent).isNull()
@@ -388,7 +388,7 @@ class SancaiToastTest {
     fun `a toast shows once and the dismiss accessibility action sinks it`() {
         val activity = activity()
         var gone = 0
-        val toast = SancaiToast.Builder(activity).message("Saved").duration(0).onDismissed { gone++ }.build()
+        val toast = SancaiToast.Builder(activity).message("Saved").duration(0).onDismiss { _, _ -> gone++ }.build()
         assertThat(toast.isShowing).isFalse()
         toast.show()
         toast.show()
@@ -408,7 +408,7 @@ class SancaiToastTest {
     fun `a toast shown from a dismiss listener does not leave two pills`() {
         val activity = activity()
         SancaiToast.Builder(activity).message("One")
-            .onDismissed { SancaiToast.show(activity, "From the listener") }
+            .onDismiss { _, _ -> SancaiToast.show(activity, "From the listener") }
             .show()
         val last = SancaiToast.show(activity, "Two")
         val host = content(activity)

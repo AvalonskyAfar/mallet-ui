@@ -200,8 +200,7 @@ class SancaiControlRowTest {
 
         val restored = row(4)
         restored.id = saved.id
-        restored.track!!.onSelectionChangedListener =
-            SancaiSegmentedTrack.OnSelectionChangedListener { _, index -> heard.add(index) }
+        restored.track!!.setOnSelectionChangeListener { _, index -> heard.add(index) }
         restored.restoreHierarchyState(state)
         assertThat(restored.track!!.selectedIndex).isEqualTo(2)
         assertThat(heard).isEmpty()

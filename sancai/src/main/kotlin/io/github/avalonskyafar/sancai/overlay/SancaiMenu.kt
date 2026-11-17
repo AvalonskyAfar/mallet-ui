@@ -198,7 +198,7 @@ public class SancaiMenu(context: Context) {
         host.scaleX = startScale
         host.scaleY = startScale
         host.animate().alpha(1f).scaleX(1f).scaleY(1f)
-            .setDuration(if (theme.reduceMotion) SancaiMotion.REDUCED_MS else ENTER_MS)
+            .setDuration(SancaiMotion.feedbackDuration(theme.reduceMotion))
             .setInterpolator(SancaiMotion.glide())
             .start()
         content.focusInitial()
@@ -212,7 +212,7 @@ public class SancaiMenu(context: Context) {
         val endScale = if (theme.reduceMotion) 1f else START_SCALE
         content.animate().cancel()
         content.animate().alpha(0f).scaleX(endScale).scaleY(endScale)
-            .setDuration(if (theme.reduceMotion) SancaiMotion.FEEDBACK_REDUCED_MS else EXIT_MS)
+            .setDuration(SancaiMotion.feedbackDuration(theme.reduceMotion))
             .setInterpolator(SancaiMotion.glide())
             .withEndAction { finish() }
             .start()
@@ -316,8 +316,6 @@ public class SancaiMenu(context: Context) {
         public const val WINDOW_MARGIN_DP: Float = 8f
 
         internal const val ANCHOR_GAP_DP: Float = 4f
-        internal const val ENTER_MS: Long = 180L
-        internal const val EXIT_MS: Long = 120L
         internal const val START_SCALE: Float = 0.92f
 
         /**

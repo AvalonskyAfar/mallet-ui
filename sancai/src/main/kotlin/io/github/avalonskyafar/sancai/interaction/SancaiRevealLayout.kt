@@ -25,6 +25,7 @@ import io.github.avalonskyafar.sancai.icon.SancaiIconPainter
 import io.github.avalonskyafar.sancai.internal.HorizontalDragGate
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
+import io.github.avalonskyafar.sancai.theme.SancaiTextRole
 import io.github.avalonskyafar.sancai.theme.SancaiTextTone
 import io.github.avalonskyafar.sancai.theme.SancaiTheme
 import io.github.avalonskyafar.sancai.theme.SancaiWeight
@@ -135,8 +136,12 @@ public class SancaiRevealLayout @JvmOverloads constructor(
     /** Whether opening this row closes the other open reveal rows of the same parent. */
     public var closeSiblings: Boolean = true
 
+    private var openChangeListener: OnOpenChangeListener? = null
+
     /** Called when the user opens or closes the row by drag, tap, key or accessibility action. */
-    public var onOpenChangeListener: OnOpenChangeListener? = null
+    public fun setOnOpenChangeListener(listener: OnOpenChangeListener?) {
+        openChangeListener = listener
+    }
 
     /** True while the row is open or settling open. */
     public val isOpen: Boolean get() = targetOpen
@@ -150,7 +155,7 @@ public class SancaiRevealLayout @JvmOverloads constructor(
         labelPaint.typeface = SancaiWeight.MEDIUM.typeface()
         labelPaint.textAlign = Paint.Align.CENTER
         labelPaint.color = Color.WHITE
-        labelPaint.textSize = LABEL_SP * resources.displayMetrics.scaledDensity * theme.textScale
+        labelPaint.textSize = SancaiTextRole.FOOTNOTE.sizeSp * resources.displayMetrics.scaledDensity * theme.textScale
         val a = context.obtainStyledAttributes(attrs, R.styleable.SancaiRevealLayout, defStyleAttr, 0)
         revealEdge = if (a.getInt(R.styleable.SancaiRevealLayout_sancaiRevealEdge, 0) == 1) Edge.END else Edge.START
         closeSiblings = a.getBoolean(R.styleable.SancaiRevealLayout_sancaiRevealCloseSiblings, true)
@@ -267,7 +272,7 @@ public class SancaiRevealLayout @JvmOverloads constructor(
         val changed = targetOpen != open
         moveTo(open, animate = true, byUser = true)
         if (changed) {
-            onOpenChangeListener?.onOpenChanged(this, open)
+            openChangeListener?.onOpenChanged(this, open)
             SancaiHaptics.tick(this)
         }
     }
@@ -279,7 +284,7 @@ public class SancaiRevealLayout @JvmOverloads constructor(
             val other = group.getChildAt(i)
             if (other === this || other !is SancaiRevealLayout || !other.isOpen) continue
             other.close()
-            if (byUser) other.onOpenChangeListener?.onOpenChanged(other, false)
+            if (byUser) other.openChangeListener?.onOpenChanged(other, false)
         }
     }
 
@@ -586,7 +591,6 @@ public class SancaiRevealLayout @JvmOverloads constructor(
         /** Share of the strip that must be uncovered on release for the row to open. */
         public const val OPEN_FRACTION: Float = 0.42f
 
-        private const val LABEL_SP = 13.5f
         private const val LABEL_INSET_DP = 6f
         private const val ICON_DP = 20f
         private const val ICON_GAP_DP = 2f

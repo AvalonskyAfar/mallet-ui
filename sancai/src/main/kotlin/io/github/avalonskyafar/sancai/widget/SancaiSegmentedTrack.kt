@@ -56,7 +56,7 @@ public class SancaiSegmentedTrack @JvmOverloads constructor(
 ) : SancaiControl(context, attrs, defStyleAttr), SancaiHorizontalDragOwner {
 
     /** Called when the user moves the selection to another option. */
-    public fun interface OnSelectionChangedListener {
+    public fun interface OnSelectionChangeListener {
         public fun onSelectionChanged(track: SancaiSegmentedTrack, index: Int)
     }
 
@@ -75,8 +75,12 @@ public class SancaiSegmentedTrack @JvmOverloads constructor(
     private val trackClip = Path()
     private val accessibility = Accessibility()
 
+    private var selectionChangeListener: OnSelectionChangeListener? = null
+
     /** Listener for user-driven selection changes. Not called for [select]. */
-    public var onSelectionChangedListener: OnSelectionChangedListener? = null
+    public fun setOnSelectionChangeListener(listener: OnSelectionChangeListener?) {
+        selectionChangeListener = listener
+    }
 
     /** The option labels. Replacing them keeps the selected index when it is still valid. */
     public var options: List<CharSequence>
@@ -337,7 +341,7 @@ public class SancaiSegmentedTrack @JvmOverloads constructor(
         animateTo(index.toFloat())
         if (old != index) {
             announceState()
-            onSelectionChangedListener?.onSelectionChanged(this, index)
+            selectionChangeListener?.onSelectionChanged(this, index)
             SancaiHaptics.tick(this)
         }
     }
@@ -444,9 +448,19 @@ public class SancaiSegmentedTrack @JvmOverloads constructor(
         /** Default height of the view in dp: a 52 dp track plus its shadow gutter. */
         public const val HEIGHT_DP: Float = 60f
 
-        private const val GUTTER_SIDE_DP = 1.5f
-        private const val GUTTER_TOP_DP = 1.5f
-        private const val GUTTER_BOTTOM_DP = 6.5f
+        /** Room at each side of the capsule, inside the view, in dp. */
+        public const val GUTTER_SIDE_DP: Float = 1.5f
+
+        /** Room above the capsule, inside the view, in dp. */
+        public const val GUTTER_TOP_DP: Float = 1.5f
+
+        /**
+         * Room below the capsule, inside the view, in dp. It holds the shadow, so the capsule
+         * sits above the middle of the view: text beside a track is centred on the capsule by
+         * lifting it half the difference between this and [GUTTER_TOP_DP].
+         */
+        public const val GUTTER_BOTTOM_DP: Float = 6.5f
+
         private const val INSET_DP = 4f
         private const val MIN_SEGMENT_DP = 52f
         private const val LABEL_SP = 12.2f

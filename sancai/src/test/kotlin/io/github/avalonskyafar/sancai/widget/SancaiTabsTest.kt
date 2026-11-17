@@ -65,7 +65,7 @@ class SancaiTabsTest {
     fun `a tap selects and tells the listener but select does not`() {
         val view = tabs("Recent", "All", "Starred")
         val heard = mutableListOf<Int>()
-        view.onTabSelectedListener = SancaiTabs.OnTabSelectedListener { _, index -> heard += index }
+        view.setOnTabSelectedListener { _, index -> heard += index }
         Touch.tap(view, view.width * 5f / 6f)
         assertThat(view.selectedIndex).isEqualTo(2)
         Touch.tap(view, view.width * 5f / 6f)
@@ -184,7 +184,7 @@ class SancaiTabsTest {
     fun `a scrolling row follows the finger without changing the selection`() {
         val view = tabs(*many, layout = SancaiTabs.Layout.SCROLL, widthDp = 300)
         val heard = mutableListOf<Int>()
-        view.onTabSelectedListener = SancaiTabs.OnTabSelectedListener { _, index -> heard += index }
+        view.setOnTabSelectedListener { _, index -> heard += index }
         val y = view.height / 2f
         Touch.drag(view, view.width * 0.8f, y, view.width * 0.2f, y)
         assertThat(view.scrollOffset).isGreaterThan(view.width * 0.4f)
@@ -201,7 +201,7 @@ class SancaiTabsTest {
     fun `arrow keys move the selection and mirror in rtl`() {
         val view = tabs("Recent", "All", "Starred")
         val heard = mutableListOf<Int>()
-        view.onTabSelectedListener = SancaiTabs.OnTabSelectedListener { _, index -> heard += index }
+        view.setOnTabSelectedListener { _, index -> heard += index }
         fun press(target: SancaiTabs, code: Int) = target.onKeyDown(code, KeyEvent(KeyEvent.ACTION_DOWN, code))
         assertThat(press(view, KeyEvent.KEYCODE_DPAD_LEFT)).isFalse()
         assertThat(press(view, KeyEvent.KEYCODE_DPAD_RIGHT)).isTrue()
@@ -233,7 +233,7 @@ class SancaiTabsTest {
 
         val restored = tabs("Recent", "All", "Starred").apply { id = 7 }
         val heard = mutableListOf<Int>()
-        restored.onTabSelectedListener = SancaiTabs.OnTabSelectedListener { _, index -> heard += index }
+        restored.setOnTabSelectedListener { _, index -> heard += index }
         restored.restoreHierarchyState(saved)
         assertThat(restored.selectedIndex).isEqualTo(2)
         assertThat(indicator(restored).centerX()).isWithin(0.6f).of(restored.width * 5f / 6f)
@@ -255,7 +255,7 @@ class SancaiTabsTest {
         assertThat(other.className.toString()).isEqualTo("android.app.ActionBar\$Tab")
 
         val heard = mutableListOf<Int>()
-        view.onTabSelectedListener = SancaiTabs.OnTabSelectedListener { _, index -> heard += index }
+        view.setOnTabSelectedListener { _, index -> heard += index }
         assertThat(provider.performAction(2, android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK, null)).isTrue()
         assertThat(view.selectedIndex).isEqualTo(2)
         assertThat(heard).containsExactly(2)
@@ -299,7 +299,7 @@ class SancaiTabsTest {
 
     private fun withPager(heard: MutableList<Int>): Pair<SancaiTabs, SancaiPager> {
         val view = SancaiTabs(context).apply { setTabs("Recent", "All", "Starred") }
-        view.onTabSelectedListener = SancaiTabs.OnTabSelectedListener { _, index -> heard += index }
+        view.setOnTabSelectedListener { _, index -> heard += index }
         val pager = SancaiPager(context)
         pager.setPages(3) { _, _ -> View(context).apply { minimumHeight = dp(120f).toInt() } }
         val column = LinearLayout(context).apply {
@@ -418,7 +418,7 @@ class SancaiTabsTest {
     fun `a vertical movement is not a tap`() {
         val view = tabs("Recent", "All", "Starred")
         val heard = mutableListOf<Int>()
-        view.onTabSelectedListener = SancaiTabs.OnTabSelectedListener { _, index -> heard += index }
+        view.setOnTabSelectedListener { _, index -> heard += index }
         val x = view.width * 5f / 6f
         Touch.drag(view, x, view.height * 0.2f, x, view.height * 0.2f + dp(60f))
         assertThat(view.selectedIndex).isEqualTo(0)

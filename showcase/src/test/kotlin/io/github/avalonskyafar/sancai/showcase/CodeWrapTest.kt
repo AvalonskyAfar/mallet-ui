@@ -60,7 +60,7 @@ class CodeWrapTest {
 
     @Test
     fun `a member access dot is the last resort and decimals stay whole`() {
-        val pieces = wrap("SancaiSegmentedTrack.OnSelectionChangedListener.somethingElse", 50)
+        val pieces = wrap("SancaiSegmentedTrack.OnSelectionChangeListener.somethingElse", 50)
         assertThat(pieces.size).isEqualTo(2)
         assertThat(pieces[1].trimStart()).startsWith(".")
         val number = "1.3" + "5".repeat(36) + "f"

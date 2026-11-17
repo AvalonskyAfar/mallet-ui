@@ -24,7 +24,7 @@ import kotlin.random.Random
  *
  * ```kotlin
  * // where the user picks a theme, e.g. in a SancaiSegmentedTrack listener
- * track.onSelectionChangedListener = { index ->
+ * track.setOnSelectionChangeListener { _, index ->
  *     savePalette(index)
  *     SancaiThemeTransition.recreateAfter(track)   // lets the thumb finish its glide first
  * }

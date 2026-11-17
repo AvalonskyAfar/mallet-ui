@@ -102,7 +102,7 @@ class SancaiChipTest {
         var clicks = 0
         val checks = mutableListOf<Boolean>()
         view.setOnClickListener { clicks++ }
-        view.onCheckedChangeListener = SancaiChip.OnCheckedChangeListener { _, checked -> checks += checked }
+        view.setOnCheckedChangeListener { _, checked -> checks += checked }
         view.tapCentre()
         assertThat(clicks).isEqualTo(1)
         assertThat(view.isChecked).isFalse()
@@ -115,7 +115,7 @@ class SancaiChipTest {
     fun `filter chip flips on tap and tells the listener for user input only`() {
         val view = chip()
         val checks = mutableListOf<Boolean>()
-        view.onCheckedChangeListener = SancaiChip.OnCheckedChangeListener { _, checked -> checks += checked }
+        view.setOnCheckedChangeListener { _, checked -> checks += checked }
         view.tapCentre()
         assertThat(view.isChecked).isTrue()
         view.tapCentre()
@@ -129,7 +129,7 @@ class SancaiChipTest {
     @Test
     fun `listener may roll the change back`() {
         val view = chip()
-        view.onCheckedChangeListener = SancaiChip.OnCheckedChangeListener { chip, _ ->
+        view.setOnCheckedChangeListener { chip, _ ->
             chip.setChecked(false, animate = false)
         }
         view.tapCentre()
@@ -215,7 +215,7 @@ class SancaiChipTest {
         val copy = chip()
         copy.id = view.id
         var calls = 0
-        copy.onCheckedChangeListener = SancaiChip.OnCheckedChangeListener { _, _ -> calls++ }
+        copy.setOnCheckedChangeListener { _, _ -> calls++ }
         copy.restoreHierarchyState(state)
         assertThat(copy.isChecked).isTrue()
         assertThat(calls).isEqualTo(0)
@@ -417,8 +417,8 @@ class SancaiChipTest {
         view.isSingleSelection = true
         val heard = mutableListOf<List<Int>>()
         val unchecked = mutableListOf<Boolean>()
-        view.onCheckedStateChangeListener = SancaiChipGroup.OnCheckedStateChangeListener { _, ids -> heard += ids }
-        view.chipAt(0).onCheckedChangeListener = SancaiChip.OnCheckedChangeListener { _, checked -> unchecked += checked }
+        view.setOnCheckedStateChangeListener { _, ids -> heard += ids }
+        view.chipAt(0).setOnCheckedChangeListener { _, checked -> unchecked += checked }
         view.chipAt(0).tapCentre()
         view.chipAt(2).tapCentre()
         assertThat(view.chipAt(0).isChecked).isFalse()
@@ -465,7 +465,7 @@ class SancaiChipTest {
         val copy = group()
         copy.id = view.id
         var calls = 0
-        copy.onCheckedStateChangeListener = SancaiChipGroup.OnCheckedStateChangeListener { _, _ -> calls++ }
+        copy.setOnCheckedStateChangeListener { _, _ -> calls++ }
         copy.restoreHierarchyState(state)
         assertThat(copy.checkedChipIds).containsExactly(copy.chipAt(1).id, copy.chipAt(4).id).inOrder()
         assertThat(calls).isEqualTo(0)

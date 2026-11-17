@@ -222,7 +222,7 @@ class SancaiBanner (context: Context, attrs: AttributeSet? = null, defStyleAttr:
   val detailView: SancaiText =    // The view that shows [detail].
   val actionButton: SancaiButton    // The main text action, at the very end of the text column.
   val secondaryActionButton: SancaiButton    // The second text action, before the main one.
-  var onDismissListener: OnDismissListener?    // Called when the user closes the banner.
+  fun setOnDismissListener(listener: OnDismissListener?)    // Called when the user closes the banner.
   var title: CharSequence?    // The title, in ink.
   var detail: CharSequence?    // The muted line under the title.
   var tone: Tone    // Colour of the bar and the icon, and the icon itself unless [icon] replaces it.
@@ -268,8 +268,8 @@ class SancaiCallout (context: Context, attrs: AttributeSet? = null, defStyleAttr
 ```
 class SancaiCheckbox (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : SancaiControl(context, attrs, defStyleAttr), Checkable    // A small recessed bed that fills with glaze when it is checked.
   fun interface OnCheckedChangeListener    // Called when the user checks or unchecks the box.
-    fun onCheckedChanged(view: View, checked: Boolean)
-  var onCheckedChangeListener: OnCheckedChangeListener?    // Listener for user-driven changes.
+    fun onCheckedChanged(checkbox: SancaiCheckbox, isChecked: Boolean)    // The user checked or unchecked [checkbox]; [isChecked] is its new state.
+  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes.
   var glaze: SancaiGlaze    // The glaze poured into the box when it is checked.
   var text: CharSequence    // The label at the end of the box, or empty for a bare box.
   fun setChecked(checked: Boolean, animate: Boolean)    // Checks or unchecks the box from code.
@@ -282,7 +282,7 @@ class SancaiChip (context: Context, attrs: AttributeSet? = null, defStyleAttr: I
   enum class Kind { ACTION, FILTER }    // What a chip does when it is tapped.
   fun interface OnCheckedChangeListener    // Called when the user checks or unchecks a filter chip.
     fun onCheckedChanged(chip: SancaiChip, isChecked: Boolean)
-  var onCheckedChangeListener: OnCheckedChangeListener?    // Listener for user-driven changes of [isChecked].
+  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes of [isChecked].
   var text: CharSequence    // The label.
   var kind: Kind    // Whether the chip is pressed like a button or checked like a filter.
   var glaze: SancaiGlaze    // Glaze poured into a checked filter chip.
@@ -298,7 +298,7 @@ class SancaiChip (context: Context, attrs: AttributeSet? = null, defStyleAttr: I
 class SancaiChipGroup (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ViewGroup(context, attrs, defStyleAttr)    // A wrapping row of [SancaiChip]s:
   fun interface OnCheckedStateChangeListener    // Called when the user changes which chips of the group are checked.
     fun onCheckedStateChanged(group: SancaiChipGroup, checkedIds: List<Int>)
-  var onCheckedStateChangeListener: OnCheckedStateChangeListener?    // Listener for user-driven changes of the checked chips.
+  fun setOnCheckedStateChangeListener(listener: OnCheckedStateChangeListener?)    // Listener for user-driven changes of the checked chips.
   var isSingleSelection: Boolean    // Whether at most one chip can be checked.
   var isSelectionRequired: Boolean    // Whether the user is kept from unchecking the last checked chip.
   var horizontalGap: Int    // Gap between the capsules of neighbouring chips in a row, in pixels.
@@ -329,7 +329,7 @@ class SancaiControlRow (context: Context, attrs: AttributeSet? = null, defStyleA
   val track: SancaiSegmentedTrack? get()    // The control as a segmented track:
   var textWeight: Float    // Weight of the text column.
   var controlWeight: Float    // Weight of the control; 0 when the control keeps its own width.
-  fun setSegmented(options: List<CharSequence>, selected: Int, listener: SancaiSegmentedTrack.OnSelectionChangedListener?): SancaiSegmentedTrack    // Puts a segmented track into the row and returns it.
+  fun setSegmented(options: List<CharSequence>, selected: Int, listener: SancaiSegmentedTrack.OnSelectionChangeListener?): SancaiSegmentedTrack    // Puts a segmented track into the row and returns it.
   fun setControl(view: View?, textWeight: Float = 1f, controlWeight: Float = 0f)    // Puts any view into the row as its control, replacing the previous one; `null` leaves the text alone.
   companion object
     const val MIN_HEIGHT_DP: Float    // Height of a row without a detail line, in dp.
@@ -426,8 +426,8 @@ class SancaiNavBar (context: Context, attrs: AttributeSet? = null, defStyleAttr:
     fun onItemSelected(bar: SancaiNavBar, index: Int)    // In [Mode.LAUNCHER] this is called for every tap.
   fun interface OnItemReselectedListener    // Called in [Mode.TABS] when the user taps the item that is already selected.
     fun onItemReselected(bar: SancaiNavBar, index: Int)
-  var onItemSelectedListener: OnItemSelectedListener?    // Listener for user-driven activation.
-  var onItemReselectedListener: OnItemReselectedListener?    // Listener for a tap on the selected item in [Mode.TABS], typically "scroll to top".
+  fun setOnItemSelectedListener(listener: OnItemSelectedListener?)    // Listener for user-driven activation.
+  fun setOnItemReselectedListener(listener: OnItemReselectedListener?)    // Listener for a tap on the selected item in [Mode.TABS], typically "scroll to top".
   var mode: Mode    // Shortcut row or tab row.
   var selectedIndex: Int    // Index of the selected item in [Mode.TABS]; `-1` in [Mode.LAUNCHER] or without items.
   var elevated: Boolean    // Draws a full-bleed hairline along the top edge, for content that scrolls underneath the row.
@@ -453,19 +453,17 @@ open class SancaiPage (context: Context, attrs: AttributeSet? = null, defStyleAt
   fun <T : View> addSection(title: CharSequence?, detail: CharSequence?, card: T): T    // Adds a section:
   fun <T : View> addButton(button: T): T    // Adds a full-width button that stands on the page rather than in a card:
   fun addSpace(dp: Float): View    // Adds [dp] of empty vertical space; accessibility services skip it.
-  companion object
-    const val HEADING_DETAIL_GAP_DP: Float    // Gap between the title and the detail line of a section heading, in dp.
 ```
 
 ### widget/SancaiPageIndicator.kt
 
 ```
 class SancaiPageIndicator (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : SancaiControl(context, attrs, defStyleAttr)    // A row of dots, one per page:
-  fun interface OnSelectedChangeListener    // Receives the dot the user chose on a [SancaiPageIndicator].
-    fun onSelectedChanged(indicator: SancaiPageIndicator, index: Int)    // The user moved [indicator] to dot [index].
-  var onSelectedChangeListener: OnSelectedChangeListener?    // Called when the user chooses a dot.
+  fun interface OnSelectionChangeListener    // Receives the dot the user chose on a [SancaiPageIndicator].
+    fun onSelectionChanged(indicator: SancaiPageIndicator, index: Int)    // The user moved [indicator] to dot [index].
+  fun setOnSelectionChangeListener(listener: OnSelectionChangeListener?)    // Called when the user chooses a dot.
   var count: Int    // Number of dots.
-  var selected: Int    // Index of the accent dot.
+  var selectedIndex: Int    // Index of the accent dot.
   fun attachTo(pager: SancaiPager?)    // Follows [pager] and moves it when a dot is tapped; `null` detaches and leaves the dots as they are, for standalone use.
 ```
 
@@ -486,8 +484,8 @@ open class SancaiParagraph (context: Context, attrs: AttributeSet? = null, defSt
 ```
 class SancaiPowerSwitch (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : SancaiControl(context, attrs, defStyleAttr), Checkable, SancaiHorizontalDragOwner    // The hero switch of a screen:
   fun interface OnCheckedChangeListener    // Called when the user turns the switch on or off.
-    fun onCheckedChanged(view: View, checked: Boolean)    // The user turned [view] on or off; [checked] is the new state.
-  var onCheckedChangeListener: OnCheckedChangeListener?    // Listener for user-driven changes.
+    fun onCheckedChanged(switch: SancaiPowerSwitch, isChecked: Boolean)    // The user turned [switch] on or off; [isChecked] is the new state.
+  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes.
   var onLabel: CharSequence    // State label shown on the thumb while the switch is on.
   var offLabel: CharSequence    // State label shown on the thumb while the switch is off.
   var turnOnLabel: CharSequence    // Action label shown on the bed while the switch is off.
@@ -512,8 +510,8 @@ class SancaiProgressBar (context: Context, attrs: AttributeSet? = null, defStyle
 ```
 class SancaiRadioButton (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : SancaiControl(context, attrs, defStyleAttr), Checkable    // One choice out of several:
   fun interface OnCheckedChangeListener    // Called when the user changes the checked state of a radio.
-    fun onCheckedChanged(view: View, checked: Boolean)
-  var onCheckedChangeListener: OnCheckedChangeListener?    // Listener for user-driven changes:
+    fun onCheckedChanged(radio: SancaiRadioButton, isChecked: Boolean)    // The user changed [radio]; [isChecked] is its new state.
+  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes:
   var glaze: SancaiGlaze    // Glaze poured into the bed while the radio is checked.
   var text: CharSequence?    // Label drawn to the end of the bed, or `null` for a bare radio.
   fun setChecked(checked: Boolean, animate: Boolean)    // Sets the state from code; with [animate] the glaze and the bead glide in or out.
@@ -529,7 +527,7 @@ class SancaiRadioButton (context: Context, attrs: AttributeSet? = null, defStyle
 class SancaiRadioGroup (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A vertical column of [SancaiRadioButton]s that answers one question:
   fun interface OnCheckedChangeListener    // Called when the user moves the choice to another radio of the group.
     fun onCheckedChanged(group: SancaiRadioGroup, checkedId: Int)
-  var onCheckedChangeListener: OnCheckedChangeListener?    // Listener for user-driven changes of the choice.
+  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes of the choice.
   val checkedId: Int get()    // Id of the checked radio, or [View.NO_ID] while nothing is chosen.
   fun check(id: Int, animate: Boolean = true)    // Moves the choice to the radio with [id] from code; [View.NO_ID] clears it.
   fun clearCheck(animate: Boolean = true)    // Leaves no radio checked.
@@ -539,9 +537,9 @@ class SancaiRadioGroup (context: Context, attrs: AttributeSet? = null, defStyleA
 
 ```
 class SancaiSegmentedTrack (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : SancaiControl(context, attrs, defStyleAttr), SancaiHorizontalDragOwner    // The signature Sancai control:
-  fun interface OnSelectionChangedListener    // Called when the user moves the selection to another option.
+  fun interface OnSelectionChangeListener    // Called when the user moves the selection to another option.
     fun onSelectionChanged(track: SancaiSegmentedTrack, index: Int)
-  var onSelectionChangedListener: OnSelectionChangedListener?    // Listener for user-driven selection changes.
+  fun setOnSelectionChangeListener(listener: OnSelectionChangeListener?)    // Listener for user-driven selection changes.
   var options: List<CharSequence>    // The option labels.
   val selectedIndex: Int get()    // Index of the selected option.
   fun setOptions(vararg labels: CharSequence)    // Replaces the option labels.
@@ -549,6 +547,9 @@ class SancaiSegmentedTrack (context: Context, attrs: AttributeSet? = null, defSt
   fun select(index: Int, animate: Boolean = true)    // Moves the selection to [index] from code.
   companion object
     const val HEIGHT_DP: Float    // Default height of the view in dp:
+    const val GUTTER_SIDE_DP: Float    // Room at each side of the capsule, inside the view, in dp.
+    const val GUTTER_TOP_DP: Float    // Room above the capsule, inside the view, in dp.
+    const val GUTTER_BOTTOM_DP: Float    // Room below the capsule, inside the view, in dp.
 ```
 
 ### widget/SancaiSkeleton.kt
@@ -572,11 +573,11 @@ class SancaiSkeleton (context: Context, attrs: AttributeSet? = null, defStyleAtt
 ```
 class SancaiSlider (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : SancaiControl(context, attrs, defStyleAttr), SancaiHorizontalDragOwner    // A slim recessed track with a glazed stretch that runs from the start to a neutral bead.
   fun interface OnValueChangeListener    // Called when the user changes the value by touch, keyboard or an accessibility action.
-    fun onValueChange(slider: SancaiSlider, value: Float, fromUser: Boolean)    // @param value the new value, already clamped and snapped.
+    fun onValueChanged(slider: SancaiSlider, value: Float)    // The user moved the bead of [slider]; [value] is the new value, already clamped and snapped.
   fun interface OnStopTrackingTouchListener    // Called when a touch that moved the bead ends:
     fun onStopTrackingTouch(slider: SancaiSlider)    // The finger has lifted (or the drag was taken away); [SancaiSlider.value] is final.
-  var onValueChangeListener: OnValueChangeListener?    // Listener for value changes made by the user.
-  var onStopTrackingTouchListener: OnStopTrackingTouchListener?    // Listener for the end of a touch gesture, the moment to commit an expensive change.
+  fun setOnValueChangeListener(listener: OnValueChangeListener?)    // Listener for value changes made by the user.
+  fun setOnStopTrackingTouchListener(listener: OnStopTrackingTouchListener?)    // Listener for the end of a touch gesture, the moment to commit an expensive change.
   var valueFormatter: ((Float) -> CharSequence)?    // Turns a value into the text accessibility services read, for example `"40 %"`.
   var value: Float    // The current value, always inside [valueFrom]..[valueTo] and on the step grid.
   var valueFrom: Float    // Lower bound, at the start of the track.
@@ -584,7 +585,7 @@ class SancaiSlider (context: Context, attrs: AttributeSet? = null, defStyleAttr:
   var stepSize: Float    // Distance between two stops, counted from [valueFrom]; `0` makes the slider continuous.
   var glaze: SancaiGlaze    // The glaze of the stretch behind the bead.
   fun setValue(value: Float, animate: Boolean)    // Sets the value from code, optionally gliding the bead there.
-  fun setGlazeScale(glazes: List<SancaiGlaze>?)    // Glazes the stretch with a scale instead of one glaze:
+  fun setGlazeScale(glazes: List<SancaiGlaze>?)    // Glazes the stretch with a scale instead of one glaze.
 ```
 
 ### widget/SancaiSpinner.kt
@@ -611,8 +612,8 @@ class SancaiStateLayout (context: Context, attrs: AttributeSet? = null, defStyle
   fun setLoadingView(view: View?): Unit = replace(State.LOADING, view)    // Replaces the loading view.
   fun setEmptyView(view: View?): Unit = replace(State.EMPTY, view)    // Replaces the empty view.
   fun setErrorView(view: View?): Unit = replace(State.ERROR, view)    // Replaces the error view.
-  fun setEmpty(title: CharSequence?, detail: CharSequence? = null, actionLabel: CharSequence? = null, onAction: (() -> Unit)? = null)    // Configures the default empty message:
-  fun setError(title: CharSequence?, detail: CharSequence? = null, retryLabel: CharSequence? = null, onRetry: (() -> Unit)? = null)    // Configures the default error message:
+  fun setEmpty(title: CharSequence?, detail: CharSequence? = null, actionLabel: CharSequence? = null, listener: OnClickListener? = null)    // Configures the default empty message:
+  fun setError(title: CharSequence?, detail: CharSequence? = null, retryLabel: CharSequence? = null, listener: OnClickListener? = null)    // Configures the default error message:
 ```
 
 ### widget/SancaiStateView.kt
@@ -627,10 +628,10 @@ class SancaiStateView (context: Context, attrs: AttributeSet? = null, defStyleAt
   var iconColor: Int?    // An explicit icon colour; wins over [iconTone] until set back to `null`.
   var title: CharSequence?    // The title, one short phrase in ink; `null` or empty hides it.
   var detail: CharSequence?    // The supporting sentence in the muted colour; `null` or empty hides it.
-  val actionLabel: CharSequence?    // The label of the action, or `null` while there is no action.
-  var onActionClick: (() -> Unit)?    // Called when the user presses the action (touch, keyboard or accessibility click).
+  var actionLabel: CharSequence?    // The label of the action, or `null` while there is no action.
+  fun setOnActionClickListener(listener: OnClickListener?)    // Called when the user presses the action (touch, keyboard or accessibility click), with [actionButton] as the view.
   var compact: Boolean    // The small form for a card row:
-  fun setAction(label: CharSequence?, onClick: (() -> Unit)? = null)    // Shows the action as a neutral capsule button under the message, or removes it when [label] is `null` or empty.
+  fun setAction(label: CharSequence?, listener: OnClickListener?)    // Sets the action in one call:
 ```
 
 ### widget/SancaiStepper.kt
@@ -638,20 +639,18 @@ class SancaiStateView (context: Context, attrs: AttributeSet? = null, defStyleAt
 ```
 class SancaiStepper (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : SancaiControl(context, attrs, defStyleAttr)    // A precise number control:
   fun interface OnValueChangeListener    // Called when the user changes the value by touch, keyboard or an accessibility action.
-    fun onValueChange(stepper: SancaiStepper, value: Float)
+    fun onValueChanged(stepper: SancaiStepper, value: Float)
   fun interface OnEditRequestListener    // Called when the user taps the value (or presses Enter) to type a number directly.
     fun onEditRequest(stepper: SancaiStepper)
-  fun interface Formatter    // Turns a value into the text written on the thumb.
-    fun format(value: Float): CharSequence
-  var onValueChangeListener: OnValueChangeListener?    // Listener for user-driven value changes.
-  var onEditRequestListener: OnEditRequestListener?    // Listener for a tap on the value.
+  fun setOnValueChangeListener(listener: OnValueChangeListener?)    // Listener for user-driven value changes.
+  fun setOnEditRequestListener(listener: OnEditRequestListener?)    // Listener for a tap on the value.
   var value: Float    // The current value.
   var valueFrom: Float    // Lower bound of the range and origin of the step grid.
   var valueTo: Float    // Upper bound of the range.
   var stepSize: Float    // Distance between two neighbouring values; must be greater than zero.
   var decimals: Int    // Number of digits written after the decimal separator (0 to 6).
   var unit: CharSequence?    // Suffix written directly after the number, for example `" ms"` or `"%"`.
-  var formatter: Formatter?    // Replaces the built-in number formatting ([decimals] and [unit]) when it is not `null`.
+  var valueFormatter: ((Float) -> CharSequence)?    // Turns a value into the text written on the thumb and read by accessibility services.
   var glaze: SancaiGlaze    // The glaze poured into the track.
   val formattedValue: CharSequence    // The value as it is written on the thumb and announced by accessibility services.
   fun setRange(valueFrom: Float, valueTo: Float)    // Sets both bounds at once; [valueTo] must not be below [valueFrom].
@@ -677,8 +676,8 @@ open class SancaiSurface (context: Context, attrs: AttributeSet? = null, defStyl
 ```
 class SancaiSwitch (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : SancaiControl(context, attrs, defStyleAttr), Checkable, SancaiHorizontalDragOwner    // The compact two-state switch:
   fun interface OnCheckedChangeListener    // Called when the user turns the switch on or off.
-    fun onCheckedChanged(view: View, checked: Boolean)    // [view] is the switch the user operated, [checked] its new state.
-  var onCheckedChangeListener: OnCheckedChangeListener?    // Listener for user-driven changes.
+    fun onCheckedChanged(switch: SancaiSwitch, isChecked: Boolean)    // The user turned [switch] on or off; [isChecked] is its new state.
+  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes.
   var offGlaze: SancaiGlaze    // Glaze of the bed while the switch is off.
   var onGlaze: SancaiGlaze    // Glaze of the bed while the switch is on.
   var onStateDescription: CharSequence    // What accessibility services say for the on state.
@@ -697,7 +696,7 @@ class SancaiTabs (context: Context, attrs: AttributeSet? = null, defStyleAttr: I
   enum class Layout    // How the tabs share the width of the view.
   fun interface OnTabSelectedListener    // Called when the user chooses another tab.
     fun onTabSelected(tabs: SancaiTabs, index: Int)
-  var onTabSelectedListener: OnTabSelectedListener?    // Listener for user-driven tab changes:
+  fun setOnTabSelectedListener(listener: OnTabSelectedListener?)    // Listener for user-driven tab changes:
   val selectedIndex: Int get()    // Index of the selected tab.
   val tabs: List<CharSequence> get()    // The tab labels, in order.
   var layout: Layout    // How the tabs share the width:
@@ -735,10 +734,10 @@ open class SancaiText (context: Context, attrs: AttributeSet? = null, defStyleAt
 ```
 class SancaiTextField (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A text field:
   enum class EndAction    // What sits inside the well at its end.
-  fun interface OnTextChangedListener    // Hears about text the user typed, pasted or cleared.
+  fun interface OnTextChangeListener    // Hears about text the user typed, pasted or cleared.
     fun onTextChanged(field: SancaiTextField, text: CharSequence)    // Called after [text] of [field] changed through user input.
   val editText: EditText    // The `EditText` inside the well, for everything this class has no property for:
-  var onTextChangedListener: OnTextChangedListener?    // Called after the user changed the text.
+  fun setOnTextChangeListener(listener: OnTextChangeListener?)    // Called after the user changed the text.
   var text: CharSequence    // The text in the field.
   var hint: CharSequence?    // The hint shown in the muted colour while the field is empty.
   var label: CharSequence?    // The label above the well, or null for none.
@@ -799,8 +798,8 @@ class SancaiExpandableLayout (context: Context, attrs: AttributeSet? = null, def
     fun onExpansionChanged(layout: SancaiExpandableLayout, expanded: Boolean)    // [expanded] is the state the user just chose; the body may still be moving.
   fun interface OnExpansionProgressListener    // Told about every step of the opening, so that other views can move with it.
     fun onExpansionProgress(layout: SancaiExpandableLayout, fraction: Float)    // [fraction] runs from 0 (collapsed) to 1 (fully expanded).
-  var onExpansionChangeListener: OnExpansionChangeListener?    // Called after the user toggled the section through the header, the keyboard or an accessibility action.
-  var onExpansionProgressListener: OnExpansionProgressListener?    // Called whenever the open fraction changes, whoever caused it, including each frame of the animation.
+  fun setOnExpansionChangeListener(listener: OnExpansionChangeListener?)    // Called after the user toggled the section through the header, the keyboard or an accessibility action.
+  fun setOnExpansionProgressListener(listener: OnExpansionProgressListener?)    // Called whenever the open fraction changes, whoever caused it, including each frame of the animation.
   var isExpanded: Boolean    // Whether the section is expanded, or on its way there.
   val expansionFraction: Float get()    // How far the body is open right now:
   val isSettling: Boolean get()    // Whether the body is on its way to the state given by [isExpanded].
@@ -809,7 +808,7 @@ class SancaiExpandableLayout (context: Context, attrs: AttributeSet? = null, def
   var expandedStateDescription: CharSequence?    // State description of the header while expanded.
   var collapsedStateDescription: CharSequence?    // State description of the header while collapsed.
   var headerFocusRadiusDp: Float    // Corner radius, in dp, of the rim drawn inside the header while it has keyboard focus.
-  fun setExpanded(expanded: Boolean, animate: Boolean)    // Expands or collapses the section without calling [onExpansionChangeListener].
+  fun setExpanded(expanded: Boolean, animate: Boolean)    // Expands or collapses the section without calling [setOnExpansionChangeListener].
   fun toggle()    // Switches between expanded and collapsed with the animation, like [setExpanded].
   fun setIndicator(view: View?)    // Names the view that shows the direction of the section, usually a chevron inside the header.
   fun getIndicator(): View? = indicatorView    // The view set with [setIndicator] or found through the XML attribute, if any.
@@ -879,7 +878,7 @@ class SancaiRevealLayout (context: Context, attrs: AttributeSet? = null, defStyl
   var actionIcon: SancaiIcon?    // The icon drawn above the label, or null for a label alone.
   var revealEdge: Edge    // The edge at which the action appears.
   var closeSiblings: Boolean    // Whether opening this row closes the other open reveal rows of the same parent.
-  var onOpenChangeListener: OnOpenChangeListener?    // Called when the user opens or closes the row by drag, tap, key or accessibility action.
+  fun setOnOpenChangeListener(listener: OnOpenChangeListener?)    // Called when the user opens or closes the row by drag, tap, key or accessibility action.
   val isOpen: Boolean get()    // True while the row is open or settling open.
   val row: View? get()    // The single child that slides, or null before it is added.
   fun setAction(label: CharSequence, tone: SancaiTextTone = SancaiTextTone.DANGER, icon: SancaiIcon? = null, onClick: OnClickListener?)    // Sets the one action behind the row.
@@ -994,13 +993,60 @@ class SancaiBottomSheet private constructor(private val context: Context, privat
     fun show(): SancaiBottomSheet = build().show()    // Builds the sheet and shows it.
 ```
 
+### overlay/SancaiDialog.kt
+
+```
+class SancaiDialog private constructor(private val context: Context, builder: Builder)    // A modal question on a porcelain card:
+  fun interface OnActionListener    // Called when the user chooses an action.
+    fun onAction(dialog: SancaiDialog): Boolean    // Returns `true` to close [dialog], `false` to keep it open.
+  fun interface OnInputListener    // Called with the text of an input dialog when its positive action is chosen.
+    fun onInput(dialog: SancaiDialog, text: String): Boolean    // Returns `true` to accept [text] and close, `false` to keep [dialog] open.
+  fun interface OnDismissListener    // Called once when the dialog has left the screen.
+    fun onDismiss(dialog: SancaiDialog, positive: Boolean)    // @param positive `true` only when the positive action closed the dialog; `false` for every other way out (another action, back, outside touch, [dismiss]).
+  var isClosing: Boolean    // `true` from the moment the dialog starts to close; actions and back are ignored then.
+  val isShowing: Boolean    // Whether the dialog window is on screen (it still is while the exit motion runs).
+  val contentView: View    // The card, for tests and for code that needs to look something up in the content.
+  val dialog: Dialog    // The platform dialog that hosts the card, for window flags this class does not cover.
+  val inputField: EditText?    // The editor of an input dialog, or `null` for any other dialog.
+  val inputText: String    // The current text of an input dialog; empty for any other dialog.
+  val error: CharSequence?    // The message in the validation slot, or `null` while no error is shown.
+  val isStacked: Boolean    // Whether the actions are stacked as full-width rows (valid after the card was measured).
+  fun show()    // Shows the dialog and plays the enter motion.
+  fun dismiss()    // Closes the dialog with the exit motion.
+  fun showError(message: CharSequence)    // Fills the validation slot above the actions with a danger capsule and gives a reject haptic.
+  fun clearError()    // Empties and hides the validation slot.
+  fun setActionEnabled(which: Int, enabled: Boolean)    // Enables or disables one action, for example the positive one until a form is complete.
+  fun actionView(which: Int): View? = actionViews.getOrNull(which)    // The view of an action, or `null` when the dialog has no such action.
+  class Builder(private val context: Context)    // Collects the parts of a dialog.
+    fun title(title: CharSequence?): Builder = apply { this.title = title }    // Centred headline; it is also announced as the name of the dialog.
+    fun message(message: CharSequence?): Builder = apply { this.message = message }    // Centred, muted explanation below the title.
+    fun view(view: View?): Builder = apply { this.view = view }    // Custom content (a form, a list) between the message and the actions.
+    fun positive(label: CharSequence? = null, tone: SancaiTextTone = SancaiTextTone.ACCENT, listener: OnActionListener? = null): Builder = apply    // The confirming action, at the end of the row.
+    fun negative(label: CharSequence? = null, listener: OnActionListener? = null): Builder = apply    // The dismissive action in the muted tone, at the start of the row.
+    fun neutral(label: CharSequence, listener: OnActionListener? = null): Builder = apply    // A third, alternative action in the ink tone.
+    fun input(initial: CharSequence? = null, hint: CharSequence? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, multiline: Boolean = false, listener: OnInputListener? = null): Builder = apply    // Turns the dialog into an input dialog:
+    fun cancelable(cancelable: Boolean): Builder = apply { this.cancelable = cancelable }    // Whether back closes the dialog.
+    fun canceledOnTouchOutside(cancel: Boolean): Builder = apply { canceledOnTouchOutside = cancel }    // Whether a touch outside the card closes a cancelable dialog.
+    fun onDismiss(listener: OnDismissListener?): Builder = apply { dismissListener = listener }    // Called once when the dialog has gone, with a flag for "the positive action closed it".
+    fun build(): SancaiDialog = SancaiDialog(context, this)    // Builds the dialog without showing it.
+    fun show(): SancaiDialog = build().also { it.show() }    // Builds the dialog and shows it.
+  companion object
+    const val ACTION_POSITIVE: Int    // The confirming action.
+    const val ACTION_NEUTRAL: Int    // The optional third action.
+    const val ACTION_NEGATIVE: Int    // The dismissive action.
+    fun confirm(context: Context, title: CharSequence?, message: CharSequence? = null, positiveLabel: CharSequence? = null, danger: Boolean = false, onConfirm: Runnable? = null): SancaiDialog = Builder(context)    // Asks for a confirmation with "Cancel" and o
+    fun message(context: Context, title: CharSequence?, message: CharSequence? = null): SancaiDialog =    // Shows a notice with a single "OK" action.
+```
+
 ### overlay/SancaiFloatingPanel.kt
 
 ```
 open class SancaiFloatingPanel (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr), SancaiHorizontalDragOwner    // A small porcelain panel that floats above a screen and is moved with the finger:
   var isDragging: Boolean    // True while the finger is moving the panel.
   var snapToEdge: Boolean    // Whether the panel glides to the nearer side of its parent when a drag ends.
-  var onPositionChangedListener: ((x: Float, y: Float) -> Unit)?    // Called when the user has moved the panel (end of a drag, arrow key, accessibility action) with the new [positionX] and [positionY].
+  fun interface OnPositionChangeListener    // Called when the user has moved the panel.
+    fun onPositionChanged(panel: SancaiFloatingPanel, x: Float, y: Float)    // The user moved [panel]; [x] and [y] are its new [positionX] and [positionY].
+  fun setOnPositionChangeListener(listener: OnPositionChangeListener?)    // Listener for moves made by the user:
   var positionX: Float    // Horizontal position as a fraction of the free travel:
   var positionY: Float    // Vertical position as a fraction of the free travel:
   val isBoundToWindow: Boolean get()    // True once [bindToWindow] has made this panel a window of its own.
@@ -1036,4 +1082,43 @@ class SancaiMenu(context: Context)    // A small porcelain panel of actions that
     const val MAX_WIDTH_DP: Float    // Widest panel body, in dp; longer labels are ellipsised.
     const val ITEM_HEIGHT_DP: Float    // Height of an item at the default text size, in dp.
     const val WINDOW_MARGIN_DP: Float    // Distance the panel keeps from the window edges, in dp.
+```
+
+### overlay/SancaiToast.kt
+
+```
+class SancaiToast private constructor(private val host: FrameLayout?, /** The pill on screen. Exposed for tests and for hosts that want to style it further. */ public val view: SancaiToastView, private val durationMs: Long, private val onAction: Runnable?, pri
+  fun interface OnDismissListener    // Told when a toast has left the screen.
+    fun onDismiss(toast: SancaiToast, actionTaken: Boolean)    // [toast] has left the screen for any reason:
+  enum class Tone    // What the colour of the pill says.
+  val isShowing: Boolean    // `true` from [show] until the pill has been removed; still `true` while it sinks away.
+  val duration: Long    // The time this toast stays before it leaves by itself; 0 means until [dismiss].
+  fun show(): SancaiToast    // Puts the pill into the activity and lets it rise.
+  fun dismiss()    // Lets the pill sink away and removes it.
+  class Builder(private val activity: Activity)    // Assembles a toast with more than a message and a tone.
+    fun message(message: CharSequence): Builder = apply { this.message = message }    // The one thing the toast says.
+    fun message(@StringRes message: Int): Builder = apply { this.message = activity.getText(message) }    // The message as a string resource.
+    fun tone(tone: Tone): Builder = apply { this.tone = tone }    // The colour of the pill; [Tone.NEUTRAL] when not set.
+    fun action(label: CharSequence, onClick: Runnable): Builder = apply    // One text action at the end of the pill, for example "Undo".
+    fun action(@StringRes label: Int, onClick: Runnable): Builder =    // The action label as a string resource.
+    fun duration(durationMs: Long): Builder = apply { this.durationMs = max(0L, durationMs) }    // How long the toast stays, in milliseconds; 0 keeps it until [SancaiToast.dismiss].
+    fun onDismiss(listener: OnDismissListener?): Builder = apply { dismissListener = listener }    // Listener told once when the pill has left the screen, whatever made it leave.
+    fun build(): SancaiToast    // Creates the toast without showing it.
+    fun show(): SancaiToast = build().show()    // Creates the toast and shows it.
+  companion object
+    const val DURATION_MS: Long    // Time a plain toast stays, in milliseconds.
+    const val ACTION_DURATION_MS: Long    // Time a toast with an action stays, in milliseconds.
+    const val SCREEN_READER_DURATION_MS: Long    // Shortest stay while a screen reader explores the screen, in milliseconds.
+    const val RISE_DP: Float    // Distance the pill travels when it rises and sinks, in dp.
+    const val SIDE_MARGIN_DP: Float    // Free space kept on each side of the pill, in dp.
+    const val BOTTOM_MARGIN_DP: Float    // Distance between the pill and the bottom of the content (above bars and keyboard), in dp.
+    fun show(activity: Activity, message: CharSequence, tone: Tone = Tone.NEUTRAL): SancaiToast =    // Shows [message] in a pill of the given [tone] and returns the toast.
+    fun error(activity: Activity, message: CharSequence): SancaiToast =    // Shows [message] as an error:
+    fun cancel(activity: Activity)    // Removes the toast on screen in [activity], if there is one, without its exit glide.
+class SancaiToastView (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // The pill of a [SancaiToast]:
+  var message: CharSequence    // The one thing the pill says.
+  var tone: SancaiToast.Tone    // The colour of the pill and of what is written on it.
+  var actionLabel: CharSequence?    // Label of the text action at the end of the pill; `null` or empty for a pill without one.
+  val hasAction: Boolean    // `true` when the pill carries an action.
+  fun bodyBounds(out: RectF)    // The rectangle of the visible capsule inside the view, without the shadow gutter, in pixels.
 ```

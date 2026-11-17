@@ -23,7 +23,6 @@ import io.github.avalonskyafar.sancai.theme.SancaiMotion
 import io.github.avalonskyafar.sancai.theme.SancaiTextTone
 import io.github.avalonskyafar.sancai.theme.SancaiTheme
 import io.github.avalonskyafar.sancai.widget.SancaiControl
-import io.github.avalonskyafar.sancai.widget.SancaiText
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 import org.junit.Test
@@ -74,7 +73,7 @@ class SancaiDialogTest {
 
     @Test
     fun `one action is the default and fills the row`() {
-        val dialog = builder().create()
+        val dialog = builder().build()
         Snapshots.layout(dialog.contentView, 352)
         val ok = label(dialog, ACTION_POSITIVE)
         assertThat(ok.text.toString()).isEqualTo("OK")
@@ -87,7 +86,7 @@ class SancaiDialogTest {
 
     @Test
     fun `two actions share the row equally with the confirming one at the end`() {
-        val dialog = builder().positive("Restore", SancaiTextTone.DANGER).negative().create()
+        val dialog = builder().positive("Restore", SancaiTextTone.DANGER).negative().build()
         Snapshots.layout(dialog.contentView, 352)
         val cancel = label(dialog, ACTION_NEGATIVE)
         val restore = label(dialog, ACTION_POSITIVE)
@@ -100,13 +99,13 @@ class SancaiDialogTest {
         assertThat(cancel.height).isEqualTo(dp(54f))
         assertThat(cancel.currentTextColor).isEqualTo(theme.colors.muted)
         assertThat(restore.currentTextColor).isEqualTo(theme.colors.danger)
-        assertThat(label(builder().positive().negative().create(), ACTION_POSITIVE).currentTextColor)
+        assertThat(label(builder().positive().negative().build(), ACTION_POSITIVE).currentTextColor)
             .isEqualTo(theme.colors.accent)
     }
 
     @Test
     fun `three actions stack as full-width rows positive, neutral, negative`() {
-        val dialog = builder().positive("Save").neutral("Discard").negative().create()
+        val dialog = builder().positive("Save").neutral("Discard").negative().build()
         Snapshots.layout(dialog.contentView, 352)
         val rows = listOf(ACTION_POSITIVE, ACTION_NEUTRAL, ACTION_NEGATIVE).map { label(dialog, it) }
         assertThat(dialog.isStacked).isTrue()
@@ -126,7 +125,7 @@ class SancaiDialogTest {
         val dialog = builder()
             .positive("Restore every single setting now")
             .negative("Keep my current settings")
-            .create()
+            .build()
         Snapshots.layout(dialog.contentView, 352)
         val positive = label(dialog, ACTION_POSITIVE)
         val negative = label(dialog, ACTION_NEGATIVE)
@@ -139,7 +138,7 @@ class SancaiDialogTest {
 
     @Test
     fun `card follows the original layout numbers`() {
-        val dialog = builder().positive().negative().create()
+        val dialog = builder().positive().negative().build()
         val card = dialog.contentView as ViewGroup
         Snapshots.layout(card, 352)
         val all = texts(card)
@@ -206,7 +205,7 @@ class SancaiDialogTest {
 
     @Test
     fun `error capsule is glazed in the danger colour and as wide as the content`() {
-        val dialog = builder().positive().negative().create()
+        val dialog = builder().positive().negative().build()
         dialog.showError("Name is taken")
         val card = dialog.contentView
         val bitmap = Snapshots.render(card, 352)
@@ -306,14 +305,14 @@ class SancaiDialogTest {
 
     @Test
     fun `input variants set the input type and the line count`() {
-        val number = SancaiDialog.Builder(context).input(inputType = InputType.TYPE_CLASS_NUMBER).create()
+        val number = SancaiDialog.Builder(context).input(inputType = InputType.TYPE_CLASS_NUMBER).build()
         assertThat(checkNotNull(number.inputField).inputType and InputType.TYPE_MASK_CLASS)
             .isEqualTo(InputType.TYPE_CLASS_NUMBER)
-        val notes = SancaiDialog.Builder(context).input(multiline = true).create()
+        val notes = SancaiDialog.Builder(context).input(multiline = true).build()
         val editor = checkNotNull(notes.inputField)
         assertThat(editor.inputType and InputType.TYPE_TEXT_FLAG_MULTI_LINE).isNotEqualTo(0)
         assertThat(editor.minLines).isEqualTo(3)
-        assertThat(SancaiDialog.Builder(context).create().inputField).isNull()
+        assertThat(SancaiDialog.Builder(context).build().inputField).isNull()
     }
 
     @Test
@@ -341,7 +340,7 @@ class SancaiDialogTest {
     @Test
     fun `right-to-left layout swaps the action order`() {
         context.applicationInfo.flags = context.applicationInfo.flags or ApplicationInfo.FLAG_SUPPORTS_RTL
-        val dialog = builder().positive().negative().create()
+        val dialog = builder().positive().negative().build()
         val root = FrameLayout(context)
         root.layoutDirection = View.LAYOUT_DIRECTION_RTL
         root.addView(dialog.contentView)
@@ -392,7 +391,7 @@ class SancaiDialogTest {
 
     @Test
     fun `long message scrolls inside a card of at most 80 percent of the screen`() {
-        val dialog = builder().message("A long explanation. ".repeat(400)).positive().negative().create()
+        val dialog = builder().message("A long explanation. ".repeat(400)).positive().negative().build()
         val card = dialog.contentView as ViewGroup
         Snapshots.layout(card, 352)
         val limit = (context.resources.displayMetrics.heightPixels * 0.8f).roundToInt()
@@ -409,19 +408,19 @@ class SancaiDialogTest {
         val large = SancaiTheme.wrap(activity, theme.copy(textScale = 1.13f))
         val dialog = SancaiDialog.Builder(large).title("Leave without saving your changes to this page?")
             .positive("A very long confirming label that cannot possibly fit on a single line of the card")
-            .create()
+            .build()
         Snapshots.layout(dialog.contentView, 300)
         val action = label(dialog, ACTION_POSITIVE)
         assertThat(action.lineCount).isEqualTo(2)
         assertThat(action.height).isGreaterThan(dp(54f) - 1)
         assertThat(action.layout.height).isAtMost(action.height - action.paddingTop - action.paddingBottom)
-        assertThat(action.textSize).isWithin(0.5f).of(14f * 1.13f * context.resources.displayMetrics.scaledDensity)
+        assertThat(action.textSize).isWithin(0.5f).of(14.5f * 1.13f * context.resources.displayMetrics.scaledDensity)
     }
 
     @Test
     fun `accessibility names the pane and exposes actions as buttons`() {
-        val dialog = builder().positive().negative().create()
-        val untitled = SancaiDialog.Builder(context).message("Saved.").create()
+        val dialog = builder().positive().negative().build()
+        val untitled = SancaiDialog.Builder(context).message("Saved.").build()
         assertThat(ViewCompat.getAccessibilityPaneTitle(untitled.contentView).toString()).isEqualTo("Dialog")
         val ok = checkNotNull(dialog.actionView(ACTION_POSITIVE))
         assertThat(ok.accessibilityClassName.toString()).isEqualTo("android.widget.Button")
@@ -487,7 +486,7 @@ class SancaiDialogTest {
         val dialog = builder()
             .positive("Turn on protection for every profile now")
             .negative("Keep everything exactly as it is today")
-            .create()
+            .build()
         dialog.contentView.layoutDirection = View.LAYOUT_DIRECTION_RTL
         Snapshots.layout(dialog.contentView, 352)
         assertThat(dialog.isStacked).isTrue()
@@ -534,19 +533,19 @@ class SancaiDialogTest {
         column.setPadding(dp(16f), dp(18f), dp(16f), dp(14f))
         val input = SancaiDialog.Builder(themed).title("Rename profile")
             .message("Shown in the list and in notifications.")
-            .input("Night", "Profile name").create()
+            .input("Night", "Profile name").build()
         input.showError("A profile with this name already exists")
         val cards = listOf(
             SancaiDialog.Builder(themed).title("Apply the new rules?")
                 .message("They take effect the next time the screen is locked.")
-                .positive("Apply").negative().create(),
+                .positive("Apply").negative().build(),
             SancaiDialog.Builder(themed).title("Restore all defaults?")
                 .message("Every setting returns to its original value.")
-                .positive("Restore", SancaiTextTone.DANGER).negative().create(),
+                .positive("Restore", SancaiTextTone.DANGER).negative().build(),
             input,
             SancaiDialog.Builder(themed).title("Save changes?")
                 .message("You have edited this profile.")
-                .positive("Save").neutral("Discard").negative().create(),
+                .positive("Save").neutral("Discard").negative().build(),
         )
         for (card in cards) {
             val params = LinearLayout.LayoutParams(dp(352f), ViewGroup.LayoutParams.WRAP_CONTENT)

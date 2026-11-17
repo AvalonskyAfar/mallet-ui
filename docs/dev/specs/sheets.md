@@ -34,8 +34,8 @@ A small porcelain panel of actions that grows out of the control that opened it.
   item.
 - Placement: anchored below the anchor view, aligned to its end edge; flips above when
   there is no room; kept 8 dp inside the window.
-- Motion: grows from the anchor corner, scale 0.92 to 1 with alpha, 180 ms glide; exit
-  120 ms. Reduced motion: no scale.
+- Motion: grows from the anchor corner, scale 0.92 to 1 with alpha, and shrinks back the
+  same way, both over `SancaiMotion.feedbackDuration` (220 ms). Reduced motion: no scale.
 - Dismiss on outside touch, back, or item click (after the callback). Focus moves into the
   menu and returns to the anchor.
 - API: `SancaiMenu(context).add(label, icon) { }.addDanger(label) { }.addDivider()

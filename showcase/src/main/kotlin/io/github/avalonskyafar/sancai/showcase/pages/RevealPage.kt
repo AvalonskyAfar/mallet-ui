@@ -41,7 +41,7 @@ private val RULES = listOf(
 private fun PageScope.switchRow(title: String, on: Boolean, onChange: () -> Unit = {}): SancaiRevealLayout {
     val toggle = SancaiSwitch(context).apply {
         isChecked = on
-        onCheckedChangeListener = SancaiSwitch.OnCheckedChangeListener { _, _ -> onChange() }
+        setOnCheckedChangeListener { _, _ -> onChange() }
     }
     val row = SancaiControlRow(context).apply {
         this.title = title
@@ -134,7 +134,7 @@ private fun PageScope.endEdgeSection() {
                 row.close()
                 host.say(context.getString(R.string.reveal_pinned, name))
             }
-            row.onOpenChangeListener = SancaiRevealLayout.OnOpenChangeListener { _, open ->
+            row.setOnOpenChangeListener { _, open ->
                 if (open) host.say(context.getString(R.string.reveal_opened, name))
             }
             if (index > 0) addDivider()
@@ -185,7 +185,7 @@ private fun PageScope.expandSection() {
                 addView(paragraph, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))
                 setIndicator(chevron)
                 setExpanded(index == 0, animate = false)
-                onExpansionChangeListener = SancaiExpandableLayout.OnExpansionChangeListener { _, _ -> refresh() }
+                setOnExpansionChangeListener { _, _ -> refresh() }
             }
             sections.add(expandable)
             if (index > 0) addDivider()

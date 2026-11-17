@@ -126,15 +126,29 @@ public class SancaiStateView @JvmOverloads constructor(
             refresh()
         }
 
-    /** The label of the action, or `null` while there is no action. */
-    public val actionLabel: CharSequence?
+    /**
+     * The label of the action, or `null` while there is no action. Setting it shows the action
+     * as a neutral capsule button under the message, or removes it for `null` or an empty
+     * label; the listener set with [setOnActionClickListener] stays.
+     */
+    public var actionLabel: CharSequence?
         get() = if (actionButton.visibility == VISIBLE) actionButton.text else null
+        set(value) {
+            val shown = !value.isNullOrEmpty()
+            actionButton.text = if (shown) value else null
+            actionButton.visibility = if (shown) VISIBLE else GONE
+            refresh()
+        }
+
+    private var actionClickListener: OnClickListener? = null
 
     /**
-     * Called when the user presses the action (touch, keyboard or accessibility click). The
-     * button has already given its haptic tick.
+     * Called when the user presses the action (touch, keyboard or accessibility click), with
+     * [actionButton] as the view. The button has already given its haptic tick.
      */
-    public var onActionClick: (() -> Unit)? = null
+    public fun setOnActionClickListener(listener: OnClickListener?) {
+        actionClickListener = listener
+    }
 
     /**
      * The small form for a card row: a 28 dp icon and tighter gaps. Text sizes stay, so the
@@ -169,7 +183,7 @@ public class SancaiStateView @JvmOverloads constructor(
 
         actionButton.minWidth = px(ACTION_MIN_WIDTH_DP)
         actionButton.visibility = GONE
-        actionButton.setOnClickListener { onActionClick?.invoke() }
+        actionButton.setOnClickListener { actionClickListener?.onClick(it) }
         addView(actionButton, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT))
 
         var initialKind = Kind.EMPTY
@@ -194,20 +208,20 @@ public class SancaiStateView @JvmOverloads constructor(
             kind = initialKind
         }
         ready = true
-        if (!initialAction.isNullOrEmpty()) setAction(initialAction, onActionClick) else refresh()
+        if (!initialAction.isNullOrEmpty()) actionLabel = initialAction else refresh()
     }
 
     /**
-     * Shows the action as a neutral capsule button under the message, or removes it when
-     * [label] is `null` or empty. [onClick] replaces [onActionClick].
+     * Sets the action in one call: [label] as [actionLabel] and [listener] as the click
+     * listener, replacing the previous one.
+     *
+     * ```kotlin
+     * empty.setAction("Add account") { openEditor() }
+     * ```
      */
-    @JvmOverloads
-    public fun setAction(label: CharSequence?, onClick: (() -> Unit)? = null) {
-        onActionClick = onClick
-        val shown = !label.isNullOrEmpty()
-        actionButton.text = if (shown) label else null
-        actionButton.visibility = if (shown) VISIBLE else GONE
-        refresh()
+    public fun setAction(label: CharSequence?, listener: OnClickListener?) {
+        actionClickListener = listener
+        actionLabel = label
     }
 
     /** Lays the parts out again: which are present, their sizes and the gaps between them. */

@@ -48,7 +48,7 @@ class SancaiSwitchTest {
 
     private fun SancaiSwitch.count(): IntArray {
         val calls = IntArray(1)
-        onCheckedChangeListener = SancaiSwitch.OnCheckedChangeListener { _, _ -> calls[0]++ }
+        setOnCheckedChangeListener { _, _ -> calls[0]++ }
         return calls
     }
 
@@ -106,7 +106,7 @@ class SancaiSwitchTest {
     fun `tap toggles and notifies once per change`() {
         val view = switch()
         val seen = mutableListOf<Boolean>()
-        view.onCheckedChangeListener = SancaiSwitch.OnCheckedChangeListener { _, checked -> seen += checked }
+        view.setOnCheckedChangeListener { _, checked -> seen += checked }
         Touch.tap(view, view.width * 0.2f)
         assertThat(view.isChecked).isTrue()
         Touch.tap(view, view.width * 0.2f)
@@ -128,7 +128,7 @@ class SancaiSwitchTest {
     @Test
     fun `a listener can roll the change back`() {
         val view = switch()
-        view.onCheckedChangeListener = SancaiSwitch.OnCheckedChangeListener { v, _ ->
+        view.setOnCheckedChangeListener { v, _ ->
             (v as SancaiSwitch).setChecked(false, animate = false)
         }
         Touch.tap(view, view.width / 2f)
@@ -296,7 +296,7 @@ class SancaiSwitchTest {
     fun `performClick and the accessibility click act as user input`() {
         val view = switch()
         val seen = mutableListOf<Boolean>()
-        view.onCheckedChangeListener = SancaiSwitch.OnCheckedChangeListener { _, checked -> seen += checked }
+        view.setOnCheckedChangeListener { _, checked -> seen += checked }
         var clicks = 0
         view.setOnClickListener { clicks++ }
         view.performClick()

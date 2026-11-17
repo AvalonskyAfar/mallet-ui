@@ -115,7 +115,7 @@ All horizontal controls (`SancaiSegmentedTrack`, `SancaiSwitch`, `SancaiPowerSwi
 Listeners:
 
 ```kotlin
-track.onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { t, index ->
+track.setOnSelectionChangeListener { t, index ->
     if (!store.trySet(index)) t.select(previous)      // rolling back is safe
 }
 ```
@@ -123,8 +123,8 @@ track.onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListen
 - Listeners fire for **user input only**: touch, keyboard, accessibility actions. Setting a
   value from code never calls back, which is what makes the rollback above safe and removes
   the need for "suppress listener" flags.
-- A drag reports once, on release. Use a slider's `onValueChangeListener` when you need
-  continuous values.
+- A drag reports once, on release. Use a slider and its `setOnValueChangeListener` when
+  you need continuous values.
 
 Every control also answers the keyboard (arrows step, Space and Enter act), mirrors in
 right-to-left layouts, saves its state, and exposes itself to accessibility services with a
@@ -293,7 +293,7 @@ content and faded away. Nothing moves; only the light changes. This is the one p
 fade is the right motion.
 
 ```kotlin
-themeTrack.onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { track, index ->
+themeTrack.setOnSelectionChangeListener { track, index ->
     settings.appearance = index
     SancaiThemeTransition.recreateAfter(track)    // lets the thumb finish its glide first
 }

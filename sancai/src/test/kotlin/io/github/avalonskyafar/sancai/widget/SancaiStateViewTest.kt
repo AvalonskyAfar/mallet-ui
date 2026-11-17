@@ -38,7 +38,7 @@ class SancaiStateViewTest {
         it.kind = kind
         it.title = title
         it.detail = detail
-        it.setAction(action)
+        it.actionLabel = action
     }
 
     private fun message(view: SancaiStateView): LinearLayout = view.getChildAt(0) as LinearLayout
@@ -202,7 +202,7 @@ class SancaiStateViewTest {
         assertThat(view.actionButton.top).isEqualTo(0)
         assertThat(view.height).isEqualTo(view.actionButton.height)
 
-        view.setAction(null)
+        view.actionLabel = null
         Snapshots.layout(view, 360)
         assertThat(view.actionButton.visibility).isEqualTo(View.GONE)
         assertThat(view.actionLabel).isNull()
@@ -386,7 +386,7 @@ class SancaiStateViewTest {
 
         // A new kind brings its icon back but leaves the texts and the action alone.
         view.title = "Done"
-        view.setAction("Close")
+        view.actionLabel = "Close"
         view.kind = Kind.SUCCESS
         Snapshots.layout(view, 360)
         assertThat(view.icon).isEqualTo(SancaiIcon.SUCCESS)
@@ -403,7 +403,7 @@ class SancaiStateViewTest {
             .build()
         var clicks = 0
         val view = SancaiStateView(context, attrs)
-        view.onActionClick = { clicks++ }
+        view.setOnActionClickListener { clicks++ }
         Snapshots.attach(view, 360)
         assertThat(view.isEnabled).isFalse()
         assertThat(view.actionButton.isEnabled).isFalse()
@@ -411,10 +411,13 @@ class SancaiStateViewTest {
         view.isEnabled = true
         view.actionButton.performClick()
         assertThat(clicks).isEqualTo(1)
-        // A label alone keeps the listener out: setAction replaces it.
-        view.setAction("Again")
+        // A new label keeps the listener; setAction replaces it.
+        view.actionLabel = "Again"
         view.actionButton.performClick()
-        assertThat(clicks).isEqualTo(1)
+        assertThat(clicks).isEqualTo(2)
+        view.setAction("Again", null)
+        view.actionButton.performClick()
+        assertThat(clicks).isEqualTo(2)
     }
 
     private fun gallery(theme: SancaiTheme): View {

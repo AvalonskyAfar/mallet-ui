@@ -42,8 +42,8 @@ class SancaiStepperTest {
         setRange(from, to)
         stepSize = step
         this.value = value
-        onValueChangeListener = SancaiStepper.OnValueChangeListener { _, v -> changes += v }
-        onEditRequestListener = SancaiStepper.OnEditRequestListener { edits++ }
+        setOnValueChangeListener { _, v -> changes += v }
+        setOnEditRequestListener { edits++ }
         if (layout) Snapshots.layout(this, WIDTH_DP)
     }
 
@@ -115,7 +115,7 @@ class SancaiStepperTest {
         view.decimals = 2
         view.unit = null
         assertThat(view.formattedValue.toString()).isEqualTo("120.00")
-        view.formatter = SancaiStepper.Formatter { "x${it.toInt() / 10}" }
+        view.valueFormatter = { "x${it.toInt() / 10}" }
         assertThat(view.formattedValue.toString()).isEqualTo("x12")
         assertThat(ViewCompat.getStateDescription(view).toString()).isEqualTo("x12")
     }
@@ -352,7 +352,7 @@ class SancaiStepperTest {
     @Test
     fun `the listener may roll the value back and may disable the control during a hold`() {
         val view = stepper(value = 0f, to = 1000f, step = 1f, layout = false)
-        view.onValueChangeListener = SancaiStepper.OnValueChangeListener { stepper, v ->
+        view.setOnValueChangeListener { stepper, v ->
             changes += v
             if (v == 1f && changes.size == 1) stepper.value = 0f
             if (v == 3f) stepper.isEnabled = false
@@ -394,7 +394,7 @@ class SancaiStepperTest {
         val theme = SancaiTheme.light().copy(textScale = 1.13f)
         val bed = theme.bedColor(theme.glazes.cobalt)
         val view = stepper(theme = theme)
-        view.formatter = SancaiStepper.Formatter { "1 234 567.89 milliseconds per frame" }
+        view.valueFormatter = { "1 234 567.89 milliseconds per frame" }
         assertThat(view.height / view.resources.displayMetrics.density).isWithin(0.5f).of(61f)
         val bitmap = Snapshots.render(view, WIDTH_DP)
         val y = view.trackCentreY.toInt()
@@ -429,7 +429,7 @@ class SancaiStepperTest {
         val view = stepper()
         assertThat(view.performAccessibilityAction(AccessibilityNodeInfo.ACTION_CLICK, null)).isTrue()
         assertThat(edits).isEqualTo(1)
-        view.onEditRequestListener = null
+        view.setOnEditRequestListener(null)
         assertThat(view.performAccessibilityAction(R.id.sancai_stepper_action_edit, null)).isFalse()
         Touch.tap(view, view.valueX)
         assertThat(edits).isEqualTo(1)

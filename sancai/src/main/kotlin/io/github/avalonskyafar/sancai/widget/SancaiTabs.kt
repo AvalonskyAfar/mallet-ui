@@ -28,6 +28,7 @@ import io.github.avalonskyafar.sancai.interaction.SancaiPager
 import io.github.avalonskyafar.sancai.internal.HorizontalDragGate
 import io.github.avalonskyafar.sancai.theme.SancaiColors
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
+import io.github.avalonskyafar.sancai.theme.SancaiTextRole
 import io.github.avalonskyafar.sancai.theme.SancaiWeight
 import kotlin.math.abs
 import kotlin.math.floor
@@ -119,7 +120,7 @@ public class SancaiTabs @JvmOverloads constructor(
             if (index == selected || index !in labels.indices) return
             selected = index
             announceState()
-            onTabSelectedListener?.onTabSelected(this@SancaiTabs, index)
+            tabSelectedListener?.onTabSelected(this@SancaiTabs, index)
         }
 
         override fun onPageScrolled(index: Int, offset: Float) {
@@ -132,11 +133,15 @@ public class SancaiTabs @JvmOverloads constructor(
     private val focusBounds = RectF()
     private val accessibility = Accessibility()
 
+    private var tabSelectedListener: OnTabSelectedListener? = null
+
     /**
      * Listener for user-driven tab changes: a tap, a key, an accessibility action, or a swipe
      * of the pager given to [attachTo]. Not called for [select].
      */
-    public var onTabSelectedListener: OnTabSelectedListener? = null
+    public fun setOnTabSelectedListener(listener: OnTabSelectedListener?) {
+        tabSelectedListener = listener
+    }
 
     /** Index of the selected tab. */
     public val selectedIndex: Int get() = selected
@@ -224,7 +229,7 @@ public class SancaiTabs @JvmOverloads constructor(
      * a tab glides the pager to that page. The tabs take the pager's page at once. The pager is
      * not asked for labels: set as many tabs as it has pages.
      *
-     * [onTabSelectedListener] is called when the user chooses a tab and when the user swipes
+     * [setOnTabSelectedListener] is called when the user chooses a tab and when the user swipes
      * the pager to another page.
      */
     public fun attachTo(pager: SancaiPager?) {
@@ -249,7 +254,7 @@ public class SancaiTabs @JvmOverloads constructor(
 
     private fun configureLabelPaint() {
         textPaint.typeface = SancaiWeight.MEDIUM.typeface()
-        textPaint.textSize = sp(LABEL_SP)
+        textPaint.textSize = sp(SancaiTextRole.LABEL.sizeSp)
         textPaint.textAlign = Paint.Align.CENTER
         textPaint.style = Paint.Style.FILL
     }
@@ -555,7 +560,7 @@ public class SancaiTabs @JvmOverloads constructor(
             animateTo(index.toFloat())
         }
         announceState()
-        onTabSelectedListener?.onTabSelected(this, index)
+        tabSelectedListener?.onTabSelected(this, index)
         SancaiHaptics.tick(this)
     }
 
@@ -726,7 +731,6 @@ public class SancaiTabs @JvmOverloads constructor(
         /** Height of the view in dp. */
         public const val HEIGHT_DP: Float = 44f
 
-        private const val LABEL_SP = 14.5f
         private const val INDICATOR_DP = 3f
         private const val HAIRLINE_DP = 1f
         private const val SCROLL_PADDING_DP = 16f

@@ -20,6 +20,7 @@ import io.github.avalonskyafar.sancai.icon.SancaiIconPainter
 import io.github.avalonskyafar.sancai.interaction.SancaiHaptics
 import io.github.avalonskyafar.sancai.theme.SancaiColors
 import io.github.avalonskyafar.sancai.theme.SancaiGlaze
+import io.github.avalonskyafar.sancai.theme.SancaiTextRole
 import io.github.avalonskyafar.sancai.theme.SancaiWeight
 import java.util.Locale
 import kotlin.math.floor
@@ -33,7 +34,7 @@ import kotlin.math.roundToInt
  *
  * Tapping minus or plus changes the value by one [stepSize]; holding either repeats, slowly at
  * first and faster after ten steps, until the finger lifts or the range ends. Tapping the value
- * asks the app to open its own editor through [onEditRequestListener]. The value always sits on
+ * asks the app to open its own editor through [setOnEditRequestListener]. The value always sits on
  * the step grid that starts at [valueFrom] and never leaves the range; at a bound the mark that
  * can no longer do anything pales.
  *
@@ -59,17 +60,12 @@ public class SancaiStepper @JvmOverloads constructor(
 
     /** Called when the user changes the value by touch, keyboard or an accessibility action. */
     public fun interface OnValueChangeListener {
-        public fun onValueChange(stepper: SancaiStepper, value: Float)
+        public fun onValueChanged(stepper: SancaiStepper, value: Float)
     }
 
     /** Called when the user taps the value (or presses Enter) to type a number directly. */
     public fun interface OnEditRequestListener {
         public fun onEditRequest(stepper: SancaiStepper)
-    }
-
-    /** Turns a value into the text written on the thumb. */
-    public fun interface Formatter {
-        public fun format(value: Float): CharSequence
     }
 
     private var from = 0f
@@ -83,11 +79,19 @@ public class SancaiStepper @JvmOverloads constructor(
     private val trackClip = Path()
     private val repeater = Runnable { repeat() }
 
+    private var valueChangeListener: OnValueChangeListener? = null
+
     /** Listener for user-driven value changes. Not called when [value] is set from code. */
-    public var onValueChangeListener: OnValueChangeListener? = null
+    public fun setOnValueChangeListener(listener: OnValueChangeListener?) {
+        valueChangeListener = listener
+    }
+
+    private var editRequestListener: OnEditRequestListener? = null
 
     /** Listener for a tap on the value. Without one the centre zone only shows its press. */
-    public var onEditRequestListener: OnEditRequestListener? = null
+    public fun setOnEditRequestListener(listener: OnEditRequestListener?) {
+        editRequestListener = listener
+    }
 
     /**
      * The current value. Setting it snaps to the step grid, clamps to the range and does not
@@ -122,22 +126,25 @@ public class SancaiStepper @JvmOverloads constructor(
             valueChanged()
         }
 
-    /** Number of digits written after the decimal separator (0 to 6). Ignored by a [formatter]. */
+    /** Number of digits written after the decimal separator (0 to 6). Ignored by a [valueFormatter]. */
     public var decimals: Int = 0
         set(value) {
             field = value.coerceIn(0, MAX_DECIMALS)
             valueChanged()
         }
 
-    /** Suffix written directly after the number, for example `" ms"` or `"%"`. Ignored by a [formatter]. */
+    /** Suffix written directly after the number, for example `" ms"` or `"%"`. Ignored by a [valueFormatter]. */
     public var unit: CharSequence? = null
         set(value) {
             field = value
             valueChanged()
         }
 
-    /** Replaces the built-in number formatting ([decimals] and [unit]) when it is not `null`. */
-    public var formatter: Formatter? = null
+    /**
+     * Turns a value into the text written on the thumb and read by accessibility services.
+     * Replaces the built-in number formatting ([decimals] and [unit]) when it is not `null`.
+     */
+    public var valueFormatter: ((Float) -> CharSequence)? = null
         set(value) {
             field = value
             valueChanged()
@@ -152,7 +159,7 @@ public class SancaiStepper @JvmOverloads constructor(
 
     /** The value as it is written on the thumb and announced by accessibility services. */
     public val formattedValue: CharSequence
-        get() = formatter?.format(current) ?: (number() + (unit ?: ""))
+        get() = valueFormatter?.invoke(current) ?: (number() + (unit ?: ""))
 
     /** The number with [decimals] digits; a value that rounds to zero is written without a sign. */
     private fun number(): String {
@@ -278,7 +285,7 @@ public class SancaiStepper @JvmOverloads constructor(
         textPaint.textAlign = Paint.Align.CENTER
         textPaint.style = Paint.Style.FILL
         textPaint.color = theme.colors.ink
-        textPaint.textSize = sp(VALUE_SP)
+        textPaint.textSize = sp(SancaiTextRole.CAPTION.sizeSp)
         // A long value shrinks to stay on the thumb instead of spilling onto the bed.
         val room = thumbWidth - dp(VALUE_MARGIN_DP) * 2f
         val measured = textPaint.measureText(text)
@@ -368,12 +375,12 @@ public class SancaiStepper @JvmOverloads constructor(
         if (next == current) return false
         current = next
         valueChanged()
-        onValueChangeListener?.onValueChange(this, next)
+        valueChangeListener?.onValueChanged(this, next)
         return true
     }
 
     private fun requestEdit(): Boolean {
-        val listener = onEditRequestListener ?: return false
+        val listener = editRequestListener ?: return false
         listener.onEditRequest(this)
         SancaiHaptics.tick(this)
         return true
@@ -445,7 +452,7 @@ public class SancaiStepper @JvmOverloads constructor(
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SET_PROGRESS)
         }
-        if (onEditRequestListener != null) {
+        if (editRequestListener != null) {
             info.addAction(
                 AccessibilityNodeInfo.AccessibilityAction(
                     R.id.sancai_stepper_action_edit,
@@ -487,7 +494,6 @@ public class SancaiStepper @JvmOverloads constructor(
         const val PRESS_SINK_DP = 1f
         const val MARK_DP = 16f
         const val MARK_STROKE_DP = 2f
-        const val VALUE_SP = 12.5f
         const val VALUE_MARGIN_DP = 8f
 
         /** Alpha (0..255) of a mark whose bound is reached: 40 %. */

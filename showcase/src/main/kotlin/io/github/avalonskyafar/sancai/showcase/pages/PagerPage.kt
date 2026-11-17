@@ -129,7 +129,7 @@ object PagerPage : DemoPage("i_pager", R.string.page_i_pager_title, R.string.pag
             addDivider(6f)
             val swipe = SancaiSwitch(context).apply {
                 setChecked(true, animate = false)
-                onCheckedChangeListener = SancaiSwitch.OnCheckedChangeListener { _, checked ->
+                setOnCheckedChangeListener { _, checked ->
                     pager.isEnabled = checked
                     heading.isEnabled = checked
                     indicator.isEnabled = checked

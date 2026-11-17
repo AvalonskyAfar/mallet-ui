@@ -16,7 +16,6 @@ import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.MotionEvent
-import android.view.View
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Checkable
@@ -25,6 +24,7 @@ import io.github.avalonskyafar.sancai.R
 import io.github.avalonskyafar.sancai.interaction.SancaiHaptics
 import io.github.avalonskyafar.sancai.theme.SancaiColors
 import io.github.avalonskyafar.sancai.theme.SancaiGlaze
+import io.github.avalonskyafar.sancai.theme.SancaiTextRole
 import io.github.avalonskyafar.sancai.theme.SancaiWeight
 import kotlin.math.ceil
 import kotlin.math.max
@@ -49,7 +49,7 @@ import kotlin.math.roundToInt
  *     app:sancaiGlaze="celadon" />
  * ```
  *
- * [onCheckedChangeListener] is called for user input only (touch, keyboard, accessibility),
+ * [setOnCheckedChangeListener] is called for user input only (touch, keyboard, accessibility),
  * never for [setChecked] or [toggle], so a listener may roll the box back safely.
  */
 public class SancaiCheckbox @JvmOverloads constructor(
@@ -60,7 +60,8 @@ public class SancaiCheckbox @JvmOverloads constructor(
 
     /** Called when the user checks or unchecks the box. */
     public fun interface OnCheckedChangeListener {
-        public fun onCheckedChanged(view: View, checked: Boolean)
+        /** The user checked or unchecked [checkbox]; [isChecked] is its new state. */
+        public fun onCheckedChanged(checkbox: SancaiCheckbox, isChecked: Boolean)
     }
 
     private var checkedState = false
@@ -76,8 +77,12 @@ public class SancaiCheckbox @JvmOverloads constructor(
     private val checkMeasure = PathMeasure()
     private val checkPaint = Paint(Paint.ANTI_ALIAS_FLAG)
 
+    private var checkedChangeListener: OnCheckedChangeListener? = null
+
     /** Listener for user-driven changes. Not called for [setChecked] or [toggle]. */
-    public var onCheckedChangeListener: OnCheckedChangeListener? = null
+    public fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?) {
+        checkedChangeListener = listener
+    }
 
     /** The glaze poured into the box when it is checked. Cobalt by default. */
     public var glaze: SancaiGlaze = theme.glazes.cobalt
@@ -150,7 +155,7 @@ public class SancaiCheckbox @JvmOverloads constructor(
     // ---------------------------------------------------------------------------------------
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        labelPaint.textSize = sp(LABEL_SP)
+        labelPaint.textSize = sp(SancaiTextRole.SUBHEAD.sizeSp)
         val horizontalPadding = paddingLeft + paddingRight
         val desiredWidth: Float
         var labelHeight = 0
@@ -343,7 +348,7 @@ public class SancaiCheckbox @JvmOverloads constructor(
         checkedState = !checkedState
         moveTo(if (checkedState) 1f else 0f, animate = true)
         announceState()
-        onCheckedChangeListener?.onCheckedChanged(this, checkedState)
+        checkedChangeListener?.onCheckedChanged(this, checkedState)
         SancaiHaptics.tick(this)
         super.performClick()
         return true
@@ -421,7 +426,6 @@ public class SancaiCheckbox @JvmOverloads constructor(
         const val GAP_DP = 10f
         const val MIN_TARGET_DP = 44f
         const val LABEL_MARGIN_DP = 10f
-        const val LABEL_SP = 15.5f
         const val CHECK_DP = 18f
         const val CHECK_GRID = 24f
         const val CHECK_STROKE_DP = 2.2f

@@ -40,6 +40,7 @@ public enum class SancaiWeight {
  * | [BODY] | 15.5 | regular | long-form copy |
  * | [BODY_COMPACT] | 14.5 | regular | dense article copy |
  * | [LABEL] | 14.5 | medium | buttons and actions |
+ * | [FOOTNOTE] | 13.5 | regular | facts, step details and other dense secondary text |
  * | [CAPTION] | 12.5 | regular | supporting line under a title |
  * | [MICRO] | 11.5 | regular | detail line inside a row |
  */
@@ -58,6 +59,7 @@ public enum class SancaiTextRole(
     BODY(15.5f, SancaiWeight.REGULAR, lineExtraDp = 3f, lineMultiplier = 1.24f, letterSpacing = 0.01f),
     BODY_COMPACT(14.5f, SancaiWeight.REGULAR, lineExtraDp = 3f, lineMultiplier = 1.28f, letterSpacing = 0.01f),
     LABEL(14.5f, SancaiWeight.MEDIUM),
+    FOOTNOTE(13.5f, SancaiWeight.REGULAR),
     CAPTION(12.5f, SancaiWeight.REGULAR),
     MICRO(11.5f, SancaiWeight.REGULAR);
 

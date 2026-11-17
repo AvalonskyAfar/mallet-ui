@@ -104,8 +104,8 @@ object IconsPage : DemoPage("f_icons", R.string.page_f_icons_title, R.string.pag
             glyph.strokeDp = STROKES[track.selectedIndex]
             status.text = context.getString(R.string.icons_size_status, side, track.options[track.selectedIndex])
         }
-        slider.onValueChangeListener = SancaiSlider.OnValueChangeListener { _, _, _ -> show() }
-        track.onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, _ -> show() }
+        slider.setOnValueChangeListener { _, _ -> show() }
+        track.setOnSelectionChangeListener { _, _ -> show() }
         show()
         page.section(R.string.icons_size_title, R.string.icons_size_detail) {
             addView(stage, LinearLayout.LayoutParams(PageScope.MATCH, page.dp(STAGE_DP + 16)))

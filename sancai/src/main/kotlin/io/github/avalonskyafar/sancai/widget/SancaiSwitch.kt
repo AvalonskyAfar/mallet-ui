@@ -10,7 +10,6 @@ import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.MotionEvent
-import android.view.View
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Checkable
@@ -57,8 +56,8 @@ public class SancaiSwitch @JvmOverloads constructor(
 
     /** Called when the user turns the switch on or off. */
     public fun interface OnCheckedChangeListener {
-        /** [view] is the switch the user operated, [checked] its new state. */
-        public fun onCheckedChanged(view: View, checked: Boolean)
+        /** The user turned [switch] on or off; [isChecked] is its new state. */
+        public fun onCheckedChanged(switch: SancaiSwitch, isChecked: Boolean)
     }
 
     private var checked = false
@@ -74,8 +73,12 @@ public class SancaiSwitch @JvmOverloads constructor(
     private val thumbBounds = RectF()
     private val trackClip = Path()
 
+    private var checkedChangeListener: OnCheckedChangeListener? = null
+
     /** Listener for user-driven changes. Not called for [setChecked] or [toggle]. */
-    public var onCheckedChangeListener: OnCheckedChangeListener? = null
+    public fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?) {
+        checkedChangeListener = listener
+    }
 
     /** Glaze of the bed while the switch is off. Terracotta by default. */
     public var offGlaze: SancaiGlaze = theme.glazes.terracotta
@@ -308,7 +311,7 @@ public class SancaiSwitch @JvmOverloads constructor(
         animateTo(target())
         if (changed) {
             announceState()
-            onCheckedChangeListener?.onCheckedChanged(this, next)
+            checkedChangeListener?.onCheckedChanged(this, next)
             SancaiHaptics.tick(this)
         }
     }

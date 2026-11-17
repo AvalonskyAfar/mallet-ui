@@ -13,7 +13,6 @@ import io.github.avalonskyafar.sancai.widget.SancaiButton
 import io.github.avalonskyafar.sancai.widget.SancaiCheckbox
 import io.github.avalonskyafar.sancai.widget.SancaiControlRow
 import io.github.avalonskyafar.sancai.widget.SancaiEntryRow
-import io.github.avalonskyafar.sancai.widget.SancaiSegmentedTrack
 import io.github.avalonskyafar.sancai.widget.SancaiSwitch
 import io.github.avalonskyafar.sancai.widget.SancaiText
 import io.github.avalonskyafar.sancai.widget.SancaiTextField
@@ -54,23 +53,20 @@ object XmlPage : DemoPage("c_xml", R.string.page_c_xml_title, R.string.page_c_xm
         val strength = cards.findViewById<SancaiControlRow>(R.id.xml_strength)
         val name = cards.findViewById<SancaiTextField>(R.id.xml_name)
 
-        strength.track?.onSelectionChangedListener =
-            SancaiSegmentedTrack.OnSelectionChangedListener { view, index ->
-                status.text = context.getString(R.string.xml_status_strength, view.options[index])
-            }
-        cards.findViewById<SancaiSwitch>(R.id.xml_wifi).onCheckedChangeListener =
-            SancaiSwitch.OnCheckedChangeListener { _, checked ->
-                status.setText(if (checked) R.string.xml_status_wifi_on else R.string.xml_status_wifi_off)
-            }
+        strength.track?.setOnSelectionChangeListener { view, index ->
+            status.text = context.getString(R.string.xml_status_strength, view.options[index])
+        }
+        cards.findViewById<SancaiSwitch>(R.id.xml_wifi).setOnCheckedChangeListener { _, checked ->
+            status.setText(if (checked) R.string.xml_status_wifi_on else R.string.xml_status_wifi_off)
+        }
         cards.findViewById<SancaiEntryRow>(R.id.xml_exceptions).setOnClickListener {
             status.setText(R.string.xml_status_exceptions)
         }
-        cards.findViewById<SancaiCheckbox>(R.id.xml_remember).onCheckedChangeListener =
-            SancaiCheckbox.OnCheckedChangeListener { _, checked ->
-                status.setText(if (checked) R.string.xml_status_remember_on else R.string.xml_status_remember_off)
-            }
+        cards.findViewById<SancaiCheckbox>(R.id.xml_remember).setOnCheckedChangeListener { _, checked ->
+            status.setText(if (checked) R.string.xml_status_remember_on else R.string.xml_status_remember_off)
+        }
         // An error stays until the text it complained about changes.
-        name.onTextChangedListener = SancaiTextField.OnTextChangedListener { field, _ -> field.error = null }
+        name.setOnTextChangeListener { field, _ -> field.error = null }
         cards.findViewById<SancaiButton>(R.id.xml_save).setOnClickListener {
             val named = name.validate { text ->
                 if (text.isBlank()) context.getString(R.string.xml_error_name) else null
@@ -106,16 +102,12 @@ object XmlPage : DemoPage("c_xml", R.string.page_c_xml_title, R.string.page_c_xm
                 cards.findViewById(R.id.xml_wifi)
 
             // The row made its track from sancaiOptions.
-            row.track?.onSelectionChangedListener =
-                SancaiSegmentedTrack
-                    .OnSelectionChangedListener { v, i ->
-                        status.text = v.options[i]
-                    }
-            wifi.onCheckedChangeListener =
-                SancaiSwitch
-                    .OnCheckedChangeListener { _, on ->
-                        status.text = if (on) "On" else "Off"
-                    }
+            row.track?.setOnSelectionChangeListener { v, i ->
+                status.text = v.options[i]
+            }
+            wifi.setOnCheckedChangeListener { _, on ->
+                status.text = if (on) "On" else "Off"
+            }
         """)
     }
 

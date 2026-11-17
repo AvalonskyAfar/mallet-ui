@@ -60,7 +60,7 @@ class SancaiRevealLayoutTest {
         val layout = SancaiRevealLayout(ctx)
         layout.addView(content, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, dp(50)))
         layout.setAction("Delete") { clicks++ }
-        layout.onOpenChangeListener = SancaiRevealLayout.OnOpenChangeListener { _, open -> changes += open }
+        layout.setOnOpenChangeListener { _, open -> changes += open }
         return layout
     }
 
@@ -398,7 +398,7 @@ class SancaiRevealLayoutTest {
         val second = row()
         listOf(first, second).forEach { list.addView(it) }
         val firstChanges = ArrayList<Boolean>()
-        first.onOpenChangeListener = SancaiRevealLayout.OnOpenChangeListener { _, open -> firstChanges += open }
+        first.setOnOpenChangeListener { _, open -> firstChanges += open }
         Snapshots.layout(list, 300)
         first.open()
         second.open()

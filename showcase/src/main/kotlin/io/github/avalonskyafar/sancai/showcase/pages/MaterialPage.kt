@@ -73,7 +73,7 @@ object MaterialPage : DemoPage("f_material", R.string.page_f_material_title, R.s
         page.section(R.string.material_track_title, R.string.material_track_detail) {
             val state = SancaiSegmentedTrack(context).apply {
                 setOptions(page.str(R.string.material_track_rest), page.str(R.string.material_track_pressed))
-                onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, index ->
+                setOnSelectionChangeListener { _, index ->
                     specimen.down = index == 1
                     status.text = page.str(
                         if (index == 1) R.string.material_track_pressed_note else R.string.material_track_rest_note,
@@ -113,7 +113,7 @@ object MaterialPage : DemoPage("f_material", R.string.page_f_material_title, R.s
         page.section(R.string.material_gutter_title, R.string.material_gutter_detail) {
             val zoom = SancaiSegmentedTrack(context).apply {
                 setOptions(page.str(R.string.material_gutter_actual), page.str(R.string.material_gutter_magnified))
-                onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, index ->
+                setOnSelectionChangeListener { _, index ->
                     specimen.zoom = if (index == 1) GutterSpecimen.MAGNIFIED else 1f
                     status.text = page.str(
                         if (index == 1) R.string.material_gutter_magnified_note else R.string.material_gutter_actual_note,

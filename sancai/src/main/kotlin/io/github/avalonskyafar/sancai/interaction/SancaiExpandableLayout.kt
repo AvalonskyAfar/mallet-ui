@@ -102,17 +102,25 @@ public class SancaiExpandableLayout @JvmOverloads constructor(
 
     private val focusWatcher = ViewTreeObserver.OnGlobalFocusChangeListener { _, _ -> invalidate() }
 
+    private var expansionChangeListener: OnExpansionChangeListener? = null
+
     /**
      * Called after the user toggled the section through the header, the keyboard or an
      * accessibility action. [setExpanded], [toggle] and state restoration never call it.
      */
-    public var onExpansionChangeListener: OnExpansionChangeListener? = null
+    public fun setOnExpansionChangeListener(listener: OnExpansionChangeListener?) {
+        expansionChangeListener = listener
+    }
+
+    private var expansionProgressListener: OnExpansionProgressListener? = null
 
     /**
      * Called whenever the open fraction changes, whoever caused it, including each frame
      * of the animation.
      */
-    public var onExpansionProgressListener: OnExpansionProgressListener? = null
+    public fun setOnExpansionProgressListener(listener: OnExpansionProgressListener?) {
+        expansionProgressListener = listener
+    }
 
     /** Whether the section is expanded, or on its way there. Setting it jumps without animation. */
     public var isExpanded: Boolean
@@ -207,7 +215,7 @@ public class SancaiExpandableLayout @JvmOverloads constructor(
     }
 
     /**
-     * Expands or collapses the section without calling [onExpansionChangeListener].
+     * Expands or collapses the section without calling [setOnExpansionChangeListener].
      *
      * With [animate] the body glides from its current height, also when it is already
      * moving the other way. Without it, or while the layout is not attached and laid out,
@@ -294,7 +302,7 @@ public class SancaiExpandableLayout @JvmOverloads constructor(
         if (changed) {
             requestLayout()
             invalidate()
-            onExpansionProgressListener?.onExpansionProgress(this, bounded)
+            expansionProgressListener?.onExpansionProgress(this, bounded)
         }
     }
 
@@ -515,7 +523,7 @@ public class SancaiExpandableLayout @JvmOverloads constructor(
     private fun toggleByUser(): Boolean {
         if (!isEnabled) return false
         setExpanded(!expanded, true)
-        onExpansionChangeListener?.onExpansionChanged(this, expanded)
+        expansionChangeListener?.onExpansionChanged(this, expanded)
         SancaiHaptics.tick(this)
         return true
     }

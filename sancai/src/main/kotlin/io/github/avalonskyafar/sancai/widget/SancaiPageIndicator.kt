@@ -41,8 +41,8 @@ import kotlin.math.roundToInt
  *
  * Non-obvious behaviour:
  *
- * - Standalone use: set [count] and [selected] (or `app:sancaiPagerIndicatorCount` and
- *   `app:sancaiPagerIndicatorSelected`) and listen with [onSelectedChangeListener]. While a
+ * - Standalone use: set [count] and [selectedIndex] (or `app:sancaiPageIndicatorCount` and
+ *   `app:sancaiSelectedIndex`) and listen with [setOnSelectionChangeListener]. While a
  *   pager is attached, both properties mirror the pager and setting them moves the pager.
  * - The listener fires for user input only (tap, keyboard, accessibility action); the pager's
  *   own `onPageSelected` fires as well, because the tap is the user's.
@@ -53,7 +53,7 @@ import kotlin.math.roundToInt
  *   remains the strongest mark of the row.
  * - Taps, keys and accessibility actions do nothing while the attached pager is disabled.
  * - To screen readers the row is a single element, "Page 2 of 8", with scroll actions.
- * - [selected] is saved and restored for standalone use; an attached indicator takes its
+ * - [selectedIndex] is saved and restored for standalone use; an attached indicator takes its
  *   position from the pager, which saves its own.
  */
 public class SancaiPageIndicator @JvmOverloads constructor(
@@ -63,9 +63,9 @@ public class SancaiPageIndicator @JvmOverloads constructor(
 ) : SancaiControl(context, attrs, defStyleAttr) {
 
     /** Receives the dot the user chose on a [SancaiPageIndicator]. */
-    public fun interface OnSelectedChangeListener {
+    public fun interface OnSelectionChangeListener {
         /** The user moved [indicator] to dot [index]. */
-        public fun onSelectedChanged(indicator: SancaiPageIndicator, index: Int)
+        public fun onSelectionChanged(indicator: SancaiPageIndicator, index: Int)
     }
 
     private val dotPaint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -83,14 +83,18 @@ public class SancaiPageIndicator @JvmOverloads constructor(
     private val pagerListener = object : SancaiPager.OnPageChangeListener {
         override fun onPageScrolled(index: Int, offset: Float) {
             position = index + offset
-            if (described != selected) describe()
+            if (described != selectedIndex) describe()
             invalidate()
         }
     }
     private val pagesObserver: () -> Unit = { syncWithPager() }
 
+    private var selectionChangeListener: OnSelectionChangeListener? = null
+
     /** Called when the user chooses a dot. Not called for changes made from code. */
-    public var onSelectedChangeListener: OnSelectedChangeListener? = null
+    public fun setOnSelectionChangeListener(listener: OnSelectionChangeListener?) {
+        selectionChangeListener = listener
+    }
 
     /** Number of dots. Mirrors the page count while a pager is attached (setting is ignored). */
     public var count: Int
@@ -107,9 +111,9 @@ public class SancaiPageIndicator @JvmOverloads constructor(
 
     /**
      * Index of the accent dot. With a pager attached this is the pager's current page and
-     * setting it jumps the pager there. Never calls [onSelectedChangeListener].
+     * setting it jumps the pager there. Never calls [setOnSelectionChangeListener].
      */
-    public var selected: Int
+    public var selectedIndex: Int
         get() = pager?.currentPage ?: ownSelected
         set(value) {
             val attached = pager
@@ -127,8 +131,8 @@ public class SancaiPageIndicator @JvmOverloads constructor(
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.SancaiPageIndicator, defStyleAttr, 0)
-        count = a.getInt(R.styleable.SancaiPageIndicator_sancaiPagerIndicatorCount, 0)
-        selected = a.getInt(R.styleable.SancaiPageIndicator_sancaiPagerIndicatorSelected, 0)
+        count = a.getInt(R.styleable.SancaiPageIndicator_sancaiPageIndicatorCount, 0)
+        selectedIndex = a.getInt(R.styleable.SancaiPageIndicator_sancaiSelectedIndex, 0)
         a.recycle()
         // Dots are chosen by position; there is no click, so Enter and Space pass through.
         isClickable = false
@@ -167,9 +171,9 @@ public class SancaiPageIndicator @JvmOverloads constructor(
 
     private fun describe() {
         val total = count
-        described = selected
+        described = selectedIndex
         contentDescription =
-            if (total > 0) resources.getString(R.string.sancai_pager_page_of, selected + 1, total) else null
+            if (total > 0) resources.getString(R.string.sancai_pager_page_of, selectedIndex + 1, total) else null
     }
 
     // ---- Measure and draw --------------------------------------------------------------------
@@ -239,7 +243,7 @@ public class SancaiPageIndicator @JvmOverloads constructor(
 
     /** A user choice: moves, then tells the listener, then ticks. False if nothing moved. */
     private fun choose(index: Int): Boolean {
-        if (index == selected || index !in 0 until count) return false
+        if (index == selectedIndex || index !in 0 until count) return false
         val attached = pager
         if (attached != null) {
             // A disabled pager keeps its page, whoever asks on the user's behalf.
@@ -252,7 +256,7 @@ public class SancaiPageIndicator @JvmOverloads constructor(
             animator = settle(from, index.toFloat()) { position = it }
         }
         describe()
-        onSelectedChangeListener?.onSelectedChanged(this, index)
+        selectionChangeListener?.onSelectionChanged(this, index)
         SancaiHaptics.tick(this)
         return true
     }
@@ -291,8 +295,8 @@ public class SancaiPageIndicator @JvmOverloads constructor(
             val towardsEnd = if (isRtl) KeyEvent.KEYCODE_DPAD_LEFT else KeyEvent.KEYCODE_DPAD_RIGHT
             val towardsStart = if (isRtl) KeyEvent.KEYCODE_DPAD_RIGHT else KeyEvent.KEYCODE_DPAD_LEFT
             when (keyCode) {
-                towardsEnd, KeyEvent.KEYCODE_PAGE_DOWN -> if (choose(selected + 1)) return true
-                towardsStart, KeyEvent.KEYCODE_PAGE_UP -> if (choose(selected - 1)) return true
+                towardsEnd, KeyEvent.KEYCODE_PAGE_DOWN -> if (choose(selectedIndex + 1)) return true
+                towardsStart, KeyEvent.KEYCODE_PAGE_UP -> if (choose(selectedIndex - 1)) return true
                 KeyEvent.KEYCODE_MOVE_HOME -> if (choose(0)) return true
                 KeyEvent.KEYCODE_MOVE_END -> if (choose(count - 1)) return true
             }
@@ -312,18 +316,18 @@ public class SancaiPageIndicator @JvmOverloads constructor(
         val total = count
         if (total == 0) return
         info.rangeInfo = AccessibilityNodeInfo.RangeInfo.obtain(
-            AccessibilityNodeInfo.RangeInfo.RANGE_TYPE_INT, 0f, (total - 1).toFloat(), selected.toFloat(),
+            AccessibilityNodeInfo.RangeInfo.RANGE_TYPE_INT, 0f, (total - 1).toFloat(), selectedIndex.toFloat(),
         )
         if (!isEnabled) return
-        if (selected < total - 1) info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD)
-        if (selected > 0) info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD)
+        if (selectedIndex < total - 1) info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_FORWARD)
+        if (selectedIndex > 0) info.addAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD)
     }
 
     override fun performAccessibilityAction(action: Int, arguments: Bundle?): Boolean {
         if (isEnabled) {
             when (action) {
-                AccessibilityNodeInfo.ACTION_SCROLL_FORWARD -> return choose(selected + 1)
-                AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD -> return choose(selected - 1)
+                AccessibilityNodeInfo.ACTION_SCROLL_FORWARD -> return choose(selectedIndex + 1)
+                AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD -> return choose(selectedIndex - 1)
             }
         }
         return super.performAccessibilityAction(action, arguments)
@@ -333,7 +337,7 @@ public class SancaiPageIndicator @JvmOverloads constructor(
 
     override fun onSaveInstanceState(): Parcelable = Bundle().apply {
         putParcelable(STATE_SUPER, super.onSaveInstanceState())
-        putInt(STATE_SELECTED, selected)
+        putInt(STATE_SELECTED, selectedIndex)
     }
 
     override fun onRestoreInstanceState(state: Parcelable?) {
@@ -342,7 +346,7 @@ public class SancaiPageIndicator @JvmOverloads constructor(
             return
         }
         super.onRestoreInstanceState(BundleCompat.getParcelable(state, STATE_SUPER, Parcelable::class.java))
-        if (pager == null) selected = state.getInt(STATE_SELECTED, ownSelected)
+        if (pager == null) selectedIndex = state.getInt(STATE_SELECTED, ownSelected)
     }
 
     override fun onDetachedFromWindow() {
@@ -357,6 +361,6 @@ public class SancaiPageIndicator @JvmOverloads constructor(
         const val DARK_REST_RECEDE = 0.5f
         const val NO_DOT = -1
         const val STATE_SUPER = "sancai:super"
-        const val STATE_SELECTED = "sancai:selected"
+        const val STATE_SELECTED = "sancai:selectedIndex"
     }
 }

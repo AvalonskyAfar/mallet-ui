@@ -245,7 +245,7 @@ class SancaiBannerTest {
         val view = banner()
         view.isDismissible = true
         var closed = 0
-        view.onDismissListener = SancaiBanner.OnDismissListener { closed++ }
+        view.setOnDismissListener { closed++ }
         Snapshots.attach(view, 320)
         val close = closeOf(view)
         assertThat(close.visibility).isEqualTo(View.VISIBLE)
@@ -311,7 +311,7 @@ class SancaiBannerTest {
         val restored = banner()
         restored.id = id
         var closed = 0
-        restored.onDismissListener = SancaiBanner.OnDismissListener { closed++ }
+        restored.setOnDismissListener { closed++ }
         restored.restoreHierarchyState(saved)
         assertThat(restored.isShowing).isFalse()
         assertThat(restored.visibility).isEqualTo(View.GONE)

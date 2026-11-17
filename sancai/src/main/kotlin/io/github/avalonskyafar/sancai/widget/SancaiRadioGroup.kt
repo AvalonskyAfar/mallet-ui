@@ -56,8 +56,12 @@ public class SancaiRadioGroup @JvmOverloads constructor(
     private var current = View.NO_ID
     private var adjusting = false
 
+    private var checkedChangeListener: OnCheckedChangeListener? = null
+
     /** Listener for user-driven changes of the choice. Not called for [check] or [clearCheck]. */
-    public var onCheckedChangeListener: OnCheckedChangeListener? = null
+    public fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?) {
+        checkedChangeListener = listener
+    }
 
     /** Id of the checked radio, or [View.NO_ID] while nothing is chosen. */
     public val checkedId: Int get() = current
@@ -136,7 +140,7 @@ public class SancaiRadioGroup @JvmOverloads constructor(
             if (checked) {
                 uncheckCurrent(animate, fromUser, except = button)
                 current = button.id
-                if (fromUser) onCheckedChangeListener?.onCheckedChanged(this, current)
+                if (fromUser) checkedChangeListener?.onCheckedChanged(this, current)
             } else if (button.id == current) {
                 current = View.NO_ID
             }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="type_scale_title">字号阶梯</string>
-    <string name="type_scale_detail">共十个角色，每个名称都用它自己的字号和字重排出。</string>
+    <string name="type_scale_detail">共十一个角色，每个名称都用它自己的字号和字重排出。</string>
     <string name="type_spec">%1$s sp · %2$s</string>
     <string name="type_weight_regular">常规</string>
     <string name="type_weight_medium">中等</string>

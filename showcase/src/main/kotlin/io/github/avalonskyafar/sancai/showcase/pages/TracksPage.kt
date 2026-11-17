@@ -43,10 +43,9 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
             val track = SancaiSegmentedTrack(this)
             track.setOptions("Off", "Gentle", "Standard", "Strict")
             track.select(2, animate = false)
-            track.onSelectionChangedListener =
-                SancaiSegmentedTrack.OnSelectionChangedListener { view, index ->
-                    status.text = "Level: " + view.options[index]
-                }
+            track.setOnSelectionChangeListener { view, index ->
+                status.text = "Level: " + view.options[index]
+            }
         """)
     }
 
@@ -63,8 +62,8 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
                 R.string.tracks_status_plain, view.options[view.selectedIndex], order.options[order.selectedIndex],
             )
         }
-        view.onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, _ -> show() }
-        order.onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, _ -> show() }
+        view.setOnSelectionChangeListener { _, _ -> show() }
+        order.setOnSelectionChangeListener { _, _ -> show() }
         show()
         page.section(R.string.tracks_plain_title, R.string.tracks_plain_detail) {
             addFull(view)
@@ -89,7 +88,7 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
         fun show() {
             status.text = page.context.getString(R.string.tracks_status_level, track.options[previous])
         }
-        track.onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { view, index ->
+        track.setOnSelectionChangeListener { view, index ->
             if (index == view.options.lastIndex) {
                 view.select(previous)
                 page.host.say(page.context.getString(R.string.tracks_refuse_reason, view.options[previous]))
@@ -103,13 +102,12 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
         page.status(status)
         page.code("""
             var previous = track.selectedIndex
-            track.onSelectionChangedListener =
-                SancaiSegmentedTrack.OnSelectionChangedListener { view, index ->
-                    if (index == view.options.lastIndex) {
-                        view.select(previous)   // glides back
-                        status.text = "Strict needs a passcode."
-                    } else previous = index
-                }
+            track.setOnSelectionChangeListener { view, index ->
+                if (index == view.options.lastIndex) {
+                    view.select(previous)   // glides back
+                    status.text = "Strict needs a passcode."
+                } else previous = index
+            }
         """)
     }
 
@@ -127,7 +125,7 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
                 setChecked(checked, false)
                 isEnabled = enabled
                 contentDescription = page.str(label)
-                onCheckedChangeListener = SancaiSwitch.OnCheckedChangeListener { _, isOn -> show(label, isOn) }
+                setOnCheckedChangeListener { _, isOn -> show(label, isOn) }
             }
             val tone = if (enabled) SancaiTextTone.INK else SancaiTextTone.MUTED
             return LinearLayout(page.context).apply {
@@ -159,10 +157,9 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
             quiet.offGlaze = glazes.mist
             quiet.onGlaze = glazes.celadon
             quiet.setChecked(true, false)   // jumps, no callback
-            quiet.onCheckedChangeListener =
-                SancaiSwitch.OnCheckedChangeListener { _, checked ->
-                    status.text = if (checked) "On" else "Off"
-                }
+            quiet.setOnCheckedChangeListener { _, checked ->
+                status.text = if (checked) "On" else "Off"
+            }
         """)
     }
 
@@ -175,7 +172,7 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
             turnOnLabel = page.str(R.string.tracks_power_turn_on)
             turnOffLabel = page.str(R.string.tracks_power_turn_off)
             setChecked(true, false)
-            onCheckedChangeListener = SancaiPowerSwitch.OnCheckedChangeListener { _, checked ->
+            setOnCheckedChangeListener { _, checked ->
                 status.text = page.str(if (checked) R.string.tracks_power_status_on else R.string.tracks_power_status_off)
             }
         }
@@ -190,10 +187,9 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
             shield.offLabel = "Paused"
             shield.turnOffLabel = "Pause"
             shield.turnOnLabel = "Resume"
-            shield.onCheckedChangeListener =
-                SancaiPowerSwitch.OnCheckedChangeListener { _, on ->
-                    status.text = if (on) "Running" else "Paused"
-                }
+            shield.setOnCheckedChangeListener { _, on ->
+                status.text = if (on) "Running" else "Paused"
+            }
         """)
     }
 }
@@ -224,7 +220,7 @@ private fun PageScope.track(start: Int, glazes: List<SancaiGlaze>?, vararg label
 private fun PageScope.namedTrack(format: Int, start: Int, vararg labels: Int): Pair<SancaiSegmentedTrack, SancaiText> {
     val track = track(start, null, *labels)
     val line = text(context.getString(format, track.options[start]), SancaiTextRole.CAPTION, SancaiTextTone.MUTED)
-    track.onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { view, index ->
+    track.setOnSelectionChangeListener { view, index ->
         line.text = context.getString(format, view.options[index])
     }
     return track to line

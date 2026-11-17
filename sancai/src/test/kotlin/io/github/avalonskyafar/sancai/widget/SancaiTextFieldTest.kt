@@ -58,7 +58,7 @@ class SancaiTextFieldTest {
     @Test
     fun `text round trips and code does not call the listener`() {
         val heard = mutableListOf<String>()
-        val field = field { onTextChangedListener = SancaiTextField.OnTextChangedListener { _, t -> heard += t.toString() } }
+        val field = field { setOnTextChangeListener { _, t -> heard += t.toString() } }
         field.text = "hello"
         assertThat(field.text.toString()).isEqualTo("hello")
         assertThat(field.editText.selectionStart).isEqualTo(5)
@@ -172,7 +172,7 @@ class SancaiTextFieldTest {
     fun `clear action appears with text and clears it as user input`() {
         val heard = mutableListOf<String>()
         val field = field { endAction = SancaiTextField.EndAction.CLEAR }
-        field.onTextChangedListener = SancaiTextField.OnTextChangedListener { _, t -> heard += t.toString() }
+        field.setOnTextChangeListener { _, t -> heard += t.toString() }
         Snapshots.attach(field)
         assertThat(field.action().visibility).isEqualTo(View.GONE)
         field.text = "abc"
@@ -285,8 +285,8 @@ class SancaiTextFieldTest {
 
         val (newParent, newFirst, newSecond) = form()
         var calls = 0
-        newFirst.onTextChangedListener = SancaiTextField.OnTextChangedListener { _, _ -> calls++ }
-        newSecond.onTextChangedListener = SancaiTextField.OnTextChangedListener { _, _ -> calls++ }
+        newFirst.setOnTextChangeListener { _, _ -> calls++ }
+        newSecond.setOnTextChangeListener { _, _ -> calls++ }
         newParent.restoreHierarchyState(state)
 
         assertThat(newFirst.text.toString()).isEqualTo("alpha")
@@ -436,7 +436,7 @@ class SancaiTextFieldTest {
     fun `keyboard stops on the text and the action but not on the well`() {
         val heard = mutableListOf<String>()
         val field = field { endAction = SancaiTextField.EndAction.CLEAR; text = "abc" }
-        field.onTextChangedListener = SancaiTextField.OnTextChangedListener { _, t -> heard += t.toString() }
+        field.setOnTextChangeListener { _, t -> heard += t.toString() }
         Snapshots.attach(field)
         assertThat(field.well().isFocusable).isFalse()
         assertThat(field.editText.isFocusable).isTrue()

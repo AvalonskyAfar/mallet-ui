@@ -34,10 +34,9 @@ private const val VALIDATION_CODE = """
         else "Enter all six digits."
     }
     check.setOnClickListener { code.validate(rule) }
-    code.onTextChangedListener = SancaiTextField
-        .OnTextChangedListener { f, text ->
-            if (rule(text) == null) f.error = null
-        }
+    code.setOnTextChangeListener { f, text ->
+        if (rule(text) == null) f.error = null
+    }
 """
 
 private const val FORMS_CODE = """
@@ -86,7 +85,7 @@ object FieldsPage : DemoPage("c_fields", R.string.page_c_fields_title, R.string.
                 leadingIcon = SancaiIcon.SEARCH
                 endAction = SancaiTextField.EndAction.CLEAR
                 text = page.str(R.string.fields_search_text)
-                onTextChangedListener = SancaiTextField.OnTextChangedListener { _, text ->
+                setOnTextChangeListener { _, text ->
                     status.text = searchStatus(page, text)
                 }
             }
@@ -117,7 +116,7 @@ object FieldsPage : DemoPage("c_fields", R.string.page_c_fields_title, R.string.
                 helperText = page.str(R.string.fields_code_helper)
                 inputType = InputType.TYPE_CLASS_NUMBER
                 text = "3015"
-                onTextChangedListener = SancaiTextField.OnTextChangedListener { field, text ->
+                setOnTextChangeListener { field, text ->
                     // Typing never raises the error; it only takes it away once the text is fine.
                     if (field.error != null && rule(text) == null) field.error = null
                     result.text = page.str(R.string.fields_code_waiting)

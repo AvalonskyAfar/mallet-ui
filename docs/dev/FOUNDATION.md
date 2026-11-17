@@ -21,8 +21,10 @@ SancaiTheme.light() / dark() / wrap(context, theme)      // wrap(): explicit the
 `SancaiGlaze(bed, edge, onBed)`.
 
 `SancaiTextRole` (sp, weight): DISPLAY 20.5 M, TITLE 20 M, HEADLINE 18 M, HEADING 17 M, SUBHEAD 15.5 M,
-BODY 15.5 R, BODY_COMPACT 14.5 R, LABEL 14.5 M, CAPTION 12.5 R, MICRO 11.5 R.
+BODY 15.5 R, BODY_COMPACT 14.5 R, LABEL 14.5 M, FOOTNOTE 13.5 R, CAPTION 12.5 R, MICRO 11.5 R.
 `role.applyTo(textView, theme)` sets size (with textScale), typeface, leading, no font padding.
+Never write a text size as a literal: take `SancaiTextRole.X.sizeSp` (or apply the role) and
+change only the weight, with `SancaiWeight.X.typeface()`.
 `role.applyTo(paint, theme, scaledDensity)` for canvas text. `SancaiWeight.REGULAR/MEDIUM/BOLD.typeface()`.
 `SancaiTextTone` INK MUTED ACCENT DANGER WARNING SUCCESS with `.resolve(colors)`.
 
@@ -89,7 +91,7 @@ INFO, WARNING, ERROR, SUCCESS, TRASH, EDIT, EYE, EYE_OFF, INBOX, CLOUD_OFF, IMAG
 `cornerRadiusDp`, `elevated`, `corners`; 9 dp content padding).
 `SancaiButton` (`variant` NEUTRAL / PRIMARY / DANGER / TEXT, `tone`, `icon`, `isLoading`).
 `SancaiSegmentedTrack` (`options`, `selectedIndex`, `select(index, animate)`, `setGlazes(list?)`,
-`onSelectionChangedListener`; 60 dp high). **Read this file as the reference for a custom-drawn control**
+`setOnSelectionChangeListener { track, index -> }`; 60 dp high). **Read this file as the reference for a custom-drawn control**
 (measure, draw, touch, keys, saved state, accessibility with `ExploreByTouchHelper`).
 
 ## resources that exist

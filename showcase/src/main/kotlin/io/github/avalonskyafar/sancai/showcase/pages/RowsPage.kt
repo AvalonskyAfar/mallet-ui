@@ -187,8 +187,7 @@ object RowsPage : DemoPage("c_rows", R.string.page_c_rows_title, R.string.page_c
                 detail = page.str(R.string.rows_haptics_detail)
                 setControl(SancaiSwitch(context).apply {
                     setChecked(haptics, false)
-                    onCheckedChangeListener =
-                        SancaiSwitch.OnCheckedChangeListener { _, checked -> haptics = checked; refresh() }
+                    setOnCheckedChangeListener { _, checked -> haptics = checked; refresh() }
                 })
             })
             row(SancaiControlRow(context).apply {
@@ -198,8 +197,7 @@ object RowsPage : DemoPage("c_rows", R.string.page_c_rows_title, R.string.page_c
                     stepSize = 1f
                     decimals = 0
                     value = columns
-                    onValueChangeListener =
-                        SancaiStepper.OnValueChangeListener { _, value -> columns = value; refresh() }
+                    setOnValueChangeListener { _, value -> columns = value; refresh() }
                 })
             })
             row(SancaiControlRow(context).apply {
@@ -211,8 +209,7 @@ object RowsPage : DemoPage("c_rows", R.string.page_c_rows_title, R.string.page_c
                     value = brightness
                     glaze = page.theme.glazes.ochre
                     valueFormatter = { context.getString(R.string.rows_percent, it.roundToInt()) }
-                    onValueChangeListener =
-                        SancaiSlider.OnValueChangeListener { _, value, _ -> brightness = value; refresh() }
+                    setOnValueChangeListener { _, value -> brightness = value; refresh() }
                 }
                 setControl(slider, textWeight = 1f, controlWeight = 1.6f)
             })

@@ -13,6 +13,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 import io.github.avalonskyafar.sancai.R
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.theme.SancaiGlaze
+import io.github.avalonskyafar.sancai.theme.SancaiTextRole
 import io.github.avalonskyafar.sancai.theme.SancaiTheme
 import io.github.avalonskyafar.sancai.theme.SancaiWeight
 import kotlin.math.ceil
@@ -58,7 +59,7 @@ public class SancaiTag @JvmOverloads constructor(
         typeface = SancaiWeight.BOLD.typeface()
         textAlign = Paint.Align.CENTER
         textSize = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_SP, TEXT_SP, resources.displayMetrics,
+            TypedValue.COMPLEX_UNIT_SP, SancaiTextRole.MICRO.sizeSp, resources.displayMetrics,
         ) * theme.textScale
     }
     private var shown: CharSequence = ""
@@ -151,7 +152,6 @@ public class SancaiTag @JvmOverloads constructor(
     private companion object {
         private const val HEIGHT_DP = 22f
         private const val PADDING_DP = 9f
-        private const val TEXT_SP = 11.5f
 
         /** Least room above and below the label when large text makes the tag grow. */
         private const val MIN_INSET_DP = 3f

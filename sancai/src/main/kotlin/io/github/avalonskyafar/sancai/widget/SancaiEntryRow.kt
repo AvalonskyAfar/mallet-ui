@@ -5,7 +5,6 @@ import android.graphics.Canvas
 import android.graphics.RectF
 import android.text.TextUtils
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.View
@@ -78,7 +77,7 @@ public class SancaiEntryRow @JvmOverloads constructor(
     private val focusBounds = RectF()
 
     private val titleView = SancaiText.create(context, null, SancaiTextRole.SUBHEAD)
-    private val detailView = SancaiText.create(context, null, SancaiTextRole.CAPTION, SancaiTextTone.MUTED)
+    private val detailView = SancaiText.create(context, null, SancaiTextRole.MICRO, SancaiTextTone.MUTED)
     private val valueView = SancaiText.create(context, null, SancaiTextRole.BODY_COMPACT, SancaiTextTone.MUTED)
     private val iconView = SancaiIconView(context)
     private val chevronView = SancaiIconView(context)
@@ -155,7 +154,6 @@ public class SancaiEntryRow @JvmOverloads constructor(
         // An explicit android:contentDescription was applied by the super constructor.
         ownDescription = contentDescription == null
         setWillNotDraw(false)
-        detailView.setTextSize(TypedValue.COMPLEX_UNIT_SP, DETAIL_SP * theme.textScale)
         valueView.maxLines = 1
         valueView.ellipsize = TextUtils.TruncateAt.END
         alignText(titleView, Alignment.CENTER)
@@ -418,7 +416,6 @@ public class SancaiEntryRow @JvmOverloads constructor(
         /** Height of a row with a detail line, in dp. */
         public const val MIN_HEIGHT_DETAIL_DP: Float = 76f
 
-        private const val DETAIL_SP = 11.8f
         private const val DETAIL_GAP_DP = 4f
         private const val GLYPH_DP = 24f
         private const val EDGE_DP = 12f

@@ -75,6 +75,14 @@ Take `widget/SancaiSegmentedTrack.kt` (custom-drawn control) and `widget/SancaiB
 
 - **Listeners fire for user input only** (touch, keyboard, accessibility action). Setters
   called from code never call back. This is what makes "roll back inside the listener" safe.
+- **Listener shape.** A listener is a `fun interface OnXxxChangeListener` nested in its
+  widget, with one method `onXxxChanged(sender, value)` whose first parameter is the widget
+  itself, typed. It is set with a function, `setOnXxxChangeListener(listener)`, never with a
+  property: a function accepts a trailing lambda in Kotlin and a lambda in Java, a property
+  needs the interface name spelled out. `null` removes the listener. A formatter is a
+  function-typed property (`valueFormatter`). An action that is a view takes a
+  `View.OnClickListener`; an action that is not (menu item, sheet action, toast action)
+  takes a `Runnable`.
 - **Haptic order.** Controls that hold a *value* (tracks, switches, checkboxes, radios,
   steppers, sliders, chips that check) call the listener first and tick second, so a control
   that switches haptics off stays silent. *Actions* (buttons, rows, links, menu items, dialog

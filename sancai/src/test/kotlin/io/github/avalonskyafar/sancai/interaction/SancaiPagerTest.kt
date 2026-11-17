@@ -8,7 +8,6 @@ import android.view.Gravity
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -545,7 +544,7 @@ class SancaiPagerTest {
         val colors = SancaiTheme.light().colors
         val indicator = SancaiPageIndicator(context)
         indicator.count = 5
-        indicator.selected = 1
+        indicator.selectedIndex = 1
         indicator.measure(0, 0)
         assertThat(indicator.measuredWidth).isEqualTo((5 * 28 * density).roundToInt())
         assertThat(indicator.measuredHeight).isEqualTo((28 * density).roundToInt())
@@ -585,7 +584,7 @@ class SancaiPagerTest {
 
         Touch.dispatch(pager, MotionEvent.ACTION_UP, width * 0.4f, midY)
         finishMotion()
-        assertThat(indicator.selected).isEqualTo(1)
+        assertThat(indicator.selectedIndex).isEqualTo(1)
         assertThat(dotPixel(indicator, 1)).isEqualTo(colors.accent)
         assertThat(dotPixel(indicator, 0)).isEqualTo(colors.muted)
         assertThat(indicator.contentDescription.toString()).isEqualTo("Page 2 of 4")
@@ -595,7 +594,7 @@ class SancaiPagerTest {
     fun `tapping a dot moves the pager as the user`() {
         val (pager, indicator) = withIndicator()
         val chosen = ArrayList<Int>()
-        indicator.onSelectedChangeListener = SancaiPageIndicator.OnSelectedChangeListener { _, index -> chosen += index }
+        indicator.setOnSelectionChangeListener { _, index -> chosen += index }
 
         Touch.tap(indicator, dotX(4, 2))
         assertThat(pager.currentPage).isEqualTo(2)
@@ -612,9 +611,9 @@ class SancaiPagerTest {
 
         // Moves from code reach the dots but not the listeners.
         pager.currentPage = 3
-        indicator.selected = 0
+        indicator.selectedIndex = 0
         assertThat(pager.currentPage).isEqualTo(0)
-        assertThat(indicator.selected).isEqualTo(0)
+        assertThat(indicator.selectedIndex).isEqualTo(0)
         assertThat(chosen).containsExactly(2)
         assertThat(selections).containsExactly(2)
 
@@ -626,16 +625,16 @@ class SancaiPagerTest {
     fun `standalone indicator selects by tap, keys and accessibility`() {
         val indicator = SancaiPageIndicator(context)
         val chosen = ArrayList<Int>()
-        indicator.onSelectedChangeListener = SancaiPageIndicator.OnSelectedChangeListener { _, index -> chosen += index }
+        indicator.setOnSelectionChangeListener { _, index -> chosen += index }
         indicator.count = 3
-        indicator.selected = 1
-        indicator.selected = 7 // does not exist
-        assertThat(indicator.selected).isEqualTo(1)
+        indicator.selectedIndex = 1
+        indicator.selectedIndex = 7 // does not exist
+        assertThat(indicator.selectedIndex).isEqualTo(1)
         assertThat(chosen).isEmpty()
         Snapshots.attach(indicator, widthDp)
 
         Touch.tap(indicator, dotX(3, 2))
-        assertThat(indicator.selected).isEqualTo(2)
+        assertThat(indicator.selectedIndex).isEqualTo(2)
         fun key(code: Int) = indicator.onKeyDown(code, KeyEvent(KeyEvent.ACTION_DOWN, code))
         assertThat(key(KeyEvent.KEYCODE_DPAD_RIGHT)).isFalse()
         assertThat(key(KeyEvent.KEYCODE_DPAD_LEFT)).isTrue()
@@ -649,14 +648,14 @@ class SancaiPagerTest {
         assertThat(node.actionList).doesNotContain(AccessibilityNodeInfo.AccessibilityAction.ACTION_SCROLL_BACKWARD)
         assertThat(node.actionList).doesNotContain(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK)
         assertThat(indicator.performAccessibilityAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, null)).isTrue()
-        assertThat(indicator.selected).isEqualTo(1)
+        assertThat(indicator.selectedIndex).isEqualTo(1)
         finishMotion()
         assertThat(dotPixel(indicator, 1)).isEqualTo(SancaiTheme.light().colors.accent)
 
         indicator.isEnabled = false
         Touch.tap(indicator, dotX(3, 2))
         assertThat(key(KeyEvent.KEYCODE_DPAD_RIGHT)).isFalse()
-        assertThat(indicator.selected).isEqualTo(1)
+        assertThat(indicator.selectedIndex).isEqualTo(1)
     }
 
     @Test
@@ -668,17 +667,17 @@ class SancaiPagerTest {
         Snapshots.attach(indicator, widthDp)
         assertThat(dotPixel(indicator, 3)).isEqualTo(SancaiTheme.light().colors.accent)
         Touch.tap(indicator, dotX(4, 0)) // leftmost dot is the last page
-        assertThat(indicator.selected).isEqualTo(3)
+        assertThat(indicator.selectedIndex).isEqualTo(3)
         assertThat(indicator.onKeyDown(KeyEvent.KEYCODE_DPAD_RIGHT, KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT)))
             .isTrue()
-        assertThat(indicator.selected).isEqualTo(2)
+        assertThat(indicator.selectedIndex).isEqualTo(2)
 
         val state = SparseArray<Parcelable>()
         indicator.saveHierarchyState(state)
         val restored = SancaiPageIndicator(context).apply { id = 9 }
         restored.count = 4
         restored.restoreHierarchyState(state)
-        assertThat(restored.selected).isEqualTo(2)
+        assertThat(restored.selectedIndex).isEqualTo(2)
     }
 
     @Test
@@ -735,7 +734,7 @@ class SancaiPagerTest {
     fun `a disabled pager is not moved through its indicator`() {
         val (pager, indicator) = withIndicator()
         val chosen = ArrayList<Int>()
-        indicator.onSelectedChangeListener = SancaiPageIndicator.OnSelectedChangeListener { _, i -> chosen += i }
+        indicator.setOnSelectionChangeListener { _, i -> chosen += i }
         pager.isEnabled = false
         Touch.tap(indicator, dotX(4, 2), indicator.height / 2f)
         val right = KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DPAD_RIGHT)

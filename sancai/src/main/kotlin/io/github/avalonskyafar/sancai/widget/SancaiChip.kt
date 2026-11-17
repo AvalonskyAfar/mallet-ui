@@ -24,6 +24,7 @@ import io.github.avalonskyafar.sancai.interaction.SancaiHaptics
 import io.github.avalonskyafar.sancai.theme.SancaiColors
 import io.github.avalonskyafar.sancai.theme.SancaiGlaze
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
+import io.github.avalonskyafar.sancai.theme.SancaiTextRole
 import io.github.avalonskyafar.sancai.theme.SancaiWeight
 import kotlin.math.ceil
 
@@ -33,7 +34,7 @@ import kotlin.math.ceil
  * | Kind | Behaviour |
  * |---|---|
  * | [Kind.ACTION] | a small neutral button: a tap ticks and calls the click listener |
- * | [Kind.FILTER] | checkable: a tap flips [isChecked] and calls [onCheckedChangeListener] |
+ * | [Kind.FILTER] | checkable: a tap flips [isChecked] and calls [setOnCheckedChangeListener] |
  *
  * An unchecked chip is raised white porcelain with an ink label. Checking a filter chip pours
  * a glaze into it: the body becomes a recessed glazed capsule ([glaze], cobalt by default), a
@@ -44,7 +45,7 @@ import kotlin.math.ceil
  * into ink, Space and Enter act like a tap, and a disabled chip pales. The body is 32 dp high
  * inside a 44 dp touch target; the room around it holds the shadow.
  *
- * [onCheckedChangeListener] is called for user input only (touch, keyboard, accessibility),
+ * [setOnCheckedChangeListener] is called for user input only (touch, keyboard, accessibility),
  * never for [setChecked], and it is called before the haptic tick. Put several chips into a
  * [SancaiChipGroup] to let them wrap and, optionally, to allow one choice only.
  *
@@ -73,7 +74,7 @@ public class SancaiChip @JvmOverloads constructor(
 
     private val labelPaint = TextPaint(Paint.ANTI_ALIAS_FLAG or Paint.SUBPIXEL_TEXT_FLAG).apply {
         typeface = SancaiWeight.MEDIUM.typeface()
-        textSize = sp(TEXT_SP)
+        textSize = sp(SancaiTextRole.FOOTNOTE.sizeSp)
     }
     private val checkPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
@@ -91,8 +92,12 @@ public class SancaiChip @JvmOverloads constructor(
     /** 0 = porcelain, 1 = glazed and as wide as the check mark needs. */
     private var progress = 0f
 
+    private var checkedChangeListener: OnCheckedChangeListener? = null
+
     /** Listener for user-driven changes of [isChecked]. */
-    public var onCheckedChangeListener: OnCheckedChangeListener? = null
+    public fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?) {
+        checkedChangeListener = listener
+    }
 
     /** The label. A label wider than the chip is ellipsized. */
     public var text: CharSequence = ""
@@ -176,7 +181,7 @@ public class SancaiChip @JvmOverloads constructor(
         moveTo(if (value) 1f else 0f, animate)
         sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
         group?.onChipChecked(this, value, animate, fromUser)
-        if (fromUser) onCheckedChangeListener?.onCheckedChanged(this, value)
+        if (fromUser) checkedChangeListener?.onCheckedChanged(this, value)
     }
 
     private fun moveTo(target: Float, animate: Boolean) {
@@ -466,7 +471,6 @@ public class SancaiChip @JvmOverloads constructor(
     internal companion object {
         private const val BODY_DP = 32f
         private const val PADDING_DP = 14f
-        private const val TEXT_SP = 13f
         private const val ICON_DP = 16f
         private const val ICON_GAP_DP = 6f
         private const val ICON_STROKE_DP = 1.7f

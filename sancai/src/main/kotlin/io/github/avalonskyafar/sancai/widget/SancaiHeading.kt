@@ -26,7 +26,7 @@ import io.github.avalonskyafar.sancai.theme.SancaiTextTone
  * Unlike the rows of a card, a heading is start aligned: it labels what follows instead of
  * being operated. It is inset by 10 dp on both sides so that its text lines up with the content
  * of the card below rather than with the card's rim. The detail line disappears, together with
- * its 4 dp gap, while [detail] is empty or blank.
+ * its 4 dp gap, while [detail] is empty or blank; a detail without a title has no gap above it.
  *
  * The title is announced as a heading by accessibility services, so a page can be navigated
  * heading by heading. The view itself is not focusable and has no state to save.
@@ -55,6 +55,7 @@ public class SancaiHeading @JvmOverloads constructor(
             field = value
             titleView.text = value
             titleView.visibility = if (value.isNullOrEmpty()) View.GONE else View.VISIBLE
+            placeDetail()
         }
 
     /** Supporting line under the title; `null`, empty or blank hides the line. */
@@ -63,6 +64,7 @@ public class SancaiHeading @JvmOverloads constructor(
             field = value
             detailView.text = value
             detailView.visibility = if (value.isNullOrBlank()) View.GONE else View.VISIBLE
+            placeDetail()
         }
 
     /** [Level.SECTION] (default) for card headings, [Level.PAGE] for the title of a page. */
@@ -104,6 +106,16 @@ public class SancaiHeading @JvmOverloads constructor(
             } finally {
                 a.recycle()
             }
+        }
+    }
+
+    /** The detail keeps its gap to the title only while there is a title above it. */
+    private fun placeDetail() {
+        val params = detailView.layoutParams as? LayoutParams ?: return
+        val gap = if (titleView.visibility == View.VISIBLE) (DETAIL_GAP_DP * resources.displayMetrics.density + 0.5f).toInt() else 0
+        if (params.topMargin != gap) {
+            params.topMargin = gap
+            detailView.layoutParams = params
         }
     }
 

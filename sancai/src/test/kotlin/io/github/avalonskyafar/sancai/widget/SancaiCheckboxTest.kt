@@ -45,8 +45,8 @@ class SancaiCheckboxTest {
     /** Records every callback of a checkbox. */
     private class Recorder : SancaiCheckbox.OnCheckedChangeListener {
         val calls = mutableListOf<Boolean>()
-        override fun onCheckedChanged(view: View, checked: Boolean) {
-            calls += checked
+        override fun onCheckedChanged(checkbox: SancaiCheckbox, isChecked: Boolean) {
+            calls += isChecked
         }
     }
 
@@ -98,7 +98,7 @@ class SancaiCheckboxTest {
     fun `tap checks then unchecks and tells the listener each time`() {
         val view = checkbox("Remember me")
         val recorder = Recorder()
-        view.onCheckedChangeListener = recorder
+        view.setOnCheckedChangeListener(recorder)
         // The label is part of the target, not only the box.
         Touch.tap(view, view.width * 0.8f, view.height / 2f)
         assertThat(view.isChecked).isTrue()
@@ -111,7 +111,7 @@ class SancaiCheckboxTest {
     fun `setting from code never notifies`() {
         val view = checkbox()
         val recorder = Recorder()
-        view.onCheckedChangeListener = recorder
+        view.setOnCheckedChangeListener(recorder)
         view.isChecked = true
         view.setChecked(false, animate = false)
         view.toggle()
@@ -123,7 +123,7 @@ class SancaiCheckboxTest {
     fun `listener can roll the change back`() {
         val view = checkbox()
         var calls = 0
-        view.onCheckedChangeListener = SancaiCheckbox.OnCheckedChangeListener { box, _ ->
+        view.setOnCheckedChangeListener { box, _ ->
             calls++
             (box as SancaiCheckbox).setChecked(false, animate = false)
         }
@@ -137,7 +137,7 @@ class SancaiCheckboxTest {
     fun `a finger that slides off or a cancelled gesture changes nothing`() {
         val view = checkbox()
         val recorder = Recorder()
-        view.onCheckedChangeListener = recorder
+        view.setOnCheckedChangeListener(recorder)
         Touch.drag(view, view.width / 2f, view.height / 2f, view.width / 2f, view.height * 4f)
         Touch.dispatch(view, MotionEvent.ACTION_DOWN, 10f, 10f)
         Touch.dispatch(view, MotionEvent.ACTION_CANCEL, 10f, 10f)
@@ -149,7 +149,7 @@ class SancaiCheckboxTest {
     fun `space and enter flip the box and other keys pass through`() {
         val view = checkbox()
         val recorder = Recorder()
-        view.onCheckedChangeListener = recorder
+        view.setOnCheckedChangeListener(recorder)
         fun press(code: Int) = view.onKeyDown(code, KeyEvent(KeyEvent.ACTION_DOWN, code))
         assertThat(press(KeyEvent.KEYCODE_SPACE)).isTrue()
         assertThat(view.isChecked).isTrue()
@@ -165,7 +165,7 @@ class SancaiCheckboxTest {
         val view = checkbox(checked = true)
         val enabledBed = view.bedPixel()
         val recorder = Recorder()
-        view.onCheckedChangeListener = recorder
+        view.setOnCheckedChangeListener(recorder)
         view.isEnabled = false
         view.tapCentre()
         view.onKeyDown(KeyEvent.KEYCODE_SPACE, KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_SPACE))
@@ -235,7 +235,7 @@ class SancaiCheckboxTest {
 
         val restored = checkbox().apply { id = view.id }
         val recorder = Recorder()
-        restored.onCheckedChangeListener = recorder
+        restored.setOnCheckedChangeListener(recorder)
         restored.restoreHierarchyState(saved)
         assertThat(restored.isChecked).isTrue()
         assertThat(recorder.calls).isEmpty()
@@ -253,7 +253,7 @@ class SancaiCheckboxTest {
         assertThat(node.text.toString()).isEqualTo("Remember me")
 
         val recorder = Recorder()
-        view.onCheckedChangeListener = recorder
+        view.setOnCheckedChangeListener(recorder)
         assertThat(view.performAccessibilityAction(AccessibilityNodeInfo.ACTION_CLICK, null)).isTrue()
         assertThat(view.isChecked).isFalse()
         assertThat(view.createAccessibilityNodeInfo().isChecked).isFalse()

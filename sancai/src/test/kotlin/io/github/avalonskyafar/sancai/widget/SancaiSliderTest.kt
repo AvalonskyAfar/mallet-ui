@@ -84,14 +84,13 @@ class SancaiSliderTest {
     @Test
     fun `tap moves the bead there and reports a user change`() {
         val view = slider()
-        val seen = mutableListOf<Pair<Float, Boolean>>()
+        val seen = mutableListOf<Float>()
         var stops = 0
-        view.onValueChangeListener = SancaiSlider.OnValueChangeListener { _, value, fromUser -> seen += value to fromUser }
-        view.onStopTrackingTouchListener = SancaiSlider.OnStopTrackingTouchListener { stops++ }
+        view.setOnValueChangeListener { _, value -> seen += value }
+        view.setOnStopTrackingTouchListener { stops++ }
         Touch.tap(view, view.xAt(0.25f))
         assertThat(view.value).isWithin(0.5f).of(25f)
         assertThat(seen).hasSize(1)
-        assertThat(seen[0].second).isTrue()
         assertThat(stops).isEqualTo(1)
     }
 
@@ -109,8 +108,8 @@ class SancaiSliderTest {
         val view = slider()
         val seen = mutableListOf<Float>()
         var stops = 0
-        view.onValueChangeListener = SancaiSlider.OnValueChangeListener { _, value, _ -> seen += value }
-        view.onStopTrackingTouchListener = SancaiSlider.OnStopTrackingTouchListener { stops++ }
+        view.setOnValueChangeListener { _, value -> seen += value }
+        view.setOnStopTrackingTouchListener { stops++ }
         val y = view.height / 2f
         Touch.drag(view, view.xAt(0.1f), y, view.xAt(0.8f), y, release = false)
         assertThat(view.value).isWithin(0.5f).of(80f)
@@ -128,7 +127,7 @@ class SancaiSliderTest {
         Touch.tap(view, view.xAt(0.58f))
         assertThat(view.value).isEqualTo(50f)
         val seen = mutableListOf<Float>()
-        view.onValueChangeListener = SancaiSlider.OnValueChangeListener { _, value, _ -> seen += value }
+        view.setOnValueChangeListener { _, value -> seen += value }
         val y = view.height / 2f
         Touch.drag(view, view.xAt(0.5f), y, view.xAt(1f), y, steps = 20)
         assertThat(seen).containsExactly(75f, 100f).inOrder()
@@ -150,8 +149,8 @@ class SancaiSliderTest {
     fun `a mostly vertical drag is left to the scrolling parent`() {
         val view = slider(value = 40f)
         var calls = 0
-        view.onValueChangeListener = SancaiSlider.OnValueChangeListener { _, _, _ -> calls++ }
-        view.onStopTrackingTouchListener = SancaiSlider.OnStopTrackingTouchListener { calls++ }
+        view.setOnValueChangeListener { _, _ -> calls++ }
+        view.setOnStopTrackingTouchListener { calls++ }
         Touch.drag(view, view.xAt(0.8f), 10f, view.xAt(0.85f), 400f)
         assertThat(view.value).isEqualTo(40f)
         assertThat(calls).isEqualTo(0)
@@ -176,7 +175,7 @@ class SancaiSliderTest {
     fun `arrow keys move one step or five percent and fall through at the ends`() {
         val stepped = slider(step = 50f)
         var calls = 0
-        stepped.onValueChangeListener = SancaiSlider.OnValueChangeListener { _, _, fromUser -> if (fromUser) calls++ }
+        stepped.setOnValueChangeListener { _, _ -> calls++ }
         assertThat(stepped.press(KeyEvent.KEYCODE_DPAD_LEFT)).isFalse()
         assertThat(stepped.press(KeyEvent.KEYCODE_DPAD_RIGHT)).isTrue()
         assertThat(stepped.press(KeyEvent.KEYCODE_DPAD_RIGHT)).isTrue()
@@ -194,7 +193,7 @@ class SancaiSliderTest {
     fun `setting the value from code does not call the listener`() {
         val view = slider()
         var calls = 0
-        view.onValueChangeListener = SancaiSlider.OnValueChangeListener { _, _, _ -> calls++ }
+        view.setOnValueChangeListener { _, _ -> calls++ }
         view.value = 30f
         view.setValue(60f, animate = true)
         view.valueTo = 50f
@@ -221,7 +220,7 @@ class SancaiSliderTest {
             id = view.id
             valueTo = 100f
             stepSize = 5f
-            onValueChangeListener = SancaiSlider.OnValueChangeListener { _, _, _ -> calls++ }
+            setOnValueChangeListener { _, _ -> calls++ }
         }
         restored.restoreHierarchyState(saved)
         assertThat(restored.value).isEqualTo(65f)
@@ -241,15 +240,23 @@ class SancaiSliderTest {
     }
 
     @Test
-    fun `a glaze scale blends through its glazes as the value rises`() {
+    fun `a glaze scale shows the glaze nearest to the bead and never a mixture`() {
         val theme = SancaiTheme.light()
         val view = slider(value = 100f)
         view.setGlazeScale(listOf(theme.glazes.terracotta, theme.glazes.cobalt, theme.glazes.celadon))
         assertColour(view.trackPixel(0.3f), Color.rgb(128, 184, 151))
         view.value = 50f
         assertColour(view.trackPixel(0.3f), Color.rgb(134, 172, 247))
+        // Just short of half-way to cobalt the stretch is still plain terracotta...
+        view.value = 24f
+        assertColour(view.trackPixel(0.1f), Color.rgb(206, 131, 83))
+        // ...and from half-way on it is plain cobalt.
         view.value = 25f
-        assertColour(view.trackPixel(0.1f), Color.rgb(170, 152, 165))
+        assertColour(view.trackPixel(0.1f), Color.rgb(134, 172, 247))
+        view.value = 74f
+        assertColour(view.trackPixel(0.1f), Color.rgb(134, 172, 247))
+        view.value = 75f
+        assertColour(view.trackPixel(0.1f), Color.rgb(128, 184, 151))
         // A single glaze replaces the scale again.
         view.glaze = theme.glazes.terracotta
         assertColour(view.trackPixel(0.1f), Color.rgb(206, 131, 83))
@@ -268,7 +275,7 @@ class SancaiSliderTest {
         assertThat(range.current).isEqualTo(40f)
 
         var calls = 0
-        view.onValueChangeListener = SancaiSlider.OnValueChangeListener { _, _, fromUser -> if (fromUser) calls++ }
+        view.setOnValueChangeListener { _, _ -> calls++ }
         assertThat(view.performAccessibilityAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD, null)).isTrue()
         assertThat(view.value).isEqualTo(50f)
         assertThat(view.performAccessibilityAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD, null)).isTrue()
@@ -282,7 +289,7 @@ class SancaiSliderTest {
     fun `set progress action moves to a snapped value and is offered only when enabled`() {
         val view = slider(step = 10f, value = 40f)
         val seen = mutableListOf<Float>()
-        view.onValueChangeListener = SancaiSlider.OnValueChangeListener { _, value, _ -> seen += value }
+        view.setOnValueChangeListener { _, value -> seen += value }
         val setProgress = android.R.id.accessibilityActionSetProgress
         val arguments = android.os.Bundle().apply {
             putFloat(AccessibilityNodeInfo.ACTION_ARGUMENT_PROGRESS_VALUE, 73f)
@@ -388,7 +395,7 @@ class SancaiSliderTest {
     fun `a cancelled drag keeps its value and ends tracking, disabling mid drag does too`() {
         val view = slider()
         var stops = 0
-        view.onStopTrackingTouchListener = SancaiSlider.OnStopTrackingTouchListener { stops++ }
+        view.setOnStopTrackingTouchListener { stops++ }
         val y = view.height / 2f
         Touch.drag(view, view.xAt(0.1f), y, view.xAt(0.6f), y, release = false)
         Touch.dispatch(view, MotionEvent.ACTION_CANCEL, view.xAt(0.6f), y)

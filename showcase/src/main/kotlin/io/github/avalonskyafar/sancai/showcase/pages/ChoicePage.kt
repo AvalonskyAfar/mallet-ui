@@ -22,12 +22,10 @@ object ChoicePage : DemoPage("c_choice", R.string.page_c_choice_title, R.string.
             val all = SancaiCheckbox(this)
             val item = SancaiCheckbox(this)
             all.text = "Select all"
-            all.onCheckedChangeListener =
-                SancaiCheckbox.OnCheckedChangeListener {
-                    _, on ->
-                    // set from code: no listener call
-                    item.isChecked = on
-                }
+            all.setOnCheckedChangeListener { _, on ->
+                // set from code: no listener call
+                item.isChecked = on
+            }
         """)
         states(page)
         page.code("""
@@ -46,10 +44,9 @@ object ChoicePage : DemoPage("c_choice", R.string.page_c_choice_title, R.string.
             weekly.text = "Every week"
             weekly.isChecked = true
             group.addView(weekly)
-            group.onCheckedChangeListener =
-                SancaiRadioGroup.OnCheckedChangeListener {
-                    _, id -> Log.d("backup", "radio ${'$'}id")
-                }
+            group.setOnCheckedChangeListener { _, id ->
+                Log.d("backup", "radio ${'$'}id")
+            }
         """)
         glazes(page)
         page.code("""
@@ -88,14 +85,14 @@ private fun checkboxes(page: PageScope) {
             val count = options.count { it.isChecked }
             line.text = context.getString(R.string.choice_boxes_status, count, options.size, calls)
         }
-        all.onCheckedChangeListener = SancaiCheckbox.OnCheckedChangeListener { _, on ->
+        all.setOnCheckedChangeListener { _, on ->
             calls++
             // Set from code: the listeners of the three options stay silent.
             options.forEach { it.isChecked = on }
             report()
         }
         options.forEach { option ->
-            option.onCheckedChangeListener = SancaiCheckbox.OnCheckedChangeListener { _, _ ->
+            option.setOnCheckedChangeListener { _, _ ->
                 calls++
                 all.isChecked = options.all { it.isChecked }
                 report()
@@ -158,7 +155,7 @@ private fun radios(page: PageScope) {
             val index = ids.indexOf(checkedId)
             if (index in answers.indices) line.text = page.str(answers[index])
         }
-        group.onCheckedChangeListener = SancaiRadioGroup.OnCheckedChangeListener { _, checkedId ->
+        group.setOnCheckedChangeListener { _, checkedId ->
             report(checkedId)
         }
         report(group.checkedId)
@@ -200,7 +197,7 @@ private fun glazes(page: PageScope) {
             val index = ids.indexOf(checkedId)
             if (index >= 0) line.text = context.getString(R.string.choice_glazes_status, page.str(names[index]))
         }
-        row.onCheckedChangeListener = SancaiRadioGroup.OnCheckedChangeListener { _, checkedId ->
+        row.setOnCheckedChangeListener { _, checkedId ->
             report(checkedId)
         }
         report(row.checkedId)

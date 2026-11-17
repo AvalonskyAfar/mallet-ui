@@ -140,7 +140,7 @@ object PressPage : DemoPage("i_press", R.string.page_i_press_title, R.string.pag
             log.text = lines.joinToString("\n")
         }
         val switch = SancaiSwitch(page.context).apply {
-            onCheckedChangeListener = SancaiSwitch.OnCheckedChangeListener { _, checked ->
+            setOnCheckedChangeListener { _, checked ->
                 append(if (checked) R.string.press_order_switch_on else R.string.press_order_switch_off)
             }
         }
@@ -202,10 +202,9 @@ private const val HAPTICS_CODE = """
 private const val ORDER_CODE = """
     val log = SancaiText(this)
     val switch = SancaiSwitch(this)
-    switch.onCheckedChangeListener = SancaiSwitch
-        .OnCheckedChangeListener { _, _ ->
-            log.append("listener, then tick\n")
-        }
+    switch.setOnCheckedChangeListener { _, _ ->
+        log.append("listener, then tick\n")
+    }
     val button = SancaiButton(this)
     button.setOnClickListener {
         log.append("tick, then listener\n")

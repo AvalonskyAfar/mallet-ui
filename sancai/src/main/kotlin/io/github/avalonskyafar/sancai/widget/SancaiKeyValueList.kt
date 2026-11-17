@@ -2,7 +2,6 @@ package io.github.avalonskyafar.sancai.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
@@ -115,9 +114,7 @@ public class SancaiKeyValueList @JvmOverloads constructor(
     }
 
     private fun cell(text: CharSequence, weight: SancaiWeight, tone: SancaiTextTone): SancaiText {
-        // MICRO carries the plain leading (1.16, no tracking) these dense rows were drawn with.
-        val view = SancaiText.create(context, text, SancaiTextRole.MICRO, tone)
-        view.setTextSize(TypedValue.COMPLEX_UNIT_SP, TEXT_SP * theme.textScale)
+        val view = SancaiText.create(context, text, SancaiTextRole.FOOTNOTE, tone)
         view.typeface = weight.typeface()
         return view
     }
@@ -137,6 +134,5 @@ public class SancaiKeyValueList @JvmOverloads constructor(
         private const val ROW_PADDING_H_DP = 12f
         private const val ROW_PADDING_V_DP = 8f
         private const val COLUMN_GAP_DP = 10f
-        private const val TEXT_SP = 13.5f
     }
 }

@@ -56,11 +56,12 @@ A slim recessed track with a glazed stretch from the start to a neutral bead.
 - Bead: 28 dp circle, `material.drawThumb`, pressed look while dragging.
 - `value`, `valueFrom`, `valueTo`, `stepSize` (0 = continuous). With steps the bead snaps and
   each crossed step gives a detent haptic.
-- Glaze: one glaze (`glaze`, default cobalt) or `setGlazeScale(list)`: the fill then blends
-  through the list as the value rises, e.g. terracotta, ochre, cobalt, celadon.
+- Glaze: one glaze (`glaze`, default cobalt) or `setGlazeScale(list)`, e.g. terracotta,
+  ochre, cobalt, celadon: the fill then wears the glaze nearest to the bead, and the next one
+  is poured in (a timed cross-fade) when the bead passes half-way. It never rests on a mixture.
 - Drag anywhere on the track follows the finger (`HorizontalDragGate`, vertical abort,
   `SancaiHorizontalDragOwner`). A tap moves the bead there with a glide.
-- `OnValueChangeListener(slider, value, fromUser)`; plus `onStopTrackingTouch`-style
+- `OnValueChangeListener(slider, value)`, user changes only; plus `onStopTrackingTouch`-style
   callback when the finger lifts. Keys: arrows step (one step, or 5 % when continuous).
   Mirrored in RTL. Saved state. Accessibility as `android.widget.SeekBar` with `RangeInfo`.
 

@@ -12,7 +12,7 @@
     <string name="follow_drag_note">Put a finger on the thumb and move slowly. Let go half way and it settles on the nearer side.</string>
 
     <string name="follow_colour_title">Colour moves with position</string>
-    <string name="follow_colour_detail">The stretch behind the bead blends through the four glazes as the value rises.</string>
+    <string name="follow_colour_detail">The stretch behind the bead wears the glaze nearest to the value. Passing half-way to the next one pours it in.</string>
     <string name="follow_colour_label">Strength</string>
     <string name="follow_colour_value">%1$d %% · %2$s</string>
     <string name="follow_colour_percent">%1$d %%</string>

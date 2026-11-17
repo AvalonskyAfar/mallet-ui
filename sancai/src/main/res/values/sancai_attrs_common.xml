@@ -34,8 +34,9 @@
         <enum name="body" value="5" />
         <enum name="bodyCompact" value="6" />
         <enum name="label" value="7" />
-        <enum name="caption" value="8" />
-        <enum name="micro" value="9" />
+        <enum name="footnote" value="8" />
+        <enum name="caption" value="9" />
+        <enum name="micro" value="10" />
     </attr>
 
     <!-- Main line of a row, heading or state view. -->

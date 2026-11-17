@@ -88,10 +88,10 @@ private fun steppers(page: PageScope) {
             copies to R.string.numbers_stepper_copies,
         )
         for ((stepper, label) in labels) {
-            stepper.onValueChangeListener = SancaiStepper.OnValueChangeListener { view, _ ->
+            stepper.setOnValueChangeListener { view, _ ->
                 status.text = context.getString(R.string.numbers_stepper_changed, page.str(label), view.formattedValue)
             }
-            stepper.onEditRequestListener = SancaiStepper.OnEditRequestListener { view ->
+            stepper.setOnEditRequestListener { view ->
                 page.host.say(context.getString(R.string.numbers_stepper_edit, page.str(label), view.formattedValue))
             }
         }
@@ -101,10 +101,9 @@ private fun steppers(page: PageScope) {
         stepper.setRange(0f, 1f)
         stepper.stepSize = 0.01f
         stepper.decimals = 2
-        stepper.onValueChangeListener =
-            SancaiStepper.OnValueChangeListener {
-                view, _ -> title = view.formattedValue
-            }
+        stepper.setOnValueChangeListener { view, _ ->
+            title = view.formattedValue
+        }
         """,
     )
     page.caption(page.str(R.string.numbers_stepper_note))
@@ -145,14 +144,14 @@ private fun sliders(page: PageScope, followers: List<(Float) -> Unit>): SancaiSl
         levelValue.text = percent(level.value / 100f)
         volumeValue.text = volume.value.roundToInt().toString()
         strictnessValue.text = names[strictness.value.roundToInt()]
-        level.onValueChangeListener = SancaiSlider.OnValueChangeListener { _, value, _ ->
+        level.setOnValueChangeListener { _, value ->
             levelValue.text = percent(value / 100f)
             followers.forEach { it(value / 100f) }
         }
-        volume.onValueChangeListener = SancaiSlider.OnValueChangeListener { _, value, _ ->
+        volume.setOnValueChangeListener { _, value ->
             volumeValue.text = value.roundToInt().toString()
         }
-        strictness.onValueChangeListener = SancaiSlider.OnValueChangeListener { _, value, _ ->
+        strictness.setOnValueChangeListener { _, value ->
             strictnessValue.text = names[value.roundToInt()]
         }
     }
@@ -163,10 +162,9 @@ private fun sliders(page: PageScope, followers: List<(Float) -> Unit>): SancaiSl
         slider.setGlazeScale(
             SancaiTheme.of(this).glazes.scale(4)
         )
-        slider.onValueChangeListener =
-            SancaiSlider.OnValueChangeListener {
-                _, v, _ -> title = "Level " + v
-            }
+        slider.setOnValueChangeListener { _, v ->
+            title = "Level " + v
+        }
         """,
     )
     return level
@@ -269,7 +267,7 @@ private fun spinners(page: PageScope) {
         block(page, R.string.numbers_spinner_tones, spinnerRow(page, tones))
         addDivider(10f)
         val busy = SancaiSwitch(context).apply { setChecked(true, animate = false) }
-        busy.onCheckedChangeListener = SancaiSwitch.OnCheckedChangeListener { _, checked ->
+        busy.setOnCheckedChangeListener { _, checked ->
             save.isLoading = checked
         }
         val row = SancaiControlRow(context).apply {

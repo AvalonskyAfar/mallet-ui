@@ -160,16 +160,9 @@ public class SancaiProgressBar @JvmOverloads constructor(
         )
         if (grooveBounds.width() <= grooveHeight) return
 
-        val mist = theme.glazes.mist
-        val grooveBed = if (theme.isDark) theme.groove else theme.bedColor(mist)
         // The same unglazed recess as the slider: mist in light themes, the plain groove with
         // the neutral rim in dark ones.
-        val grooveEdge = if (theme.isDark) {
-            SancaiColors.blend(theme.colors.ink, theme.colors.canvas, GROOVE_EDGE_CANVAS_SHARE)
-        } else {
-            theme.bedEdgeColor(mist)
-        }
-        material.drawTrack(canvas, grooveBounds, grooveBed, grooveEdge)
+        material.drawTrack(canvas, grooveBounds, theme.neutralBed, theme.neutralBedEdge)
 
         var bed = theme.bedColor(glaze)
         var edge = theme.bedEdgeColor(glaze)
@@ -181,8 +174,8 @@ public class SancaiProgressBar @JvmOverloads constructor(
             from = 0f
             to = shown * length
         } else if (theme.reduceMotion) {
-            bed = SancaiColors.blend(grooveBed, bed, STILL_SHARE)
-            edge = SancaiColors.blend(grooveEdge, edge, STILL_SHARE)
+            bed = SancaiColors.blend(theme.neutralBed, bed, STILL_SHARE)
+            edge = SancaiColors.blend(theme.neutralBedEdge, edge, STILL_SHARE)
             from = 0f
             to = length
         } else {
@@ -305,8 +298,6 @@ public class SancaiProgressBar @JvmOverloads constructor(
         const val TRAVEL_MS = 1400L
         const val STILL_SHARE = 0.4f
 
-        /** Canvas share in the rim of the unglazed dark groove, as in the slider. */
-        const val GROOVE_EDGE_CANVAS_SHARE = 0.93f
 
         /** Where the segment rests when nothing animates (first frame, snapshots). */
         const val REST_TRAVEL = 0.5f

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="type_scale_title">The scale</string>
-    <string name="type_scale_detail">Ten roles. Each name is set in its own size and weight.</string>
+    <string name="type_scale_detail">Eleven roles. Each name is set in its own size and weight.</string>
     <string name="type_spec">%1$s sp · %2$s</string>
     <string name="type_weight_regular">Regular</string>
     <string name="type_weight_medium">Medium</string>

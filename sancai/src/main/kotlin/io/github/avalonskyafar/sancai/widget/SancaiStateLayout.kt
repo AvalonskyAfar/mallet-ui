@@ -72,7 +72,7 @@ public class SancaiStateLayout @JvmOverloads constructor(
         var title: CharSequence?,
         var detail: CharSequence?,
         var actionLabel: CharSequence? = null,
-        var onAction: (() -> Unit)? = null,
+        var listener: View.OnClickListener? = null,
     )
 
     private val theme: SancaiTheme = SancaiTheme.of(context)
@@ -220,14 +220,14 @@ public class SancaiStateLayout @JvmOverloads constructor(
         title: CharSequence?,
         detail: CharSequence? = null,
         actionLabel: CharSequence? = null,
-        onAction: (() -> Unit)? = null,
+        listener: OnClickListener? = null,
     ) {
-        configure(State.EMPTY, emptyMessage, title, detail, actionLabel, onAction)
+        configure(State.EMPTY, emptyMessage, title, detail, actionLabel, listener)
     }
 
     /**
      * Configures the default error message: an error icon in the danger colour, [title],
-     * [detail] and a retry action. The action shows when [retryLabel] or [onRetry] is
+     * [detail] and a retry action. The action shows when [retryLabel] or [listener] is
      * given; without a label it reads "Retry". A custom view from [setErrorView] is dropped.
      */
     @JvmOverloads
@@ -235,10 +235,10 @@ public class SancaiStateLayout @JvmOverloads constructor(
         title: CharSequence?,
         detail: CharSequence? = null,
         retryLabel: CharSequence? = null,
-        onRetry: (() -> Unit)? = null,
+        listener: OnClickListener? = null,
     ) {
-        val label = retryLabel ?: if (onRetry != null) context.getText(R.string.sancai_action_retry) else null
-        configure(State.ERROR, errorMessage, title, detail, label, onRetry)
+        val label = retryLabel ?: if (listener != null) context.getText(R.string.sancai_action_retry) else null
+        configure(State.ERROR, errorMessage, title, detail, label, listener)
     }
 
     private fun configure(
@@ -247,12 +247,12 @@ public class SancaiStateLayout @JvmOverloads constructor(
         title: CharSequence?,
         detail: CharSequence?,
         actionLabel: CharSequence?,
-        onAction: (() -> Unit)?,
+        listener: OnClickListener?,
     ) {
         message.title = title
         message.detail = detail
         message.actionLabel = actionLabel
-        message.onAction = onAction
+        message.listener = listener
         if (custom[state.ordinal]) {
             replace(state, null)
         } else {
@@ -263,7 +263,7 @@ public class SancaiStateLayout @JvmOverloads constructor(
     private fun bind(view: SancaiStateView, message: Message) {
         view.title = message.title
         view.detail = message.detail
-        view.setAction(message.actionLabel, message.onAction)
+        view.setAction(message.actionLabel, message.listener)
     }
 
     private fun replace(state: State, view: View?) {

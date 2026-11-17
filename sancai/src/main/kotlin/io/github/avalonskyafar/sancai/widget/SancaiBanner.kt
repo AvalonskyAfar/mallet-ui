@@ -124,8 +124,12 @@ public class SancaiBanner @JvmOverloads constructor(
     private var animator: ValueAnimator? = null
     private var customIcon: SancaiIcon? = null
 
+    private var dismissListener: OnDismissListener? = null
+
     /** Called when the user closes the banner. Not called by [dismiss]. */
-    public var onDismissListener: OnDismissListener? = null
+    public fun setOnDismissListener(listener: OnDismissListener?) {
+        dismissListener = listener
+    }
 
     /** The title, in ink. `null` or empty removes the line. */
     public var title: CharSequence?
@@ -164,7 +168,7 @@ public class SancaiBanner @JvmOverloads constructor(
             syncContent()
         }
 
-    /** Whether the close icon is offered. Closing collapses the banner and tells [onDismissListener]. */
+    /** Whether the close icon is offered. Closing collapses the banner and tells [setOnDismissListener]. */
     public var isDismissible: Boolean = false
         set(value) {
             field = value
@@ -383,7 +387,7 @@ public class SancaiBanner @JvmOverloads constructor(
 
     /**
      * Collapses the banner to zero height and then sets its visibility to `GONE`. Does not
-     * call [onDismissListener]: that is for the user's own close.
+     * call [setOnDismissListener]: that is for the user's own close.
      */
     @JvmOverloads
     public fun dismiss(animate: Boolean = true) {
@@ -395,7 +399,7 @@ public class SancaiBanner @JvmOverloads constructor(
     private fun closeByUser() {
         if (!showing || !isEnabled) return
         dismiss()
-        onDismissListener?.onDismiss(this)
+        dismissListener?.onDismiss(this)
     }
 
     /** A banner on its way out is no longer a stop for the keyboard. */

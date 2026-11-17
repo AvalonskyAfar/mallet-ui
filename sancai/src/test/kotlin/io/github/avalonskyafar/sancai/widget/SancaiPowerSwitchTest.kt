@@ -55,7 +55,7 @@ class SancaiPowerSwitchTest {
 
     private fun SancaiPowerSwitch.count(): IntArray {
         val calls = IntArray(1)
-        onCheckedChangeListener = SancaiPowerSwitch.OnCheckedChangeListener { _, _ -> calls[0]++ }
+        setOnCheckedChangeListener { _, _ -> calls[0]++ }
         return calls
     }
 
@@ -181,7 +181,7 @@ class SancaiPowerSwitchTest {
     fun `listener can roll the change back`() {
         val view = power()
         var calls = 0
-        view.onCheckedChangeListener = SancaiPowerSwitch.OnCheckedChangeListener { v, checked ->
+        view.setOnCheckedChangeListener { v, checked ->
             calls++
             (v as SancaiPowerSwitch).setChecked(!checked, animate = false)
         }

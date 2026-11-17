@@ -15,6 +15,7 @@ import io.github.avalonskyafar.sancai.icon.SancaiIconPainter
 import io.github.avalonskyafar.sancai.interaction.SancaiHaptics
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
+import io.github.avalonskyafar.sancai.theme.SancaiTextRole
 import io.github.avalonskyafar.sancai.theme.SancaiTextTone
 import io.github.avalonskyafar.sancai.theme.SancaiWeight
 import kotlin.math.max
@@ -138,7 +139,7 @@ public class SancaiLinkRow @JvmOverloads constructor(
     // ---------------------------------------------------------------------------------------
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        labelPaint.textSize = sp(LABEL_SP)
+        labelPaint.textSize = sp(SancaiTextRole.LABEL.sizeSp)
         val text = label ?: ""
         val labelWidth = labelPaint.measureText(text, 0, text.length)
         val reserved = if (arrowPlacement == ArrowPlacement.EDGE) {
@@ -160,7 +161,7 @@ public class SancaiLinkRow @JvmOverloads constructor(
 
     /** Places the label and the chevron for the current size; fills [labelBox] and [chevronBox]. */
     private fun arrange() {
-        labelPaint.textSize = sp(LABEL_SP)
+        labelPaint.textSize = sp(SancaiTextRole.LABEL.sizeSp)
         val left = paddingLeft.toFloat()
         val right = (width - paddingRight).toFloat()
         val centerX = (left + right) / 2f
@@ -319,7 +320,6 @@ public class SancaiLinkRow @JvmOverloads constructor(
         private val DIRECTIONS = ArrowDirection.values()
         private val TONES = SancaiTextTone.values()
         private const val HEIGHT_DP = 64f
-        private const val LABEL_SP = 15f
         private const val CHEVRON_DP = 24f
         private const val CHEVRON_STROKE_DP = 2f
         private const val EDGE_INSET_DP = 12f

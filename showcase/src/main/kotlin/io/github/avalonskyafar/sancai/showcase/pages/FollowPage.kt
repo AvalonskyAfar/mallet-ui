@@ -32,7 +32,7 @@ object FollowPage : DemoPage("i_follow", R.string.page_i_follow_title, R.string.
             val track = SancaiSegmentedTrack(context).apply {
                 options = levels
                 select(1, animate = false)
-                onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, index ->
+                setOnSelectionChangeListener { _, index ->
                     status.text = page.context.getString(R.string.follow_drag_track_status, levels[index])
                 }
             }
@@ -44,7 +44,7 @@ object FollowPage : DemoPage("i_follow", R.string.page_i_follow_title, R.string.
             val powerStatus = status(page)
             val power = SancaiPowerSwitch(context).apply {
                 setChecked(true, false)
-                onCheckedChangeListener = SancaiPowerSwitch.OnCheckedChangeListener { _, checked ->
+                setOnCheckedChangeListener { _, checked ->
                     powerStatus.text = page.str(if (checked) R.string.follow_power_on else R.string.follow_power_off)
                 }
             }
@@ -58,19 +58,15 @@ object FollowPage : DemoPage("i_follow", R.string.page_i_follow_title, R.string.
             track.setOptions(
                 "Off", "Gentle", "Standard", "Strict",
             )
-            track.onSelectionChangedListener =
-                SancaiSegmentedTrack.OnSelectionChangedListener {
-                    _, index ->
-                    status.text = "Filter: ${'$'}index"
-                }
+            track.setOnSelectionChangeListener { _, index ->
+                status.text = "Filter: ${'$'}index"
+            }
 
             val power = SancaiPowerSwitch(context)
             power.setChecked(true, false)
-            power.onCheckedChangeListener =
-                SancaiPowerSwitch.OnCheckedChangeListener {
-                    _, on ->
-                    status.text = if (on) "On" else "Off"
-                }
+            power.setOnCheckedChangeListener { _, on ->
+                status.text = if (on) "On" else "Off"
+            }
         """)
     }
 
@@ -91,7 +87,7 @@ object FollowPage : DemoPage("i_follow", R.string.page_i_follow_title, R.string.
                 setGlazeScale(page.theme.glazes.scale(4))
                 valueFormatter = { page.context.getString(R.string.follow_colour_percent, it.roundToInt()) }
                 setValue(40f, false)
-                onValueChangeListener = SancaiSlider.OnValueChangeListener { _, percent, _ -> describe(percent) }
+                setOnValueChangeListener { _, percent -> describe(percent) }
             }
             describe(slider.value)
             val header = LinearLayout(context).apply {
@@ -112,11 +108,9 @@ object FollowPage : DemoPage("i_follow", R.string.page_i_follow_title, R.string.
             slider.valueTo = 100f
             val glazes = SancaiTheme.of(context).glazes
             slider.setGlazeScale(glazes.scale(4))
-            slider.onValueChangeListener =
-                SancaiSlider.OnValueChangeListener {
-                    _, value, _ ->
-                    label.text = "${'$'}{value.toInt()} %"
-                }
+            slider.setOnValueChangeListener { _, value ->
+                label.text = "${'$'}{value.toInt()} %"
+            }
         """)
     }
 
@@ -132,7 +126,7 @@ object FollowPage : DemoPage("i_follow", R.string.page_i_follow_title, R.string.
                 options = speeds
                 setGlazes(page.theme.glazes.uniform(speeds.size))
                 select(1, animate = false)
-                onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, index ->
+                setOnSelectionChangeListener { _, index ->
                     status.text = page.context.getString(R.string.follow_vertical_status, speeds[index])
                 }
             }
@@ -163,7 +157,7 @@ object FollowPage : DemoPage("i_follow", R.string.page_i_follow_title, R.string.
             status.text = page.str(R.string.follow_code_idle)
             val track = SancaiSegmentedTrack(context).apply {
                 options = names
-                onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, index ->
+                setOnSelectionChangeListener { _, index ->
                     status.text = page.context.getString(R.string.follow_code_dragged, names[index])
                 }
             }

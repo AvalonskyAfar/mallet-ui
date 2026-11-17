@@ -15,7 +15,6 @@ import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.MotionEvent
-import android.view.View
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Checkable
@@ -61,7 +60,8 @@ public class SancaiRadioButton @JvmOverloads constructor(
 
     /** Called when the user changes the checked state of a radio. */
     public fun interface OnCheckedChangeListener {
-        public fun onCheckedChanged(view: View, checked: Boolean)
+        /** The user changed [radio]; [isChecked] is its new state. */
+        public fun onCheckedChanged(radio: SancaiRadioButton, isChecked: Boolean)
     }
 
     private var checkedState = false
@@ -82,12 +82,16 @@ public class SancaiRadioButton @JvmOverloads constructor(
     internal var groupHook: ((button: SancaiRadioButton, checked: Boolean, animate: Boolean, fromUser: Boolean) -> Unit)? =
         null
 
+    private var checkedChangeListener: OnCheckedChangeListener? = null
+
     /**
      * Listener for user-driven changes: a tap, a key or an accessibility action on this radio,
      * or the user choosing a sibling in the same [SancaiRadioGroup] (which reports `false`
      * here). Not called for [setChecked] or [SancaiRadioGroup.check].
      */
-    public var onCheckedChangeListener: OnCheckedChangeListener? = null
+    public fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?) {
+        checkedChangeListener = listener
+    }
 
     /** Glaze poured into the bed while the radio is checked. */
     public var glaze: SancaiGlaze = theme.glazes.cobalt
@@ -173,7 +177,7 @@ public class SancaiRadioButton @JvmOverloads constructor(
             invalidate()
         }
         sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
-        if (fromUser) onCheckedChangeListener?.onCheckedChanged(this, checked)
+        if (fromUser) checkedChangeListener?.onCheckedChanged(this, checked)
         if (checkedState == checked) groupHook?.invoke(this, checked, animate, fromUser)
     }
 

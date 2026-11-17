@@ -23,6 +23,7 @@ import io.github.avalonskyafar.sancai.interaction.SancaiHaptics
 import io.github.avalonskyafar.sancai.material.SancaiMaterial
 import io.github.avalonskyafar.sancai.theme.SancaiColors
 import io.github.avalonskyafar.sancai.theme.SancaiMotion
+import io.github.avalonskyafar.sancai.theme.SancaiTextRole
 import io.github.avalonskyafar.sancai.theme.SancaiWeight
 import kotlin.math.abs
 import kotlin.math.floor
@@ -106,11 +107,19 @@ public class SancaiNavBar @JvmOverloads constructor(
     private val scratch = RectF()
     private val accessibility = Accessibility()
 
+    private var itemSelectedListener: OnItemSelectedListener? = null
+
     /** Listener for user-driven activation. Never called for [select] or [selectedIndex]. */
-    public var onItemSelectedListener: OnItemSelectedListener? = null
+    public fun setOnItemSelectedListener(listener: OnItemSelectedListener?) {
+        itemSelectedListener = listener
+    }
+
+    private var itemReselectedListener: OnItemReselectedListener? = null
 
     /** Listener for a tap on the selected item in [Mode.TABS], typically "scroll to top". */
-    public var onItemReselectedListener: OnItemReselectedListener? = null
+    public fun setOnItemReselectedListener(listener: OnItemReselectedListener?) {
+        itemReselectedListener = listener
+    }
 
     /** Shortcut row or tab row. Switching to [Mode.TABS] selects the first item. */
     public var mode: Mode = Mode.LAUNCHER
@@ -284,7 +293,7 @@ public class SancaiNavBar @JvmOverloads constructor(
 
     private fun configureLabelPaint() {
         textPaint.typeface = SancaiWeight.BOLD.typeface()
-        textPaint.textSize = sp(LABEL_SP)
+        textPaint.textSize = sp(SancaiTextRole.CAPTION.sizeSp)
         textPaint.textAlign = Paint.Align.CENTER
         textPaint.style = Paint.Style.FILL
     }
@@ -444,7 +453,7 @@ public class SancaiNavBar @JvmOverloads constructor(
         cursor = index
         if (mode == Mode.TABS) {
             if (index == selected) {
-                onItemReselectedListener?.onItemReselected(this, index)
+                itemReselectedListener?.onItemReselected(this, index)
                 SancaiHaptics.tick(this)
                 return
             }
@@ -452,7 +461,7 @@ public class SancaiNavBar @JvmOverloads constructor(
             glideInk()
             announceState()
         }
-        onItemSelectedListener?.onItemSelected(this, index)
+        itemSelectedListener?.onItemSelected(this, index)
         SancaiHaptics.tick(this)
     }
 
@@ -624,7 +633,6 @@ public class SancaiNavBar @JvmOverloads constructor(
         const val ICON_DP = 24f
         const val ICON_CENTER_DP = 21f
         const val BASELINE_DP = 57f
-        const val LABEL_SP = 12.5f
         const val STROKE_DP = 1.7f
         const val STROKE_SELECTED_DP = 2f
         const val MIN_ITEM_DP = 64f

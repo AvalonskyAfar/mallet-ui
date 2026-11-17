@@ -56,7 +56,7 @@ parts usable from XML and code by any app, and fills the gaps in the same langua
 | `SancaiColors` | Extracted | `UiKit.java:82-115` | every neutral and semantic value, light and dark, and the high-contrast variants of muted, hairline and divider | role names; `warning` darkened in light ([D-07](#d-07)); semantic roles strengthened in high contrast ([D-08](#d-08)); `contrast()` |
 | `SancaiGlaze`, `SancaiGlazes` | Extracted | `UiKit.java:54-66`, `2541-2609` | the five bed and edge colours; label colours on each bed; the 2 / 3 / 4-option scale | glazes are data instead of label-count logic ([D-02](#d-02)); `uniform()`; mist as a general neutral glaze |
 | `SancaiTheme` | Extended | `UiKit.java:126-142`, `196-212`; `AppPreferences.java` | text scale 1.13, high contrast, reduced motion, haptics as theme flags | resolution from context, resolver or XML attributes ([D-01](#d-01)); night glaze ([D-03](#d-03)); system settings as defaults |
-| `SancaiTextRole`, `SancaiTextTone` | Extended | `UiKit.java:284-315`, `ReadingLayoutSpec.java` | recurring sizes, medium weight for titles, no font padding, body leading | ten named roles instead of about twenty literals ([D-05](#d-05)) |
+| `SancaiTextRole`, `SancaiTextTone` | Extended | `UiKit.java:284-315`, `ReadingLayoutSpec.java` | recurring sizes, medium weight for titles, no font padding, body leading | eleven named roles instead of about twenty literals ([D-05](#d-05)) |
 | `SancaiSpacing` | Extracted | `UiKit.java:329-334`, `MainActivity.java:402-460`, `1217-1227` | page padding 12 / 22 / 34, heading and section gaps, card padding 9 | names |
 | `SancaiMotion` | Extracted | `MotionSpec.java`, `UiKit.java:263-265`, `res/interpolator/gk_spatial.xml` | the curve, 260 / 420 / 320 / 220 / 55 ms, the 28 % commit rule, the settle formula | one settle formula and a density-based flick threshold ([D-06](#d-06)) |
 | `SancaiMaterial` | Extracted | `UiKit.java:1663-1937` | layer order, gradient stops, alphas, stroke widths, gutters of card, track and thumb, in both themes | one public painter instead of private statics; focus rim; pressed porcelain; repaint without lift |
@@ -76,7 +76,7 @@ parts usable from XML and code by any app, and fills the gaps in the same langua
 | `SancaiCheckbox`, `SancaiRadioButton`, `SancaiRadioGroup` | New | — | — | a small bed that fills with glaze; see [D-13](#d-13) |
 | `SancaiSlider` | New | — | — | a slim track glazed from the start to a neutral bead; see [D-14](#d-14) |
 | `SancaiProgressBar`, `SancaiSpinner` | New | the ring of `UiKit.java:2823-2831` | the 276° open ring | see [D-15](#d-15) |
-| `SancaiTextField` | Extended | `UiKit.java:1488-1505`, `WhitelistAccountsPage.java:89-109`, `ConfigEditorActivity.java:68-79` | the recessed well, 13 × 11 dp padding, 15 sp text, label above | one component with label, helper, error, counter, end actions, focus and error rims |
+| `SancaiTextField` | Extended | `UiKit.java:1488-1505`, `WhitelistAccountsPage.java:89-109`, `ConfigEditorActivity.java:68-79` | the recessed well, 13 × 11 dp padding, label above | text on the scale (15.5 sp instead of 15); one component with label, helper, error, counter, end actions, focus and error rims |
 | `SancaiChip`, `SancaiChipGroup`, `SancaiTag`, `SancaiBadge` | New | — | — | porcelain capsules that glaze when checked; glazed status tags; see [D-16](#d-16) |
 
 ### 2.3 Layout and reading
@@ -88,7 +88,7 @@ parts usable from XML and code by any app, and fills the gaps in the same langua
 | `SancaiHeading` | Extracted | `UiKit.java:296-315` | 17 sp title, 12.5 sp muted detail, 10 dp inset | page-title level |
 | `SancaiEntryRow` | Extended | `UiKit.java:800-845` | 62 / 76 dp, centred title and detail, independent chevron, content-only sink | start alignment, leading icon, trailing value, RTL, focus |
 | `SancaiControlRow` | Extracted | `UiKit.java:467-508` | centred text column, weights 2 : 1, 1 : 3, 1 : 4 and 1 : 1.35, heights 64 / 72 dp | any control, not only a track |
-| `SancaiLinkRow` | Extracted | `UiKit.java:929-975` | 64 dp, muted 15 sp label, chevron at the edge or beside the label | tone; RTL |
+| `SancaiLinkRow` | Extracted | `UiKit.java:929-975` | 64 dp, muted medium label, chevron at the edge or beside the label | label on the scale (14.5 sp instead of 15); tone; RTL |
 | `SancaiKeyValueList` | Extracted | `UiKit.java:1013-1063` | two fixed columns 1.22 : 1, 52 dp rows, non-interactive | tone per value instead of matching literal strings ([D-02](#d-02)) |
 | `SancaiMediaFrame` | Extracted | `UiKit.java:409-428`, `1162-1196` | recessed well, 4 dp inset, clipped image | aspect ratio; empty state |
 | `SancaiParagraph` | Extracted | `UiKit.java:1002-1011`; `MainActivity.java:700-729` | body leading, simple line breaking, CJK closing punctuation kept with its line | a reusable view |
@@ -117,7 +117,7 @@ parts usable from XML and code by any app, and fills the gaps in the same langua
 | Sancai | Mark | Origin | Kept | Changed or added |
 |---|---|---|---|---|
 | `SancaiDialog` | Extracted | `UiKit.java:1474-1640` | card radius 16, padding, centred title and message, full-bleed divider, 54 dp text actions, dim 0.27, width rule, 320 ms rise, closing guard, in-dialog error capsule | builder; one to three actions; stacking; scrolling message; input variant |
-| `SancaiToast` | Extended | `UiKit.java:1414-1472` | capsule, 13 sp, rise of 18 dp, 2600 ms, replacement rule, no fade | success tone; one action; insets; announcement |
+| `SancaiToast` | Extended | `UiKit.java:1414-1472` | capsule, rise of 18 dp, 2600 ms, replacement rule, no fade | text on the `FOOTNOTE` role (13.5 sp instead of 13); success tone; one action; insets; announcement |
 | `SancaiFloatingPanel` | Extracted | `StatusOverlayController.java`; `UiKit.java:2048-2183` | draggable porcelain panel, radius 10 | usable inside any window; clamping; saved position |
 | `SancaiMenu`, `SancaiBottomSheet` | New | — | — | see [D-20](#d-20) |
 | `SancaiStateView`, `SancaiStateLayout`, `SancaiSkeleton`, `SancaiBanner` | New | habits in `MainActivity.java:211-217`, `1172-1195`; `WhitelistAccountsPage.java:57-87` | loading is a calm line in place; an empty list draws nothing but its one action; a failure says what happened | see [D-21](#d-21) |
@@ -158,11 +158,13 @@ which side of which, and which pages are only opened from rows (`child`). Back f
 graph. The gesture logic is unchanged; only its knowledge of the pages moved into data.
 
 ### D-05
-**Ten type roles replace about twenty sizes.**
-Sizes within half a point of one another (19.2 and 20; 11.5, 11.8 and 12; 14, 14.5 and 15)
-were merged into the nearest recurring value. Sizes that are part of a control (track labels
-12.2 and 11.2, navigation 12.5) stay inside that control. The merge moves some text by up to
-half a point; that is a deliberate trade of exact fidelity for a scale people can remember.
+**Eleven type roles replace about twenty sizes.**
+Sizes within half a point of one another (19.2 and 20; 11.5, 11.8 and 12; 13 and 13.5; 14, 14.5 and 15)
+were merged into the nearest recurring value. Only the label sizes that belong to the
+geometry of the two signature controls stay inside them: 12.2 and 11.2 in the segmented
+track, 14 in the power switch. The merge moves some text by up to half a point (the field
+text from 15 to 15.5, the link row from 15 to 14.5, the detail of an entry row from 11.8 to
+11.5); that is a deliberate trade of exact fidelity for a scale people can remember.
 
 ### D-06
 **One settle formula, one flick threshold.**
@@ -229,7 +231,10 @@ check mark drawn as a stroke.
 **Slider: glaze up to the bead.**
 Continuous values needed dozens of stepper taps or a dialog. The slider is a slim groove
 whose stretch from the start to the bead is glazed, so the amount of colour is the value. It
-can run through the glaze scale as the value rises.
+can run through the glaze scale as the value rises: the stretch wears the glaze nearest to the
+bead and the next one is poured in when the bead passes half-way. Blending two glazes by
+position was tried first and dropped, because ochre and cobalt mix to grey and a slider can
+come to rest there.
 
 ### D-15
 **Loading borrows the power ring.**

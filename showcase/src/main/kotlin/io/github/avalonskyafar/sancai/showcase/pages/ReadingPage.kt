@@ -36,7 +36,7 @@ object ReadingPage : DemoPage("c_reading", R.string.page_c_reading_title, R.stri
         val status = page.text(page.str(R.string.reading_para_status_on), SancaiTextRole.CAPTION, SancaiTextTone.MUTED)
         val track = SancaiSegmentedTrack(context).apply {
             setOptions(page.str(R.string.reading_para_option_on), page.str(R.string.reading_para_option_off))
-            onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, index ->
+            setOnSelectionChangeListener { _, index ->
                 chinese.protectClosingPunctuation = index == 0
                 status.text = page.str(
                     if (index == 0) R.string.reading_para_status_on else R.string.reading_para_status_off,
@@ -79,7 +79,7 @@ object ReadingPage : DemoPage("c_reading", R.string.page_c_reading_title, R.stri
         }
         val track = SancaiSegmentedTrack(context).apply {
             setOptions(page.str(R.string.reading_note_option_tones), page.str(R.string.reading_note_option_quiet))
-            onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, index ->
+            setOnSelectionChangeListener { _, index ->
                 views.forEachIndexed { i, view ->
                     view.tone = if (index == 0) notes[i].first else SancaiTextTone.INK
                 }
@@ -137,7 +137,7 @@ object ReadingPage : DemoPage("c_reading", R.string.page_c_reading_title, R.stri
         }
         val track = SancaiSegmentedTrack(context).apply {
             setOptions("16:9", "2:1", "3:1")
-            onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, index ->
+            setOnSelectionChangeListener { _, index ->
                 picture.aspectRatio = ratios[index]
             }
         }

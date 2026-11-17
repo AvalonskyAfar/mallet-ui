@@ -147,7 +147,7 @@ object ColourPage : DemoPage("f_colour", R.string.page_f_colour_title, R.string.
                 val track = SancaiSegmentedTrack(context).apply {
                     options = labels.map { page.str(it) }
                     select(if (index == 2) 3 else 1, animate = false)
-                    onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { view, chosen ->
+                    setOnSelectionChangeListener { view, chosen ->
                         status.text = page.context.getString(
                             R.string.colour_scale_status, view.options[chosen], chosen + 1, view.options.size,
                         )
@@ -168,11 +168,9 @@ object ColourPage : DemoPage("f_colour", R.string.page_f_colour_title, R.string.
             )
             // no glazes set: it takes theme.glazes.scale(4)
             track.select(3, animate = false)
-            track.onSelectionChangedListener =
-                SancaiSegmentedTrack.OnSelectionChangedListener {
-                    _, index ->
-                    status.text = track.options[index]
-                }
+            track.setOnSelectionChangeListener { _, index ->
+                status.text = track.options[index]
+            }
         """)
     }
 
@@ -187,7 +185,7 @@ object ColourPage : DemoPage("f_colour", R.string.page_f_colour_title, R.string.
                 setOptions(page.str(R.string.colour_opt_day), week, page.str(R.string.colour_opt_month))
                 select(1, animate = false)
                 setGlazes(theme.glazes.uniform(3, theme.glazes.mist))
-                onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { view, chosen ->
+                setOnSelectionChangeListener { view, chosen ->
                     status.text = page.context.getString(R.string.colour_plain_status, view.options[chosen])
                 }
             }
@@ -260,10 +258,10 @@ private class ThemedPanel(page: PageScope, theme: SancaiTheme, title: Int) {
 
     /** What the user does here also happens on [other], so the two themes can be compared state by state. */
     fun mirror(other: ThemedPanel) {
-        toggle.onCheckedChangeListener = SancaiSwitch.OnCheckedChangeListener { _, checked ->
+        toggle.setOnCheckedChangeListener { _, checked ->
             other.toggle.setChecked(checked, true)
         }
-        track.onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { _, index ->
+        track.setOnSelectionChangeListener { _, index ->
             other.track.select(index)
         }
     }

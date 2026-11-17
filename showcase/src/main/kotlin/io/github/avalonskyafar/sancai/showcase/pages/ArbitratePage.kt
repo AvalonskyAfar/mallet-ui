@@ -48,7 +48,7 @@ object ArbitratePage : DemoPage("i_arbitrate", R.string.page_i_arbitrate_title, 
                     page.str(R.string.arbitrate_level_strict),
                 )
                 select(1, animate = false)
-                onSelectionChangedListener = SancaiSegmentedTrack.OnSelectionChangedListener { t, index ->
+                setOnSelectionChangeListener { t, index ->
                     status.text = page.context.getString(R.string.arbitrate_status_track, t.options[index])
                 }
             }
@@ -96,7 +96,7 @@ object ArbitratePage : DemoPage("i_arbitrate", R.string.page_i_arbitrate_title, 
                 close()
                 page.host.say(page.str(R.string.arbitrate_row_said))
             }
-            onOpenChangeListener = SancaiRevealLayout.OnOpenChangeListener { _, open ->
+            setOnOpenChangeListener { _, open ->
                 status.text = page.str(if (open) R.string.arbitrate_status_row_open else R.string.arbitrate_status_row_closed)
             }
         }

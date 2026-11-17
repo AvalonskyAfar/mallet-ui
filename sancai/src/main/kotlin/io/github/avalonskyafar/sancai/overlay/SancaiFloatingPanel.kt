@@ -68,7 +68,7 @@ import kotlin.math.roundToInt
  * **Keyboard and accessibility.** With keyboard focus the arrow keys move the panel in steps of
  * 16 dp (an arrow that cannot move it further is not consumed, so focus travels on) and Space or
  * Enter click it. Accessibility services get the actions "move to the start / end / top / bottom
- * edge". [onPositionChangedListener] fires for all of these and for drags, never for setters.
+ * edge". [setOnPositionChangeListener] fires for all of these and for drags, never for setters.
  *
  * **As a system overlay.** The same view can float over other apps in a `WindowManager` window
  * of type `TYPE_ACCESSIBILITY_OVERLAY` (from an accessibility service) or
@@ -130,11 +130,21 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
      */
     public var snapToEdge: Boolean = false
 
+    /** Called when the user has moved the panel. */
+    public fun interface OnPositionChangeListener {
+        /** The user moved [panel]; [x] and [y] are its new [positionX] and [positionY]. */
+        public fun onPositionChanged(panel: SancaiFloatingPanel, x: Float, y: Float)
+    }
+
+    private var positionChangeListener: OnPositionChangeListener? = null
+
     /**
-     * Called when the user has moved the panel (end of a drag, arrow key, accessibility action)
-     * with the new [positionX] and [positionY]. Not called by [setPosition] or on restore.
+     * Listener for moves made by the user: the end of a drag, an arrow key, an accessibility
+     * action. Not called by [setPosition] or on restore.
      */
-    public var onPositionChangedListener: ((x: Float, y: Float) -> Unit)? = null
+    public fun setOnPositionChangeListener(listener: OnPositionChangeListener?) {
+        positionChangeListener = listener
+    }
 
     /**
      * Horizontal position as a fraction of the free travel: 0 rests on the start edge of the
@@ -435,9 +445,9 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
             val side = if (fractionX < 0.5f) 0f else 1f
             setPosition(side, fractionY, animate = !cancelled)
             // Report where the panel comes to rest, not where the glide starts.
-            if (!cancelled) onPositionChangedListener?.invoke(side, fractionY)
+            if (!cancelled) positionChangeListener?.onPositionChanged(this, side, fractionY)
         } else if (!cancelled) {
-            onPositionChangedListener?.invoke(fractionX, fractionY)
+            positionChangeListener?.onPositionChanged(this, fractionX, fractionY)
         }
     }
 
@@ -453,7 +463,7 @@ public open class SancaiFloatingPanel @JvmOverloads constructor(
         val toY = y.coerceIn(0f, 1f)
         if (abs(toX - fractionX) < EPSILON && abs(toY - fractionY) < EPSILON) return false
         setPosition(toX, toY, animate)
-        onPositionChangedListener?.invoke(toX, toY)
+        positionChangeListener?.onPositionChanged(this, toX, toY)
         return true
     }
 

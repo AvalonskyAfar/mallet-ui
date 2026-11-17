@@ -88,7 +88,7 @@ class SancaiRadioTest {
     fun `tap checks and a second tap does not uncheck`() {
         val view = radio()
         val heard = mutableListOf<Boolean>()
-        view.onCheckedChangeListener = SancaiRadioButton.OnCheckedChangeListener { _, checked -> heard += checked }
+        view.setOnCheckedChangeListener { _, checked -> heard += checked }
         Touch.tap(view, view.width * 0.7f)
         assertThat(view.isChecked).isTrue()
         Touch.tap(view, view.width * 0.7f)
@@ -107,7 +107,7 @@ class SancaiRadioTest {
     fun `setting the state from code does not notify`() {
         val view = radio()
         var calls = 0
-        view.onCheckedChangeListener = SancaiRadioButton.OnCheckedChangeListener { _, _ -> calls++ }
+        view.setOnCheckedChangeListener { _, _ -> calls++ }
         view.setChecked(true, animate = true)
         view.isChecked = false
         view.toggle()
@@ -121,7 +121,7 @@ class SancaiRadioTest {
     fun `the listener can roll the change back`() {
         val view = radio()
         var calls = 0
-        view.onCheckedChangeListener = SancaiRadioButton.OnCheckedChangeListener { radio, _ ->
+        view.setOnCheckedChangeListener { radio, _ ->
             calls++
             (radio as SancaiRadioButton).setChecked(false, animate = false)
         }
@@ -134,7 +134,7 @@ class SancaiRadioTest {
     fun `space and enter check, and are not consumed once checked`() {
         val view = radio()
         var calls = 0
-        view.onCheckedChangeListener = SancaiRadioButton.OnCheckedChangeListener { _, _ -> calls++ }
+        view.setOnCheckedChangeListener { _, _ -> calls++ }
         assertThat(key(view, KeyEvent.KEYCODE_SPACE)).isTrue()
         assertThat(view.isChecked).isTrue()
         assertThat(key(view, KeyEvent.KEYCODE_SPACE)).isFalse()
@@ -214,7 +214,7 @@ class SancaiRadioTest {
         var calls = 0
         val restored = SancaiRadioButton(Snapshots.context()).apply {
             id = view.id
-            onCheckedChangeListener = SancaiRadioButton.OnCheckedChangeListener { _, _ -> calls++ }
+            setOnCheckedChangeListener { _, _ -> calls++ }
         }
         restored.restoreHierarchyState(saved)
         assertThat(restored.isChecked).isTrue()
@@ -232,7 +232,7 @@ class SancaiRadioTest {
         assertThat(node.text.toString()).isEqualTo("Every day")
 
         var calls = 0
-        view.onCheckedChangeListener = SancaiRadioButton.OnCheckedChangeListener { _, _ -> calls++ }
+        view.setOnCheckedChangeListener { _, _ -> calls++ }
         assertThat(view.performAccessibilityAction(AccessibilityNodeInfo.ACTION_CLICK, null)).isTrue()
         assertThat(view.isChecked).isTrue()
         assertThat(calls).isEqualTo(1)
@@ -250,8 +250,8 @@ class SancaiRadioTest {
         val view = group("Daily", "Weekly", "Never", checked = 0)
         val heard = mutableListOf<Int>()
         val siblings = mutableListOf<Boolean>()
-        view.onCheckedChangeListener = SancaiRadioGroup.OnCheckedChangeListener { _, id -> heard += id }
-        view.radioAt(0).onCheckedChangeListener = SancaiRadioButton.OnCheckedChangeListener { _, c -> siblings += c }
+        view.setOnCheckedChangeListener { _, id -> heard += id }
+        view.radioAt(0).setOnCheckedChangeListener { _, c -> siblings += c }
         assertThat(view.checkedId).isEqualTo(FIRST_ID)
 
         val second = view.radioAt(1)
@@ -269,9 +269,9 @@ class SancaiRadioTest {
     fun `checking from code moves the choice without notifying anyone`() {
         val view = group("Daily", "Weekly", "Never", checked = 0)
         var calls = 0
-        view.onCheckedChangeListener = SancaiRadioGroup.OnCheckedChangeListener { _, _ -> calls++ }
+        view.setOnCheckedChangeListener { _, _ -> calls++ }
         for (i in 0..2) {
-            view.radioAt(i).onCheckedChangeListener = SancaiRadioButton.OnCheckedChangeListener { _, _ -> calls++ }
+            view.radioAt(i).setOnCheckedChangeListener { _, _ -> calls++ }
         }
         view.check(FIRST_ID + 2)
         assertThat(view.checkedId).isEqualTo(FIRST_ID + 2)
@@ -289,7 +289,7 @@ class SancaiRadioTest {
     fun `the group listener can roll the choice back`() {
         val view = group("Daily", "Weekly", checked = 0)
         var calls = 0
-        view.onCheckedChangeListener = SancaiRadioGroup.OnCheckedChangeListener { group, _ ->
+        view.setOnCheckedChangeListener { group, _ ->
             calls++
             group.check(FIRST_ID, animate = false)
         }
@@ -304,8 +304,8 @@ class SancaiRadioTest {
     fun `a radio that refuses the change leaves the group as it was`() {
         val view = group("Daily", "Weekly", checked = 0)
         var groupCalls = 0
-        view.onCheckedChangeListener = SancaiRadioGroup.OnCheckedChangeListener { _, _ -> groupCalls++ }
-        view.radioAt(1).onCheckedChangeListener = SancaiRadioButton.OnCheckedChangeListener { radio, _ ->
+        view.setOnCheckedChangeListener { _, _ -> groupCalls++ }
+        view.radioAt(1).setOnCheckedChangeListener { radio, _ ->
             (radio as SancaiRadioButton).setChecked(false, animate = false)
         }
         Touch.tap(view.radioAt(1), 40f)
@@ -354,7 +354,7 @@ class SancaiRadioTest {
 
         val restored = group("Daily", "Weekly", "Never", checked = 0)
         var calls = 0
-        restored.onCheckedChangeListener = SancaiRadioGroup.OnCheckedChangeListener { _, _ -> calls++ }
+        restored.setOnCheckedChangeListener { _, _ -> calls++ }
         restored.restoreHierarchyState(saved)
         assertThat(restored.checkedId).isEqualTo(FIRST_ID + 2)
         assertThat((0..2).map { restored.radioAt(it).isChecked }).containsExactly(false, false, true).inOrder()
@@ -452,7 +452,7 @@ class SancaiRadioTest {
     fun `the listener hears the change before the click listener and only once`() {
         val view = radio()
         val order = mutableListOf<String>()
-        view.onCheckedChangeListener = SancaiRadioButton.OnCheckedChangeListener { v, c ->
+        view.setOnCheckedChangeListener { v, c ->
             order += "checked=$c state=${(v as SancaiRadioButton).isChecked}"
         }
         view.setOnClickListener { order += "click" }
@@ -474,7 +474,7 @@ class SancaiRadioTest {
     fun `a sibling cannot hold on to the choice from inside its listener`() {
         val view = group("Daily", "Weekly", checked = 0)
         var calls = 0
-        view.radioAt(0).onCheckedChangeListener = SancaiRadioButton.OnCheckedChangeListener { v, _ ->
+        view.radioAt(0).setOnCheckedChangeListener { v, _ ->
             calls++
             (v as SancaiRadioButton).isChecked = true
         }
@@ -502,7 +502,7 @@ class SancaiRadioTest {
     fun `a disabled radio in a group cannot take the choice`() {
         val view = group("Daily", "Weekly", checked = 0)
         var calls = 0
-        view.onCheckedChangeListener = SancaiRadioGroup.OnCheckedChangeListener { _, _ -> calls++ }
+        view.setOnCheckedChangeListener { _, _ -> calls++ }
         view.radioAt(1).isEnabled = false
         Touch.tap(view.radioAt(1), 40f)
         view.radioAt(1).performAccessibilityAction(AccessibilityNodeInfo.ACTION_CLICK, null)
