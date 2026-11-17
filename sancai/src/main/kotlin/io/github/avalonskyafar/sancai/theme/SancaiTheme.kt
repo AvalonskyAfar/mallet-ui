@@ -44,6 +44,18 @@ public data class SancaiTheme(
     @get:ColorInt
     val groove: Int get() = SancaiColors.blend(colors.canvas, colors.surface, 0.14f)
 
+    /**
+     * Fill of a recess that carries no state: the empty part of a slider or progress groove.
+     * Mist in light themes, the bare groove in dark ones.
+     */
+    @get:ColorInt
+    val neutralBed: Int get() = if (isDark) groove else glazes.mist.bed
+
+    /** Rim of [neutralBed]. */
+    @get:ColorInt
+    val neutralBedEdge: Int
+        get() = if (isDark) SancaiColors.blend(colors.ink, colors.canvas, 0.93f) else glazes.mist.edge
+
     /** Fill of a recessed track glazed with [glaze] in this theme. */
     @ColorInt
     public fun bedColor(glaze: SancaiGlaze): Int =

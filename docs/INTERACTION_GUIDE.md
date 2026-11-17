@@ -57,7 +57,8 @@ SancaiPress.attach(row, content = rowContent) { view -> openDetails() }
 - On release or cancel the content jumps back **before** the click listener runs. A page
   that starts travelling in response never carries a half-pressed row with it, and a
   snapshot taken for a transition never shows one.
-- The click ticks (see Haptics) and then calls your listener.
+- The click ticks (see Haptics) and then calls your listener. `SancaiPress.attachSink` gives
+  the sink alone, for views that manage their own click listener.
 
 Controls that draw themselves (`SancaiButton`, tracks, switches) implement the same rule
 internally: their label sinks, their shadow tightens, nothing changes colour.
@@ -83,11 +84,13 @@ when `SancaiTheme.haptics` is off.
 | `reject(view)` | an action was refused or failed validation | `REJECT` (30+), else `LONG_PRESS` |
 | `longPress(view)` | a long press was recognised | `LONG_PRESS` |
 
-Two rules from the original are kept by every control:
+Rules, all from the original:
 
-- **Listener first, haptic second.** A control calls your listener and then ticks. A switch
-  that turns haptics off therefore stays silent when it does so, and one that turns them on
+- **Controls that hold a value call your listener first and tick second.** A switch that
+  turns haptics off therefore stays silent when it does so, and one that turns them on
   confirms with a tick.
+- **Actions tick first and call your listener second.** Buttons, rows and links may start
+  something slow (a page, a dialog); the confirmation must not wait for it.
 - **Ticks are for commits.** Programmatic changes never tick.
 
 ---
@@ -438,7 +441,8 @@ A new interactive view fits in if it follows the same contract. In short:
 - Follow the finger exactly while it is down; glide with `SancaiMotion.glide()` after.
 - Leave the decision until the touch slop is crossed; give vertical movement back to the
   parent; implement `SancaiHorizontalDragOwner` if you own horizontal drags.
-- Call listeners for user input only, listener first and haptic second.
+- Call listeners for user input only. Value controls: listener, then tick. Actions: tick,
+  then listener.
 - Cancel animators when detached. Honour `theme.reduceMotion`.
 - Offer a tap, key or accessibility action for everything a gesture does.
 

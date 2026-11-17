@@ -17,14 +17,32 @@ public object SancaiPress {
 
     /**
      * Makes [host] pressable. Touching it sinks [content] (by default the host itself);
-     * releasing inside it ticks and calls [onClick].
+     * releasing inside it ticks and then calls [onClick].
      *
-     * This installs a touch listener and a click listener on [host].
+     * The tick comes first on purpose: an action may start something slow (a new page, a
+     * dialog), and the confirmation must not wait for it.
+     *
+     * This installs a touch listener and a click listener on [host]. Use [attachSink] to keep
+     * the click listener for yourself.
+     */
+    @JvmStatic
+    @JvmOverloads
+    public fun attach(host: View, content: View = host, onClick: View.OnClickListener? = null) {
+        attachSink(host, content)
+        host.setOnClickListener { view ->
+            SancaiHaptics.tick(view)
+            onClick?.onClick(view)
+        }
+    }
+
+    /**
+     * The sink alone: touching [host] sinks [content], releasing puts it back. No click
+     * listener is installed and nothing ticks.
      */
     @JvmStatic
     @JvmOverloads
     @SuppressLint("ClickableViewAccessibility")
-    public fun attach(host: View, content: View = host, onClick: View.OnClickListener? = null) {
+    public fun attachSink(host: View, content: View = host) {
         val sink = content.resources.displayMetrics.density * SancaiMotion.PRESS_SINK_DP
         host.isClickable = true
         host.isFocusable = true
@@ -34,10 +52,6 @@ public object SancaiPress {
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> release(content)
             }
             false
-        }
-        host.setOnClickListener { view ->
-            SancaiHaptics.tick(view)
-            onClick?.onClick(view)
         }
     }
 

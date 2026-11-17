@@ -75,7 +75,12 @@ Take `widget/SancaiSegmentedTrack.kt` (custom-drawn control) and `widget/SancaiB
 
 - **Listeners fire for user input only** (touch, keyboard, accessibility action). Setters
   called from code never call back. This is what makes "roll back inside the listener" safe.
-- **Listener first, haptic second** (`SancaiHaptics.tick(view)` after the callback).
+- **Haptic order.** Controls that hold a *value* (tracks, switches, checkboxes, radios,
+  steppers, sliders, chips that check) call the listener first and tick second, so a control
+  that switches haptics off stays silent. *Actions* (buttons, rows, links, menu items, dialog
+  actions: everything pressed rather than set) tick first and then call the listener, so the
+  confirmation never waits for what the action starts. `SancaiPress.attach` does the latter;
+  `SancaiPress.attachSink` gives the sink alone when a view manages its own click listener.
 - **Horizontal drags** use `internal/HorizontalDragGate`: undecided inside the touch slop;
   mostly-vertical movement aborts and hands the gesture to the scrolling parent; otherwise
   the control calls `requestDisallowInterceptTouchEvent(true)` and follows the finger.

@@ -449,17 +449,27 @@ public class SancaiMaterial @JvmOverloads constructor(
         }
     }
 
-    /** A recessed well: text fields, bulk editors and media frames. */
+    /**
+     * A recessed well: text fields, bulk editors and media frames. [pressed] deepens the shade
+     * at the top, for small wells that are operated, such as an empty checkbox.
+     */
     @JvmOverloads
-    public fun drawWell(canvas: Canvas, bounds: RectF, radius: Float, @ColorInt rim: Int? = null) {
+    public fun drawWell(
+        canvas: Canvas,
+        bounds: RectF,
+        radius: Float,
+        @ColorInt rim: Int? = null,
+        pressed: Boolean = false,
+    ) {
         if (bounds.width() <= 0f || bounds.height() <= 0f) return
         val dark = theme.isDark
         val fill = SancaiColors.blend(colors.canvas, colors.surface, if (dark) 0.22f else 0.35f)
+        val topShade = (if (dark) 0.07f else 0.045f) * (if (pressed) 2.6f else 1f)
         resetPaint()
         paint.shader = LinearGradient(
             0f, bounds.top, 0f, bounds.bottom,
             intArrayOf(
-                SancaiColors.blend(fill, colors.ink, if (dark) 0.07f else 0.045f),
+                SancaiColors.blend(fill, colors.ink, topShade),
                 fill,
                 SancaiColors.blend(fill, colors.raised, if (dark) 0.025f else 0.16f),
             ),

@@ -10,6 +10,7 @@ val theme = SancaiTheme.of(context)          // resolve once per view
 theme.colors      // SancaiColors: canvas surface raised ink muted hairline divider accent danger warning success (all @ColorInt), isDark
 theme.glazes      // SancaiGlazes: terracotta ochre cobalt celadon mist; scale(count), uniform(count, glaze), fromAttr(int)
 theme.textScale   theme.highContrast   theme.reduceMotion   theme.haptics   theme.isDark   theme.groove
+theme.neutralBed / theme.neutralBedEdge   // an unglazed groove (empty part of a slider or progress bar)
 theme.bedColor(glaze)          // fill of a glazed track in this theme  (never use glaze.bed directly)
 theme.bedEdgeColor(glaze)      // rim of that track
 theme.labelOnBed(active, own = active, optionCount = 2)   // text / icon colour resting on a glazed bed
@@ -38,7 +39,7 @@ material.dp(v)
 material.drawTrack(canvas, bounds, bed, edge, pressed = false, hero = false, radius = h/2, lifted = true)
 material.drawThumb(canvas, bounds, pressed = false, radius = h/2, lifted = true)
 material.drawSurface(canvas, bounds, radius, tint = null, shadow = true, pressed = false, corners = SancaiCorners.ALL)
-material.drawWell(canvas, bounds, radius, rim = null)
+material.drawWell(canvas, bounds, radius, rim = null, pressed = false)
 material.drawRowFill(canvas, bounds)        material.drawRevealBed(canvas, bounds, tint = danger)
 material.drawFocusRim(canvas, bounds, radius)      // keyboard focus, drawn inside bounds
 SancaiMaterial.RADIUS_CARD_DP 8, RADIUS_DIALOG_DP 16, RADIUS_PANEL_DP 10, RADIUS_WELL_DP 9, RADIUS_MEDIA_DP 7
@@ -56,7 +57,8 @@ corners = ALL)` with `tint`, `pressed`, `sinkPx`, `bodyBounds(Rect, RectF)`;
 
 ```kotlin
 SancaiHaptics.tick(view) / detent(view) / confirm(view) / reject(view) / longPress(view)   // honour theme.haptics
-SancaiPress.attach(host, content = host, onClick)    // content sinks 1.5 dp on touch-down, click ticks then calls back
+SancaiPress.attach(host, content = host, onClick)    // content sinks 1.5 dp on touch-down; a click ticks, then calls back
+SancaiPress.attachSink(host, content = host)         // the sink only; you keep the click listener
 SancaiPress.sink(content, px) / release(content)
 interface SancaiHorizontalDragOwner                   // marker: implement on views that own horizontal drags
 

@@ -42,13 +42,7 @@ object HomePage : DemoPage(Pages.HOME, R.string.page_home_title, 0) {
         root.setBackgroundColor(theme.colors.canvas)
         SancaiWindow.padForSystemBars(root)
 
-        val centre = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER_HORIZONTAL
-            clipChildren = false
-            clipToPadding = false
-            setPadding(scope.dp(24), 0, scope.dp(24), 0)
-        }
+        val centre = CentreColumn(context, scope.dp(CENTRE_MAX_WIDTH_DP))
         val wordmark = scope.text(scope.str(R.string.home_wordmark), SancaiTextRole.DISPLAY).apply {
             setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 34f * theme.textScale)
             gravity = Gravity.CENTER
@@ -81,10 +75,11 @@ object HomePage : DemoPage(Pages.HOME, R.string.page_home_title, 0) {
         centre.addView(tagline, params(6))
         centre.addView(power, LinearLayout.LayoutParams(PageScope.MATCH, scope.dp(92)).apply { topMargin = scope.dp(34) })
         centre.addView(status, params(4))
-        root.addView(
-            centre,
-            FrameLayout.LayoutParams(scope.dp(380).coerceAtMost(context.resources.displayMetrics.widthPixels), PageScope.WRAP, Gravity.CENTER),
-        )
+        // The side margins leave the edges to the names of the pages that lie there.
+        val centreParams = FrameLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP, Gravity.CENTER)
+        centreParams.marginStart = scope.dp(CENTRE_SIDE_DP)
+        centreParams.marginEnd = scope.dp(CENTRE_SIDE_DP)
+        root.addView(centre, centreParams)
 
         fun place(key: String, icon: SancaiIcon, gravity: Int, vertical: Boolean) {
             val marker = PlaceMarker(context, theme, scope.str(Pages.titleOf(key)), icon, vertical)
@@ -98,6 +93,25 @@ object HomePage : DemoPage(Pages.HOME, R.string.page_home_title, 0) {
         place(FoundationsPage.key, SancaiIcon.CHEVRON_LEFT, Gravity.START or Gravity.CENTER_VERTICAL, vertical = false)
         place(InteractionsPage.key, SancaiIcon.CHEVRON_RIGHT, Gravity.END or Gravity.CENTER_VERTICAL, vertical = false)
         return root
+    }
+
+    private const val CENTRE_SIDE_DP = 56
+    private const val CENTRE_MAX_WIDTH_DP = 420
+
+    /** The centre of the page; it stops growing on wide screens. */
+    private class CentreColumn(context: Context, private val maxWidth: Int) : LinearLayout(context) {
+        init {
+            orientation = VERTICAL
+            gravity = Gravity.CENTER_HORIZONTAL
+            clipChildren = false
+            clipToPadding = false
+        }
+
+        override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+            val available = MeasureSpec.getSize(widthMeasureSpec)
+            val width = if (MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED) maxWidth else minOf(available, maxWidth)
+            super.onMeasure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY), heightMeasureSpec)
+        }
     }
 
     /**
