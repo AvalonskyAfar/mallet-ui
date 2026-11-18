@@ -2,4 +2,6 @@
 <resources>
     <item name="showcase_host" type="id" />
     <item name="showcase_page_scroll" type="id" />
+    <item name="showcase_home_entries" type="id" />
+    <item name="showcase_way_back" type="id" />
 </resources>

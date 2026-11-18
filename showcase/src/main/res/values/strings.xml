@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Mallet</string>
-    <string name="showcase_placeholder">This page is still in the kiln.</string>
+    <string name="showcase_placeholder">This page is not written yet.</string>
     <string name="showcase_back_to">Back to %1$s</string>
     <string name="home_wordmark">Mallet</string>
-    <string name="home_name">Mallet UI</string>
-    <string name="home_tagline">A glazed-ceramic design system for Android Views</string>
-    <string name="home_switch_on">Glazed</string>
-    <string name="home_switch_off">Bare</string>
-    <string name="home_switch_turn_on">Pour the hue</string>
-    <string name="home_switch_turn_off">Wash it off</string>
-    <string name="home_status_on">Three hues, one neutral bead</string>
-    <string name="home_status_off">Bare porcelain. Slide to pour the hue</string>
+    <string name="home_tagline">A tactile design system for Android Views</string>
+    <string name="home_switch_on">On</string>
+    <string name="home_switch_off">Off</string>
+    <string name="home_switch_turn_on">Turn on</string>
+    <string name="home_switch_turn_off">Turn off</string>
+    <string name="home_status_on">On is cobalt. The thumb stays neutral</string>
+    <string name="home_status_off">Off is bronze. Slide to turn it on</string>
     <string name="page_home_title">Home</string>
 
     <string name="page_foundations_title">Foundations</string>

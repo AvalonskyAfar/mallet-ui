@@ -43,8 +43,10 @@ import io.github.avalonskyafar.mallet.showcase.pages.XmlPage
  *                    Components
  * ```
  *
- * The four pages around Home are reached by dragging towards them. Their own pages are
- * opened from rows and lie one step further out, on the side the row's chevron points to.
+ * The four pages around Home are reached by dragging towards them, or from the row of entries
+ * at the bottom of Home, and left by dragging back: they carry no way-back row. Their own
+ * pages are opened from rows and lie one step further out, on the side the row's chevron
+ * points to; those name their parent at the top.
  */
 object Pages {
     const val HOME: String = "home"

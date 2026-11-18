@@ -4,7 +4,7 @@
     <string name="spatial_map_detail">每个页面都有固定的位置。点一个位置，看看怎么到达。</string>
     <string name="spatial_map_legend">实线表示两边都能拖过去。虚线表示从列表行打开的页面，只能拖回去。</string>
     <string name="spatial_map_place">%1$s。%2$s</string>
-    <string name="spatial_route_home">地图的中心。返回最终都回到这里，四周各有一个页面。</string>
+    <string name="spatial_route_home">地图的中心，返回最终都回到这里。四周各有一个页面：底部那一排入口每页一个，除此之外没有箭头指向它们。</string>
     <string name="spatial_route_appearance">在首页上方。把首页向下拖，就能露出它。</string>
     <string name="spatial_route_foundations">在首页的起始侧。把首页向结束侧拖，就能露出它。</string>
     <string name="spatial_route_components">在首页下方。把首页向上拖，就能露出它。</string>
@@ -31,5 +31,5 @@
     <string name="spatial_back_body">在 Android 14 及以上版本，返回手势会预览这次移动：本页跟着手势，向来时的页面移动一段。完成手势就落在那里，取消则滑回原位。</string>
     <string name="spatial_back_go">返回“%1$s”</string>
 
-    <string name="spatial_origin" formatted="false">提取自原应用：两个页面一起移动、28 % 与轻扫的判定规则，以及表现得像邻页的 Activity。Mallet 新增：可描述任意应用的页面图、监听器和从右到左布局。</string>
+    <string name="spatial_origin" formatted="false">提取自原应用：两个页面一起移动、28 % 与轻扫的判定规则、表现得像邻页的 Activity，以及不设路标的页面——首页没有箭头，首页四周的页面没有返回入口，为的是让人习惯用拖动来移动。Mallet 新增：可描述任意应用的页面图、监听器、从右到左布局，以及更外层页面上指向上一级的那一行。</string>
 </resources>

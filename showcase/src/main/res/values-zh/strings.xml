@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Mallet</string>
-    <string name="showcase_placeholder">此页仍在窑中烧制。</string>
+    <string name="showcase_placeholder">此页尚未完成。</string>
     <string name="showcase_back_to">返回%1$s</string>
     <string name="home_wordmark">Mallet</string>
-    <string name="home_name">Mallet UI</string>
-    <string name="home_tagline">为 Android View 打造的釉彩设计系统</string>
-    <string name="home_switch_on">已上釉</string>
-    <string name="home_switch_off">素坯</string>
-    <string name="home_switch_turn_on">上釉</string>
-    <string name="home_switch_turn_off">洗去釉色</string>
-    <string name="home_status_on">三种釉色，一颗素色滑块</string>
-    <string name="home_status_off">素坯。滑动即可上釉</string>
+    <string name="home_tagline">为 Android View 打造的触感设计系统</string>
+    <string name="home_switch_on">已开启</string>
+    <string name="home_switch_off">已关闭</string>
+    <string name="home_switch_turn_on">开启</string>
+    <string name="home_switch_turn_off">关闭</string>
+    <string name="home_status_on">开启是钴蓝，滑块始终是素色</string>
+    <string name="home_status_off">关闭是古铜。滑动即可开启</string>
     <string name="page_home_title">首页</string>
 
     <string name="page_foundations_title">基础</string>

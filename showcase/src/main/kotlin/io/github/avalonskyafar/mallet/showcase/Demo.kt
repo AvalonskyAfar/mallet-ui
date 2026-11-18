@@ -206,12 +206,17 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
     }
 
     /**
-     * Every page names the page it came from, at the edge facing it, with a chevron pointing
-     * that way: at the top for a parent at the start, at the end or above, at the bottom for a
-     * parent below.
+     * A page deeper in the map names the page it came from, at the edge facing it, with a
+     * chevron pointing that way: at the top for a parent at the start, at the end or above, at
+     * the bottom for a parent below.
+     *
+     * The pages around Home carry no such row, as in the original app: they are left by
+     * dragging back towards Home (or with the system's Back), and a page without a button
+     * to tap is how that gesture becomes a habit.
      */
     private fun addWayBack(atTop: Boolean) {
         val parentKey = Pages.graph.parentOf(demo.key) ?: return
+        if (parentKey == Pages.HOME) return
         val side = Pages.graph.sideOf(demo.key, parentKey) ?: return
         if ((side == Side.BELOW) == atTop) return
         val icon = when (side) {
@@ -223,6 +228,7 @@ class PageScope(val host: ShowcaseHost, private val demo: DemoPage) {
         val name = text(str(Pages.titleOf(parentKey)), MalletTextRole.LABEL, MalletTextTone.MUTED)
         val chevron = MalletIconView(context).apply { this.icon = icon }
         val row = LinearLayout(context).apply {
+            id = R.id.showcase_way_back
             orientation = if (side.isHorizontal) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
             gravity = Gravity.CENTER
             minimumHeight = dp(44)

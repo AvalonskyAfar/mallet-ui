@@ -4,7 +4,7 @@
     <string name="spatial_map_detail">Every page has a fixed place. Tap a place to see how it is reached.</string>
     <string name="spatial_map_legend">A solid line is a drag in both directions. A dashed line is a page opened from a row; it can only be dragged back.</string>
     <string name="spatial_map_place">%1$s. %2$s</string>
-    <string name="spatial_route_home">The middle of the map. Back always ends here, and four pages lie around it.</string>
+    <string name="spatial_route_home">The middle of the map. Back always ends here. Four pages lie around it: the row at its bottom has one entry for each, and no arrow points at any of them.</string>
     <string name="spatial_route_appearance">Above Home. Drag Home downwards to uncover it.</string>
     <string name="spatial_route_foundations">At the start side of Home. Drag Home towards the end side to uncover it.</string>
     <string name="spatial_route_components">Below Home. Drag Home upwards to uncover it.</string>
@@ -31,5 +31,5 @@
     <string name="spatial_back_body">On Android 14 and later, the back gesture previews the move: this page follows the swipe part of the way towards the page it came from. Completing the gesture lands there, and cancelling it glides back.</string>
     <string name="spatial_back_go">Back to %1$s</string>
 
-    <string name="spatial_origin" formatted="false">Extracted from the original app: both pages travelling together, the 28 % and flick rules, and the activity that behaves like a neighbour. New in Mallet: a graph that describes any app, listeners and right-to-left.</string>
+    <string name="spatial_origin" formatted="false">Extracted from the original app: both pages travelling together, the 28 % and flick rules, the activity that behaves like a neighbour, and pages without signposts. Home shows no arrows and the pages around it no way back, so that dragging becomes the habit. New in Mallet: a graph that describes any app, listeners, right-to-left, and the row that names the parent on pages further out.</string>
 </resources>

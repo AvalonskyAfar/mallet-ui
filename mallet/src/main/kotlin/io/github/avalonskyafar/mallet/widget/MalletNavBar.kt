@@ -29,6 +29,7 @@ import io.github.avalonskyafar.mallet.theme.MalletWeight
 import kotlin.math.abs
 import kotlin.math.floor
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
@@ -348,11 +349,7 @@ public class MalletNavBar @JvmOverloads constructor(
         configureLabelPaint()
         val baseSize = textPaint.textSize
         val room = cell - dp(LABEL_ROOM_DP / 2f)
-        // One size for the whole row: when a label is too wide, all labels shrink together (down
-        // to a floor), and whatever still does not fit is cut with an ellipsis.
-        var widest = 0f
-        for (item in entries) widest = max(widest, textPaint.measureText(item.label.toString()))
-        val labelSize = if (widest > room) baseSize * max(MIN_LABEL_SCALE, room / widest) else baseSize
+        val labelSize = labelSizeFor(room)
         for (i in entries.indices) {
             val item = entries[i]
             val ink = inkShares.getOrElse(i) { 0f }
@@ -375,6 +372,35 @@ public class MalletNavBar @JvmOverloads constructor(
             }
         }
         textPaint.textSize = baseSize
+    }
+
+    /**
+     * The one size all labels of the row are drawn in when each has [room] pixels. When a label
+     * is too wide, all labels shrink together, down to a floor, and whatever still does not fit
+     * is cut with an ellipsis. The floor is [MIN_LABEL_SCALE] of the size the labels would have
+     * had; text that the reader's settings have enlarged may give all of that enlargement back
+     * before a label is cut. Expects [configureLabelPaint] and leaves the paint as it was.
+     */
+    private fun labelSizeFor(room: Float): Float {
+        val baseSize = textPaint.textSize
+        var widest = 0f
+        for (item in entries) widest = max(widest, textPaint.measureText(item.label.toString()))
+        if (widest <= room) return baseSize
+        val plain = dp(MalletTextRole.CAPTION.sizeSp)
+        val floor = min(MIN_LABEL_SCALE, plain / baseSize)
+        return baseSize * max(floor, room / widest)
+    }
+
+    /** The labels as the row draws them at its present width: whole, or cut with an ellipsis. */
+    internal fun drawnLabels(): List<String> {
+        if (entries.isEmpty() || width == 0) return emptyList()
+        configureLabelPaint()
+        val baseSize = textPaint.textSize
+        val room = cellWidth() - dp(LABEL_ROOM_DP / 2f)
+        textPaint.textSize = labelSizeFor(room)
+        val drawn = entries.map { fit(it.label.toString(), room) }
+        textPaint.textSize = baseSize
+        return drawn
     }
 
     /** [label] as it fits into [room] at the current text size: whole, or cut with an ellipsis. */

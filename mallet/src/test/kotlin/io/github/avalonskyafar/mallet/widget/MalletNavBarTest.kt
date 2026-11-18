@@ -538,6 +538,27 @@ class MalletNavBarTest {
         }
     }
 
+    @Test
+    fun `enlarged labels give the enlargement back before one of them is cut`() {
+        val names = listOf("Foundations", "Components", "Appearance", "Interactions")
+        // At the plain size the four names fit a phone and nothing shrinks.
+        val plain = bar(labels = names)
+        Snapshots.layout(plain, 411)
+        assertThat(plain.drawnLabels()).isEqualTo(names)
+        // One and a half times larger they no longer fit. The floor of 84 percent would cut the
+        // widest; shrinking back towards the plain size keeps every name whole.
+        val theme = MalletTheme.light().copy(textScale = 1.5f)
+        val large = bar(theme = theme, labels = names)
+        Snapshots.layout(large, 411)
+        assertThat(large.drawnLabels()).isEqualTo(names)
+        // Names that do not fit even at the plain size are still cut, and stay in their cells.
+        val crowded = bar(theme = theme, labels = listOf("Notifications", "Preferences", "Everything else", "Help", "More"))
+        Snapshots.layout(crowded, WIDTH_DP)
+        val drawn = crowded.drawnLabels()
+        assertThat(drawn[2]).endsWith("\u2026")
+        assertThat(drawn[3]).isEqualTo("Help")
+    }
+
     // --- review additions -------------------------------------------------------------------
 
     @Test

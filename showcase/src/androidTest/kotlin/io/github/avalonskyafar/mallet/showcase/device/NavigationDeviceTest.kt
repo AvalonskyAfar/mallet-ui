@@ -1,5 +1,6 @@
 package io.github.avalonskyafar.mallet.showcase.device
 
+import android.view.View
 import android.widget.ScrollView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import io.github.avalonskyafar.mallet.showcase.MainActivity
@@ -8,6 +9,7 @@ import io.github.avalonskyafar.mallet.showcase.Pages
 import io.github.avalonskyafar.mallet.showcase.R
 import io.github.avalonskyafar.mallet.widget.MalletButton
 import io.github.avalonskyafar.mallet.widget.MalletEntryRow
+import io.github.avalonskyafar.mallet.widget.MalletNavBar
 import io.github.avalonskyafar.mallet.widget.MalletPowerSwitch
 import io.github.avalonskyafar.mallet.widget.MalletText
 import org.junit.Assert.assertEquals
@@ -63,6 +65,62 @@ class NavigationDeviceTest : DeviceTest() {
         Device.ui.pressBack()
         Device.waitForPage(Pages.HOME)
     }
+
+    @Test
+    fun anEntryAtTheBottomOfHomeOpensThePageItNames() {
+        Device.launch()
+        // Start side, below, above, end side: one entry for each page around Home.
+        val around = listOf("foundations", "components", "appearance", "interactions")
+        for ((index, page) in around.withIndex()) {
+            val row = Device.all<MalletNavBar>().single()
+            val labels = Device.onMain { row.items.map { it.label.toString() } }
+            assertEquals(around.map { Device.string(Pages.titleOf(it)) }, labels)
+            Device.tap(row, fx = (index + 0.5f) / around.size, fy = 0.4f)
+            Device.waitForPage(page)
+            Device.ui.pressBack()
+            Device.waitForPage(Pages.HOME)
+        }
+    }
+
+    @Test
+    fun aPageAroundHomeCarriesNoWayBackAndIsLeftByDraggingBack() {
+        Device.launch()
+        // The page at the end side came in from there; the same drag reversed sends it back.
+        Device.swipeScreen(0.75f, 0.25f, 0.25f, 0.25f)
+        Device.waitForPage("interactions")
+        assertTrue(waysBack().isEmpty())
+        Device.swipeScreen(0.25f, 0.25f, 0.75f, 0.25f)
+        Device.waitForPage(Pages.HOME)
+
+        Device.swipeScreen(0.25f, 0.25f, 0.75f, 0.25f)
+        Device.waitForPage("foundations")
+        assertTrue(waysBack().isEmpty())
+        Device.swipeScreen(0.75f, 0.25f, 0.25f, 0.25f)
+        Device.waitForPage(Pages.HOME)
+
+        // The page below stands at its top when it arrives, so a drag downwards leads back up.
+        Device.swipeScreen(0.5f, 0.8f, 0.5f, 0.35f)
+        Device.waitForPage("components")
+        assertTrue(waysBack().isEmpty())
+        Device.swipeScreen(0.5f, 0.3f, 0.5f, 0.75f)
+        Device.waitForPage(Pages.HOME)
+
+        Device.swipeScreen(0.5f, 0.2f, 0.5f, 0.65f)
+        Device.waitForPage("appearance")
+        assertTrue(waysBack().isEmpty())
+        Device.ui.pressBack()
+        Device.waitForPage(Pages.HOME)
+
+        // One step further out a page names its parent, and the row leads back to it.
+        Device.launch(Pages.components.first().key)
+        val back = waysBack().single()
+        Device.tap(back)
+        Device.waitForPage("components")
+    }
+
+    /** The rows of the page in front that lead back to its parent. */
+    private fun waysBack(): List<View> =
+        Device.all<View>().filter { Device.onMain { it.id } == R.id.showcase_way_back }
 
     @Test
     fun aShortSlowDragGlidesBack() {
