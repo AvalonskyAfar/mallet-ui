@@ -70,5 +70,5 @@
 
     <string name="rows_facts_title">信息列表</string>
     <string name="rows_facts_detail">只读的列表，显示上面各控件行当前的取值；色调用来标出要紧的项。</string>
-    <string name="rows_note">这五种组件都取自原应用。三彩新增的是：页面级标题，入口行的图标、取值和起始端对齐，控件行可以放任意控件，以及链接和信息项的色调。</string>
+    <string name="rows_note">这五种组件都取自原应用。Mallet 新增的是：页面级标题，入口行的图标、取值和起始端对齐，控件行可以放任意控件，以及链接和信息项的色调。</string>
 </resources>

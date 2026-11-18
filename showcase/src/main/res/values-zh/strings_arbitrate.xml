@@ -43,5 +43,5 @@
     <string name="arbitrate_land_edge">距屏幕边缘 24 dp 以内</string>
     <string name="arbitrate_owner_edge">系统返回手势</string>
     <string name="arbitrate_edge_note">页面宿主从不在屏幕两侧 24 dp 的边缘区里开始横向拖动。这两条区域留给系统，所以返回手势在每一页都一样。</string>
-    <string name="arbitrate_origin">留住横向拖动、把上下拖动还给页面的轨道，可滑开的行，以及跟随手指的页面，取自原应用。翻页器取自原应用的首次启动流程。任何视图都能通过 SancaiHorizontalDragOwner 加入的同一条规则，是三彩新增。</string>
+    <string name="arbitrate_origin">留住横向拖动、把上下拖动还给页面的轨道，可滑开的行，以及跟随手指的页面，取自原应用。翻页器取自原应用的首次启动流程。任何视图都能通过 MalletHorizontalDragOwner 加入的同一条规则，是 Mallet 新增。</string>
 </resources>

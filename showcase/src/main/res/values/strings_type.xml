@@ -18,7 +18,7 @@
 
     <string name="type_reading_title">Reading</string>
     <string name="type_reading_detail">The same passage in the two body roles. Both get extra leading; the compact one is for dense copy, as in cards and callouts.</string>
-    <string name="type_reading_copy">A glaze is thin where the clay shows through and deep where the colour pools. Type on a screen works the same way: the letters matter, and so does the space left between the lines. Body text is given a little more leading than a label, so that the eye finds the start of the next line without looking for it.</string>
+    <string name="type_reading_copy">A hue is thin where the clay shows through and deep where the colour pools. Type on a screen works the same way: the letters matter, and so does the space left between the lines. Body text is given a little more leading than a label, so that the eye finds the start of the next line without looking for it.</string>
 
     <string name="type_large_title">Larger text</string>
     <string name="type_large_detail">The same heading and row at two text scales. The switches move together.</string>
@@ -28,5 +28,5 @@
     <string name="type_large_row_on">Every size grows by the same share</string>
     <string name="type_large_row_off">Sizes stay as designed</string>
 
-    <string name="type_origin">The nine sizes, the leading of body text, the 1.13 larger-text scale and the rule that keeps Chinese punctuation off the start of a line were extracted from the original app. The named roles and tones, and the reusable paragraph view, were designed for Sancai.</string>
+    <string name="type_origin">The nine sizes, the leading of body text, the 1.13 larger-text scale and the rule that keeps Chinese punctuation off the start of a line were extracted from the original app. The named roles and tones, and the reusable paragraph view, were designed for Mallet.</string>
 </resources>

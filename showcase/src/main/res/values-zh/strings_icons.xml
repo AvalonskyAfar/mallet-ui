@@ -11,12 +11,12 @@
 
     <string name="icons_tones_title">色调</string>
     <string name="icons_tones_detail">图标使用与文字相同的颜色角色，默认是次要色。点任意一个色调，上方的大图标随之变色。</string>
-    <string name="icons_tone_status">tone = SancaiTextTone.%1$s</string>
+    <string name="icons_tone_status">tone = MalletTextTone.%1$s</string>
 
     <string name="icons_direction_title">方向</string>
     <string name="icons_direction_detail">朝左、朝右的折线箭头和箭头会跟随阅读方向翻转，夹在中间的对勾保持不变。</string>
     <string name="icons_ltr">从左到右</string>
     <string name="icons_rtl">从右到左</string>
 
-    <string name="icons_origin">折线箭头、箭头、电源环、书本、滑杆和“更多”这六个图形取自原应用；其余四十四个图标，以及图标视图、色调和镜像翻转，都是为三彩新做的。</string>
+    <string name="icons_origin">折线箭头、箭头、电源环、书本、滑杆和“更多”这六个图形取自原应用；其余四十四个图标，以及图标视图、色调和镜像翻转，都是为 Mallet 新做的。</string>
 </resources>

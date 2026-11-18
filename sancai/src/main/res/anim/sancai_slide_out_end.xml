@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- A page leaves through the right edge. XML cannot express start/end: this file is written for
-     left-to-right layouts and SancaiSpatialTransition picks its mirror twin in right-to-left. -->
-<translate xmlns:android="http://schemas.android.com/apk/res/android"
-    android:duration="420"
-    android:fromXDelta="0"
-    android:interpolator="@interpolator/sancai_glide"
-    android:toXDelta="100%p" />

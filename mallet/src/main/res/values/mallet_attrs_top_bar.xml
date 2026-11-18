@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MalletTopBar">
+        <!-- The centred title. -->
+        <attr name="malletTitle" />
+        <!-- Icon of the navigation button at the start; without it the bar has none. -->
+        <attr name="malletIcon" />
+        <!-- A quiet second line under the title. -->
+        <attr name="malletTopBarSubtitle" format="string" />
+        <!-- What the navigation button says to a screen reader (default: "Back"). -->
+        <attr name="malletTopBarNavigationDescription" format="string" />
+        <!-- Whether the hairline along the bottom edge is shown from the start. -->
+        <attr name="malletTopBarLifted" format="boolean" />
+        <!--
+            Whether the bar pads itself for the status bar and display cutout (default true).
+            Switch it off inside a host that already handles those insets.
+        -->
+        <attr name="malletTopBarFitStatusBar" format="boolean" />
+    </declare-styleable>
+</resources>

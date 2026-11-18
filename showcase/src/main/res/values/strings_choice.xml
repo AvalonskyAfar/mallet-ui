@@ -5,12 +5,12 @@
     <item name="choice_weekly" type="id" />
     <item name="choice_manual" type="id" />
     <item name="choice_hourly" type="id" />
-    <item name="choice_glaze_group" type="id" />
-    <item name="choice_glaze_0" type="id" />
-    <item name="choice_glaze_1" type="id" />
-    <item name="choice_glaze_2" type="id" />
-    <item name="choice_glaze_3" type="id" />
-    <item name="choice_glaze_4" type="id" />
+    <item name="choice_hue_group" type="id" />
+    <item name="choice_hue_0" type="id" />
+    <item name="choice_hue_1" type="id" />
+    <item name="choice_hue_2" type="id" />
+    <item name="choice_hue_3" type="id" />
+    <item name="choice_hue_4" type="id" />
 
     <string name="choice_boxes_title">Checkboxes</string>
     <string name="choice_boxes_detail">The top box follows the three below it and sets them all at once.</string>
@@ -20,9 +20,9 @@
     <string name="choice_updates">Updates</string>
     <string name="choice_boxes_status" tools:ignore="PluralsCandidate">%1$d of %2$d selected. Listener calls: %3$d. A box set from code calls no listener, so tapping “Select all” counts once.</string>
 
-    <string name="choice_states_title">Glaze and disabled</string>
-    <string name="choice_glazed">Celadon glaze</string>
-    <string name="choice_ochre">Ochre glaze</string>
+    <string name="choice_states_title">Hue and disabled</string>
+    <string name="choice_tinted">Jade hue</string>
+    <string name="choice_ochre">Ochre hue</string>
     <string name="choice_locked">Required, cannot be changed</string>
 
     <string name="choice_radios_title">Radio group</string>
@@ -35,14 +35,14 @@
     <string name="choice_weekly_status">Backs up once a week.</string>
     <string name="choice_manual_status">Backs up only when you start it.</string>
 
-    <string name="choice_glazes_title">Five glazes</string>
-    <string name="choice_glazes_detail">The same group laid out as a row, one radio per glaze.</string>
-    <string name="choice_terracotta">Terracotta</string>
+    <string name="choice_hues_title">Five hues</string>
+    <string name="choice_hues_detail">The same group laid out as a row, one radio per hue.</string>
+    <string name="choice_bronze">Bronze</string>
     <string name="choice_ochre_name">Ochre</string>
     <string name="choice_cobalt">Cobalt</string>
-    <string name="choice_celadon">Celadon</string>
+    <string name="choice_jade">Jade</string>
     <string name="choice_mist">Mist</string>
-    <string name="choice_glazes_status">Checked: %1$s</string>
+    <string name="choice_hues_status">Checked: %1$s</string>
 
-    <string name="choice_origin">The five glazes, the recessed bed and the neutral bead are extracted from the original app. The checkbox, the radio and the radio group were designed for Sancai.</string>
+    <string name="choice_origin">The five hues, the recessed bed and the neutral bead are extracted from the original app. The checkbox, the radio and the radio group were designed for Mallet.</string>
 </resources>

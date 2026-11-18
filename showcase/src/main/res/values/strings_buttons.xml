@@ -56,5 +56,5 @@
     <string name="buttons_badge_status">Unread: %1$d. The badge shows %2$s.</string>
     <string name="buttons_badge_status_none">Unread: 0. The badge is hidden.</string>
 
-    <string name="buttons_note">The neutral capsule and its press are extracted from the original app. The primary, destructive and text variants, the icon, loading and disabled states, chips, tags and badges are new in Sancai.</string>
+    <string name="buttons_note">The neutral capsule and its press are extracted from the original app. The primary, destructive and text variants, the icon, loading and disabled states, chips, tags and badges are new in Mallet.</string>
 </resources>

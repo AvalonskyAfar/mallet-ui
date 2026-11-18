@@ -6,7 +6,7 @@
 Nothing in the catalog is written by hand except the group introductions in this file:
 
 - what a component is, how it behaves and its examples come from its KDoc;
-- its XML attributes come from res/values/sancai_attrs_*.xml, with their comments;
+- its XML attributes come from res/values/mallet_attrs_*.xml, with their comments;
 - its public members come from the Kotlin source, with the first sentence of their KDoc;
 - whether it was extracted from the original app or is new comes from the tables of
   docs/DESIGN_DECISIONS.md;
@@ -20,8 +20,8 @@ import os
 import re
 import sys
 
-SOURCES = "sancai/src/main/kotlin/io/github/avalonskyafar/sancai"
-ATTRS = "sancai/src/main/res/values"
+SOURCES = "mallet/src/main/kotlin/io/github/avalonskyafar/mallet"
+ATTRS = "mallet/src/main/res/values"
 DECISIONS = "docs/DESIGN_DECISIONS.md"
 PICTURES = "docs/images/components"
 TARGET = "docs/COMPONENT_CATALOG.md"
@@ -29,81 +29,81 @@ TARGET = "docs/COMPONENT_CATALOG.md"
 # (group title, introduction, [(class, package directory, picture stem or None, showcase page)])
 GROUPS = [
     ("Surfaces and text", "What everything else stands on: the card, the divider, text in the type scale and icons.", [
-        ("SancaiSurface", "widget", "foundation", "Foundations › Materials and depth"),
-        ("SancaiDivider", "widget", "foundation", "Foundations › Materials and depth"),
-        ("SancaiText", "widget", "foundation", "Foundations › Typography"),
-        ("SancaiIconView", "icon", "glyphs", "Foundations › Icons"),
+        ("MalletSurface", "widget", "foundation", "Foundations › Materials and depth"),
+        ("MalletDivider", "widget", "foundation", "Foundations › Materials and depth"),
+        ("MalletText", "widget", "foundation", "Foundations › Typography"),
+        ("MalletIconView", "icon", "glyphs", "Foundations › Icons"),
     ]),
     ("Actions", "Things that are pressed. A page has at most one primary capsule; everything else is neutral.", [
-        ("SancaiButton", "widget", "foundation", "Components › Buttons and chips"),
-        ("SancaiChip", "widget", "chip", "Components › Buttons and chips"),
-        ("SancaiChipGroup", "widget", "chip", "Components › Buttons and chips"),
-        ("SancaiTag", "widget", "chip", "Components › Buttons and chips"),
-        ("SancaiBadge", "widget", "navbar", "Components › Buttons and chips"),
+        ("MalletButton", "widget", "foundation", "Components › Buttons and chips"),
+        ("MalletChip", "widget", "chip", "Components › Buttons and chips"),
+        ("MalletChipGroup", "widget", "chip", "Components › Buttons and chips"),
+        ("MalletTag", "widget", "chip", "Components › Buttons and chips"),
+        ("MalletBadge", "widget", "navbar", "Components › Buttons and chips"),
     ]),
     ("Choice", "Controls whose state is a colour in a recessed bed. The thumb or bead that moves over it stays neutral.", [
-        ("SancaiSegmentedTrack", "widget", "segmented_track", "Components › Tracks and switches"),
-        ("SancaiSwitch", "widget", "switch", "Components › Tracks and switches"),
-        ("SancaiPowerSwitch", "widget", "power", "Components › Tracks and switches"),
-        ("SancaiCheckbox", "widget", "checkbox", "Components › Checkboxes and radios"),
-        ("SancaiRadioButton", "widget", "radio", "Components › Checkboxes and radios"),
-        ("SancaiRadioGroup", "widget", "radio", "Components › Checkboxes and radios"),
+        ("MalletSegmentedTrack", "widget", "segmented_track", "Components › Tracks and switches"),
+        ("MalletSwitch", "widget", "switch", "Components › Tracks and switches"),
+        ("MalletPowerSwitch", "widget", "power", "Components › Tracks and switches"),
+        ("MalletCheckbox", "widget", "checkbox", "Components › Checkboxes and radios"),
+        ("MalletRadioButton", "widget", "radio", "Components › Checkboxes and radios"),
+        ("MalletRadioGroup", "widget", "radio", "Components › Checkboxes and radios"),
     ]),
     ("Numbers and progress", "An exact number, an approximate amount, and the two ways of saying that something is going on.", [
-        ("SancaiStepper", "widget", "stepper", "Components › Numbers and progress"),
-        ("SancaiSlider", "widget", "slider", "Components › Numbers and progress"),
-        ("SancaiProgressBar", "widget", "progress", "Components › Numbers and progress"),
-        ("SancaiSpinner", "widget", "progress", "Components › Numbers and progress"),
+        ("MalletStepper", "widget", "stepper", "Components › Numbers and progress"),
+        ("MalletSlider", "widget", "slider", "Components › Numbers and progress"),
+        ("MalletProgressBar", "widget", "progress", "Components › Numbers and progress"),
+        ("MalletSpinner", "widget", "progress", "Components › Numbers and progress"),
     ]),
     ("Text input", "One component: a label, a recessed well and a support line.", [
-        ("SancaiTextField", "widget", "field", "Components › Text fields"),
+        ("MalletTextField", "widget", "field", "Components › Text fields"),
     ]),
     ("Rows and pages", "A page is a scrolling column of headings and cards; a card is a column of rows.", [
-        ("SancaiPage", "widget", "page", "Components › Built from XML"),
-        ("SancaiHeading", "widget", "headinglink", "Components › Rows and lists"),
-        ("SancaiEntryRow", "widget", "entry", "Components › Rows and lists"),
-        ("SancaiControlRow", "widget", "controlrow", "Components › Rows and lists"),
-        ("SancaiLinkRow", "widget", "headinglink", "Components › Rows and lists"),
-        ("SancaiKeyValueList", "widget", "controlrow", "Components › Rows and lists"),
+        ("MalletPage", "widget", "page", "Components › Built from XML"),
+        ("MalletHeading", "widget", "headinglink", "Components › Rows and lists"),
+        ("MalletEntryRow", "widget", "entry", "Components › Rows and lists"),
+        ("MalletControlRow", "widget", "controlrow", "Components › Rows and lists"),
+        ("MalletLinkRow", "widget", "headinglink", "Components › Rows and lists"),
+        ("MalletKeyValueList", "widget", "controlrow", "Components › Rows and lists"),
     ]),
     ("Reading", "Long-form content: explanations, notes, steps and pictures.", [
-        ("SancaiParagraph", "widget", "media", "Components › Reading"),
-        ("SancaiCallout", "widget", "callout", "Components › Reading"),
-        ("SancaiFlowRow", "widget", "callout", "Components › Reading"),
-        ("SancaiMediaFrame", "widget", "media", "Components › Reading"),
+        ("MalletParagraph", "widget", "media", "Components › Reading"),
+        ("MalletCallout", "widget", "callout", "Components › Reading"),
+        ("MalletFlowRow", "widget", "callout", "Components › Reading"),
+        ("MalletMediaFrame", "widget", "media", "Components › Reading"),
     ]),
     ("Navigation", "Bars and tabs for apps with a few sections, and the spatial host for apps whose pages are places.", [
-        ("SancaiNavBar", "widget", "navbar", "Components › Navigation"),
-        ("SancaiTopBar", "widget", "topbar", "Components › Navigation"),
-        ("SancaiTabs", "widget", "tabs", "Components › Navigation"),
-        ("SancaiPager", "interaction", "pager", "Interactions › Pager"),
-        ("SancaiPageIndicator", "widget", "pager", "Interactions › Pager"),
-        ("SancaiSpatialGraph", "interaction", None, "Interactions › Pages as places"),
-        ("SancaiSpatialHost", "interaction", "spatial_drag", "Interactions › Pages as places"),
-        ("SancaiBack", "interaction", None, "Interactions › Pages as places"),
-        ("SancaiSpatialTransition", "interaction", "transition", "Interactions › Pages as places"),
+        ("MalletNavBar", "widget", "navbar", "Components › Navigation"),
+        ("MalletTopBar", "widget", "topbar", "Components › Navigation"),
+        ("MalletTabs", "widget", "tabs", "Components › Navigation"),
+        ("MalletPager", "interaction", "pager", "Interactions › Pager"),
+        ("MalletPageIndicator", "widget", "pager", "Interactions › Pager"),
+        ("MalletSpatialGraph", "interaction", None, "Interactions › Pages as places"),
+        ("MalletSpatialHost", "interaction", "spatial_drag", "Interactions › Pages as places"),
+        ("MalletBack", "interaction", None, "Interactions › Pages as places"),
+        ("MalletSpatialTransition", "interaction", "transition", "Interactions › Pages as places"),
     ]),
     ("Overlays", "What appears above a page: a question, a set of actions, a small menu, a passing message, a floating panel.", [
-        ("SancaiDialog", "overlay", "dialog", "Components › Dialogs and sheets"),
-        ("SancaiBottomSheet", "overlay", "sheet", "Components › Dialogs and sheets"),
-        ("SancaiMenu", "overlay", "menu", "Components › Dialogs and sheets"),
-        ("SancaiToast", "overlay", "toast", "Components › Dialogs and sheets"),
-        ("SancaiFloatingPanel", "overlay", "panel", "Components › Dialogs and sheets"),
+        ("MalletDialog", "overlay", "dialog", "Components › Dialogs and sheets"),
+        ("MalletBottomSheet", "overlay", "sheet", "Components › Dialogs and sheets"),
+        ("MalletMenu", "overlay", "menu", "Components › Dialogs and sheets"),
+        ("MalletToast", "overlay", "toast", "Components › Dialogs and sheets"),
+        ("MalletFloatingPanel", "overlay", "panel", "Components › Dialogs and sheets"),
     ]),
     ("States", "What an area shows when it has nothing, is waiting, or has failed.", [
-        ("SancaiStateView", "widget", "stateview", "Components › Empty, loading, error"),
-        ("SancaiStateLayout", "widget", "statelayout", "Components › Empty, loading, error"),
-        ("SancaiSkeleton", "widget", "skeleton", "Components › Empty, loading, error"),
-        ("SancaiBanner", "widget", "banner", "Components › Empty, loading, error"),
+        ("MalletStateView", "widget", "stateview", "Components › Empty, loading, error"),
+        ("MalletStateLayout", "widget", "statelayout", "Components › Empty, loading, error"),
+        ("MalletSkeleton", "widget", "skeleton", "Components › Empty, loading, error"),
+        ("MalletBanner", "widget", "banner", "Components › Empty, loading, error"),
     ]),
     ("Interaction", "The behaviour behind the components, usable on views of your own.", [
-        ("SancaiPress", "interaction", None, "Interactions › Press and haptics"),
-        ("SancaiHaptics", "interaction", None, "Interactions › Press and haptics"),
-        ("SancaiRevealLayout", "interaction", "reveal", "Interactions › Reveal and expand"),
-        ("SancaiExpandableLayout", "interaction", "expandable", "Interactions › Reveal and expand"),
-        ("SancaiThemeTransition", "interaction", "themetransition", "Appearance"),
-        ("SancaiHorizontalDragOwner", "interaction", None, "Interactions › Who owns the gesture"),
-        ("SancaiControl", "widget", None, "Interactions › Who owns the gesture"),
+        ("MalletPress", "interaction", None, "Interactions › Press and haptics"),
+        ("MalletHaptics", "interaction", None, "Interactions › Press and haptics"),
+        ("MalletRevealLayout", "interaction", "reveal", "Interactions › Reveal and expand"),
+        ("MalletExpandableLayout", "interaction", "expandable", "Interactions › Reveal and expand"),
+        ("MalletThemeTransition", "interaction", "themetransition", "Appearance"),
+        ("MalletHorizontalDragOwner", "interaction", None, "Interactions › Who owns the gesture"),
+        ("MalletControl", "widget", None, "Interactions › Who owns the gesture"),
     ]),
 ]
 
@@ -165,7 +165,7 @@ def find_class(name, directory):
         for index, line in enumerate(lines):
             match = DECLARATION.match(line)
             if match and match.group(2) == name:
-                return lines, index, "io.github.avalonskyafar.sancai.%s.%s" % (directory, name)
+                return lines, index, "io.github.avalonskyafar.mallet.%s.%s" % (directory, name)
     return None
 
 
@@ -256,7 +256,7 @@ def load_attributes():
     """Returns (styleables, shared): styleable name -> [attr]; attr name -> attr declared outside a styleable."""
     styleables, shared = {}, {}
     for file_name in sorted(os.listdir(ATTRS)):
-        if not file_name.startswith("sancai_attrs"):
+        if not file_name.startswith("mallet_attrs"):
             continue
         text = read(os.path.join(ATTRS, file_name))
         current, comment, open_attr = None, None, None
@@ -331,7 +331,7 @@ def load_marks():
         cells = [cell.strip() for cell in line.split("|")]
         if len(cells) < 6 or cells[2] not in ("Extracted", "Extended", "New"):
             continue
-        for name in re.findall(r"`(Sancai\w+)`", cells[1]):
+        for name in re.findall(r"`(Mallet\w+)`", cells[1]):
             marks[name] = (cells[2], cells[3])
     return marks
 
@@ -355,7 +355,7 @@ def render():
     out = []
     out.append("# Component catalog")
     out.append("")
-    out.append("Every component of Sancai UI: what it is for, how it behaves, how it is declared in XML and")
+    out.append("Every component of Mallet UI: what it is for, how it behaves, how it is declared in XML and")
     out.append("in code, and which of its parts can be set. The design rules behind the components are in")
     out.append("[DESIGN_SYSTEM.md](DESIGN_SYSTEM.md), their movement in [INTERACTION_GUIDE.md](INTERACTION_GUIDE.md).")
     out.append("")
@@ -370,13 +370,13 @@ def render():
     out.append("|---|---|")
     out.append("| **Extracted** | Taken from the original application: its geometry, colours and behaviour, rewritten as a reusable component |")
     out.append("| **Extended** | An original idea generalised or completed |")
-    out.append("| **New** | Designed for Sancai in the same language |")
+    out.append("| **New** | Designed for Mallet in the same language |")
     out.append("")
     out.append("## Contents")
     out.append("")
     missing = []
     for title, _, components in GROUPS:
-        names = ", ".join("[%s](#%s)" % (name.replace("Sancai", ""), anchor(name)) for name, _, _, _ in components)
+        names = ", ".join("[%s](#%s)" % (name.replace("Mallet", ""), anchor(name)) for name, _, _, _ in components)
         out.append("- **%s**: %s" % (title, names))
     out.append("")
     count = 0
@@ -443,13 +443,13 @@ def render():
                     mark_nested = "↳ " if depth > base else ""
                     out.append("| %s`%s` | %s |" % (mark_nested, cell(signature[:150]), cell(link_names(summary))))
                 out.append("")
-    icon_values = shared.get("sancaiIcon", {}).get("values", [])
+    icon_values = shared.get("malletIcon", {}).get("values", [])
     if icon_values:
         out.append("---")
         out.append("")
         out.append("## Icon names")
         out.append("")
-        out.append("Values of `app:sancaiIcon`, which are the constants of `SancaiIcon` in lower case:")
+        out.append("Values of `app:malletIcon`, which are the constants of `MalletIcon` in lower case:")
         out.append("")
         out.append(", ".join("`%s`" % value for value in icon_values) + ".")
         out.append("")

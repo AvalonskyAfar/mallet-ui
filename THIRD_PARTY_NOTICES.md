@@ -1,13 +1,13 @@
 # Third-party notices
 
-Sancai UI itself is MIT licensed (see [LICENSE](LICENSE)). This file lists the software it
+Mallet UI itself is MIT licensed (see [LICENSE](LICENSE)). This file lists the software it
 is built with and the software its artifacts depend on or contain. Versions are the ones
 resolved by Gradle for this release; licences are the ones declared in each artifact's
 published POM (or its parent POM), checked on 2026-11-17.
 
-## 1. The library artifact (`sancai-<version>.aar`)
+## 1. The library artifact (`mallet-<version>.aar`)
 
-The AAR contains **only** Sancai UI's own classes and resources. Its dependencies are
+The AAR contains **only** Mallet UI's own classes and resources. Its dependencies are
 declared in the POM and resolved by the consumer's build; none is bundled.
 
 | Dependency | Version | Scope | Licence |
@@ -76,14 +76,14 @@ test run and is not part of any release artifact.
 
 - **Lucide** (ISC License, Copyright Lucide Icons and Contributors; portions derived from
   Feather, MIT License, Copyright Cole Bemis). The original application drew its chevron and
-  arrow glyphs to be "Lucide-compatible", and Sancai's `CHEVRON_*` and `ARROW_*` icons keep
+  arrow glyphs to be "Lucide-compatible", and Mallet's `CHEVRON_*` and `ARROW_*` icons keep
   those proportions. No Lucide file, path string or code is included: every icon is drawn
   with canvas calls written for this project. The licence text is reproduced in
   [licenses/Lucide-ISC.txt](licenses/Lucide-ISC.txt) as a courtesy.
 
 ## 6. Fonts, images and other media
 
-None. Sancai UI uses the system typefaces of the device. The sources of the library and the
+None. Mallet UI uses the system typefaces of the device. The sources of the library and the
 Showcase app
 contain no raster image, font file, sound or third-party vector asset; all drawings are
 made in this repository (canvas code, plus the Showcase's own vector launcher icon). A built

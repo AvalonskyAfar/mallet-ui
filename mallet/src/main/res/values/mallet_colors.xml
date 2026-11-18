@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Window-level colours for the Theme.Mallet styles. Widgets take their colours from MalletTheme. -->
+    <color name="mallet_canvas_light">#FFFFFF</color>
+    <color name="mallet_canvas_dark">#181D24</color>
+    <color name="mallet_accent_light">#315A9B</color>
+    <color name="mallet_accent_dark">#5B7EA4</color>
+    <color name="mallet_ink_light">#1A1C1F</color>
+    <color name="mallet_ink_dark">#EBEFF4</color>
+</resources>

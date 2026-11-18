@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Sancai</string>
+    <string name="app_name">Mallet</string>
     <string name="showcase_placeholder">This page is still in the kiln.</string>
     <string name="showcase_back_to">Back to %1$s</string>
-    <string name="home_wordmark">三彩</string>
-    <string name="home_name">Sancai UI</string>
+    <string name="home_wordmark">Mallet</string>
+    <string name="home_name">Mallet UI</string>
     <string name="home_tagline">A glazed-ceramic design system for Android Views</string>
     <string name="home_switch_on">Glazed</string>
     <string name="home_switch_off">Bare</string>
-    <string name="home_switch_turn_on">Pour the glaze</string>
+    <string name="home_switch_turn_on">Pour the hue</string>
     <string name="home_switch_turn_off">Wash it off</string>
-    <string name="home_status_on">Three glazes, one neutral bead</string>
-    <string name="home_status_off">Bare porcelain. Slide to pour the glaze</string>
+    <string name="home_status_on">Three hues, one neutral bead</string>
+    <string name="home_status_off">Bare porcelain. Slide to pour the hue</string>
     <string name="page_home_title">Home</string>
 
     <string name="page_foundations_title">Foundations</string>
@@ -21,10 +21,10 @@
     <string name="page_interactions_title">Interactions</string>
     <string name="page_interactions_summary">How things move under the finger</string>
     <string name="page_appearance_title">Appearance</string>
-    <string name="page_appearance_summary">Theme, glazes, text size, contrast, motion</string>
+    <string name="page_appearance_summary">Theme, hues, text size, contrast, motion</string>
 
-    <string name="page_f_colour_title">Colour and glazes</string>
-    <string name="page_f_colour_summary">Neutral roles, the five glazes and the scale</string>
+    <string name="page_f_colour_title">Colour and hues</string>
+    <string name="page_f_colour_summary">Neutral roles, the five hues and the scale</string>
     <string name="page_f_type_title">Typography</string>
     <string name="page_f_type_summary">Eleven roles, three weights, the system typeface</string>
     <string name="page_f_material_title">Materials and depth</string>
@@ -34,7 +34,7 @@
     <string name="page_c_tracks_title">Tracks and switches</string>
     <string name="page_c_tracks_summary">Segmented track, switch and power switch</string>
     <string name="page_c_choice_title">Checkboxes and radios</string>
-    <string name="page_c_choice_summary">Choices that fill with glaze</string>
+    <string name="page_c_choice_summary">Choices that fill with hue</string>
     <string name="page_c_numbers_title">Numbers and progress</string>
     <string name="page_c_numbers_summary">Stepper, slider, progress bar and spinner</string>
     <string name="page_c_buttons_title">Buttons and chips</string>
@@ -56,7 +56,7 @@
     <string name="page_i_press_title">Press and haptics</string>
     <string name="page_i_press_summary">Content sinks; nothing changes colour</string>
     <string name="page_i_follow_title">Follow the finger</string>
-    <string name="page_i_follow_summary">Thumbs travel with the finger and the glaze blends</string>
+    <string name="page_i_follow_summary">Thumbs travel with the finger and the hue blends</string>
     <string name="page_i_spatial_title">Pages as places</string>
     <string name="page_i_spatial_summary">A map of this app, and how to move through it</string>
     <string name="page_i_reveal_title">Reveal and expand</string>

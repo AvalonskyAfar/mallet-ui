@@ -30,7 +30,7 @@
     <string name="numbers_progress_again">再来一次</string>
     <string name="numbers_progress_done">完成</string>
     <string name="numbers_progress_unknown">总量未知</string>
-    <string name="numbers_progress_glazes">其他釉色，同一个滑杆</string>
+    <string name="numbers_progress_hues">其他釉色，同一个滑杆</string>
 
     <string name="numbers_spinner_title">加载环</string>
     <string name="numbers_spinner_detail">等待很短、又无从计量的时候用。</string>
@@ -41,5 +41,5 @@
     <string name="numbers_spinner_save">保存</string>
     <string name="numbers_spinner_saved">已保存</string>
 
-    <string name="numbers_origin">步进器取自原应用并加以补全：数值、范围和格式现在都由它自己管理。滑杆、进度条和加载环是为三彩新设计的，用的是同一种材质。</string>
+    <string name="numbers_origin">步进器取自原应用并加以补全：数值、范围和格式现在都由它自己管理。滑杆、进度条和加载环是为 Mallet 新设计的，用的是同一种材质。</string>
 </resources>

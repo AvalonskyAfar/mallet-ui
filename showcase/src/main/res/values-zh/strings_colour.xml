@@ -17,8 +17,8 @@
     <string name="colour_warning_line">上次备份已是九天前。</string>
     <string name="colour_success_line">已保存，内容都是最新的。</string>
 
-    <string name="colour_glaze_title">釉色</string>
-    <string name="colour_glaze_detail">五种釉色浇在下凹的槽里。每条槽显示它在当前主题下的颜色，上面是落在釉面上的文字。</string>
+    <string name="colour_hue_title">釉色</string>
+    <string name="colour_hue_detail">五种釉色浇在下凹的槽里。每条槽显示它在当前主题下的颜色，上面是落在釉面上的文字。</string>
 
     <string name="colour_scale_title">釉色阶</string>
     <string name="colour_scale_detail">选项有先后次序时，轨道按色阶取釉：起点偏暖，终点偏冷。</string>
@@ -46,5 +46,5 @@
     <string name="colour_opt_mid">中</string>
     <string name="colour_opt_high">高</string>
 
-    <string name="colour_origin">中性色与语义色的色值、五种釉色，以及二、三、四档的色阶，都提取自原应用，只有日间的 warning 调深了一些。角色命名、不分次序时的单一釉色、任意档数的色阶，以及夜间轨道里保留的釉色，是为三彩新设计的。</string>
+    <string name="colour_origin">中性色与语义色的色值、五种釉色，以及二、三、四档的色阶，都提取自原应用，只有日间的 warning 调深了一些。角色命名、不分次序时的单一釉色、任意档数的色阶，以及夜间轨道里保留的釉色，是为 Mallet 新设计的。</string>
 </resources>

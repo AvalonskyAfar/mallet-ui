@@ -13,88 +13,88 @@
     android:orientation="vertical">
 
     <!-- sample:begin -->
-    <io.github.avalonskyafar.sancai.widget.SancaiHeading
+    <io.github.avalonskyafar.mallet.widget.MalletHeading
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:sancaiDetail="@string/xml_filter_detail"
-        app:sancaiTitle="@string/xml_filter_title" />
+        app:malletDetail="@string/xml_filter_detail"
+        app:malletTitle="@string/xml_filter_title" />
 
-    <io.github.avalonskyafar.sancai.widget.SancaiSurface
+    <io.github.avalonskyafar.mallet.widget.MalletSurface
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
 
-        <io.github.avalonskyafar.sancai.widget.SancaiControlRow
+        <io.github.avalonskyafar.mallet.widget.MalletControlRow
             android:id="@+id/xml_strength"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:sancaiOptions="@array/xml_levels"
-            app:sancaiSelectedIndex="2"
-            app:sancaiTitle="@string/xml_strength" />
+            app:malletOptions="@array/xml_levels"
+            app:malletSelectedIndex="2"
+            app:malletTitle="@string/xml_strength" />
 
-        <io.github.avalonskyafar.sancai.widget.SancaiControlRow
+        <io.github.avalonskyafar.mallet.widget.MalletControlRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:sancaiDetail="@string/xml_wifi_detail"
-            app:sancaiTitle="@string/xml_wifi">
+            app:malletDetail="@string/xml_wifi_detail"
+            app:malletTitle="@string/xml_wifi">
 
-            <io.github.avalonskyafar.sancai.widget.SancaiSwitch
+            <io.github.avalonskyafar.mallet.widget.MalletSwitch
                 android:id="@+id/xml_wifi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:sancaiChecked="true" />
-        </io.github.avalonskyafar.sancai.widget.SancaiControlRow>
+                app:malletChecked="true" />
+        </io.github.avalonskyafar.mallet.widget.MalletControlRow>
 
-        <io.github.avalonskyafar.sancai.widget.SancaiDivider
+        <io.github.avalonskyafar.mallet.widget.MalletDivider
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp" />
 
-        <io.github.avalonskyafar.sancai.widget.SancaiEntryRow
+        <io.github.avalonskyafar.mallet.widget.MalletEntryRow
             android:id="@+id/xml_exceptions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:sancaiDetail="@string/xml_exceptions_detail"
-            app:sancaiEntryArrow="end"
-            app:sancaiTitle="@string/xml_exceptions" />
-    </io.github.avalonskyafar.sancai.widget.SancaiSurface>
+            app:malletDetail="@string/xml_exceptions_detail"
+            app:malletEntryArrow="end"
+            app:malletTitle="@string/xml_exceptions" />
+    </io.github.avalonskyafar.mallet.widget.MalletSurface>
     <!-- sample:end -->
 
-    <io.github.avalonskyafar.sancai.widget.SancaiHeading
+    <io.github.avalonskyafar.mallet.widget.MalletHeading
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="22dp"
-        app:sancaiDetail="@string/xml_profile_detail"
-        app:sancaiTitle="@string/xml_profile_title" />
+        app:malletDetail="@string/xml_profile_detail"
+        app:malletTitle="@string/xml_profile_title" />
 
-    <io.github.avalonskyafar.sancai.widget.SancaiSurface
+    <io.github.avalonskyafar.mallet.widget.MalletSurface
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        app:sancaiContentPadding="14dp">
+        app:malletContentPadding="14dp">
 
-        <io.github.avalonskyafar.sancai.widget.SancaiTextField
+        <io.github.avalonskyafar.mallet.widget.MalletTextField
             android:id="@+id/xml_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/xml_name_hint"
-            app:sancaiFieldCounter="24"
-            app:sancaiFieldEndAction="clear"
-            app:sancaiFieldHelper="@string/xml_name_helper"
-            app:sancaiFieldLabel="@string/xml_name" />
+            app:malletFieldCounter="24"
+            app:malletFieldEndAction="clear"
+            app:malletFieldHelper="@string/xml_name_helper"
+            app:malletFieldLabel="@string/xml_name" />
 
-        <io.github.avalonskyafar.sancai.widget.SancaiCheckbox
+        <io.github.avalonskyafar.mallet.widget.MalletCheckbox
             android:id="@+id/xml_remember"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/xml_remember"
-            app:sancaiChecked="true"
-            app:sancaiGlaze="celadon" />
-    </io.github.avalonskyafar.sancai.widget.SancaiSurface>
+            app:malletChecked="true"
+            app:malletHue="jade" />
+    </io.github.avalonskyafar.mallet.widget.MalletSurface>
 
-    <io.github.avalonskyafar.sancai.widget.SancaiText
+    <io.github.avalonskyafar.mallet.widget.MalletText
         android:id="@+id/xml_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -102,10 +102,10 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="10dp"
         android:text="@string/xml_status_idle"
-        app:sancaiTextRole="caption"
-        app:sancaiTone="muted" />
+        app:malletTextRole="caption"
+        app:malletTone="muted" />
 
-    <io.github.avalonskyafar.sancai.widget.SancaiButton
+    <io.github.avalonskyafar.mallet.widget.MalletButton
         android:id="@+id/xml_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -113,6 +113,6 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="30dp"
         android:text="@string/xml_save"
-        app:sancaiButtonVariant="primary"
-        app:sancaiIcon="check" />
+        app:malletButtonVariant="primary"
+        app:malletIcon="check" />
 </LinearLayout>

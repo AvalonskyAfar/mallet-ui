@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MalletBanner">
+        <attr name="malletTitle" />
+        <attr name="malletDetail" />
+        <!-- Replaces the icon the tone brings. -->
+        <attr name="malletIcon" />
+        <!-- What kind of condition the banner reports. -->
+        <attr name="malletBannerTone" format="enum">
+            <enum name="info" value="0" />
+            <enum name="warning" value="1" />
+            <enum name="danger" value="2" />
+            <enum name="success" value="3" />
+        </attr>
+        <!-- Label of the main text action, at the very end. -->
+        <attr name="malletBannerAction" format="string" />
+        <!-- Label of the second text action, before the main one. -->
+        <attr name="malletBannerSecondaryAction" format="string" />
+        <!-- Shows the close icon. -->
+        <attr name="malletBannerDismissible" format="boolean" />
+        <!-- Hides the tone icon when false. -->
+        <attr name="malletBannerShowIcon" format="boolean" />
+        <!-- Whether the banner starts out shown (default) or collapsed. -->
+        <attr name="malletBannerShown" format="boolean" />
+    </declare-styleable>
+</resources>

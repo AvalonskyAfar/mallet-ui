@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MalletPowerSwitch: state label on the thumb. -->
+    <string name="mallet_power_switch_on">On</string>
+    <string name="mallet_power_switch_off">Off</string>
+    <!-- MalletPowerSwitch: action label on the free half of the bed. -->
+    <string name="mallet_power_switch_turn_on">Turn on</string>
+    <string name="mallet_power_switch_turn_off">Turn off</string>
+</resources>

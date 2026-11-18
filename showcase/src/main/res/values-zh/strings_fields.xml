@@ -36,5 +36,5 @@
     <string name="fields_locked_enable">启用文本框</string>
     <string name="fields_locked_disable">停用文本框</string>
 
-    <string name="fields_origin">凹槽、内边距和上方的标签取自原应用；文字在原应用里是 15 sp，这里取字号表上的 15.5 sp。辅助说明、错误提示、计数、两种末端操作，以及聚焦和出错时的描边，是三彩新增的。</string>
+    <string name="fields_origin">凹槽、内边距和上方的标签取自原应用；文字在原应用里是 15 sp，这里取字号表上的 15.5 sp。辅助说明、错误提示、计数、两种末端操作，以及聚焦和出错时的描边，是 Mallet 新增的。</string>
 </resources>

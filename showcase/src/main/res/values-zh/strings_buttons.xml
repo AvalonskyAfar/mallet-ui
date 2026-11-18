@@ -55,5 +55,5 @@
     <string name="buttons_badge_status">未读：%1$d，角标显示 %2$s。</string>
     <string name="buttons_badge_status_none">未读：0，角标不显示。</string>
 
-    <string name="buttons_note">普通胶囊按钮及其按压效果取自原应用；主要、删除、文字三种样式，图标、加载与不可用状态，以及筛选片、状态标签和角标均为三彩新增。</string>
+    <string name="buttons_note">普通胶囊按钮及其按压效果取自原应用；主要、删除、文字三种样式，图标、加载与不可用状态，以及筛选片、状态标签和角标均为 Mallet 新增。</string>
 </resources>

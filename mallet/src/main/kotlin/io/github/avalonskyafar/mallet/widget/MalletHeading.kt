@@ -1,0 +1,129 @@
+package io.github.avalonskyafar.mallet.widget
+
+import android.content.Context
+import android.util.AttributeSet
+import android.view.Gravity
+import android.view.View
+import android.widget.LinearLayout
+import androidx.core.view.ViewCompat
+import io.github.avalonskyafar.mallet.R
+import io.github.avalonskyafar.mallet.theme.MalletTextRole
+import io.github.avalonskyafar.mallet.theme.MalletTextTone
+
+/**
+ * The heading above a card or at the top of a page: a title in ink and, optionally, one quiet
+ * line of detail below it.
+ *
+ * ```xml
+ * <io.github.avalonskyafar.mallet.widget.MalletHeading
+ *     android:layout_width="match_parent"
+ *     android:layout_height="wrap_content"
+ *     app:malletTitle="Protection"
+ *     app:malletDetail="How firmly the app holds on"
+ *     app:malletHeadingLevel="section" />
+ * ```
+ *
+ * Unlike the rows of a card, a heading is start aligned: it labels what follows instead of
+ * being operated. It is inset by 10 dp on both sides so that its text lines up with the content
+ * of the card below rather than with the card's rim. The detail line disappears, together with
+ * its 4 dp gap, while [detail] is empty or blank; a detail without a title has no gap above it.
+ *
+ * The title is announced as a heading by accessibility services, so a page can be navigated
+ * heading by heading. The view itself is not focusable and has no state to save.
+ */
+public class MalletHeading @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+) : LinearLayout(context, attrs, defStyleAttr) {
+
+    /** How much weight the title carries. */
+    public enum class Level {
+        /** Heading of a card or a group of cards: 17 sp. */
+        SECTION,
+
+        /** Title of a whole page: 20 sp. */
+        PAGE,
+    }
+
+    private val titleView = MalletText.create(context, null, MalletTextRole.HEADING, MalletTextTone.INK)
+    private val detailView = MalletText.create(context, null, MalletTextRole.CAPTION, MalletTextTone.MUTED)
+
+    /** The heading itself; `null` or empty hides the title line. */
+    public var title: CharSequence? = null
+        set(value) {
+            field = value
+            titleView.text = value
+            titleView.visibility = if (value.isNullOrEmpty()) View.GONE else View.VISIBLE
+            placeDetail()
+        }
+
+    /** Supporting line under the title; `null`, empty or blank hides the line. */
+    public var detail: CharSequence? = null
+        set(value) {
+            field = value
+            detailView.text = value
+            detailView.visibility = if (value.isNullOrBlank()) View.GONE else View.VISIBLE
+            placeDetail()
+        }
+
+    /** [Level.SECTION] (default) for card headings, [Level.PAGE] for the title of a page. */
+    public var level: Level = Level.SECTION
+        set(value) {
+            field = value
+            titleView.role = if (value == Level.PAGE) MalletTextRole.TITLE else MalletTextRole.HEADING
+        }
+
+    init {
+        orientation = VERTICAL
+        val density = resources.displayMetrics.density
+        val inset = (INSET_DP * density + 0.5f).toInt()
+        // Only the sides belong to the heading; vertical padding from XML is kept.
+        setPaddingRelative(inset, paddingTop, inset, paddingBottom)
+
+        titleView.gravity = Gravity.START
+        titleView.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+        ViewCompat.setAccessibilityHeading(titleView, true)
+        titleView.visibility = View.GONE
+        addView(titleView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
+
+        detailView.gravity = Gravity.START
+        detailView.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+        detailView.visibility = View.GONE
+        addView(
+            detailView,
+            LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT).also {
+                it.topMargin = (DETAIL_GAP_DP * density + 0.5f).toInt()
+            },
+        )
+
+        if (attrs != null) {
+            val a = context.obtainStyledAttributes(attrs, R.styleable.MalletHeading, defStyleAttr, 0)
+            try {
+                title = a.getText(R.styleable.MalletHeading_malletTitle)
+                detail = a.getText(R.styleable.MalletHeading_malletDetail)
+                level = LEVELS.getOrElse(a.getInt(R.styleable.MalletHeading_malletHeadingLevel, 0)) { Level.SECTION }
+            } finally {
+                a.recycle()
+            }
+        }
+    }
+
+    /** The detail keeps its gap to the title only while there is a title above it. */
+    private fun placeDetail() {
+        val params = detailView.layoutParams as? LayoutParams ?: return
+        val gap = if (titleView.visibility == View.VISIBLE) (DETAIL_GAP_DP * resources.displayMetrics.density + 0.5f).toInt() else 0
+        if (params.topMargin != gap) {
+            params.topMargin = gap
+            detailView.layoutParams = params
+        }
+    }
+
+    override fun getAccessibilityClassName(): CharSequence = MalletHeading::class.java.name
+
+    private companion object {
+        private val LEVELS = Level.values()
+        private const val INSET_DP = 10f
+        private const val DETAIL_GAP_DP = 4f
+    }
+}

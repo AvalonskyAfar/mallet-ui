@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- What a screen reader says for one step of a flow row: title, then detail. -->
-    <string name="sancai_flow_row_step">%1$s，%2$s</string>
-</resources>

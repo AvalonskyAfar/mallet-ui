@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reduced motion: a page leaves through the right edge (see mallet_slide_out_end). -->
+<translate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="120"
+    android:fromXDelta="0"
+    android:interpolator="@interpolator/mallet_glide"
+    android:toXDelta="100%p" />

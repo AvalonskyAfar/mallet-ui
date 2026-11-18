@@ -8,8 +8,8 @@
     <string name="fields_motto_label">Motto</string>
     <string name="fields_motto_text">Fired three times</string>
     <string name="fields_password_label">Password</string>
-    <string name="fields_search_hint">Search glazes</string>
-    <string name="fields_search_text">celadon</string>
+    <string name="fields_search_hint">Search hues</string>
+    <string name="fields_search_text">jade</string>
     <string name="fields_search_idle">Nothing to search for. The cross is gone with the text.</string>
     <string name="fields_search_status">Searching for “%1$s”.</string>
 
@@ -28,7 +28,7 @@
     <string name="fields_forms_title">Other forms</string>
     <string name="fields_forms_detail">Several lines, monospace for configuration, and a field that is switched off.</string>
     <string name="fields_note_label">Note</string>
-    <string name="fields_note_text">Open the kiln only when it has cooled.\nThe glaze cracks if it meets cold air.</string>
+    <string name="fields_note_text">Open the kiln only when it has cooled.\nThe hue cracks if it meets cold air.</string>
     <string name="fields_config_label">Configuration</string>
     <string name="fields_locked_label">Device name</string>
     <string name="fields_locked_text">Kiln 3</string>
@@ -36,5 +36,5 @@
     <string name="fields_locked_enable">Enable the field</string>
     <string name="fields_locked_disable">Disable the field</string>
 
-    <string name="fields_origin">The recessed well, its padding and the label above it were extracted from the original app; its text was 15 sp there and is 15.5 sp here, a step of the type scale. Helper, error and counter, the two end actions and the focus and error rims are new in Sancai.</string>
+    <string name="fields_origin">The recessed well, its padding and the label above it were extracted from the original app; its text was 15 sp there and is 15.5 sp here, a step of the type scale. Helper, error and counter, the two end actions and the focus and error rims are new in Mallet.</string>
 </resources>

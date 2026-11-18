@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="sancai_text_field_clear">清除文字</string>
-    <string name="sancai_text_field_show_password">显示密码</string>
-    <string name="sancai_text_field_hide_password">隐藏密码</string>
-    <plurals name="sancai_text_field_counter_description">
-        <item quantity="other">已输入 %1$d 个字符，上限 %2$d 个</item>
-    </plurals>
-</resources>

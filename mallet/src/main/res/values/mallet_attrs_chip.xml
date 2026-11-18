@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MalletChip">
+        <!-- Label of the chip. -->
+        <attr name="android:text" />
+        <attr name="android:enabled" />
+        <!-- What the chip does: an action is pressed, a filter is checked and unchecked. -->
+        <attr name="malletChipKind" format="enum">
+            <enum name="action" value="0" />
+            <enum name="filter" value="1" />
+        </attr>
+        <!-- Whether a filter chip starts checked. -->
+        <attr name="malletChecked" />
+        <!-- Hue of a checked filter chip. Cobalt by default. -->
+        <attr name="malletHue" />
+        <!-- Icon drawn before the label. -->
+        <attr name="malletIcon" />
+    </declare-styleable>
+
+    <declare-styleable name="MalletChipGroup">
+        <!-- Whether at most one filter chip of the group can be checked at a time. -->
+        <attr name="malletChipGroupSingleSelection" format="boolean" />
+        <!-- Whether the user is kept from unchecking the last checked chip. -->
+        <attr name="malletChipGroupSelectionRequired" format="boolean" />
+        <!-- Gap between the bodies of neighbouring chips in a row. 8dp by default. -->
+        <attr name="malletChipGroupHorizontalGap" format="dimension" />
+        <!-- Gap between the bodies of chips in neighbouring rows. 8dp by default. -->
+        <attr name="malletChipGroupVerticalGap" format="dimension" />
+        <!-- Id of the chip that is checked at start. -->
+        <attr name="malletChipGroupCheckedChip" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="MalletTag">
+        <!-- Label of the tag. -->
+        <attr name="android:text" />
+        <!-- What the tag says about its subject; decides the hue of its bed. -->
+        <attr name="malletTagTone" format="enum">
+            <enum name="positive" value="0" />
+            <enum name="caution" value="1" />
+            <enum name="negative" value="2" />
+            <enum name="info" value="3" />
+            <enum name="neutral" value="4" />
+        </attr>
+    </declare-styleable>
+</resources>

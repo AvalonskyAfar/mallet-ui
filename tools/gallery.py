@@ -65,15 +65,15 @@ OVERLAYS = [
 ]
 GESTURES = [
     ("gesture_between_pages", "Between two places: Home leaves upwards while Components arrives from below"),
-    ("gesture_track", "A thumb between two options: the glaze under it is a blend of the two"),
+    ("gesture_track", "A thumb between two options: the hue under it is a blend of the two"),
     ("gesture_power", "The power switch half-way to off"),
     ("gesture_row_open", "A row that has slid aside for its action"),
 ]
 CLIPS = [
     ("places", "Pages are places: to the page beside Home and back, to the page below, into a page from a row"),
-    ("tracks", "A thumb follows the finger and takes the glaze of where it is"),
+    ("tracks", "A thumb follows the finger and takes the hue of where it is"),
     ("switches", "A tap, a drag, and a drag that is taken back"),
-    ("sliders", "Sliders: continuous, in steps, and through the glaze scale"),
+    ("sliders", "Sliders: continuous, in steps, and through the hue scale"),
     ("reveal", "Rows slide aside for one action; sections open in place"),
     ("pager", "Two pagers that turn together"),
     ("overlays", "A dialog, a sheet dragged down, a menu, a toast"),
@@ -202,7 +202,7 @@ def write_gallery(have, clips):
         pair(out, stem, caption, have)
     out.append("")
 
-    out += ["## Other appearances", "", "### Another set of glazes", "", "| | Light | Dark |", "|---|:---:|:---:|"]
+    out += ["## Other appearances", "", "### Another set of hues", "", "| | Light | Dark |", "|---|:---:|:---:|"]
     for key in ("appearance", "c_tracks", "home"):
         pair(out, "look_plum_" + key, titles.get(key, key), have)
     out += ["", "### High contrast", "", "| | Light | Dark |", "|---|:---:|:---:|"]

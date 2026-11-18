@@ -39,5 +39,5 @@
     <string name="reading_media_picture_note">Drawn in code from the theme colours. The frame keeps the chosen shape at any width.</string>
     <string name="reading_media_empty_note">Without a picture the well shows a muted icon, which also serves while an image loads.</string>
 
-    <string name="reading_origin">The paragraph rules, the callout bar, the flow row and the recessed media well were extracted from the original app. Callout tones, right-to-left support, the aspect ratio and the empty frame were designed for Sancai.</string>
+    <string name="reading_origin">The paragraph rules, the callout bar, the flow row and the recessed media well were extracted from the original app. Callout tones, right-to-left support, the aspect ratio and the empty frame were designed for Mallet.</string>
 </resources>

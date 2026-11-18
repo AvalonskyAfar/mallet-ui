@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Spoken form of a row with two parts: title and detail, or key and value. -->
-    <string name="sancai_control_row_description">%1$s, %2$s</string>
-    <!-- Shown in a key-value list in place of a missing value. -->
-    <string name="sancai_control_row_no_value" translatable="false">—</string>
-    <!-- Spoken in place of a missing value. -->
-    <string name="sancai_control_row_no_value_spoken">No value</string>
-</resources>

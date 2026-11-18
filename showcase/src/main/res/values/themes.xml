@@ -3,9 +3,9 @@
     <!--
         The showcase lets the user pick light or dark regardless of the system, so the activity
         chooses one of these two before super.onCreate(). They only colour the window; every
-        widget takes its colours from the SancaiTheme built by ShowcaseSettings.
+        widget takes its colours from the MalletTheme built by ShowcaseSettings.
     -->
-    <style name="Theme.Showcase.Light" parent="Theme.Sancai.Light" />
+    <style name="Theme.Showcase.Light" parent="Theme.Mallet.Light" />
 
-    <style name="Theme.Showcase.Dark" parent="Theme.Sancai.Dark" />
+    <style name="Theme.Showcase.Dark" parent="Theme.Mallet.Dark" />
 </resources>

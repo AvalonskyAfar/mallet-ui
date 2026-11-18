@@ -60,5 +60,5 @@
     <string name="nav_scroll_idle">横向拖动这一行，再点按一个标签。</string>
     <string name="nav_scroll_chosen">%1$s，第 %2$d 个，共 %3$d 个</string>
 
-    <string name="nav_origin">取自原应用：入口模式的导航行，图标在上、文字在下，背后没有底栏；以及翻页和页码圆点。三彩新增：导航行的标签模式和角标，以及顶栏和标签。</string>
+    <string name="nav_origin">取自原应用：入口模式的导航行，图标在上、文字在下，背后没有底栏；以及翻页和页码圆点。Mallet 新增：导航行的标签模式和角标，以及顶栏和标签。</string>
 </resources>

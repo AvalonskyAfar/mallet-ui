@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tracks_segmented_title">Segmented track</string>
-    <string name="tracks_segmented_detail">One choice out of two or more. Tap an option or drag the thumb. Up to four positions each have their own glaze.</string>
+    <string name="tracks_segmented_detail">One choice out of two or more. Tap an option or drag the thumb. Up to four positions each have their own hue.</string>
     <string name="tracks_off">Off</string>
     <string name="tracks_on">On</string>
     <string name="tracks_day">Day</string>
@@ -15,7 +15,7 @@
     <string name="tracks_status_level">Level: %1$s</string>
 
     <string name="tracks_plain_title">Plain choice</string>
-    <string name="tracks_plain_detail">When the options are equals and none is stronger than another, pour one glaze under all of them.</string>
+    <string name="tracks_plain_detail">When the options are equals and none is stronger than another, pour one hue under all of them.</string>
     <string name="tracks_list">List</string>
     <string name="tracks_grid">Grid</string>
     <string name="tracks_newest">Newest</string>
@@ -46,5 +46,5 @@
     <string name="tracks_power_status_off">Protection is paused. Nothing is filtered.</string>
     <string name="tracks_power_disabled">Disabled, with the default labels</string>
 
-    <string name="tracks_origin">The segmented track, the switch, the power switch and the ordinal glazes were extracted from the original app, as was rolling a change back. Uniform glazes, glazes you can set on a switch and labels you can set on the power switch were designed for Sancai.</string>
+    <string name="tracks_origin">The segmented track, the switch, the power switch and the ordinal hues were extracted from the original app, as was rolling a change back. Uniform hues, hues you can set on a switch and labels you can set on the power switch were designed for Mallet.</string>
 </resources>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Sancai minimal</string>
+    <string name="app_name">Mallet minimal</string>
     <string name="title">Protection</string>
     <string name="summary">A whole screen in one layout file and forty lines of Java</string>
     <string name="strength">Strength</string>

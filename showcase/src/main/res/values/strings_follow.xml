@@ -12,7 +12,7 @@
     <string name="follow_drag_note">Put a finger on the thumb and move slowly. Let go half way and it settles on the nearer side.</string>
 
     <string name="follow_colour_title">Colour moves with position</string>
-    <string name="follow_colour_detail">The stretch behind the bead wears the glaze nearest to the value. Passing half-way to the next one pours it in.</string>
+    <string name="follow_colour_detail">The stretch behind the bead wears the hue nearest to the value. Passing half-way to the next one pours it in.</string>
     <string name="follow_colour_label">Strength</string>
     <string name="follow_colour_value">%1$d%% · %2$s</string>
     <string name="follow_colour_percent">%1$d%%</string>
@@ -36,5 +36,5 @@
     <string name="follow_code_jumped">select(0, animate = false): the thumb jumped to %1$s.</string>
     <string name="follow_code_dragged">Moved by hand to %1$s.</string>
 
-    <string name="follow_origin">The following thumb, the settling on release, the colour that travels with it and the hand-over of vertical movement to the page were extracted from the original app\'s track and power switch. The slider and its glaze scale were designed for Sancai.</string>
+    <string name="follow_origin">The following thumb, the settling on release, the colour that travels with it and the hand-over of vertical movement to the page were extracted from the original app\'s track and power switch. The slider and its hue scale were designed for Mallet.</string>
 </resources>

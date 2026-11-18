@@ -91,5 +91,5 @@
     <string name="overlays_panel_attached">Panel attached. It stays above the page until it is removed.</string>
     <string name="overlays_panel_removed">Panel removed.</string>
 
-    <string name="overlays_origin">Dialog, the neutral and destructive toasts and the floating panel were extracted from the original app. Sheet, menu, and the success tone and action of a toast are new in Sancai.</string>
+    <string name="overlays_origin">Dialog, the neutral and destructive toasts and the floating panel were extracted from the original app. Sheet, menu, and the success tone and action of a toast are new in Mallet.</string>
 </resources>

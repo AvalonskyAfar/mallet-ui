@@ -31,5 +31,5 @@
     <string name="spatial_back_body">在 Android 14 及以上版本，返回手势会预览这次移动：本页跟着手势，向来时的页面移动一段。完成手势就落在那里，取消则滑回原位。</string>
     <string name="spatial_back_go">返回“%1$s”</string>
 
-    <string name="spatial_origin" formatted="false">提取自原应用：两个页面一起移动、28 % 与轻扫的判定规则，以及表现得像邻页的 Activity。三彩新增：可描述任意应用的页面图、监听器和从右到左布局。</string>
+    <string name="spatial_origin" formatted="false">提取自原应用：两个页面一起移动、28 % 与轻扫的判定规则，以及表现得像邻页的 Activity。Mallet 新增：可描述任意应用的页面图、监听器和从右到左布局。</string>
 </resources>

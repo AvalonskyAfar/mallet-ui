@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="material_porcelain_title">瓷面</string>
-    <string name="material_porcelain_detail">卡片和胶囊的凸起主体：一圈细边，一道垂直落下的柔和阴影。</string>
-    <string name="material_porcelain_card">一张卡片。细边、阴影，内边距 9 dp。</string>
-    <string name="material_porcelain_flat">平面卡片。只留细边，不带阴影。</string>
-    <string name="material_porcelain_lifted">同一张卡片，抬起之后。主体略微内收，好给阴影留出位置。</string>
-    <string name="material_porcelain_lift">抬起平面卡片</string>
-    <string name="material_porcelain_flatten">放平</string>
-    <string name="material_porcelain_glazed">上釉胶囊</string>
-    <string name="material_porcelain_said">上釉的主体和素色主体一样下沉，颜色不变。</string>
+    <string name="material_surface_title">瓷面</string>
+    <string name="material_surface_detail">卡片和胶囊的凸起主体：一圈细边，一道垂直落下的柔和阴影。</string>
+    <string name="material_surface_card">一张卡片。细边、阴影，内边距 9 dp。</string>
+    <string name="material_surface_flat">平面卡片。只留细边，不带阴影。</string>
+    <string name="material_surface_lifted">同一张卡片，抬起之后。主体略微内收，好给阴影留出位置。</string>
+    <string name="material_surface_lift">抬起平面卡片</string>
+    <string name="material_surface_flatten">放平</string>
+    <string name="material_surface_tinted">上釉胶囊</string>
+    <string name="material_surface_said">上釉的主体和素色主体一样下沉，颜色不变。</string>
 
     <string name="material_track_title">釉槽与滑块</string>
     <string name="material_track_detail">注满釉色的下沉轨道，和在轨道里滑动的素色滑块。</string>
@@ -37,5 +37,5 @@
     <string name="material_split_fold">收起下半</string>
     <string name="material_split_unfold">展开下半</string>
 
-    <string name="material_origin">取自原应用：瓷面、釉槽与滑块、凹槽、阴影留边，以及首次启动页里的分体卡片。Sancai 新增：上釉的主胶囊、平面卡片，以及表示聚焦和出错的纯色凹槽边框。</string>
+    <string name="material_origin">取自原应用：瓷面、釉槽与滑块、凹槽、阴影留边，以及首次启动页里的分体卡片。Mallet 新增：上釉的主胶囊、平面卡片，以及表示聚焦和出错的纯色凹槽边框。</string>
 </resources>

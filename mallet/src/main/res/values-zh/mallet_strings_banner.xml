@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mallet_banner_tone_info">提示</string>
+    <string name="mallet_banner_tone_warning">警告</string>
+    <string name="mallet_banner_tone_danger">错误</string>
+    <string name="mallet_banner_tone_success">成功</string>
+</resources>

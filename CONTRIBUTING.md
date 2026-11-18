@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for looking into Sancai UI. This page says how the project is built, what a change
+Thank you for looking into Mallet UI. This page says how the project is built, what a change
 has to satisfy, and how new design is judged.
 
 ## Set up
@@ -11,7 +11,7 @@ has to satisfy, and how new design is judged.
 - Clone and run the tests. Nothing else has to be installed; the tests run on the JVM.
 
 ```bash
-./gradlew :sancai:testDebugUnitTest :showcase:testDebugUnitTest
+./gradlew :mallet:testDebugUnitTest :showcase:testDebugUnitTest
 ```
 
 - Android Studio opens the project as it is. The layout editor previews the views.
@@ -19,7 +19,7 @@ has to satisfy, and how new design is judged.
 ## The project
 
 ```
-sancai/      the library; public API in io.github.avalonskyafar.sancai.*
+mallet/      the library; public API in io.github.avalonskyafar.mallet.*
 showcase/    the demo app; it uses the library exactly as another app would
 samples/     minimal: a project of its own, in Java and XML, that uses the published binary
 docs/        the published documentation, and docs/dev for contributors
@@ -35,16 +35,16 @@ a demo page is built. `docs/dev/API.md` is a generated index of the public API.
 
 ## What a change has to satisfy
 
-1. **Tests pass.** `./gradlew :sancai:testDebugUnitTest :showcase:testDebugUnitTest`.
+1. **Tests pass.** `./gradlew :mallet:testDebugUnitTest :showcase:testDebugUnitTest`.
    New behaviour comes with tests that assert it: state after taps, drags and keys, listener
    rules, save and restore, right-to-left.
 2. **You looked at the pictures.** Tests that end in `snapshot of ...` write PNGs to
-   `sancai/build/snapshots` and `showcase/build/snapshots`, in the light and in the dark
+   `mallet/build/snapshots` and `showcase/build/snapshots`, in the light and in the dark
    theme. Open them. A drawing that passes its assertions can still look wrong.
-3. **Lint is clean.** `./gradlew :sancai:lintDebug :showcase:lintDebug`. Warnings are errors
+3. **Lint is clean.** `./gradlew :mallet:lintDebug :showcase:lintDebug`. Warnings are errors
    in both modules.
 4. **The source rules hold.** `SourceRulesTest` fails on a ripple, on elevation, on a text
-   size that is not a `SancaiTextRole`, and on a listener that is a property instead of a
+   size that is not a `MalletTextRole`, and on a listener that is a property instead of a
    `setOn…Listener` function.
 5. **Public API has KDoc**, and user-visible strings are resources in English and Simplified
    Chinese.
@@ -61,14 +61,14 @@ python tools/device.py test
 
 ## New design
 
-Sancai is a small language, and it stays recognisable only if additions are made from the
+Mallet is a small language, and it stays recognisable only if additions are made from the
 same parts. Before proposing a component or a variant, answer these, in the issue or in the
 pull request:
 
 - **Which material is it?** Porcelain, glazed track, thumb or well. If it needs a fifth, the
   proposal is about the language, not about a component: open an issue first.
 - **Where does its colour live, and what state does the colour mean?** Colour that decorates
-  is not Sancai.
+  is not Mallet.
 - **What does it do under the finger?** It sinks, it follows, or it glides on the one curve.
 - **What are its disabled, focused and pressed states**, and how does it read to a screen
   reader, mirror in right-to-left, and behave with reduced motion?

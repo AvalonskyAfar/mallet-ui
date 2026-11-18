@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MalletPager">
+        <!-- How many pages on each side of the current one stay attached. Default: 1. -->
+        <attr name="malletPagerOffscreenPageLimit" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="MalletPageIndicator">
+        <!-- Number of dots of a standalone indicator. -->
+        <attr name="malletPageIndicatorCount" format="integer" />
+        <!-- Index of the selected dot of a standalone indicator. -->
+        <attr name="malletSelectedIndex" />
+    </declare-styleable>
+</resources>

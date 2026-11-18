@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MalletFloatingPanel: a draggable porcelain panel. -->
+    <declare-styleable name="MalletFloatingPanel">
+        <!-- Start position as a fraction of the free travel: 0 start edge, 1 end edge. -->
+        <attr name="malletFloatingPanelPositionX" format="float" />
+        <!-- Start position as a fraction of the free travel: 0 top, 1 bottom. -->
+        <attr name="malletFloatingPanelPositionY" format="float" />
+        <!-- Glide to the nearer side of the parent when a drag ends. Default false. -->
+        <attr name="malletFloatingPanelSnapToEdge" format="boolean" />
+    </declare-styleable>
+
+    <!-- Id of the panel added by MalletFloatingPanel.attach(), so its position is saved. -->
+    <item name="mallet_floating_panel" type="id" />
+</resources>

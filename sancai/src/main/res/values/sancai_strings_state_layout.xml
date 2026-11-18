@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="sancai_state_layout_empty_title">Nothing here yet</string>
-    <string name="sancai_state_layout_error_title">Something went wrong</string>
-    <string name="sancai_state_layout_error_detail">Nothing was changed.</string>
-    <string name="sancai_state_layout_content_shown">Content shown</string>
-</resources>

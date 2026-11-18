@@ -45,11 +45,11 @@
     <string name="xml_kotlin_title">The Kotlin that is left</string>
     <string name="xml_kotlin_detail">Inflate, find, listen.</string>
     <string name="xml_theme_title">The theme</string>
-    <string name="xml_theme_detail">One parent style gives every widget its colours. Each role and each glaze can be replaced by an attribute.</string>
+    <string name="xml_theme_detail">One parent style gives every widget its colours. Each role and each hue can be replaced by an attribute.</string>
     <string name="xml_theme_note">None of it is required: a widget in an app without these attributes follows the night mode of its context. An app that keeps appearance in its own settings, as this one does, hands the theme over in code instead.</string>
     <string name="xml_screen_title">A whole screen</string>
-    <string name="xml_screen_detail">The neighbour activity of this app is one layout file with a SancaiPage at its root.</string>
+    <string name="xml_screen_detail">The neighbour activity of this app is one layout file with a MalletPage at its root.</string>
     <string name="xml_screen_open">Open the XML screen</string>
 
-    <string name="xml_origin">The original app built every screen in Java and had no layout files, no custom attributes and no theme attributes. The XML attributes of every widget, the Theme.Sancai styles and the rule that a child declared inside a row becomes its control are new in Sancai.</string>
+    <string name="xml_origin">The original app built every screen in Java and had no layout files, no custom attributes and no theme attributes. The XML attributes of every widget, the Theme.Mallet styles and the rule that a child declared inside a row becomes its control are new in Mallet.</string>
 </resources>

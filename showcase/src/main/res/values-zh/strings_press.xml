@@ -38,5 +38,5 @@
     <string name="press_order_line">%1$d  %2$s</string>
     <string name="press_order_note">开关在滑块开始滑行时先调用监听器，再振动。按钮立刻振动，因为它的监听器可能要打开比较慢的东西。</string>
 
-    <string name="press_source">取自原应用：下沉 1.5 dp 且不变色的按压，以及更改生效时的一振。三彩新增：可用于自定义行的 SancaiPress，以及 SancaiHaptics 里另外四种效果：detent、confirm、reject 和 longPress。</string>
+    <string name="press_source">取自原应用：下沉 1.5 dp 且不变色的按压，以及更改生效时的一振。Mallet 新增：可用于自定义行的 MalletPress，以及 MalletHaptics 里另外四种效果：detent、confirm、reject 和 longPress。</string>
 </resources>

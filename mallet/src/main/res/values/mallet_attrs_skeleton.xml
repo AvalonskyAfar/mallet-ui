@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MalletSkeleton">
+        <!-- Outline of the placeholder: a block with rounded corners, a capsule or a circle. -->
+        <attr name="malletSkeletonShape" format="enum">
+            <enum name="block" value="0" />
+            <enum name="capsule" value="1" />
+            <enum name="circle" value="2" />
+        </attr>
+        <!-- False keeps the block still: no travelling band and no breathing. -->
+        <attr name="malletSkeletonAnimated" format="boolean" />
+        <!-- Share of the offered width a wrap_content skeleton takes, 0.05 to 1. Default 1. -->
+        <attr name="malletSkeletonWidthFraction" format="float" />
+        <!-- Corner radius of the block shape. Default 6 dp. -->
+        <attr name="malletCornerRadius" />
+        <attr name="android:enabled" />
+    </declare-styleable>
+</resources>

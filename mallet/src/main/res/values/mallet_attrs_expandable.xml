@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MalletExpandableLayout">
+        <!-- Whether the section starts expanded. Default: true. -->
+        <attr name="malletExpandableExpanded" format="boolean" />
+        <!-- Whether a click on the header (the first child) toggles the section. Default: true. -->
+        <attr name="malletExpandableToggleOnHeaderClick" format="boolean" />
+        <!-- Id of a view inside the header that turns half a circle while the section opens. -->
+        <attr name="malletExpandableIndicator" format="reference" />
+    </declare-styleable>
+</resources>

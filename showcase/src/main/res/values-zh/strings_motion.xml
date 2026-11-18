@@ -26,5 +26,5 @@
     <string name="motion_settle_left">剩余距离</string>
     <string name="motion_settle_status">剩余 %1$d%%，%2$d 毫秒归位</string>
 
-    <string name="motion_origin">取自原应用：曲线、各个时长与归位公式。三彩新增：所有页面容器共用一条归位公式，以及本页。</string>
+    <string name="motion_origin">取自原应用：曲线、各个时长与归位公式。Mallet 新增：所有页面容器共用一条归位公式，以及本页。</string>
 </resources>

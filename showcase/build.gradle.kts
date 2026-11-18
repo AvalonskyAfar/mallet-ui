@@ -12,12 +12,12 @@ plugins {
 val showcaseKeystore = providers.gradleProperty("SHOWCASE_KEYSTORE").orNull
 
 android {
-    namespace = "io.github.avalonskyafar.sancai.showcase"
+    namespace = "io.github.avalonskyafar.mallet.showcase"
     compileSdk = 36
     buildToolsVersion = "36.0.0"
 
     defaultConfig {
-        applicationId = "io.github.avalonskyafar.sancai.showcase"
+        applicationId = "io.github.avalonskyafar.mallet.showcase"
         minSdk = 23
         targetSdk = 36
         versionCode = 1
@@ -68,15 +68,15 @@ android {
                 System.getProperty("https.proxyPort")?.let {
                     test.systemProperty("robolectric.dependency.proxy.port", it)
                 }
-                // -PsancaiPages=<regex> limits ShowcasePagesTest to the pages whose snapshot name matches.
-                providers.gradleProperty("sancaiPages").orNull?.let { test.systemProperty("sancai.pages", it) }
+                // -PmalletPages=<regex> limits ShowcasePagesTest to the pages whose snapshot name matches.
+                providers.gradleProperty("malletPages").orNull?.let { test.systemProperty("mallet.pages", it) }
                 test.systemProperty(
-                    "sancai.snapshot.dir",
+                    "mallet.snapshot.dir",
                     layout.buildDirectory.dir("snapshots").get().asFile.absolutePath,
                 )
-                // -PsancaiFilms makes ShowcaseFilmTest draw its films, frame by frame, into build/films.
-                if (providers.gradleProperty("sancaiFilms").isPresent) test.systemProperty("sancai.films", "true")
-                test.systemProperty("sancai.film.dir", layout.buildDirectory.dir("films").get().asFile.absolutePath)
+                // -PmalletFilms makes ShowcaseFilmTest draw its films, frame by frame, into build/films.
+                if (providers.gradleProperty("malletFilms").isPresent) test.systemProperty("mallet.films", "true")
+                test.systemProperty("mallet.film.dir", layout.buildDirectory.dir("films").get().asFile.absolutePath)
             }
         }
     }
@@ -120,7 +120,7 @@ androidComponents {
 }
 
 dependencies {
-    implementation(project(":sancai"))
+    implementation(project(":mallet"))
 
     testImplementation(libs.junit)
     testImplementation(libs.truth)

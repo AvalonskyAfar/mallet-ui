@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MalletRevealLayout">
+        <!-- The edge at which the action strip is uncovered. Mirrored in RTL. -->
+        <attr name="malletRevealEdge" format="enum">
+            <enum name="start" value="0" />
+            <enum name="end" value="1" />
+        </attr>
+        <!-- The label of the action behind the row. Without it the row does not move. -->
+        <attr name="malletRevealActionLabel" format="string" />
+        <!-- The tone that colours the bed. Default: danger. -->
+        <attr name="malletRevealActionTone" format="enum">
+            <enum name="ink" value="0" />
+            <enum name="muted" value="1" />
+            <enum name="accent" value="2" />
+            <enum name="danger" value="3" />
+            <enum name="warning" value="4" />
+            <enum name="success" value="5" />
+        </attr>
+        <!-- Ordinal of the MalletIcon drawn above the label; -1 (default) for none. -->
+        <attr name="malletRevealActionIcon" format="integer" />
+        <!-- Whether opening this row closes the other open rows of the same parent. Default: true. -->
+        <attr name="malletRevealCloseSiblings" format="boolean" />
+    </declare-styleable>
+</resources>

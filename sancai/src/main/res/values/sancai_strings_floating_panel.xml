@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Accessibility actions of SancaiFloatingPanel. -->
-    <string name="sancai_floating_panel_move_start">Move to the start edge</string>
-    <string name="sancai_floating_panel_move_end">Move to the end edge</string>
-    <string name="sancai_floating_panel_move_top">Move to the top</string>
-    <string name="sancai_floating_panel_move_bottom">Move to the bottom</string>
-</resources>

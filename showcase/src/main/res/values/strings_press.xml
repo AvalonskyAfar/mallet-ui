@@ -39,5 +39,5 @@
     <string name="press_order_line">%1$d  %2$s</string>
     <string name="press_order_note">The switch calls its listener while it starts to glide, then ticks. The button ticks at once, because its listener may open something slow.</string>
 
-    <string name="press_source">Extracted from the original app: the 1.5 dp sink without a colour change, and the tick on a committed change. New in Sancai: SancaiPress for your own rows and four more effects in SancaiHaptics: detent, confirm, reject and long press.</string>
+    <string name="press_source">Extracted from the original app: the 1.5 dp sink without a colour change, and the tick on a committed change. New in Mallet: MalletPress for your own rows and four more effects in MalletHaptics: detent, confirm, reject and long press.</string>
 </resources>

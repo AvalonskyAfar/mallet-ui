@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Copies the pictures the unit tests draw into docs/images.
 
-    ./gradlew :sancai:testDebugUnitTest :showcase:testDebugUnitTest
+    ./gradlew :mallet:testDebugUnitTest :showcase:testDebugUnitTest
     python tools/pictures.py            (run from the project root; needs Pillow)
     python tools/pictures.py --pages    (also the pages of the demo app, about 20 MB)
 
 The library tests draw a gallery of every component in the light and in the dark theme
-(sancai/build/snapshots); the showcase test draws every page of the demo app
+(mallet/build/snapshots); the showcase test draws every page of the demo app
 (showcase/build/snapshots). Both run on the JVM with Robolectric and Android's own native
 graphics, so the pictures show what the code draws, but they are not photographs of a device:
 there is no status bar in them, and fonts are the ones bundled with Robolectric.
@@ -27,7 +27,7 @@ try:
 except ImportError:
     sys.exit("Pillow is needed: pip install pillow")
 
-COMPONENTS_FROM = "sancai/build/snapshots"
+COMPONENTS_FROM = "mallet/build/snapshots"
 PAGES_FROM = "showcase/build/snapshots"
 COMPONENTS_TO = "docs/images/components"
 PAGES_TO = "docs/images/pages"

@@ -70,5 +70,5 @@
     <string name="states_banner_status">正在显示 %1$d / %2$d 条</string>
     <string name="states_banner_again">全部重新显示</string>
 
-    <string name="states_origin">这些状态背后的胶囊按钮、卡片，以及加载环的开口圆环造型取自原应用；加载环控件、状态视图、状态布局、骨架屏和横幅为三彩新增。</string>
+    <string name="states_origin">这些状态背后的胶囊按钮、卡片，以及加载环的开口圆环造型取自原应用；加载环控件、状态视图、状态布局、骨架屏和横幅为 Mallet 新增。</string>
 </resources>

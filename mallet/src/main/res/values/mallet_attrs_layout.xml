@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MalletText">
+        <attr name="malletTextRole" />
+        <attr name="malletTone" />
+    </declare-styleable>
+
+    <declare-styleable name="MalletDivider">
+        <!--
+            Whether the divider runs from rim to rim of the MalletSurface it sits in, ignoring
+            the padding of that surface. Defaults to true.
+        -->
+        <attr name="malletFullBleed" format="boolean" />
+        <attr name="android:orientation" />
+    </declare-styleable>
+
+    <declare-styleable name="MalletSurface">
+        <attr name="malletCornerRadius" />
+        <attr name="malletElevated" />
+        <!-- Which corners are rounded; top and bottom are the two halves of a split card. -->
+        <attr name="malletSurfaceCorners" format="enum">
+            <enum name="all" value="0" />
+            <enum name="top" value="1" />
+            <enum name="bottom" value="2" />
+        </attr>
+        <!-- Padding between the view bounds and the content. Defaults to 9dp. -->
+        <attr name="malletContentPadding" format="dimension" />
+        <attr name="android:orientation" />
+    </declare-styleable>
+
+    <declare-styleable name="MalletButton">
+        <!-- Whether the button takes keyboard focus. True unless the layout says otherwise. -->
+        <attr name="android:focusable" />
+        <!-- Whether the button answers taps and keys. True unless the layout says otherwise. -->
+        <attr name="android:clickable" />
+        <!-- The body of the button: a porcelain capsule, a glazed capsule, or the label alone. -->
+        <attr name="malletButtonVariant" format="enum">
+            <!-- Neutral porcelain capsule. -->
+            <enum name="neutral" value="0" />
+            <!-- Capsule glazed in the accent colour: the one main action of a screen. -->
+            <enum name="primary" value="1" />
+            <!-- Capsule glazed in the danger colour: destructive actions. -->
+            <enum name="danger" value="2" />
+            <!-- No body, coloured text only: dialog actions and inline links. -->
+            <enum name="text" value="3" />
+        </attr>
+        <!-- Text colour of the text variant. Defaults to accent. -->
+        <attr name="malletTone" />
+        <!-- Icon drawn before the label. -->
+        <attr name="malletIcon" />
+        <!-- Replaces the label with a spinner and ignores clicks. -->
+        <attr name="malletLoading" format="boolean" />
+    </declare-styleable>
+</resources>

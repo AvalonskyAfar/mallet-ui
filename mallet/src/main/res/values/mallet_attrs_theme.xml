@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        Theme-level attributes. Every one of them is optional: a Mallet view placed in an
+        app that sets none of these uses the built-in light or dark palette, chosen by the
+        current night mode.
+    -->
+    <declare-styleable name="MalletTheme">
+        <!-- Forces the dark (true) or light (false) palette instead of following night mode. -->
+        <attr name="malletIsDark" format="boolean" />
+        <!-- Stronger hairlines, dividers and secondary text. -->
+        <attr name="malletHighContrast" format="boolean" />
+        <!-- Extra text scale on top of the system font scale, e.g. 1.13. -->
+        <attr name="malletTextScale" format="float" />
+        <!-- Whether animations are shortened to a brief settle. -->
+        <attr name="malletReduceMotion" format="enum">
+            <enum name="system" value="0" />
+            <enum name="always" value="1" />
+            <enum name="never" value="2" />
+        </attr>
+        <!-- Whether confirmed state changes tick. -->
+        <attr name="malletHaptics" format="boolean" />
+        <!-- How much hue colour stays visible in the recessed tracks of a dark theme (0..1). -->
+        <attr name="malletNightHue" format="float" />
+
+        <attr name="malletColorCanvas" format="color" />
+        <attr name="malletColorSurface" format="color" />
+        <attr name="malletColorRaised" format="color" />
+        <attr name="malletColorInk" format="color" />
+        <attr name="malletColorMuted" format="color" />
+        <attr name="malletColorHairline" format="color" />
+        <attr name="malletColorDivider" format="color" />
+        <attr name="malletColorAccent" format="color" />
+        <attr name="malletColorDanger" format="color" />
+        <attr name="malletColorWarning" format="color" />
+        <attr name="malletColorSuccess" format="color" />
+        <attr name="malletColorShadow" format="color" />
+
+        <attr name="malletHueBronze" format="color" />
+        <attr name="malletHueBronzeEdge" format="color" />
+        <attr name="malletHueOnBronze" format="color" />
+        <attr name="malletHueOchre" format="color" />
+        <attr name="malletHueOchreEdge" format="color" />
+        <attr name="malletHueOnOchre" format="color" />
+        <attr name="malletHueCobalt" format="color" />
+        <attr name="malletHueCobaltEdge" format="color" />
+        <attr name="malletHueOnCobalt" format="color" />
+        <attr name="malletHueJade" format="color" />
+        <attr name="malletHueJadeEdge" format="color" />
+        <attr name="malletHueOnJade" format="color" />
+        <attr name="malletHueMist" format="color" />
+        <attr name="malletHueMistEdge" format="color" />
+        <attr name="malletHueOnMist" format="color" />
+    </declare-styleable>
+</resources>

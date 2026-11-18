@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MalletEntryRow: a row of a card that leads somewhere. -->
+    <declare-styleable name="MalletEntryRow">
+        <attr name="android:enabled" />
+        <attr name="malletTitle" />
+        <attr name="malletDetail" />
+        <!-- Icon at the start of the row. -->
+        <attr name="malletIcon" />
+        <!-- Chevron at the edge of the row. -->
+        <attr name="malletEntryArrow" format="enum">
+            <enum name="none" value="0" />
+            <enum name="end" value="1" />
+            <enum name="start" value="2" />
+        </attr>
+        <!-- Whether the text is centred in the row or aligned to its start. -->
+        <attr name="malletEntryAlignment" format="enum">
+            <enum name="center" value="0" />
+            <enum name="start" value="1" />
+        </attr>
+        <!-- Short value shown at the end of the row, before the end chevron. -->
+        <attr name="malletEntryValue" format="string" />
+    </declare-styleable>
+</resources>

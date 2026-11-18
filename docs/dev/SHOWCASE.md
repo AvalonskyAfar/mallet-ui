@@ -5,15 +5,15 @@ widgets, is fully interactive, and shows the code that produced what the reader 
 
 ## How the app is put together
 
-- `MainActivity` hosts a `SancaiSpatialHost`. `Pages.graph` is the map: Home in the middle,
+- `MainActivity` hosts a `MalletSpatialHost`. `Pages.graph` is the map: Home in the middle,
   Foundations at its start side, Interactions at its end side, Components below, Appearance
   above. Detail pages are opened from rows of Foundations, Components and Interactions.
 - A page is a Kotlin `object` extending `DemoPage(key, titleRes, summaryRes)` in
-  `showcase/src/main/kotlin/io/github/avalonskyafar/sancai/showcase/pages/`. It implements
+  `showcase/src/main/kotlin/io/github/avalonskyafar/mallet/showcase/pages/`. It implements
   `build(page: PageScope)`.
-- `PageScope` builds the page (a `SancaiPage`) with the rhythm of the design system and
+- `PageScope` builds the page (a `MalletPage`) with the rhythm of the design system and
   adds the way back by itself. A page only adds content.
-- The theme comes from `ShowcaseSettings` through `SancaiTheme.resolver`; pages never choose
+- The theme comes from `ShowcaseSettings` through `MalletTheme.resolver`; pages never choose
   colours for the theme. Read it with `page.theme`.
 
 ## `PageScope` in one glance
@@ -24,8 +24,8 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
         page.title()                                   // page title and summary
 
         page.section(R.string.tracks_segmented_title, R.string.tracks_segmented_detail) {
-            // `this` is the SancaiSurface card of the section
-            addView(SancaiSegmentedTrack(context).apply { setOptions("Off", "On") })
+            // `this` is the MalletSurface card of the section
+            addView(MalletSegmentedTrack(context).apply { setOptions("Off", "On") })
             addDivider(5f)
             addView(...)
         }
@@ -47,7 +47,7 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
 | `heading(titleRes, detailRes = 0)` | a heading alone, for a section whose content is not one card |
 | `caption(text, topDp)` | muted remark |
 | `code(snippet, topDp, wrap = true)` | selectable monospace sample in a well; `wrap = false` for XML |
-| `text(value, role, tone)` | a `SancaiText` |
+| `text(value, role, tone)` | a `MalletText` |
 | `dp(n)`, `str(res)`, `context`, `theme`, `host` | utilities |
 | `host.say(message)` | short message pill at the bottom |
 | `host.open(key)` / `host.back()` | travel |
@@ -60,7 +60,7 @@ Inside a card use `LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP)`.
    control has a listener, show its effect: a status line that changes, a second control that
    follows, a message through `host.say(...)`.
 2. **Show states.** Each component appears in its important states (default, a second value,
-   disabled; loading or error where it has them) and at least one glaze variation where it is
+   disabled; loading or error where it has them) and at least one hue variation where it is
    glazed.
 3. **Show the code.** After each section, a `page.code(...)` sample of at most about eight
    lines with the calls that built it, written the way a user of the library would write
@@ -70,7 +70,7 @@ Inside a card use `LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP)`.
    the library is meant to be used, with a trailing lambda:
    `switch.setOnCheckedChangeListener { _, isChecked -> ... }`.
 4. **Say where it comes from.** End the page with one caption that names what on it was
-   extracted from the original app and what was designed for Sancai. Keep it to one or two
+   extracted from the original app and what was designed for Mallet. Keep it to one or two
    sentences.
 5. **Strings are resources**, in English and in Simplified Chinese:
    `showcase/src/main/res/values/strings_<page>.xml` and
@@ -82,7 +82,7 @@ Inside a card use `LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP)`.
    Chinese copy is written as Chinese, not translated word for word.
 7. **Only library widgets.** No `android.widget.Button`, `Switch`, `CheckBox`, `SeekBar`,
    `ProgressBar`, `AlertDialog`, `Toast`. Plain `LinearLayout`, `FrameLayout`, `View` and
-   `TextView` are fine for arranging things; text should be `SancaiText` (`page.text`).
+   `TextView` are fine for arranging things; text should be `MalletText` (`page.text`).
 8. **One file per page**, plus private helper functions or a private view class in the same
    file when a page needs a custom drawing (colour swatches, a material cross-section).
    A new page is listed in `Pages.kt`, which also gives it its place on the map.
@@ -95,7 +95,7 @@ the original app where it had one.
 
 | English | 中文 | | English | 中文 |
 |---|---|---|---|---|
-| Sancai | 三彩 | | glaze | 釉色 |
+| Mallet | Mallet | | hue | 釉色 |
 | track | 轨道 | | bed (of a track) | 轨道底色 |
 | thumb | 滑块 | | bead (slider, radio) | 圆珠 |
 | porcelain | 瓷面 | | well | 凹槽 |
@@ -109,18 +109,18 @@ the original app where it had one.
 | checkbox / radio | 复选框 / 单选框 | | text field | 文本框 |
 | button / chip / tag / badge | 按钮 / 筛选片 / 状态标签 / 角标 | | entry row / control row / link row | 入口行 / 控制行 / 链接行 |
 | dialog / sheet / menu / toast | 对话框 / 底部面板 / 菜单 / 轻提示 | | page / neighbour | 页面 / 邻页 |
-| start side / end side | 起始侧 / 末端侧 | | extracted from the original app / new in Sancai | 取自原应用 / 三彩新增 |
+| start side / end side | 起始侧 / 末端侧 | | extracted from the original app / new in Mallet | 取自原应用 / Mallet 新增 |
 
 ## Building and looking
 
 ```
-./gradlew :showcase:testDebugUnitTest --tests "*ShowcasePagesTest" -PsancaiPages=page_c_tracks_
+./gradlew :showcase:testDebugUnitTest --tests "*ShowcasePagesTest" -PmalletPages=page_c_tracks_
 ```
 
 `ShowcasePagesTest` builds every page the way the app does, on the JVM with Robolectric, and
 writes a picture of each to `showcase/build/snapshots`: `page_<key>_light.png`, `_dark.png`,
 `_zh.png` (Chinese), `_rtl.png` (right to left, dark) and `_large.png` (system font scale 1.3
-with the app's larger text). `-PsancaiPages=<regex>` limits the run to the pictures whose
+with the app's larger text). `-PmalletPages=<regex>` limits the run to the pictures whose
 name matches; leave it out to draw all of them. A page that throws or comes out blank fails
 the test. Pages taller than 3200 dp are cut in the picture.
 
@@ -128,6 +128,6 @@ Whether a page looks right is not something the test can say: open the pictures 
 them as a designer would, in every variant. Then try the page on a device
 (`./gradlew :showcase:installDebug`), where gestures and motion can be felt.
 
-`ShowcaseFilmTest` (`-PsancaiFilms`) starts the real activity on the JVM, touches it and
+`ShowcaseFilmTest` (`-PmalletFilms`) starts the real activity on the JVM, touches it and
 draws it frame by frame into `showcase/build/films`; `python tools/films.py` turns the frames
 into GIFs. Add a film when a page shows a gesture worth seeing.

@@ -7,10 +7,10 @@
     <string name="appearance_mode_system">跟随系统</string>
     <string name="appearance_mode_light">浅色</string>
     <string name="appearance_mode_dark">深色</string>
-    <string name="appearance_glazes">釉色</string>
-    <string name="appearance_glazes_detail">同一套色阶，换一组颜色</string>
-    <string name="appearance_glazes_classic">经典</string>
-    <string name="appearance_glazes_plum">梅紫</string>
+    <string name="appearance_hues">釉色</string>
+    <string name="appearance_hues_detail">同一套色阶，换一组颜色</string>
+    <string name="appearance_hues_classic">经典</string>
+    <string name="appearance_hues_plum">梅紫</string>
 
     <string name="appearance_preview_title">预览</string>
     <string name="appearance_preview_detail">当前设置下的釉色阶</string>

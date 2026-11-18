@@ -23,17 +23,17 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
 
       - name: Unit tests (library and showcase, on the JVM)
-        run: ./gradlew :sancai:testDebugUnitTest :showcase:testDebugUnitTest
+        run: ./gradlew :mallet:testDebugUnitTest :showcase:testDebugUnitTest
 
       - name: Static checks (warnings are errors)
-        run: ./gradlew :sancai:lintDebug :showcase:lintDebug
+        run: ./gradlew :mallet:lintDebug :showcase:lintDebug
 
       - name: Build the library and the demo app
-        run: ./gradlew :sancai:assembleRelease :showcase:assembleDebug :showcase:assembleDebugAndroidTest
+        run: ./gradlew :mallet:assembleRelease :showcase:assembleDebug :showcase:assembleDebugAndroidTest
 
       - name: Integration (the Java sample resolves the library from a Maven repository and is shrunk)
         run: |
-          ./gradlew :sancai:publishReleasePublicationToDistRepository
+          ./gradlew :mallet:publishReleasePublicationToDistRepository
           cd samples/minimal
           ../../gradlew assembleRelease
 
@@ -43,7 +43,7 @@ jobs:
         with:
           name: snapshots
           path: |
-            sancai/build/snapshots
+            mallet/build/snapshots
             showcase/build/snapshots
           if-no-files-found: ignore
 
@@ -53,7 +53,7 @@ jobs:
         with:
           name: test-reports
           path: |
-            sancai/build/reports/tests
+            mallet/build/reports/tests
             showcase/build/reports/tests
 
       - name: Upload build outputs
@@ -61,5 +61,5 @@ jobs:
         with:
           name: outputs
           path: |
-            sancai/build/outputs/aar/*.aar
+            mallet/build/outputs/aar/*.aar
             showcase/build/outputs/apk/debug/*.apk

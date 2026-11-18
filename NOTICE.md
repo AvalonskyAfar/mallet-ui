@@ -1,13 +1,13 @@
 # NOTICE
 
-Sancai UI
+Mallet UI
 Copyright (c) 2026 AvalonskyAfar
 
 Licensed under the MIT License. See [LICENSE](LICENSE).
 
 ## Provenance
 
-Sancai UI is derived from the user-interface code of **Gravekeeper (守目人)**,
+Mallet UI is derived from the user-interface code of **Gravekeeper (守目人)**,
 Copyright (c) 2026 AvalonskyAfar, which is itself released under the MIT License.
 The design language, the material painters and the gesture logic were extracted from that
 application's source (`UiKit.java`, `MainActivity.java`, `FirstLaunchActivity.java`,
@@ -20,7 +20,7 @@ satisfies the notice condition of that licence for the derived portions.
 
 ## What is not included
 
-The following parts of the original repository are **not** part of Sancai UI, in source or
+The following parts of the original repository are **not** part of Mallet UI, in source or
 in any built artifact:
 
 | Original material | Its licence | Status here |

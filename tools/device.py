@@ -31,10 +31,10 @@ import subprocess
 import sys
 import time
 
-APP = "io.github.avalonskyafar.sancai.showcase"
+APP = "io.github.avalonskyafar.mallet.showcase"
 TEST = APP + ".test"
 RUNNER = TEST + "/androidx.test.runner.AndroidJUnitRunner"
-REMOTE = "/data/local/tmp/sancai"
+REMOTE = "/data/local/tmp/mallet"
 OUT = os.path.join("build", "device")
 APK = os.path.join("showcase", "build", "outputs", "apk", "debug", "showcase-debug.apk")
 TEST_APK = os.path.join("showcase", "build", "outputs", "apk", "androidTest", "debug", "showcase-debug-androidTest.apk")
@@ -172,7 +172,7 @@ def test(options):
     if options.only:
         extras = {"class": APP + ".device." + options.only}
     tests, _, seconds = instrument(extras, "tests-raw.txt", 3600)
-    if not report(tests, seconds, "Sancai showcase: device tests", "tests.txt"):
+    if not report(tests, seconds, "Mallet showcase: device tests", "tests.txt"):
         sys.exit(1)
 
 
@@ -189,7 +189,7 @@ def shots(options):
     shell("rm -rf %s/shots; mkdir -p %s/shots" % (REMOTE, REMOTE))
     extras = {"class": APP + ".tour.ScreenshotTour" + ("#" + options.only if options.only else ""), "tour": "true"}
     tests, _, seconds = instrument(extras, "shots-raw.txt", 3600)
-    ok = report(tests, seconds, "Sancai showcase: screenshot tour", "shots.txt")
+    ok = report(tests, seconds, "Mallet showcase: screenshot tour", "shots.txt")
     names = pull(REMOTE + "/shots", os.path.join(OUT, "shots"))
     print("%d pictures in %s" % (len(names), os.path.join(OUT, "shots")))
     if not ok:
@@ -238,7 +238,7 @@ def motion(options):
         tests, _, seconds = instrument(extras, "motion-raw.txt", 3600)
     finally:
         set_animation_scale(1)
-    ok = report(tests, seconds, "Sancai showcase: motion tour (slowed %sx)" % slow, "motion.txt")
+    ok = report(tests, seconds, "Mallet showcase: motion tour (slowed %sx)" % slow, "motion.txt")
     names = pull(REMOTE + "/motion", os.path.join(OUT, "motion"))
     ffmpeg = find_ffmpeg()
     if ffmpeg is None:
@@ -278,7 +278,7 @@ def smoke(options):
     print(adb("install", "-r", "-t", apk, timeout=600).strip().splitlines()[-1], apk)
     shell("logcat -b crash -c", check=False)
     keys = page_keys()
-    lines = ["Sancai showcase: every page of %s" % apk.replace(os.sep, "/"), "device: " + device_description(),
+    lines = ["Mallet showcase: every page of %s" % apk.replace(os.sep, "/"), "device: " + device_description(),
              "date:   " + time.strftime("%Y-%m-%d %H:%M %z"), ""]
     failed = 0
     for key in keys:

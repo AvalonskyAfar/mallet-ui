@@ -18,7 +18,7 @@ Contents: [Summary](#summary) · [Environment](#environment) · [Tests on the JV
 |---|---|
 | Unit tests of the library (JVM, Robolectric) | 1,030 tests, 0 failures |
 | Unit tests of the showcase (JVM, Robolectric) | 20 tests, 0 failures; 8 more (films) pass when asked for |
-| Android Lint, warnings as errors | no issues in `:sancai`, no issues in `:showcase` |
+| Android Lint, warnings as errors | no issues in `:mallet`, no issues in `:showcase` |
 | Device tests, Android 16 (API 36) emulator | 36 tests, 0 failures |
 | Device tests, Android 6.0 (API 23) emulator | 35 tests, 0 failures |
 | Shrunk release APK, every page opened on both emulators | 27 of 27 pages on each, no crash |
@@ -49,14 +49,14 @@ Both devices are emulators. No physical device was used.
 ## Tests on the JVM
 
 ```bash
-./gradlew :sancai:testDebugUnitTest :showcase:testDebugUnitTest
+./gradlew :mallet:testDebugUnitTest :showcase:testDebugUnitTest
 ```
 
 **Library: 1,030 tests in 50 classes, 0 failures, 0 skipped.** One class per component, plus
 the foundation, the drag gate, the press helper and the rules below. They assert behaviour:
 the state after taps, drags and keys; that listeners are called for user input only; the
 order of listener and haptic; saved and restored state; right-to-left placement;
-accessibility nodes, roles and actions; exact pixels where colour is the contract (glaze
+accessibility nodes, roles and actions; exact pixels where colour is the contract (hue
 under a thumb, contrast ratios of every text and label colour); and geometry in dp.
 
 **Showcase: 20 tests, 0 failures.** Every page of the demo app is built the way the app
@@ -64,7 +64,7 @@ builds it and drawn in five variants: light, dark, Chinese, right-to-left, and l
 (system font scale 1.3 with the app's own 1.13). A page that throws or comes out blank
 fails. The XML demonstration is checked against the layout file it shows.
 
-**Films: 8 tests, 0 failures**, run on request (`-PsancaiFilms`; skipped otherwise). They
+**Films: 8 tests, 0 failures**, run on request (`-PmalletFilms`; skipped otherwise). They
 start the real activity of the showcase, touch it with `MotionEvent`s and step an exact
 clock, frame by frame, asserting where the app ends up: travelling between pages, dragging
 tracks, switches and sliders, rows that slide aside, sections, linked pagers.
@@ -77,7 +77,7 @@ call to something an older Android does not have. It uses Robolectric's plain ca
 says nothing about how those versions draw.
 
 Each test class also draws a gallery of its component in both themes
-(`sancai/build/snapshots`, copied to `docs/images/components`). Those pictures were looked
+(`mallet/build/snapshots`, copied to `docs/images/components`). Those pictures were looked
 at; they are not compared with stored references by the tests.
 
 Where a test was written for a defect, it was run against the code without the fix and
@@ -88,7 +88,7 @@ seen to fail, for most fixes; the reviews below name the cases where that was on
 ## Static checks
 
 ```bash
-./gradlew :sancai:lintDebug :showcase:lintDebug
+./gradlew :mallet:lintDebug :showcase:lintDebug
 ```
 
 - Android Lint with `warningsAsErrors`: **no issues** in either module. Three version
@@ -195,11 +195,11 @@ a working directory, and without the build cache.
 
 | File | What it is | Size |
 |---|---|---|
-| `sancai-0.1.0.aar` | the library | 0.8 MB |
-| `sancai-0.1.0-sources.jar` | its sources, for IDEs | 0.3 MB |
-| `sancai-0.1.0-maven-repo.zip` | a Maven repository with the AAR, its POM, Gradle module metadata and the sources | 1.1 MB |
-| `sancai-showcase-0.1.0.apk` | the demo app, shrunk by R8 | 0.5 MB |
-| `sancai-ui-0.1.0-source.zip` | this project without build output | 23 MB |
+| `mallet-0.1.0.aar` | the library | 0.8 MB |
+| `mallet-0.1.0-sources.jar` | its sources, for IDEs | 0.3 MB |
+| `mallet-0.1.0-maven-repo.zip` | a Maven repository with the AAR, its POM, Gradle module metadata and the sources | 1.1 MB |
+| `mallet-showcase-0.1.0.apk` | the demo app, shrunk by R8 | 0.5 MB |
+| `mallet-ui-0.1.0-source.zip` | this project without build output | 23 MB |
 | `SHA256SUMS.txt` | the checksums of the five files | |
 
 The AAR holds the library's classes and resources only: no image, no font, no native code,
@@ -219,15 +219,15 @@ evaluation; it must not be published to a store as it is.
 ## Integration
 
 - **As a binary.** `samples/minimal` is a project of its own, in Java and XML, with one
-  dependency: `io.github.avalonskyafar:sancai:0.1.0` from the Maven repository that `dist`
+  dependency: `io.github.avalonskyafar:mallet:0.1.0` from the Maven repository that `dist`
   produces. It was built against the repository unpacked from
-  `sancai-0.1.0-maven-repo.zip`, shrunk by R8 without a keep rule (an APK of 0.17 MB),
-  installed on both emulators and operated: the screen appears with the glaze its theme
+  `mallet-0.1.0-maven-repo.zip`, shrunk by R8 without a keep rule (an APK of 0.17 MB),
+  installed on both emulators and operated: the screen appears with the hue its theme
   overrides, a save without a name shows the field's error, the track answers, the
   confirmation dialog restores the defaults.
-- **From the source archive.** `sancai-ui-0.1.0-source.zip` was unpacked into an empty
+- **From the source archive.** `mallet-ui-0.1.0-source.zip` was unpacked into an empty
   directory outside the working tree. There
-  `./gradlew :sancai:testDebugUnitTest :showcase:testDebugUnitTest :sancai:lintDebug :showcase:lintDebug :sancai:assembleRelease :showcase:assembleRelease --no-build-cache`
+  `./gradlew :mallet:testDebugUnitTest :showcase:testDebugUnitTest :mallet:lintDebug :showcase:lintDebug :mallet:assembleRelease :showcase:assembleRelease --no-build-cache`
   succeeded: the same 1,030 and 20 tests, no lint issue, both release builds.
 - **Shrunk.** `python tools/device.py smoke` installed the release APK from `dist/` on each
   emulator, opened all 27 pages and scrolled each: none crashed. The check itself was
@@ -283,19 +283,19 @@ read, and their fixes re-run, before anything was accepted.
 Left as they are, on purpose or for later:
 
 - The default light palette keeps the look of the original, and with it three pairs that
-  do not meet WCAG AA: white labels resting on the terracotta, cobalt and celadon glazes
-  (3.0, 2.3 and 2.2 : 1) and muted text on the canvas (3.2 : 1). `sancaiHighContrast`
+  do not meet WCAG AA: white labels resting on the bronze, cobalt and jade hues
+  (3.0, 2.3 and 2.2 : 1) and muted text on the canvas (3.2 : 1). `malletHighContrast`
   brings every pair to at least 4.5 : 1; it follows the system's high-contrast text setting
   on Android 16 when the theme is read from the Android theme. The figures are in
   [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md#121-contrast).
 - A view reads its theme when it is built; a theme change needs the views rebuilt
-  (`SancaiThemeTransition` hides the cut).
-- `SancaiStepper` does not mirror in right-to-left layouts: minus stays on the left.
-- Pressing Retry twice with a keyboard within the 220 ms in which `SancaiStateLayout`
+  (`MalletThemeTransition` hides the cut).
+- `MalletStepper` does not mirror in right-to-left layouts: minus stays on the left.
+- Pressing Retry twice with a keyboard within the 220 ms in which `MalletStateLayout`
   changes state can call the listener twice; touches are guarded.
-- `SancaiThemeTransition.recreateAfter` called on an activity that is never attached to a
+- `MalletThemeTransition.recreateAfter` called on an activity that is never attached to a
   window keeps that activity referenced until the process ends.
-- `SancaiRevealLayout` with padding of its own lets the open row slide over that padding.
+- `MalletRevealLayout` with padding of its own lets the open row slide over that padding.
 - Space or Enter on a radio button that is already chosen is passed on unconsumed, while a
   tap on it calls the click listener.
 - A scrolling row of tabs does not offer scroll actions to accessibility services; a tab

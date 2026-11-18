@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Turns the films the showcase tests draw into GIFs.
 
-    ./gradlew :showcase:testDebugUnitTest --tests "*ShowcaseFilmTest" -PsancaiFilms
+    ./gradlew :showcase:testDebugUnitTest --tests "*ShowcaseFilmTest" -PmalletFilms
     python tools/films.py                 (run from the project root)
 
 ShowcaseFilmTest starts the real activity of the demo app on the JVM, touches it and draws
@@ -72,7 +72,7 @@ def main():
     parser.add_argument("--only", help="make only the film with this name")
     options = parser.parse_args()
     if not os.path.isdir(FROM):
-        sys.exit("no films in %s: run ShowcaseFilmTest with -PsancaiFilms first" % FROM)
+        sys.exit("no films in %s: run ShowcaseFilmTest with -PmalletFilms first" % FROM)
     os.makedirs(TO, exist_ok=True)
     ffmpeg = find_ffmpeg()
     total = 0

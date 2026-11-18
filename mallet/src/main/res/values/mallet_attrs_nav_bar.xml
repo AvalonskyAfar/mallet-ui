@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MalletNavBar">
+        <!--
+            "launcher": every item is a shortcut and nothing is selected (default).
+            "tabs": one item is selected and drawn in ink.
+        -->
+        <attr name="malletNavBarMode" format="enum">
+            <enum name="launcher" value="0" />
+            <enum name="tabs" value="1" />
+        </attr>
+        <!-- Item labels, in order. -->
+        <attr name="malletOptions" />
+        <!-- Integer array of malletIcon values, one per label. -->
+        <attr name="malletNavBarIcons" format="reference" />
+        <!-- Selected item in tabs mode. -->
+        <attr name="malletSelectedIndex" />
+        <!-- Draws a full-bleed hairline above the row, for content that scrolls underneath. -->
+        <attr name="malletElevated" />
+        <!--
+            Whether the row grows by the height of the system navigation bar (default true).
+            Switch it off for a row that does not sit at the bottom of the window.
+        -->
+        <attr name="malletNavBarFitNavigationBar" format="boolean" />
+        <attr name="android:enabled" />
+    </declare-styleable>
+</resources>

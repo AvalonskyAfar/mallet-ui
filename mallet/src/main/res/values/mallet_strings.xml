@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mallet_action_ok">OK</string>
+    <string name="mallet_action_cancel">Cancel</string>
+    <string name="mallet_action_save">Save</string>
+    <string name="mallet_action_add">Add</string>
+    <string name="mallet_action_delete">Delete</string>
+    <string name="mallet_action_retry">Retry</string>
+    <string name="mallet_action_close">Close</string>
+    <string name="mallet_action_back">Back</string>
+    <string name="mallet_state_on">On</string>
+    <string name="mallet_state_off">Off</string>
+    <string name="mallet_state_loading">Loading</string>
+</resources>

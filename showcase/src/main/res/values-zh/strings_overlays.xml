@@ -91,5 +91,5 @@
     <string name="overlays_panel_attached">浮动面板已添加。移除之前，它一直浮在页面上方。</string>
     <string name="overlays_panel_removed">浮动面板已移除。</string>
 
-    <string name="overlays_origin">对话框、普通与危险两种轻提示、浮动面板取自原应用。底部面板、菜单，以及轻提示的成功色和操作为三彩新增。</string>
+    <string name="overlays_origin">对话框、普通与危险两种轻提示、浮动面板取自原应用。底部面板、菜单，以及轻提示的成功色和操作为 Mallet 新增。</string>
 </resources>

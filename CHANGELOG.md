@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to Sancai UI are recorded here. The format follows
+All notable changes to Mallet UI are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [Semantic Versioning](https://semver.org/). Until 1.0, a minor version may change the API.
 
@@ -13,36 +13,36 @@ extended and what is new is recorded part by part in
 
 ### Design system
 
-- Colour roles for a light and a dark palette, with high-contrast variants; five glazes
-  (terracotta, ochre, cobalt, celadon, mist) with their scale for two, three and four
+- Colour roles for a light and a dark palette, with high-contrast variants; five hues
+  (bronze, ochre, cobalt, jade, mist) with their scale for two, three and four
   options and their night form.
 - A type scale of eleven roles, tones for text, a spacing scale, corner radii.
 - Three painted materials (porcelain, glazed track, thumb) and the well, with pressed,
   focused and disabled forms; shadows are drawn inside each view's own bounds.
 - Motion tokens: one easing curve, five durations, the commit and flick rules.
 - Fifty icons drawn in code, mirrored in right-to-left layouts where they point.
-- `SancaiTheme`: from XML theme attributes, from code, from an app's own settings
-  (`SancaiTheme.resolver`), or for one part of a screen (`SancaiTheme.wrap`).
+- `MalletTheme`: from XML theme attributes, from code, from an app's own settings
+  (`MalletTheme.resolver`), or for one part of a screen (`MalletTheme.wrap`).
 
 ### Components
 
-- Surfaces and text: `SancaiSurface`, `SancaiDivider`, `SancaiText`, `SancaiIconView`.
-- Actions: `SancaiButton` (neutral, primary, destructive, text; icon, loading), `SancaiChip`,
-  `SancaiChipGroup`, `SancaiTag`, `SancaiBadge`.
-- Choice: `SancaiSegmentedTrack`, `SancaiSwitch`, `SancaiPowerSwitch`, `SancaiCheckbox`,
-  `SancaiRadioButton`, `SancaiRadioGroup`.
-- Numbers and progress: `SancaiStepper`, `SancaiSlider`, `SancaiProgressBar`, `SancaiSpinner`.
-- Text input: `SancaiTextField` (label, helper, error, counter, end actions).
-- Rows and pages: `SancaiPage` (a scrolling page that pads itself for the system bars and
+- Surfaces and text: `MalletSurface`, `MalletDivider`, `MalletText`, `MalletIconView`.
+- Actions: `MalletButton` (neutral, primary, destructive, text; icon, loading), `MalletChip`,
+  `MalletChipGroup`, `MalletTag`, `MalletBadge`.
+- Choice: `MalletSegmentedTrack`, `MalletSwitch`, `MalletPowerSwitch`, `MalletCheckbox`,
+  `MalletRadioButton`, `MalletRadioGroup`.
+- Numbers and progress: `MalletStepper`, `MalletSlider`, `MalletProgressBar`, `MalletSpinner`.
+- Text input: `MalletTextField` (label, helper, error, counter, end actions).
+- Rows and pages: `MalletPage` (a scrolling page that pads itself for the system bars and
   the keyboard, keeps what scrolls clear of the status bar, and holds its column to
-  560 dp), `SancaiHeading`, `SancaiEntryRow`, `SancaiControlRow`, `SancaiLinkRow`,
-  `SancaiKeyValueList`.
-- Reading: `SancaiParagraph`, `SancaiCallout`, `SancaiFlowRow`, `SancaiMediaFrame`.
-- Navigation: `SancaiNavBar`, `SancaiTopBar`, `SancaiTabs`, `SancaiPager`,
-  `SancaiPageIndicator`.
-- Overlays: `SancaiDialog`, `SancaiBottomSheet`, `SancaiMenu`, `SancaiToast`,
-  `SancaiFloatingPanel`.
-- States: `SancaiStateView`, `SancaiStateLayout`, `SancaiSkeleton`, `SancaiBanner`.
+  560 dp), `MalletHeading`, `MalletEntryRow`, `MalletControlRow`, `MalletLinkRow`,
+  `MalletKeyValueList`.
+- Reading: `MalletParagraph`, `MalletCallout`, `MalletFlowRow`, `MalletMediaFrame`.
+- Navigation: `MalletNavBar`, `MalletTopBar`, `MalletTabs`, `MalletPager`,
+  `MalletPageIndicator`.
+- Overlays: `MalletDialog`, `MalletBottomSheet`, `MalletMenu`, `MalletToast`,
+  `MalletFloatingPanel`.
+- States: `MalletStateView`, `MalletStateLayout`, `MalletSkeleton`, `MalletBanner`.
 
 Every component can be declared in XML or built in code, from Kotlin and from Java; has
 disabled, focused and pressed states; works with keyboard and D-pad; describes itself to
@@ -50,16 +50,16 @@ screen readers; mirrors in right-to-left layouts; and keeps its state across rot
 
 ### Interaction
 
-- `SancaiPress`: content that sinks under the finger; `SancaiHaptics`: tick, detent, confirm,
+- `MalletPress`: content that sinks under the finger; `MalletHaptics`: tick, detent, confirm,
   reject, long press.
-- `SancaiSpatialGraph`, `SancaiSpatialHost`: pages laid out as places and dragged at finger
-  speed; `SancaiBack`: system Back along the map, with the predictive preview on Android 14
-  and later; `SancaiSpatialTransition`: a second activity that arrives and leaves like a page.
-- `SancaiRevealLayout`: a row that slides aside for one action; `SancaiExpandableLayout`: a
+- `MalletSpatialGraph`, `MalletSpatialHost`: pages laid out as places and dragged at finger
+  speed; `MalletBack`: system Back along the map, with the predictive preview on Android 14
+  and later; `MalletSpatialTransition`: a second activity that arrives and leaves like a page.
+- `MalletRevealLayout`: a row that slides aside for one action; `MalletExpandableLayout`: a
   section that opens in place.
-- `SancaiThemeTransition`: the old look fades over the new one when the theme changes.
+- `MalletThemeTransition`: the old look fades over the new one when the theme changes.
 - One rule for who owns a gesture: the deepest control that can use a drag takes it, and
-  hands it on when it cannot (`SancaiHorizontalDragOwner`).
+  hands it on when it cannot (`MalletHorizontalDragOwner`).
 
 ### Showcase app
 

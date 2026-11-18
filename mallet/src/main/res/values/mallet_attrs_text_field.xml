@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Label written above the well. -->
+    <attr name="malletFieldLabel" format="string" />
+    <!-- Helper text written below the well. -->
+    <attr name="malletFieldHelper" format="string" />
+    <!-- Error written below the well in place of the helper; also colours the rim. -->
+    <attr name="malletFieldError" format="string" />
+    <!-- Maximum length shown by the character counter; 0 hides the counter. -->
+    <attr name="malletFieldCounter" format="integer" />
+    <!-- Several lines instead of one. -->
+    <attr name="malletFieldMultiline" format="boolean" />
+    <!-- Action drawn inside the well at the end. -->
+    <attr name="malletFieldEndAction" format="enum">
+        <enum name="none" value="0" />
+        <enum name="clear" value="1" />
+        <enum name="passwordToggle" value="2" />
+    </attr>
+    <!-- Monospace type, for code and configuration editors. -->
+    <attr name="malletFieldMonospace" format="boolean" />
+
+    <!-- Id of the EditText inside a MalletTextField. -->
+    <item name="mallet_text_field_edit" type="id" />
+
+    <declare-styleable name="MalletTextField">
+        <attr name="android:enabled" />
+        <attr name="android:text" />
+        <attr name="android:hint" />
+        <attr name="android:inputType" />
+        <attr name="android:maxLength" />
+        <attr name="android:minLines" />
+        <attr name="android:maxLines" />
+        <attr name="malletIcon" />
+        <attr name="malletFieldLabel" />
+        <attr name="malletFieldHelper" />
+        <attr name="malletFieldError" />
+        <attr name="malletFieldCounter" />
+        <attr name="malletFieldMultiline" />
+        <attr name="malletFieldEndAction" />
+        <attr name="malletFieldMonospace" />
+    </declare-styleable>
+</resources>

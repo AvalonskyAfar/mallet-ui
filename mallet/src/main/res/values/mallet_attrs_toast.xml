@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MalletToastView: the pill of a MalletToast. -->
+    <declare-styleable name="MalletToastView">
+        <!-- The one thing the pill says. -->
+        <attr name="malletToastMessage" format="string" />
+        <!-- Colour of the pill: porcelain, or glazed in the danger or success colour. -->
+        <attr name="malletToastTone" format="enum">
+            <enum name="neutral" value="0" />
+            <enum name="danger" value="1" />
+            <enum name="success" value="2" />
+        </attr>
+        <!-- Label of the optional text action at the end of the pill. -->
+        <attr name="malletToastActionLabel" format="string" />
+    </declare-styleable>
+</resources>

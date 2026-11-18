@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="sancai_power_switch_on">已开启</string>
-    <string name="sancai_power_switch_off">已关闭</string>
-    <string name="sancai_power_switch_turn_on">开启</string>
-    <string name="sancai_power_switch_turn_off">关闭</string>
-</resources>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MalletSlider">
+        <attr name="malletValueFrom" />
+        <attr name="malletValueTo" />
+        <attr name="malletStepSize" />
+        <attr name="malletValue" />
+        <attr name="malletHue" />
+        <!--
+            How the stretch behind the bead is glazed. "single" pours the hue named by
+            malletHue. "scale" blends through bronze, ochre, cobalt and jade as the
+            value rises, for values that read as a strength.
+        -->
+        <attr name="malletSliderHueMode" format="enum">
+            <enum name="single" value="0" />
+            <enum name="scale" value="1" />
+        </attr>
+        <attr name="android:enabled" />
+    </declare-styleable>
+</resources>

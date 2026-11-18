@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MalletSwitch">
+        <attr name="malletChecked" />
+        <!-- Hue of the bed while the switch is off. Default: bronze. -->
+        <attr name="malletSwitchOffHue" format="enum">
+            <enum name="bronze" value="0" />
+            <enum name="ochre" value="1" />
+            <enum name="cobalt" value="2" />
+            <enum name="jade" value="3" />
+            <enum name="mist" value="4" />
+        </attr>
+        <!-- Hue of the bed while the switch is on. Default: cobalt. -->
+        <attr name="malletSwitchOnHue" format="enum">
+            <enum name="bronze" value="0" />
+            <enum name="ochre" value="1" />
+            <enum name="cobalt" value="2" />
+            <enum name="jade" value="3" />
+            <enum name="mist" value="4" />
+        </attr>
+        <attr name="android:enabled" />
+    </declare-styleable>
+</resources>

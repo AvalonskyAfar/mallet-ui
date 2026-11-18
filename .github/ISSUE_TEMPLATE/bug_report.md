@@ -5,7 +5,7 @@ labels: bug
 ---
 
 **Component**
-<!-- For example: SancaiSegmentedTrack -->
+<!-- For example: MalletSegmentedTrack -->
 
 **What happened, and what did you expect?**
 
@@ -13,7 +13,7 @@ labels: bug
 <!-- The smallest layout or code that shows it. A screenshot or a short recording helps a lot. -->
 
 **Environment**
-- Sancai UI version:
+- Mallet UI version:
 - Device and Android version:
 - Theme: light / dark, high contrast on / off, text scale:
 - Layout direction: LTR / RTL

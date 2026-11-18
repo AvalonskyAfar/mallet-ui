@@ -20,6 +20,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "sancai-ui"
-include(":sancai")
+rootProject.name = "mallet-ui"
+include(":mallet")
 include(":showcase")

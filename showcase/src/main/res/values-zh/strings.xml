@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">三彩</string>
+    <string name="app_name">Mallet</string>
     <string name="showcase_placeholder">此页仍在窑中烧制。</string>
     <string name="showcase_back_to">返回%1$s</string>
-    <string name="home_wordmark">三彩</string>
-    <string name="home_name">Sancai UI</string>
+    <string name="home_wordmark">Mallet</string>
+    <string name="home_name">Mallet UI</string>
     <string name="home_tagline">为 Android View 打造的釉彩设计系统</string>
     <string name="home_switch_on">已上釉</string>
     <string name="home_switch_off">素坯</string>

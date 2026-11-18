@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Announced by screen readers when a MalletMenu opens. -->
+    <string name="mallet_menu_pane_title">Menu</string>
+</resources>

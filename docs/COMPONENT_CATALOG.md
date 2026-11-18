@@ -1,6 +1,6 @@
 # Component catalog
 
-Every component of Sancai UI: what it is for, how it behaves, how it is declared in XML and
+Every component of Mallet UI: what it is for, how it behaves, how it is declared in XML and
 in code, and which of its parts can be set. The design rules behind the components are in
 [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md), their movement in [INTERACTION_GUIDE.md](INTERACTION_GUIDE.md).
 
@@ -15,21 +15,21 @@ Each component carries a mark that says where it comes from; the evidence is in
 |---|---|
 | **Extracted** | Taken from the original application: its geometry, colours and behaviour, rewritten as a reusable component |
 | **Extended** | An original idea generalised or completed |
-| **New** | Designed for Sancai in the same language |
+| **New** | Designed for Mallet in the same language |
 
 ## Contents
 
-- **Surfaces and text**: [Surface](#sancaisurface), [Divider](#sancaidivider), [Text](#sancaitext), [IconView](#sancaiiconview)
-- **Actions**: [Button](#sancaibutton), [Chip](#sancaichip), [ChipGroup](#sancaichipgroup), [Tag](#sancaitag), [Badge](#sancaibadge)
-- **Choice**: [SegmentedTrack](#sancaisegmentedtrack), [Switch](#sancaiswitch), [PowerSwitch](#sancaipowerswitch), [Checkbox](#sancaicheckbox), [RadioButton](#sancairadiobutton), [RadioGroup](#sancairadiogroup)
-- **Numbers and progress**: [Stepper](#sancaistepper), [Slider](#sancaislider), [ProgressBar](#sancaiprogressbar), [Spinner](#sancaispinner)
-- **Text input**: [TextField](#sancaitextfield)
-- **Rows and pages**: [Page](#sancaipage), [Heading](#sancaiheading), [EntryRow](#sancaientryrow), [ControlRow](#sancaicontrolrow), [LinkRow](#sancailinkrow), [KeyValueList](#sancaikeyvaluelist)
-- **Reading**: [Paragraph](#sancaiparagraph), [Callout](#sancaicallout), [FlowRow](#sancaiflowrow), [MediaFrame](#sancaimediaframe)
-- **Navigation**: [NavBar](#sancainavbar), [TopBar](#sancaitopbar), [Tabs](#sancaitabs), [Pager](#sancaipager), [PageIndicator](#sancaipageindicator), [SpatialGraph](#sancaispatialgraph), [SpatialHost](#sancaispatialhost), [Back](#sancaiback), [SpatialTransition](#sancaispatialtransition)
-- **Overlays**: [Dialog](#sancaidialog), [BottomSheet](#sancaibottomsheet), [Menu](#sancaimenu), [Toast](#sancaitoast), [FloatingPanel](#sancaifloatingpanel)
-- **States**: [StateView](#sancaistateview), [StateLayout](#sancaistatelayout), [Skeleton](#sancaiskeleton), [Banner](#sancaibanner)
-- **Interaction**: [Press](#sancaipress), [Haptics](#sancaihaptics), [RevealLayout](#sancaireveallayout), [ExpandableLayout](#sancaiexpandablelayout), [ThemeTransition](#sancaithemetransition), [HorizontalDragOwner](#sancaihorizontaldragowner), [Control](#sancaicontrol)
+- **Surfaces and text**: [Surface](#malletsurface), [Divider](#malletdivider), [Text](#mallettext), [IconView](#malleticonview)
+- **Actions**: [Button](#malletbutton), [Chip](#malletchip), [ChipGroup](#malletchipgroup), [Tag](#mallettag), [Badge](#malletbadge)
+- **Choice**: [SegmentedTrack](#malletsegmentedtrack), [Switch](#malletswitch), [PowerSwitch](#malletpowerswitch), [Checkbox](#malletcheckbox), [RadioButton](#malletradiobutton), [RadioGroup](#malletradiogroup)
+- **Numbers and progress**: [Stepper](#malletstepper), [Slider](#malletslider), [ProgressBar](#malletprogressbar), [Spinner](#malletspinner)
+- **Text input**: [TextField](#mallettextfield)
+- **Rows and pages**: [Page](#malletpage), [Heading](#malletheading), [EntryRow](#malletentryrow), [ControlRow](#malletcontrolrow), [LinkRow](#malletlinkrow), [KeyValueList](#malletkeyvaluelist)
+- **Reading**: [Paragraph](#malletparagraph), [Callout](#malletcallout), [FlowRow](#malletflowrow), [MediaFrame](#malletmediaframe)
+- **Navigation**: [NavBar](#malletnavbar), [TopBar](#mallettopbar), [Tabs](#mallettabs), [Pager](#malletpager), [PageIndicator](#malletpageindicator), [SpatialGraph](#malletspatialgraph), [SpatialHost](#malletspatialhost), [Back](#malletback), [SpatialTransition](#malletspatialtransition)
+- **Overlays**: [Dialog](#malletdialog), [BottomSheet](#malletbottomsheet), [Menu](#malletmenu), [Toast](#mallettoast), [FloatingPanel](#malletfloatingpanel)
+- **States**: [StateView](#malletstateview), [StateLayout](#malletstatelayout), [Skeleton](#malletskeleton), [Banner](#malletbanner)
+- **Interaction**: [Press](#malletpress), [Haptics](#mallethaptics), [RevealLayout](#malletreveallayout), [ExpandableLayout](#malletexpandablelayout), [ThemeTransition](#malletthemetransition), [HorizontalDragOwner](#mallethorizontaldragowner), [Control](#malletcontrol)
 
 ---
 
@@ -37,11 +37,11 @@ Each component carries a mark that says where it comes from; the evidence is in
 
 What everything else stands on: the card, the divider, text in the type scale and icons.
 
-### SancaiSurface
+### MalletSurface
 
-**Extracted** · `io.github.avalonskyafar.sancai.widget.SancaiSurface` · Showcase: Foundations › Materials and depth
+**Extracted** · `io.github.avalonskyafar.mallet.widget.MalletSurface` · Showcase: Foundations › Materials and depth
 
-The Sancai card: a porcelain body that groups rows and controls.
+The Mallet card: a porcelain body that groups rows and controls.
 
 It is a `LinearLayout` (vertical unless told otherwise) with the porcelain material as its
 background. Three things differ from a plain layout:
@@ -49,121 +49,121 @@ background. Three things differ from a plain layout:
 - The view is slightly larger than the card the eye sees, because the shadow is drawn inside
   the view: 1.4 dp on each side, 1 dp above and 4.8 dp below. Content padding (9 dp by
   default) is measured from the view bounds.
-- `SancaiDivider` children marked full-bleed are stretched from rim to rim.
+- `MalletDivider` children marked full-bleed are stretched from rim to rim.
 - Children are not clipped to their bounds, so that the tracks and capsules inside a card
   can let their shadows fade out into the room around them. A child that scrolls (a
   `ScrollView`, a list, a `RecyclerView`, anything marked as a scroll container) is the
   exception: its content ends at its own edge.
 
-<img src="images/components/foundation_light.png" width="320" alt="SancaiSurface, light theme"> <img src="images/components/foundation_dark.png" width="320" alt="SancaiSurface, dark theme">
+<img src="images/components/foundation_light.png" width="320" alt="MalletSurface, light theme"> <img src="images/components/foundation_dark.png" width="320" alt="MalletSurface, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiSurface
+<io.github.avalonskyafar.mallet.widget.MalletSurface
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <!-- rows, a SancaiDivider, more rows -->
-</io.github.avalonskyafar.sancai.widget.SancaiSurface>
+    <!-- rows, a MalletDivider, more rows -->
+</io.github.avalonskyafar.mallet.widget.MalletSurface>
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiCornerRadius` | dimension | Corner radius of a body. |
-| `app:sancaiElevated` | boolean | Whether a body is lifted (rim and shadow) or flat (rim only). |
-| `app:sancaiSurfaceCorners` | `all` / `top` / `bottom` | Which corners are rounded; top and bottom are the two halves of a split card. |
-| `app:sancaiContentPadding` | dimension | Padding between the view bounds and the content. Defaults to 9dp. |
+| `app:malletCornerRadius` | dimension | Corner radius of a body. |
+| `app:malletElevated` | boolean | Whether a body is lifted (rim and shadow) or flat (rim only). |
+| `app:malletSurfaceCorners` | `all` / `top` / `bottom` | Which corners are rounded; top and bottom are the two halves of a split card. |
+| `app:malletContentPadding` | dimension | Padding between the view bounds and the content. Defaults to 9dp. |
 | `android:orientation` | horizontal / vertical | The direction children are laid out in. |
 
 | Member | What it does |
 |---|---|
 | `var cornerRadiusDp: Float` | Corner radius in dp. |
 | `var elevated: Boolean` | Lifted (rim and shadow) or flat (rim only). |
-| `var corners: SancaiCorners` | Which corners are rounded. |
-| `fun addDivider(verticalMarginDp: Float = 0f): SancaiDivider` | Adds a full-bleed divider. |
+| `var corners: MalletCorners` | Which corners are rounded. |
+| `fun addDivider(verticalMarginDp: Float = 0f): MalletDivider` | Adds a full-bleed divider. |
 | ↳ `const val CONTENT_PADDING_DP: Float` | Default padding between the view bounds and the content, in dp. |
 
-### SancaiDivider
+### MalletDivider
 
-**Extracted** · `io.github.avalonskyafar.sancai.widget.SancaiDivider` · Showcase: Foundations › Materials and depth
+**Extracted** · `io.github.avalonskyafar.mallet.widget.MalletDivider` · Showcase: Foundations › Materials and depth
 
 A hairline divider: 14 % of the ink colour laid over the canvas, one dp thick.
 
-Inside a `SancaiSurface` a divider is full-bleed by default: the surface stretches it from
+Inside a `MalletSurface` a divider is full-bleed by default: the surface stretches it from
 rim to rim regardless of the surface padding, so rows on either side read as sections of one
 card rather than as boxes inside a box.
 
-Pictures: see [SancaiSurface](#sancaisurface).
+Pictures: see [MalletSurface](#malletsurface).
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiFullBleed` | boolean | Whether the divider runs from rim to rim of the SancaiSurface it sits in, ignoring the padding of that surface. Defaults to true. |
+| `app:malletFullBleed` | boolean | Whether the divider runs from rim to rim of the MalletSurface it sits in, ignoring the padding of that surface. Defaults to true. |
 | `android:orientation` | horizontal / vertical | The direction children are laid out in. |
 
 | Member | What it does |
 |---|---|
-| `var fullBleed: Boolean` | Whether a parent `SancaiSurface` stretches this divider to its rims. |
+| `var fullBleed: Boolean` | Whether a parent `MalletSurface` stretches this divider to its rims. |
 | `var orientation: Int` | `LinearLayout.HORIZONTAL` for a horizontal line (the default) or `LinearLayout.VERTICAL`. |
 
-### SancaiText
+### MalletText
 
-`io.github.avalonskyafar.sancai.widget.SancaiText` · Showcase: Foundations › Typography
+`io.github.avalonskyafar.mallet.widget.MalletText` · Showcase: Foundations › Typography
 
-A text view that speaks the Sancai type scale: pick a `role` for size, weight and leading
+A text view that speaks the Mallet type scale: pick a `role` for size, weight and leading
 and a `tone` for colour.
 
 Font padding is switched off, so a line of text is exactly as tall as its glyphs and
 vertical centring is optical rather than approximate.
 
-Pictures: see [SancaiSurface](#sancaisurface).
+Pictures: see [MalletSurface](#malletsurface).
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiText
+<io.github.avalonskyafar.mallet.widget.MalletText
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="Protection strength"
-    app:sancaiTextRole="heading" />
+    app:malletTextRole="heading" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiTextRole` | one of 11 names (see below) | Role in the type scale. |
-| `app:sancaiTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | Colour role of text or of an icon. |
+| `app:malletTextRole` | one of 11 names (see below) | Role in the type scale. |
+| `app:malletTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | Colour role of text or of an icon. |
 
 | Member | What it does |
 |---|---|
-| `var role: SancaiTextRole` | Size, weight and leading. |
-| `var tone: SancaiTextTone` | Colour role. |
-| ↳ `fun create(context: Context, text: CharSequence?, role: SancaiTextRole, tone: SancaiTextTone` | Creates a text view in code. |
+| `var role: MalletTextRole` | Size, weight and leading. |
+| `var tone: MalletTextTone` | Colour role. |
+| ↳ `fun create(context: Context, text: CharSequence?, role: MalletTextRole, tone: MalletTextTone` | Creates a text view in code. |
 
-### SancaiIconView
+### MalletIconView
 
-`io.github.avalonskyafar.sancai.icon.SancaiIconView` · Showcase: Foundations › Icons
+`io.github.avalonskyafar.mallet.icon.MalletIconView` · Showcase: Foundations › Icons
 
-Shows one `SancaiIcon`.
+Shows one `MalletIcon`.
 
 The icon fills the smaller side of the content box; `wrap_content` measures 24 dp plus
 padding. Directional icons mirror in right-to-left layouts. The view is decorative unless
 you give it a content description.
 
-<img src="images/components/glyphs_light.png" width="320" alt="SancaiIconView, light theme"> <img src="images/components/glyphs_dark.png" width="320" alt="SancaiIconView, dark theme">
+<img src="images/components/glyphs_light.png" width="320" alt="MalletIconView, light theme"> <img src="images/components/glyphs_dark.png" width="320" alt="MalletIconView, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.icon.SancaiIconView
+<io.github.avalonskyafar.mallet.icon.MalletIconView
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:sancaiIcon="shield"
-    app:sancaiTone="accent" />
+    app:malletIcon="shield"
+    app:malletTone="accent" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiIcon` | one of 51 names (see below) | An icon of the built-in set. Values follow the order of the SancaiIcon enum. |
-| `app:sancaiTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | Colour role of text or of an icon. |
-| `app:sancaiIconStroke` | dimension | Stroke width at the drawn size. Defaults to 2dp. |
+| `app:malletIcon` | one of 51 names (see below) | An icon of the built-in set. Values follow the order of the MalletIcon enum. |
+| `app:malletTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | Colour role of text or of an icon. |
+| `app:malletIconStroke` | dimension | Stroke width at the drawn size. Defaults to 2dp. |
 
 | Member | What it does |
 |---|---|
-| `var icon: SancaiIcon?` | The icon to draw, or `null` for nothing. |
-| `var tone: SancaiTextTone` | Colour role of the stroke, used when `color` is `null`. |
+| `var icon: MalletIcon?` | The icon to draw, or `null` for nothing. |
+| `var tone: MalletTextTone` | Colour role of the stroke, used when `color` is `null`. |
 | `var color: Int?` | Explicit stroke colour; overrides `tone` when set. |
 | `var strokeDp: Float` | Stroke width in dp at the drawn size. |
 | ↳ `const val DEFAULT_SIZE_DP: Float` | Size, in dp, that `wrap_content` resolves to. |
@@ -174,11 +174,11 @@ you give it a content description.
 
 Things that are pressed. A page has at most one primary capsule; everything else is neutral.
 
-### SancaiButton
+### MalletButton
 
-**Extended** · `io.github.avalonskyafar.sancai.widget.SancaiButton` · Showcase: Components › Buttons and chips
+**Extended** · `io.github.avalonskyafar.mallet.widget.MalletButton` · Showcase: Components › Buttons and chips
 
-The Sancai capsule button.
+The Mallet capsule button.
 
 | Variant | Body | Use |
 |---|---|---|
@@ -191,36 +191,36 @@ Pressing sinks the capsule by 1.5 dp and tightens its shadow; nothing changes co
 Keyboard focus thickens the rim into ink. A disabled button pales. While `isLoading` the
 label gives way to a spinner and clicks are ignored.
 
-Pictures: see [SancaiSurface](#sancaisurface).
+Pictures: see [MalletSurface](#malletsurface).
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiButton
+<io.github.avalonskyafar.mallet.widget.MalletButton
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="Restore defaults"
-    app:sancaiButtonVariant="neutral" />
+    app:malletButtonVariant="neutral" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
 | `android:focusable` | boolean | Whether the button takes keyboard focus. True unless the layout says otherwise. |
 | `android:clickable` | boolean | Whether the button answers taps and keys. True unless the layout says otherwise. |
-| `app:sancaiButtonVariant` | `neutral` / `primary` / `danger` / `text` | The body of the button: a porcelain capsule, a glazed capsule, or the label alone. |
-| `app:sancaiTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | Text colour of the text variant. Defaults to accent. |
-| `app:sancaiIcon` | one of 51 names (see below) | Icon drawn before the label. |
-| `app:sancaiLoading` | boolean | Replaces the label with a spinner and ignores clicks. |
+| `app:malletButtonVariant` | `neutral` / `primary` / `danger` / `text` | The body of the button: a porcelain capsule, a glazed capsule, or the label alone. |
+| `app:malletTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | Text colour of the text variant. Defaults to accent. |
+| `app:malletIcon` | one of 51 names (see below) | Icon drawn before the label. |
+| `app:malletLoading` | boolean | Replaces the label with a spinner and ignores clicks. |
 
 | Member | What it does |
 |---|---|
 | `enum class Variant { NEUTRAL, PRIMARY, DANGER, TEXT }` |  |
 | `var variant: Variant` | Visual variant. |
-| `var tone: SancaiTextTone` | Label colour of the `Variant.TEXT` variant. |
-| `var icon: SancaiIcon?` | Icon drawn before the label, or `null`. |
+| `var tone: MalletTextTone` | Label colour of the `Variant.TEXT` variant. |
+| `var icon: MalletIcon?` | Icon drawn before the label, or `null`. |
 | `var isLoading: Boolean` | Shows a spinner instead of the label and ignores clicks. |
 
-### SancaiChip
+### MalletChip
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiChip` · Showcase: Components › Buttons and chips
+**New** · `io.github.avalonskyafar.mallet.widget.MalletChip` · Showcase: Components › Buttons and chips
 
 A small porcelain capsule for filters, suggestions and short actions.
 
@@ -230,7 +230,7 @@ A small porcelain capsule for filters, suggestions and short actions.
 | `Kind.FILTER` | checkable: a tap flips `isChecked` and calls `setOnCheckedChangeListener` |
 
 An unchecked chip is raised white porcelain with an ink label. Checking a filter chip pours
-a glaze into it: the body becomes a recessed glazed capsule (`glaze`, cobalt by default), a
+a hue into it: the body becomes a recessed glazed capsule (`hue`, cobalt by default), a
 small check mark is drawn before the label and the chip glides to its wider size. The colour
 is the state; nothing else about the chip changes.
 
@@ -240,47 +240,47 @@ inside a 44 dp touch target; the room around it holds the shadow.
 
 `setOnCheckedChangeListener` is called for user input only (touch, keyboard, accessibility),
 never for `setChecked`, and it is called before the haptic tick. Put several chips into a
-`SancaiChipGroup` to let them wrap and, optionally, to allow one choice only.
+`MalletChipGroup` to let them wrap and, optionally, to allow one choice only.
 
-<img src="images/components/chip_light.png" width="320" alt="SancaiChip, light theme"> <img src="images/components/chip_dark.png" width="320" alt="SancaiChip, dark theme">
+<img src="images/components/chip_light.png" width="320" alt="MalletChip, light theme"> <img src="images/components/chip_dark.png" width="320" alt="MalletChip, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiChip
+<io.github.avalonskyafar.mallet.widget.MalletChip
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="Unread"
-    app:sancaiChipKind="filter"
-    app:sancaiChecked="true" />
+    app:malletChipKind="filter"
+    app:malletChecked="true" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
 | `android:text` | string | Label of the chip. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
-| `app:sancaiChipKind` | `action` / `filter` | What the chip does: an action is pressed, a filter is checked and unchecked. |
-| `app:sancaiChecked` | boolean | Whether a filter chip starts checked. |
-| `app:sancaiGlaze` | `terracotta` / `ochre` / `cobalt` / `celadon` / `mist` | Glaze of a checked filter chip. Cobalt by default. |
-| `app:sancaiIcon` | one of 51 names (see below) | Icon drawn before the label. |
+| `app:malletChipKind` | `action` / `filter` | What the chip does: an action is pressed, a filter is checked and unchecked. |
+| `app:malletChecked` | boolean | Whether a filter chip starts checked. |
+| `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | Hue of a checked filter chip. Cobalt by default. |
+| `app:malletIcon` | one of 51 names (see below) | Icon drawn before the label. |
 
 | Member | What it does |
 |---|---|
 | `enum class Kind { ACTION, FILTER }` | What a chip does when it is tapped. |
 | `fun interface OnCheckedChangeListener` | Called when the user checks or unchecks a filter chip. |
-| ↳ `fun onCheckedChanged(chip: SancaiChip, isChecked: Boolean)` |  |
+| ↳ `fun onCheckedChanged(chip: MalletChip, isChecked: Boolean)` |  |
 | `fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)` | Listener for user-driven changes of `isChecked`. |
 | `var text: CharSequence` | The label. |
 | `var kind: Kind` | Whether the chip is pressed like a button or checked like a filter. |
-| `var glaze: SancaiGlaze` | Glaze poured into a checked filter chip. |
-| `var icon: SancaiIcon?` | Icon drawn before the label, or `null`. |
+| `var hue: MalletHue` | Hue poured into a checked filter chip. |
+| `var icon: MalletIcon?` | Icon drawn before the label, or `null`. |
 | `var isChecked: Boolean` | Whether a filter chip is checked. |
 | `fun setChecked(checked: Boolean, animate: Boolean)` | Checks or unchecks a filter chip from code, gliding when `animate` is set. |
 | `fun getBodyBounds(out: RectF)` | The visible capsule in view coordinates, written to `out`. |
 
-### SancaiChipGroup
+### MalletChipGroup
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiChipGroup` · Showcase: Components › Buttons and chips
+**New** · `io.github.avalonskyafar.mallet.widget.MalletChipGroup` · Showcase: Components › Buttons and chips
 
-A wrapping row of `SancaiChip`s: chips flow from the start edge and continue on the next
+A wrapping row of `MalletChip`s: chips flow from the start edge and continue on the next
 line when the width runs out. Right-to-left layouts flow from the right.
 
 Gaps are measured between the visible capsules, 8 dp by default in both directions. A chip
@@ -291,38 +291,38 @@ capsule of a row is inset from the group's edge by the chip's 2 dp shadow gutter
 With `isSingleSelection` at most one filter chip is checked at a time: checking one unchecks
 the others. `isSelectionRequired` also keeps the user from unchecking the last checked chip.
 `setOnCheckedStateChangeListener` is called for user input only, never for `check`,
-`clearCheck` or `SancaiChip.setChecked`.
+`clearCheck` or `MalletChip.setChecked`.
 
-Pictures: see [SancaiChip](#sancaichip).
+Pictures: see [MalletChip](#malletchip).
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiChipGroup
+<io.github.avalonskyafar.mallet.widget.MalletChipGroup
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiChipGroupSingleSelection="true"
-    app:sancaiChipGroupCheckedChip="@id/chip_all">
+    app:malletChipGroupSingleSelection="true"
+    app:malletChipGroupCheckedChip="@id/chip_all">
 
-    <io.github.avalonskyafar.sancai.widget.SancaiChip
+    <io.github.avalonskyafar.mallet.widget.MalletChip
         android:id="@+id/chip_all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="All"
-        app:sancaiChipKind="filter" />
-</io.github.avalonskyafar.sancai.widget.SancaiChipGroup>
+        app:malletChipKind="filter" />
+</io.github.avalonskyafar.mallet.widget.MalletChipGroup>
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiChipGroupSingleSelection` | boolean | Whether at most one filter chip of the group can be checked at a time. |
-| `app:sancaiChipGroupSelectionRequired` | boolean | Whether the user is kept from unchecking the last checked chip. |
-| `app:sancaiChipGroupHorizontalGap` | dimension | Gap between the bodies of neighbouring chips in a row. 8dp by default. |
-| `app:sancaiChipGroupVerticalGap` | dimension | Gap between the bodies of chips in neighbouring rows. 8dp by default. |
-| `app:sancaiChipGroupCheckedChip` | reference | Id of the chip that is checked at start. |
+| `app:malletChipGroupSingleSelection` | boolean | Whether at most one filter chip of the group can be checked at a time. |
+| `app:malletChipGroupSelectionRequired` | boolean | Whether the user is kept from unchecking the last checked chip. |
+| `app:malletChipGroupHorizontalGap` | dimension | Gap between the bodies of neighbouring chips in a row. 8dp by default. |
+| `app:malletChipGroupVerticalGap` | dimension | Gap between the bodies of chips in neighbouring rows. 8dp by default. |
+| `app:malletChipGroupCheckedChip` | reference | Id of the chip that is checked at start. |
 
 | Member | What it does |
 |---|---|
 | `fun interface OnCheckedStateChangeListener` | Called when the user changes which chips of the group are checked. |
-| ↳ `fun onCheckedStateChanged(group: SancaiChipGroup, checkedIds: List<Int>)` |  |
+| ↳ `fun onCheckedStateChanged(group: MalletChipGroup, checkedIds: List<Int>)` |  |
 | `fun setOnCheckedStateChangeListener(listener: OnCheckedStateChangeListener?)` | Listener for user-driven changes of the checked chips. |
 | `var isSingleSelection: Boolean` | Whether at most one chip can be checked. |
 | `var isSelectionRequired: Boolean` | Whether the user is kept from unchecking the last checked chip. |
@@ -333,50 +333,50 @@ Pictures: see [SancaiChip](#sancaichip).
 | `fun check(id: Int, animate: Boolean = true)` | Checks the chip with `id` from code; listeners are not called. |
 | `fun clearCheck(animate: Boolean = true)` | Leaves no chip checked. |
 
-### SancaiTag
+### MalletTag
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiTag` · Showcase: Components › Buttons and chips
+**New** · `io.github.avalonskyafar.mallet.widget.MalletTag` · Showcase: Components › Buttons and chips
 
 A status tag: a miniature recessed glazed capsule with a short bold label.
 
 The tag says what state something is in ("Active", "Expired", "Draft") and nothing else. It
 is 22 dp high, has no outer shadow, cannot be pressed and takes no focus. Its colour is the
-state, and it lives in the bed: each `Tone` maps to one glaze of the theme. Several tags
-side by side belong in a `SancaiChipGroup`, which wraps them onto further lines.
+state, and it lives in the bed: each `Tone` maps to one hue of the theme. Several tags
+side by side belong in a `MalletChipGroup`, which wraps them onto further lines.
 
-| Tone | Glaze | Use |
+| Tone | Hue | Use |
 |---|---|---|
-| `Tone.POSITIVE` | celadon | done, healthy, allowed |
+| `Tone.POSITIVE` | jade | done, healthy, allowed |
 | `Tone.CAUTION` | ochre | pending, needs attention |
-| `Tone.NEGATIVE` | terracotta | failed, blocked, off |
+| `Tone.NEGATIVE` | bronze | failed, blocked, off |
 | `Tone.INFO` | cobalt | running, selected, new |
 | `Tone.NEUTRAL` | mist | plain labels without a judgement |
 
-Pictures: see [SancaiChip](#sancaichip).
+Pictures: see [MalletChip](#malletchip).
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiTag
+<io.github.avalonskyafar.mallet.widget.MalletTag
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="Active"
-    app:sancaiTagTone="positive" />
+    app:malletTagTone="positive" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
 | `android:text` | string | Label of the tag. |
-| `app:sancaiTagTone` | `positive` / `caution` / `negative` / `info` / `neutral` | What the tag says about its subject; decides the glaze of its bed. |
+| `app:malletTagTone` | `positive` / `caution` / `negative` / `info` / `neutral` | What the tag says about its subject; decides the hue of its bed. |
 
 | Member | What it does |
 |---|---|
-| `enum class Tone { POSITIVE, CAUTION, NEGATIVE, INFO, NEUTRAL }` | What the tag says about its subject; each tone is one glaze of the theme. |
+| `enum class Tone { POSITIVE, CAUTION, NEGATIVE, INFO, NEUTRAL }` | What the tag says about its subject; each tone is one hue of the theme. |
 | `var text: CharSequence` | The label. |
 | `var tone: Tone` | What the tag says about its subject. |
-| `val glaze: SancaiGlaze` | The glaze `tone` maps to in the theme of this view. |
+| `val hue: MalletHue` | The hue `tone` maps to in the theme of this view. |
 
-### SancaiBadge
+### MalletBadge
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiBadge` · Showcase: Components › Buttons and chips
+**New** · `io.github.avalonskyafar.mallet.widget.MalletBadge` · Showcase: Components › Buttons and chips
 
 A count badge: a small capsule glazed in the danger colour with a white number on it.
 
@@ -393,10 +393,10 @@ you set yourself, in XML or from code, is kept: the badge then leaves that prope
 Set the description back to `null`, or the importance back to `auto`, and the badge takes
 it over again with its next change.
 
-<img src="images/components/navbar_light.png" width="320" alt="SancaiBadge, light theme"> <img src="images/components/navbar_dark.png" width="320" alt="SancaiBadge, dark theme">
+<img src="images/components/navbar_light.png" width="320" alt="MalletBadge, light theme"> <img src="images/components/navbar_dark.png" width="320" alt="MalletBadge, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiBadge
+<io.github.avalonskyafar.mallet.widget.MalletBadge
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" />
 ```
@@ -409,7 +409,7 @@ it over again with its next change.
 | `val text: String` | What the badge currently says: the number, "99+" style overflow, or nothing. |
 | `val isShowing: Boolean get()` | Whether anything is drawn at all: a count above zero, or the dot. |
 | `fun detach()` | Removes a badge created with `attach` from its anchor. |
-| ↳ `fun attach(anchor: View): SancaiBadge` | Overlays a new badge on the top end corner of `anchor` and returns it. |
+| ↳ `fun attach(anchor: View): MalletBadge` | Overlays a new badge on the top end corner of `anchor` and returns it. |
 
 ---
 
@@ -417,63 +417,63 @@ it over again with its next change.
 
 Controls whose state is a colour in a recessed bed. The thumb or bead that moves over it stays neutral.
 
-### SancaiSegmentedTrack
+### MalletSegmentedTrack
 
-**Extracted** · `io.github.avalonskyafar.sancai.widget.SancaiSegmentedTrack` · Showcase: Components › Tracks and switches
+**Extracted** · `io.github.avalonskyafar.mallet.widget.MalletSegmentedTrack` · Showcase: Components › Tracks and switches
 
-The signature Sancai control: a recessed glazed track with two or more options and a neutral
+The signature Mallet control: a recessed glazed track with two or more options and a neutral
 thumb that follows the finger.
 
-The colour of the bed is the state. As the thumb travels, the glaze of the option it leaves
-blends into the glaze of the option it approaches, so the control answers "which option" by
+The colour of the bed is the state. As the thumb travels, the hue of the option it leaves
+blends into the hue of the option it approaches, so the control answers "which option" by
 position and "how strong" by colour at the same time.
 
-By default the options are read as an ordinal scale and glazed terracotta, ochre, cobalt and
-celadon in that order (see `io.github.avalonskyafar.sancai.theme.SancaiGlazes.scale`). Use
-`setGlazes` for a plain choice or a custom scale.
+By default the options are read as an ordinal scale and glazed bronze, ochre, cobalt and
+jade in that order (see `io.github.avalonskyafar.mallet.theme.MalletHues.scale`). Use
+`setHues` for a plain choice or a custom scale.
 
 The view is 60 dp tall by default: a 52 dp track plus the gutter its shadow needs.
 
-<img src="images/components/segmented_track_light.png" width="320" alt="SancaiSegmentedTrack, light theme"> <img src="images/components/segmented_track_dark.png" width="320" alt="SancaiSegmentedTrack, dark theme">
+<img src="images/components/segmented_track_light.png" width="320" alt="MalletSegmentedTrack, light theme"> <img src="images/components/segmented_track_dark.png" width="320" alt="MalletSegmentedTrack, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiSegmentedTrack
+<io.github.avalonskyafar.mallet.widget.MalletSegmentedTrack
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiOptions="@array/strength_levels"
-    app:sancaiSelectedIndex="2" />
+    app:malletOptions="@array/strength_levels"
+    app:malletSelectedIndex="2" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiOptions` | reference | Options of a multi-option control, as a string array. |
-| `app:sancaiSelectedIndex` | integer | Index of the option selected at start. |
-| `app:sancaiGlazeMode` | `scale` / `uniform` | How options are glazed. "scale" reads the options as an ordinal scale (off, gentle, standard, strict). "uniform" pours the single glaze named by sancaiGlaze under every option, for plain choices. |
-| `app:sancaiGlaze` | `terracotta` / `ochre` / `cobalt` / `celadon` / `mist` | One of the five glazes of the theme. |
+| `app:malletOptions` | reference | Options of a multi-option control, as a string array. |
+| `app:malletSelectedIndex` | integer | Index of the option selected at start. |
+| `app:malletHueMode` | `scale` / `uniform` | How options are glazed. "scale" reads the options as an ordinal scale (off, gentle, standard, strict). "uniform" pours the single hue named by malletHue under every option, for plain choices. |
+| `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | One of the five hues of the theme. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
 | Member | What it does |
 |---|---|
 | `fun interface OnSelectionChangeListener` | Called when the user moves the selection to another option. |
-| ↳ `fun onSelectionChanged(track: SancaiSegmentedTrack, index: Int)` |  |
+| ↳ `fun onSelectionChanged(track: MalletSegmentedTrack, index: Int)` |  |
 | `fun setOnSelectionChangeListener(listener: OnSelectionChangeListener?)` | Listener for user-driven selection changes. |
 | `var options: List<CharSequence>` | The option labels. |
 | `val selectedIndex: Int get()` | Index of the selected option. |
 | `fun setOptions(vararg labels: CharSequence)` | Replaces the option labels. |
-| `fun setGlazes(glazes: List<SancaiGlaze>?)` | Sets the glaze poured under each option, or `null` to return to the default ordinal scale. |
+| `fun setHues(hues: List<MalletHue>?)` | Sets the hue poured under each option, or `null` to return to the default ordinal scale. |
 | `fun select(index: Int, animate: Boolean = true)` | Moves the selection to `index` from code. |
 | ↳ `const val HEIGHT_DP: Float` | Default height of the view in dp: a 52 dp track plus its shadow gutter. |
 | ↳ `const val GUTTER_SIDE_DP: Float` | Room at each side of the capsule, inside the view, in dp. |
 | ↳ `const val GUTTER_TOP_DP: Float` | Room above the capsule, inside the view, in dp. |
 | ↳ `const val GUTTER_BOTTOM_DP: Float` | Room below the capsule, inside the view, in dp. |
 
-### SancaiSwitch
+### MalletSwitch
 
-**Extracted** · `io.github.avalonskyafar.sancai.widget.SancaiSwitch` · Showcase: Components › Tracks and switches
+**Extracted** · `io.github.avalonskyafar.mallet.widget.MalletSwitch` · Showcase: Components › Tracks and switches
 
 The compact two-state switch: a small recessed glazed track with a neutral round thumb.
 
-The colour of the bed is the state: terracotta while off, cobalt while on, and a blend of
+The colour of the bed is the state: bronze while off, cobalt while on, and a blend of
 the two while the thumb travels. The thumb itself never changes colour. A tap toggles; a
 horizontal drag makes the thumb follow the finger and commits to the nearer side on
 release; a mostly vertical movement gives the gesture back to a scrolling parent and
@@ -486,29 +486,29 @@ is all track. It carries no label of its own: give it a `contentDescription`.
 The listener is called for user input only (touch, keyboard, accessibility action), never
 for `setChecked` or `toggle`, so a change can be rolled back from inside the listener.
 
-<img src="images/components/switch_light.png" width="320" alt="SancaiSwitch, light theme"> <img src="images/components/switch_dark.png" width="320" alt="SancaiSwitch, dark theme">
+<img src="images/components/switch_light.png" width="320" alt="MalletSwitch, light theme"> <img src="images/components/switch_dark.png" width="320" alt="MalletSwitch, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiSwitch
+<io.github.avalonskyafar.mallet.widget.MalletSwitch
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:sancaiChecked="true" />
+    app:malletChecked="true" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiChecked` | boolean | Whether a two-state control starts checked. |
-| `app:sancaiSwitchOffGlaze` | `terracotta` / `ochre` / `cobalt` / `celadon` / `mist` | Glaze of the bed while the switch is off. Default: terracotta. |
-| `app:sancaiSwitchOnGlaze` | `terracotta` / `ochre` / `cobalt` / `celadon` / `mist` | Glaze of the bed while the switch is on. Default: cobalt. |
+| `app:malletChecked` | boolean | Whether a two-state control starts checked. |
+| `app:malletSwitchOffHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | Hue of the bed while the switch is off. Default: bronze. |
+| `app:malletSwitchOnHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | Hue of the bed while the switch is on. Default: cobalt. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
 | Member | What it does |
 |---|---|
 | `fun interface OnCheckedChangeListener` | Called when the user turns the switch on or off. |
-| ↳ `fun onCheckedChanged(switch: SancaiSwitch, isChecked: Boolean)` | The user turned `switch` on or off; `isChecked` is its new state. |
+| ↳ `fun onCheckedChanged(switch: MalletSwitch, isChecked: Boolean)` | The user turned `switch` on or off; `isChecked` is its new state. |
 | `fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)` | Listener for user-driven changes. |
-| `var offGlaze: SancaiGlaze` | Glaze of the bed while the switch is off. |
-| `var onGlaze: SancaiGlaze` | Glaze of the bed while the switch is on. |
+| `var offHue: MalletHue` | Hue of the bed while the switch is off. |
+| `var onHue: MalletHue` | Hue of the bed while the switch is on. |
 | `var onStateDescription: CharSequence` | What accessibility services say for the on state. |
 | `var offStateDescription: CharSequence` | What accessibility services say for the off state. |
 | `fun setChecked(checked: Boolean, animate: Boolean)` | Sets the state from code. |
@@ -516,14 +516,14 @@ for `setChecked` or `toggle`, so a change can be rolled back from inside the lis
 | ↳ `const val HEIGHT_DP: Float` | Height of the box the track is drawn in, in dp: a 30 dp bed plus its shadow gutter. |
 | ↳ `const val TARGET_HEIGHT_DP: Float` | Height of the view on `wrap_content`, in dp: the track centred in a 44 dp touch target. |
 
-### SancaiPowerSwitch
+### MalletPowerSwitch
 
-**Extracted** · `io.github.avalonskyafar.sancai.widget.SancaiPowerSwitch` · Showcase: Components › Tracks and switches
+**Extracted** · `io.github.avalonskyafar.mallet.widget.MalletPowerSwitch` · Showcase: Components › Tracks and switches
 
 The hero switch of a screen: a large glazed capsule whose wide neutral thumb carries a power
 glyph and the current state, while the free half of the bed names the action a tap performs.
 
-The colour of the bed is the state: terracotta while off, cobalt while on, blended by the
+The colour of the bed is the state: bronze while off, cobalt while on, blended by the
 position of the thumb while it travels. Both labels change the moment the thumb crosses the
 middle of its travel, not on release, so the control always reads true under the finger.
 
@@ -533,48 +533,48 @@ Use one power switch per screen, at full width.
 
 The view is 92 dp tall by default: an 80 dp capsule plus the gutter its deep shadow needs.
 
-<img src="images/components/power_light.png" width="320" alt="SancaiPowerSwitch, light theme"> <img src="images/components/power_dark.png" width="320" alt="SancaiPowerSwitch, dark theme">
+<img src="images/components/power_light.png" width="320" alt="MalletPowerSwitch, light theme"> <img src="images/components/power_dark.png" width="320" alt="MalletPowerSwitch, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiPowerSwitch
+<io.github.avalonskyafar.mallet.widget.MalletPowerSwitch
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiChecked="true"
-    app:sancaiPowerSwitchTurnOffLabel="@string/stop_protection" />
+    app:malletChecked="true"
+    app:malletPowerSwitchTurnOffLabel="@string/stop_protection" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
-| `app:sancaiChecked` | boolean | Whether the switch starts on. |
-| `app:sancaiPowerSwitchOnLabel` | string | State label on the thumb while the switch is on. Default "On". |
-| `app:sancaiPowerSwitchOffLabel` | string | State label on the thumb while the switch is off. Default "Off". |
-| `app:sancaiPowerSwitchTurnOnLabel` | string | Action label on the bed while the switch is off. Default "Turn on". |
-| `app:sancaiPowerSwitchTurnOffLabel` | string | Action label on the bed while the switch is on. Default "Turn off". |
-| `app:sancaiPowerSwitchOnGlaze` | `terracotta` / `ochre` / `cobalt` / `celadon` / `mist` | Glaze of the bed while the switch is on. Default cobalt. |
-| `app:sancaiPowerSwitchOffGlaze` | `terracotta` / `ochre` / `cobalt` / `celadon` / `mist` | Glaze of the bed while the switch is off. Default terracotta. |
+| `app:malletChecked` | boolean | Whether the switch starts on. |
+| `app:malletPowerSwitchOnLabel` | string | State label on the thumb while the switch is on. Default "On". |
+| `app:malletPowerSwitchOffLabel` | string | State label on the thumb while the switch is off. Default "Off". |
+| `app:malletPowerSwitchTurnOnLabel` | string | Action label on the bed while the switch is off. Default "Turn on". |
+| `app:malletPowerSwitchTurnOffLabel` | string | Action label on the bed while the switch is on. Default "Turn off". |
+| `app:malletPowerSwitchOnHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | Hue of the bed while the switch is on. Default cobalt. |
+| `app:malletPowerSwitchOffHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | Hue of the bed while the switch is off. Default bronze. |
 
 | Member | What it does |
 |---|---|
 | `fun interface OnCheckedChangeListener` | Called when the user turns the switch on or off. |
-| ↳ `fun onCheckedChanged(switch: SancaiPowerSwitch, isChecked: Boolean)` | The user turned `switch` on or off; `isChecked` is the new state. |
+| ↳ `fun onCheckedChanged(switch: MalletPowerSwitch, isChecked: Boolean)` | The user turned `switch` on or off; `isChecked` is the new state. |
 | `fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)` | Listener for user-driven changes. |
 | `var onLabel: CharSequence` | State label shown on the thumb while the switch is on. |
 | `var offLabel: CharSequence` | State label shown on the thumb while the switch is off. |
 | `var turnOnLabel: CharSequence` | Action label shown on the bed while the switch is off. |
 | `var turnOffLabel: CharSequence` | Action label shown on the bed while the switch is on. |
-| `var offGlaze: SancaiGlaze` | Glaze of the bed while the switch is off. |
-| `var onGlaze: SancaiGlaze` | Glaze of the bed while the switch is on. |
+| `var offHue: MalletHue` | Hue of the bed while the switch is off. |
+| `var onHue: MalletHue` | Hue of the bed while the switch is on. |
 | `fun setChecked(checked: Boolean, animate: Boolean)` | Turns the switch on or off from code. |
 
-### SancaiCheckbox
+### MalletCheckbox
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiCheckbox` · Showcase: Components › Checkboxes and radios
+**New** · `io.github.avalonskyafar.mallet.widget.MalletCheckbox` · Showcase: Components › Checkboxes and radios
 
-A small recessed bed that fills with glaze when it is checked.
+A small recessed bed that fills with hue when it is checked.
 
 Unchecked, the box is a neutral well. Checked, it becomes a glazed bed (cobalt unless
-`glaze` says otherwise) carrying a check mark. Between the two the glaze fades in and the
+`hue` says otherwise) carrying a check mark. Between the two the hue fades in and the
 check is drawn along its path; with reduced motion the box jumps.
 
 An optional label (`text`) sits at the end of the box and wraps when it has to; the box
@@ -583,124 +583,124 @@ stays level with the first line. The whole view is the touch target, at least 44
 `setOnCheckedChangeListener` is called for user input only (touch, keyboard, accessibility),
 never for `setChecked` or `toggle`, so a listener may roll the box back safely.
 
-<img src="images/components/checkbox_light.png" width="320" alt="SancaiCheckbox, light theme"> <img src="images/components/checkbox_dark.png" width="320" alt="SancaiCheckbox, dark theme">
+<img src="images/components/checkbox_light.png" width="320" alt="MalletCheckbox, light theme"> <img src="images/components/checkbox_dark.png" width="320" alt="MalletCheckbox, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiCheckbox
+<io.github.avalonskyafar.mallet.widget.MalletCheckbox
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/remember_me"
-    app:sancaiChecked="true"
-    app:sancaiGlaze="celadon" />
+    app:malletChecked="true"
+    app:malletHue="jade" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
 | `android:text` | string | Label at the end of the box. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
-| `app:sancaiChecked` | boolean | Whether the box starts checked. |
-| `app:sancaiGlaze` | `terracotta` / `ochre` / `cobalt` / `celadon` / `mist` | Glaze poured into the checked box. Cobalt when absent. |
+| `app:malletChecked` | boolean | Whether the box starts checked. |
+| `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | Hue poured into the checked box. Cobalt when absent. |
 
 | Member | What it does |
 |---|---|
 | `fun interface OnCheckedChangeListener` | Called when the user checks or unchecks the box. |
-| ↳ `fun onCheckedChanged(checkbox: SancaiCheckbox, isChecked: Boolean)` | The user checked or unchecked `checkbox`; `isChecked` is its new state. |
+| ↳ `fun onCheckedChanged(checkbox: MalletCheckbox, isChecked: Boolean)` | The user checked or unchecked `checkbox`; `isChecked` is its new state. |
 | `fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)` | Listener for user-driven changes. |
-| `var glaze: SancaiGlaze` | The glaze poured into the box when it is checked. |
+| `var hue: MalletHue` | The hue poured into the box when it is checked. |
 | `var text: CharSequence` | The label at the end of the box, or empty for a bare box. |
 | `fun setChecked(checked: Boolean, animate: Boolean)` | Checks or unchecks the box from code. |
 
-### SancaiRadioButton
+### MalletRadioButton
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiRadioButton` · Showcase: Components › Checkboxes and radios
+**New** · `io.github.avalonskyafar.mallet.widget.MalletRadioButton` · Showcase: Components › Checkboxes and radios
 
-One choice out of several: a small round recessed bed that fills with glaze and grows a
+One choice out of several: a small round recessed bed that fills with hue and grows a
 neutral bead in its centre when it is checked.
 
-Unchecked the bed is a plain well; checked it is a glazed track (`glaze`, cobalt by default)
-and the bead scales up from nothing while the glaze fades in. An optional label (`text`) sits
+Unchecked the bed is a plain well; checked it is a glazed track (`hue`, cobalt by default)
+and the bead scales up from nothing while the hue fades in. An optional label (`text`) sits
 to the end of the bed, and the whole view is the touch target.
 
 A checked radio cannot be unchecked by the user; only choosing a sibling does that. Put the
-radios of one question into a `SancaiRadioGroup`, which keeps a single one checked.
+radios of one question into a `MalletRadioGroup`, which keeps a single one checked.
 
 The view is at least 44 dp tall; the bed itself is 26 dp across.
 
-<img src="images/components/radio_light.png" width="320" alt="SancaiRadioButton, light theme"> <img src="images/components/radio_dark.png" width="320" alt="SancaiRadioButton, dark theme">
+<img src="images/components/radio_light.png" width="320" alt="MalletRadioButton, light theme"> <img src="images/components/radio_dark.png" width="320" alt="MalletRadioButton, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiRadioButton
+<io.github.avalonskyafar.mallet.widget.MalletRadioButton
     android:id="@+id/daily"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="@string/every_day"
-    app:sancaiChecked="true" />
+    app:malletChecked="true" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiChecked` | boolean | Whether the radio starts checked. Inside a SancaiRadioGroup the last checked child wins. |
-| `app:sancaiGlaze` | `terracotta` / `ochre` / `cobalt` / `celadon` / `mist` | Glaze poured into the bed when the radio is checked. Cobalt by default. |
+| `app:malletChecked` | boolean | Whether the radio starts checked. Inside a MalletRadioGroup the last checked child wins. |
+| `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | Hue poured into the bed when the radio is checked. Cobalt by default. |
 | `android:text` | string | Label drawn to the end of the bed. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
 | Member | What it does |
 |---|---|
 | `fun interface OnCheckedChangeListener` | Called when the user changes the checked state of a radio. |
-| ↳ `fun onCheckedChanged(radio: SancaiRadioButton, isChecked: Boolean)` | The user changed `radio`; `isChecked` is its new state. |
-| `fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)` | Listener for user-driven changes: a tap, a key or an accessibility action on this radio, or the user choosing a sibling in the same `SancaiRadioGroup` (which reports `false` here). |
-| `var glaze: SancaiGlaze` | Glaze poured into the bed while the radio is checked. |
+| ↳ `fun onCheckedChanged(radio: MalletRadioButton, isChecked: Boolean)` | The user changed `radio`; `isChecked` is its new state. |
+| `fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)` | Listener for user-driven changes: a tap, a key or an accessibility action on this radio, or the user choosing a sibling in the same `MalletRadioGroup` (which reports `false` here). |
+| `var hue: MalletHue` | Hue poured into the bed while the radio is checked. |
 | `var text: CharSequence?` | Label drawn to the end of the bed, or `null` for a bare radio. |
-| `fun setChecked(checked: Boolean, animate: Boolean)` | Sets the state from code; with `animate` the glaze and the bead glide in or out. |
+| `fun setChecked(checked: Boolean, animate: Boolean)` | Sets the state from code; with `animate` the hue and the bead glide in or out. |
 | ↳ `const val BED_DP: Float` | Diameter of the round bed in dp. |
 | ↳ `const val BEAD_DP: Float` | Diameter of the neutral bead of a checked radio in dp. |
 | ↳ `const val MIN_TARGET_DP: Float` | Smallest height of the view, and width of a radio without a label, in dp. |
 
-### SancaiRadioGroup
+### MalletRadioGroup
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiRadioGroup` · Showcase: Components › Checkboxes and radios
+**New** · `io.github.avalonskyafar.mallet.widget.MalletRadioGroup` · Showcase: Components › Checkboxes and radios
 
-A vertical column of `SancaiRadioButton`s that answers one question: checking one radio
+A vertical column of `MalletRadioButton`s that answers one question: checking one radio
 unchecks the one that was checked before.
 
 The group starts with whatever its children say (the last checked child wins) or with
-`app:sancaiRadioCheckedButton`. It may start empty; once a radio is checked the user can only
+`app:malletRadioCheckedButton`. It may start empty; once a radio is checked the user can only
 move the choice, never remove it. `clearCheck` removes it from code.
 
 Only direct children take part. Give every radio an `android:id`: `checkedId` reports it and
 the saved state is keyed by it. A radio without an id receives a generated one, which does
 not survive re-creation of the screen: the group then keeps the choice it was built with.
 
-Pictures: see [SancaiRadioButton](#sancairadiobutton).
+Pictures: see [MalletRadioButton](#malletradiobutton).
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiRadioGroup
+<io.github.avalonskyafar.mallet.widget.MalletRadioGroup
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiRadioCheckedButton="@+id/weekly">
+    app:malletRadioCheckedButton="@+id/weekly">
 
-    <io.github.avalonskyafar.sancai.widget.SancaiRadioButton
+    <io.github.avalonskyafar.mallet.widget.MalletRadioButton
         android:id="@+id/daily"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/every_day" />
 
-    <io.github.avalonskyafar.sancai.widget.SancaiRadioButton
+    <io.github.avalonskyafar.mallet.widget.MalletRadioButton
         android:id="@+id/weekly"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/every_week" />
-</io.github.avalonskyafar.sancai.widget.SancaiRadioGroup>
+</io.github.avalonskyafar.mallet.widget.MalletRadioGroup>
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiRadioCheckedButton` | reference | Id of the child radio that is checked at start. |
+| `app:malletRadioCheckedButton` | reference | Id of the child radio that is checked at start. |
 
 | Member | What it does |
 |---|---|
 | `fun interface OnCheckedChangeListener` | Called when the user moves the choice to another radio of the group. |
-| ↳ `fun onCheckedChanged(group: SancaiRadioGroup, checkedId: Int)` |  |
+| ↳ `fun onCheckedChanged(group: MalletRadioGroup, checkedId: Int)` |  |
 | `fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)` | Listener for user-driven changes of the choice. |
 | `val checkedId: Int get()` | Id of the checked radio, or `View.NO_ID` while nothing is chosen. |
 | `fun check(id: Int, animate: Boolean = true)` | Moves the choice to the radio with `id` from code; `View.NO_ID` clears it. |
@@ -712,9 +712,9 @@ Pictures: see [SancaiRadioButton](#sancairadiobutton).
 
 An exact number, an approximate amount, and the two ways of saying that something is going on.
 
-### SancaiStepper
+### MalletStepper
 
-**Extended** · `io.github.avalonskyafar.sancai.widget.SancaiStepper` · Showcase: Components › Numbers and progress
+**Extended** · `io.github.avalonskyafar.mallet.widget.MalletStepper` · Showcase: Components › Numbers and progress
 
 A precise number control: a recessed glazed track with a minus zone, a plus zone and a
 neutral thumb in the centre that carries the value and never moves.
@@ -728,36 +728,36 @@ can no longer do anything pales.
 The view is 61 dp tall by default: a 53 dp track plus the gutter its shadow needs. Minus is
 always on the left and plus on the right, also in right-to-left layouts, like a number line.
 
-<img src="images/components/stepper_light.png" width="320" alt="SancaiStepper, light theme"> <img src="images/components/stepper_dark.png" width="320" alt="SancaiStepper, dark theme">
+<img src="images/components/stepper_light.png" width="320" alt="MalletStepper, light theme"> <img src="images/components/stepper_dark.png" width="320" alt="MalletStepper, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiStepper
+<io.github.avalonskyafar.mallet.widget.MalletStepper
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiValueFrom="0"
-    app:sancaiValueTo="500"
-    app:sancaiStepSize="10"
-    app:sancaiValue="120"
-    app:sancaiStepperUnit="ms" />
+    app:malletValueFrom="0"
+    app:malletValueTo="500"
+    app:malletStepSize="10"
+    app:malletValue="120"
+    app:malletStepperUnit="ms" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
-| `app:sancaiGlaze` | `terracotta` / `ochre` / `cobalt` / `celadon` / `mist` | One of the five glazes of the theme. |
-| `app:sancaiValueFrom` | float | Lower bound of a numeric control. |
-| `app:sancaiValueTo` | float | Upper bound of a numeric control. |
-| `app:sancaiStepSize` | float | The step a numeric control moves in. |
-| `app:sancaiValue` | float | The value a numeric control starts with. |
-| `app:sancaiStepperDecimals` | integer | Number of digits written after the decimal separator. |
-| `app:sancaiStepperUnit` | string | Suffix written after the value, for example "ms" or "%". |
+| `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | One of the five hues of the theme. |
+| `app:malletValueFrom` | float | Lower bound of a numeric control. |
+| `app:malletValueTo` | float | Upper bound of a numeric control. |
+| `app:malletStepSize` | float | The step a numeric control moves in. |
+| `app:malletValue` | float | The value a numeric control starts with. |
+| `app:malletStepperDecimals` | integer | Number of digits written after the decimal separator. |
+| `app:malletStepperUnit` | string | Suffix written after the value, for example "ms" or "%". |
 
 | Member | What it does |
 |---|---|
 | `fun interface OnValueChangeListener` | Called when the user changes the value by touch, keyboard or an accessibility action. |
-| ↳ `fun onValueChanged(stepper: SancaiStepper, value: Float)` |  |
+| ↳ `fun onValueChanged(stepper: MalletStepper, value: Float)` |  |
 | `fun interface OnEditRequestListener` | Called when the user taps the value (or presses Enter) to type a number directly. |
-| ↳ `fun onEditRequest(stepper: SancaiStepper)` |  |
+| ↳ `fun onEditRequest(stepper: MalletStepper)` |  |
 | `fun setOnValueChangeListener(listener: OnValueChangeListener?)` | Listener for user-driven value changes. |
 | `fun setOnEditRequestListener(listener: OnEditRequestListener?)` | Listener for a tap on the value. |
 | `var value: Float` | The current value. |
@@ -767,20 +767,20 @@ always on the left and plus on the right, also in right-to-left layouts, like a 
 | `var decimals: Int` | Number of digits written after the decimal separator (0 to 6). |
 | `var unit: CharSequence?` | Suffix written directly after the number, for example `" ms"` or `"%"`. |
 | `var valueFormatter: ((Float) -> CharSequence)?` | Turns a value into the text written on the thumb and read by accessibility services. |
-| `var glaze: SancaiGlaze` | The glaze poured into the track. |
+| `var hue: MalletHue` | The hue poured into the track. |
 | `val formattedValue: CharSequence` | The value as it is written on the thumb and announced by accessibility services. |
 | `fun setRange(valueFrom: Float, valueTo: Float)` | Sets both bounds at once; `valueTo` must not be below `valueFrom`. |
 
-### SancaiSlider
+### MalletSlider
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiSlider` · Showcase: Components › Numbers and progress
+**New** · `io.github.avalonskyafar.mallet.widget.MalletSlider` · Showcase: Components › Numbers and progress
 
 A slim recessed track with a glazed stretch that runs from the start to a neutral bead.
 
 The bead follows the finger anywhere on the track; a tap makes it glide to the touched
-place. The glaze behind the bead is the value: either one glaze (`glaze`, cobalt by default)
-or a scale set with `setGlazeScale`, for example terracotta, ochre, cobalt, celadon: the
-stretch then wears the glaze nearest to the bead, and the next one is poured in as the bead
+place. The hue behind the bead is the value: either one hue (`hue`, cobalt by default)
+or a scale set with `setHueScale`, for example bronze, ochre, cobalt, jade: the
+stretch then wears the hue nearest to the bead, and the next one is poured in as the bead
 passes. The rest of the track stays a neutral groove.
 
 With a `stepSize` above zero the bead snaps to the step grid and every crossed step gives a
@@ -789,35 +789,35 @@ detent haptic; with `0` the slider is continuous.
 The view is 44 dp tall by default: a 14 dp track, centred, under a 28 dp bead. The track is
 inset by half a bead on both sides, so the bead and its shadow never leave the view.
 
-<img src="images/components/slider_light.png" width="320" alt="SancaiSlider, light theme"> <img src="images/components/slider_dark.png" width="320" alt="SancaiSlider, dark theme">
+<img src="images/components/slider_light.png" width="320" alt="MalletSlider, light theme"> <img src="images/components/slider_dark.png" width="320" alt="MalletSlider, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiSlider
+<io.github.avalonskyafar.mallet.widget.MalletSlider
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiValueFrom="0"
-    app:sancaiValueTo="100"
-    app:sancaiStepSize="5"
-    app:sancaiValue="40"
-    app:sancaiGlaze="cobalt" />
+    app:malletValueFrom="0"
+    app:malletValueTo="100"
+    app:malletStepSize="5"
+    app:malletValue="40"
+    app:malletHue="cobalt" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiValueFrom` | float | Lower bound of a numeric control. |
-| `app:sancaiValueTo` | float | Upper bound of a numeric control. |
-| `app:sancaiStepSize` | float | The step a numeric control moves in. |
-| `app:sancaiValue` | float | The value a numeric control starts with. |
-| `app:sancaiGlaze` | `terracotta` / `ochre` / `cobalt` / `celadon` / `mist` | One of the five glazes of the theme. |
-| `app:sancaiSliderGlazeMode` | `single` / `scale` | How the stretch behind the bead is glazed. "single" pours the glaze named by sancaiGlaze. "scale" blends through terracotta, ochre, cobalt and celadon as the value rises, for values that read as a strength. |
+| `app:malletValueFrom` | float | Lower bound of a numeric control. |
+| `app:malletValueTo` | float | Upper bound of a numeric control. |
+| `app:malletStepSize` | float | The step a numeric control moves in. |
+| `app:malletValue` | float | The value a numeric control starts with. |
+| `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | One of the five hues of the theme. |
+| `app:malletSliderHueMode` | `single` / `scale` | How the stretch behind the bead is glazed. "single" pours the hue named by malletHue. "scale" blends through bronze, ochre, cobalt and jade as the value rises, for values that read as a strength. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
 | Member | What it does |
 |---|---|
 | `fun interface OnValueChangeListener` | Called when the user changes the value by touch, keyboard or an accessibility action. |
-| ↳ `fun onValueChanged(slider: SancaiSlider, value: Float)` | The user moved the bead of `slider`; `value` is the new value, already clamped and snapped. |
+| ↳ `fun onValueChanged(slider: MalletSlider, value: Float)` | The user moved the bead of `slider`; `value` is the new value, already clamped and snapped. |
 | `fun interface OnStopTrackingTouchListener` | Called when a touch that moved the bead ends: after a drag or a tap, once per gesture. |
-| ↳ `fun onStopTrackingTouch(slider: SancaiSlider)` | The finger has lifted (or the drag was taken away); `SancaiSlider.value` is final. |
+| ↳ `fun onStopTrackingTouch(slider: MalletSlider)` | The finger has lifted (or the drag was taken away); `MalletSlider.value` is final. |
 | `fun setOnValueChangeListener(listener: OnValueChangeListener?)` | Listener for value changes made by the user. |
 | `fun setOnStopTrackingTouchListener(listener: OnStopTrackingTouchListener?)` | Listener for the end of a touch gesture, the moment to commit an expensive change. |
 | `var valueFormatter: ((Float) -> CharSequence)?` | Turns a value into the text accessibility services read, for example `"40 %"`. |
@@ -825,18 +825,18 @@ inset by half a bead on both sides, so the bead and its shadow never leave the v
 | `var valueFrom: Float` | Lower bound, at the start of the track. |
 | `var valueTo: Float` | Upper bound, at the end of the track. |
 | `var stepSize: Float` | Distance between two stops, counted from `valueFrom`; `0` makes the slider continuous, and so does a negative, NaN or infinite step. |
-| `var glaze: SancaiGlaze` | The glaze of the stretch behind the bead. |
+| `var hue: MalletHue` | The hue of the stretch behind the bead. |
 | `fun setValue(value: Float, animate: Boolean)` | Sets the value from code, optionally gliding the bead there. |
-| `fun setGlazeScale(glazes: List<SancaiGlaze>?)` | Glazes the stretch with a scale instead of one glaze. |
+| `fun setHueScale(hues: List<MalletHue>?)` | Hues the stretch with a scale instead of one hue. |
 
-### SancaiProgressBar
+### MalletProgressBar
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiProgressBar` · Showcase: Components › Numbers and progress
+**New** · `io.github.avalonskyafar.mallet.widget.MalletProgressBar` · Showcase: Components › Numbers and progress
 
-A slim recessed groove that fills with glaze as work completes.
+A slim recessed groove that fills with hue as work completes.
 
 The groove is the neutral, unglazed recess; the fill is poured from the start edge (the
-right edge in right-to-left layouts) and takes the colour of `glaze`. `setProgress` glides
+right edge in right-to-left layouts) and takes the colour of `hue`. `setProgress` glides
 to the new amount. When the amount of work is unknown set `isIndeterminate`: a glazed
 segment then travels through the groove and re-enters at the start. With reduced motion the
 indeterminate bar shows a still, pale, full-width fill instead of moving.
@@ -845,38 +845,38 @@ The view is 22 dp tall by default: a 10 dp groove plus the gutter its shadow nee
 an indicator, so it takes neither focus nor touches. Animations run only while the view is
 attached and visible.
 
-<img src="images/components/progress_light.png" width="320" alt="SancaiProgressBar, light theme"> <img src="images/components/progress_dark.png" width="320" alt="SancaiProgressBar, dark theme">
+<img src="images/components/progress_light.png" width="320" alt="MalletProgressBar, light theme"> <img src="images/components/progress_dark.png" width="320" alt="MalletProgressBar, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiProgressBar
+<io.github.avalonskyafar.mallet.widget.MalletProgressBar
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiGlaze="celadon"
-    app:sancaiProgressValue="0.4" />
+    app:malletHue="jade"
+    app:malletProgressValue="0.4" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiGlaze` | `terracotta` / `ochre` / `cobalt` / `celadon` / `mist` | The glaze of the fill. Default cobalt. |
-| `app:sancaiProgressValue` | float | Initial progress, from 0 to 1. |
-| `app:sancaiProgressIndeterminate` | boolean | True when the amount of work is unknown: a glazed segment travels through the groove. |
+| `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | The hue of the fill. Default cobalt. |
+| `app:malletProgressValue` | float | Initial progress, from 0 to 1. |
+| `app:malletProgressIndeterminate` | boolean | True when the amount of work is unknown: a glazed segment travels through the groove. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
 | Member | What it does |
 |---|---|
-| `var glaze: SancaiGlaze` | The glaze of the fill. |
+| `var hue: MalletHue` | The hue of the fill. |
 | `var progress: Float` | The completed share of the work, from 0 to 1. |
 | `var isIndeterminate: Boolean` | True when the amount of work is unknown. |
 | `fun setProgress(@FloatRange(from` | Sets the completed share to `value` (clamped to 0..1). |
 
-### SancaiSpinner
+### MalletSpinner
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiSpinner` · Showcase: Components › Numbers and progress
+**New** · `io.github.avalonskyafar.mallet.widget.MalletSpinner` · Showcase: Components › Numbers and progress
 
 An open ring that turns while something is going on and its amount is unknown.
 
 The ring is the same 276 degree arc as the power icon and the loading state of
-`SancaiButton`, drawn with a 2 dp round-capped stroke and turning once every 900 ms at a
+`MalletButton`, drawn with a 2 dp round-capped stroke and turning once every 900 ms at a
 constant speed. With reduced motion it turns at half speed rather than standing still,
 because a spinner that does not move reads as a stalled app.
 
@@ -884,24 +884,24 @@ The view is 28 dp square by default and the ring scales with it. It turns only w
 attached and visible, takes neither focus nor touches, and announces itself as "Loading"
 unless a content description is set.
 
-Pictures: see [SancaiProgressBar](#sancaiprogressbar).
+Pictures: see [MalletProgressBar](#malletprogressbar).
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiSpinner
+<io.github.avalonskyafar.mallet.widget.MalletSpinner
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:sancaiTone="accent" />
+    app:malletTone="accent" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | The tone of the ring. Default muted. |
-| `app:sancaiProgressSpinnerColor` | color | An explicit ring colour; wins over sancaiTone. |
+| `app:malletTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | The tone of the ring. Default muted. |
+| `app:malletProgressSpinnerColor` | color | An explicit ring colour; wins over malletTone. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
 | Member | What it does |
 |---|---|
-| `var tone: SancaiTextTone` | The tone of the ring. |
+| `var tone: MalletTextTone` | The tone of the ring. |
 | `var color: Int` | The colour of the ring. |
 | `val isSpinning: Boolean get()` | True while the ring is actually turning: attached, visible and shown. |
 
@@ -911,9 +911,9 @@ Pictures: see [SancaiProgressBar](#sancaiprogressbar).
 
 One component: a label, a recessed well and a support line.
 
-### SancaiTextField
+### MalletTextField
 
-**Extended** · `io.github.avalonskyafar.sancai.widget.SancaiTextField` · Showcase: Components › Text fields
+**Extended** · `io.github.avalonskyafar.mallet.widget.MalletTextField` · Showcase: Components › Text fields
 
 A text field: an optional label, a recessed well that holds the text, and an optional
 support line with a helper or an error and a character counter.
@@ -926,18 +926,18 @@ popping. Everything that is not covered by a property is reachable through `edit
 Several fields on one screen each restore their own text, error and password visibility,
 and the one that was being typed in takes focus again, provided each field has an id.
 
-<img src="images/components/field_light.png" width="320" alt="SancaiTextField, light theme"> <img src="images/components/field_dark.png" width="320" alt="SancaiTextField, dark theme">
+<img src="images/components/field_light.png" width="320" alt="MalletTextField, light theme"> <img src="images/components/field_dark.png" width="320" alt="MalletTextField, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiTextField
+<io.github.avalonskyafar.mallet.widget.MalletTextField
     android:id="@+id/account"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:hint="Name shown at the top of the page"
     android:maxLength="64"
-    app:sancaiFieldLabel="Account name"
-    app:sancaiFieldCounter="64"
-    app:sancaiFieldEndAction="clear" />
+    app:malletFieldLabel="Account name"
+    app:malletFieldCounter="64"
+    app:malletFieldEndAction="clear" />
 ```
 
 | XML attribute | Value | Meaning |
@@ -949,20 +949,20 @@ and the one that was being typed in takes focus again, provided each field has a
 | `android:maxLength` | integer | Hard limit of characters. |
 | `android:minLines` | integer | Lines the field is at least high for. |
 | `android:maxLines` | integer | Lines after which the text scrolls. |
-| `app:sancaiIcon` | one of 51 names (see below) | An icon of the built-in set. Values follow the order of the SancaiIcon enum. |
-| `app:sancaiFieldLabel` | string | Label written above the well. |
-| `app:sancaiFieldHelper` | string | Helper text written below the well. |
-| `app:sancaiFieldError` | string | Error written below the well in place of the helper; also colours the rim. |
-| `app:sancaiFieldCounter` | integer | Maximum length shown by the character counter; 0 hides the counter. |
-| `app:sancaiFieldMultiline` | boolean | Several lines instead of one. |
-| `app:sancaiFieldEndAction` | `none` / `clear` / `passwordToggle` | Action drawn inside the well at the end. |
-| `app:sancaiFieldMonospace` | boolean | Monospace type, for code and configuration editors. |
+| `app:malletIcon` | one of 51 names (see below) | An icon of the built-in set. Values follow the order of the MalletIcon enum. |
+| `app:malletFieldLabel` | string | Label written above the well. |
+| `app:malletFieldHelper` | string | Helper text written below the well. |
+| `app:malletFieldError` | string | Error written below the well in place of the helper; also colours the rim. |
+| `app:malletFieldCounter` | integer | Maximum length shown by the character counter; 0 hides the counter. |
+| `app:malletFieldMultiline` | boolean | Several lines instead of one. |
+| `app:malletFieldEndAction` | `none` / `clear` / `passwordToggle` | Action drawn inside the well at the end. |
+| `app:malletFieldMonospace` | boolean | Monospace type, for code and configuration editors. |
 
 | Member | What it does |
 |---|---|
 | `enum class EndAction` | What sits inside the well at its end. |
 | `fun interface OnTextChangeListener` | Hears about text the user typed, pasted or cleared. |
-| ↳ `fun onTextChanged(field: SancaiTextField, text: CharSequence)` | Called after `text` of `field` changed through user input. |
+| ↳ `fun onTextChanged(field: MalletTextField, text: CharSequence)` | Called after `text` of `field` changed through user input. |
 | `val editText: EditText` | The `EditText` inside the well, for everything this class has no property for: IME options, filters, selection. |
 | `fun setOnTextChangeListener(listener: OnTextChangeListener?)` | Called after the user changed the text. |
 | `var text: CharSequence` | The text in the field. |
@@ -971,7 +971,7 @@ and the one that was being typed in takes focus again, provided each field has a
 | `var helperText: CharSequence?` | Helper text below the well in the muted colour. |
 | `var error: CharSequence?` | The error below the well, or null for none. |
 | `var counterMaxLength: Int` | The length the counter (`12 / 64`) counts towards; 0 hides the counter. |
-| `var leadingIcon: SancaiIcon?` | The icon inside the well at the start, or null for none. |
+| `var leadingIcon: MalletIcon?` | The icon inside the well at the start, or null for none. |
 | `var endAction: EndAction` | The action inside the well at the end. |
 | `var isPasswordVisible: Boolean` | Whether a password is shown as typed. |
 | `var isMultiline: Boolean` | Several lines instead of one: the text starts at the top and the well grows with it. |
@@ -987,11 +987,11 @@ and the one that was being typed in takes focus again, provided each field has a
 
 A page is a scrolling column of headings and cards; a card is a column of rows.
 
-### SancaiPage
+### MalletPage
 
-**Extracted** · `io.github.avalonskyafar.sancai.widget.SancaiPage` · Showcase: Components › Built from XML
+**Extracted** · `io.github.avalonskyafar.mallet.widget.MalletPage` · Showcase: Components › Built from XML
 
-A vertically scrolling page: the canvas every Sancai screen stands on.
+A vertically scrolling page: the canvas every Mallet screen stands on.
 
 The page is a `ScrollView` that holds one vertical column, `content`. Views declared inside
 the page in XML, or added with `addView`, go into that column, so a page is used like a
@@ -999,8 +999,8 @@ vertical `LinearLayout` that happens to scroll:
 
 What the page takes care of:
 
-- **Rhythm.** The padding is `SancaiSpacing.PAGE_SIDE`, `SancaiSpacing.PAGE_TOP` and
-  `SancaiSpacing.PAGE_BOTTOM`; `addTitle`, `addSection`, `addButton` and `addSpace` place
+- **Rhythm.** The padding is `MalletSpacing.PAGE_SIDE`, `MalletSpacing.PAGE_TOP` and
+  `MalletSpacing.PAGE_BOTTOM`; `addTitle`, `addSection`, `addButton` and `addSpace` place
   the usual elements with the usual gaps. Padding given in XML replaces the default.
 - **Edge to edge.** While `fitSystemBars` is on, the page reaches behind the system bars:
   the system-bar and display-cutout insets are added to its padding, and the keyboard
@@ -1022,21 +1022,21 @@ What the page takes care of:
 The column accepts the layout attributes a page needs: width, height, margins,
 `layout_gravity` and `layout_weight`.
 
-<img src="images/components/page_light.png" width="320" alt="SancaiPage, light theme"> <img src="images/components/page_dark.png" width="320" alt="SancaiPage, dark theme">
+<img src="images/components/page_light.png" width="320" alt="MalletPage, light theme"> <img src="images/components/page_dark.png" width="320" alt="MalletPage, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiPage
+<io.github.avalonskyafar.mallet.widget.MalletPage
     android:id="@+id/page"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <!-- headings, SancaiSurface cards, buttons -->
-</io.github.avalonskyafar.sancai.widget.SancaiPage>
+    <!-- headings, MalletSurface cards, buttons -->
+</io.github.avalonskyafar.mallet.widget.MalletPage>
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiPageFitSystemBars` | boolean | Whether the page adds the system-bar, display-cutout and keyboard insets to its padding (default true). Switch it off inside a host that already handles insets. |
-| `app:sancaiPageMaxContentWidth` | dimension | The widest the column of the page gets (default 560dp); on a wider page it is centred. 0dp lets the column fill the page. |
+| `app:malletPageFitSystemBars` | boolean | Whether the page adds the system-bar, display-cutout and keyboard insets to its padding (default true). Switch it off inside a host that already handles insets. |
+| `app:malletPageMaxContentWidth` | dimension | The widest the column of the page gets (default 560dp); on a wider page it is centred. 0dp lets the column fill the page. |
 
 | Member | What it does |
 |---|---|
@@ -1044,16 +1044,16 @@ The column accepts the layout attributes a page needs: width, height, margins,
 | `var fitSystemBars: Boolean` | Whether the page adds the system-bar and display-cutout insets to its padding, and the keyboard inset to the bottom. |
 | `var maxContentWidthDp: Float` | The widest the column of the page gets, in dp. |
 | `fun setPagePadding(startDp: Float, topDp: Float, endDp: Float, bottomDp: Float)` | Replaces the padding of the page, in dp. |
-| `fun addTitle(text: CharSequence?): SancaiText` | Adds the title of the page: 20 sp, start aligned, inset like a heading and followed by `SancaiSpacing.TITLE_GAP`. |
-| `fun <T : View> addSection(title: CharSequence?, detail: CharSequence?, card: T): T` | Adds a section: a `SancaiHeading` (`title` over an optional muted `detail` line), then `SancaiSpacing.HEADING_GAP`, then `card` across the full column, then `SancaiSpacing.SECTION_GAP`. |
-| `fun <T : View> addButton(button: T): T` | Adds a full-width button that stands on the page rather than in a card: side margins of `SancaiSpacing.BUTTON_SIDE` and `SancaiSpacing.SECTION_GAP` below. |
+| `fun addTitle(text: CharSequence?): MalletText` | Adds the title of the page: 20 sp, start aligned, inset like a heading and followed by `MalletSpacing.TITLE_GAP`. |
+| `fun <T : View> addSection(title: CharSequence?, detail: CharSequence?, card: T): T` | Adds a section: a `MalletHeading` (`title` over an optional muted `detail` line), then `MalletSpacing.HEADING_GAP`, then `card` across the full column, then `MalletSpacing.SECTION_GAP`. |
+| `fun <T : View> addButton(button: T): T` | Adds a full-width button that stands on the page rather than in a card: side margins of `MalletSpacing.BUTTON_SIDE` and `MalletSpacing.SECTION_GAP` below. |
 | `fun addSpace(dp: Float): View` | Adds `dp` of empty vertical space; accessibility services skip it. |
 | ↳ `const val DEFAULT_MAX_CONTENT_WIDTH_DP: Float` | The widest the column of a page gets unless `maxContentWidthDp` says otherwise, in dp. |
 | ↳ `const val BAR_FADE_DP: Float` | The distance over which scrolling content fades out before a system bar, in dp. |
 
-### SancaiHeading
+### MalletHeading
 
-**Extracted** · `io.github.avalonskyafar.sancai.widget.SancaiHeading` · Showcase: Components › Rows and lists
+**Extracted** · `io.github.avalonskyafar.mallet.widget.MalletHeading` · Showcase: Components › Rows and lists
 
 The heading above a card or at the top of a page: a title in ink and, optionally, one quiet
 line of detail below it.
@@ -1066,22 +1066,22 @@ its 4 dp gap, while `detail` is empty or blank; a detail without a title has no 
 The title is announced as a heading by accessibility services, so a page can be navigated
 heading by heading. The view itself is not focusable and has no state to save.
 
-<img src="images/components/headinglink_light.png" width="320" alt="SancaiHeading, light theme"> <img src="images/components/headinglink_dark.png" width="320" alt="SancaiHeading, dark theme">
+<img src="images/components/headinglink_light.png" width="320" alt="MalletHeading, light theme"> <img src="images/components/headinglink_dark.png" width="320" alt="MalletHeading, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiHeading
+<io.github.avalonskyafar.mallet.widget.MalletHeading
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiTitle="Protection"
-    app:sancaiDetail="How firmly the app holds on"
-    app:sancaiHeadingLevel="section" />
+    app:malletTitle="Protection"
+    app:malletDetail="How firmly the app holds on"
+    app:malletHeadingLevel="section" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiTitle` | string | Main line of a row, heading or state view. |
-| `app:sancaiDetail` | string | Supporting line under the title. |
-| `app:sancaiHeadingLevel` | `section` / `page` | Weight of the title: heading of a section (17 sp, default) or title of a page (20 sp). |
+| `app:malletTitle` | string | Main line of a row, heading or state view. |
+| `app:malletDetail` | string | Supporting line under the title. |
+| `app:malletHeadingLevel` | `section` / `page` | Weight of the title: heading of a section (17 sp, default) or title of a page (20 sp). |
 
 | Member | What it does |
 |---|---|
@@ -1090,9 +1090,9 @@ heading by heading. The view itself is not focusable and has no state to save.
 | `var detail: CharSequence?` | Supporting line under the title; `null`, empty or blank hides the line. |
 | `var level: Level` | `Level.SECTION` (default) for card headings, `Level.PAGE` for the title of a page. |
 
-### SancaiEntryRow
+### MalletEntryRow
 
-**Extended** · `io.github.avalonskyafar.sancai.widget.SancaiEntryRow` · Showcase: Components › Rows and lists
+**Extended** · `io.github.avalonskyafar.mallet.widget.MalletEntryRow` · Showcase: Components › Rows and lists
 
 A row of a card that leads somewhere: a sub-page, a picker, a dialog.
 
@@ -1119,27 +1119,27 @@ large text. In right-to-left layouts start and end swap and the chevrons turn ar
 The row is announced as one element, "title, value, detail", unless a content description
 is set explicitly. It keeps no state of its own, so there is nothing to save or restore.
 
-<img src="images/components/entry_light.png" width="320" alt="SancaiEntryRow, light theme"> <img src="images/components/entry_dark.png" width="320" alt="SancaiEntryRow, dark theme">
+<img src="images/components/entry_light.png" width="320" alt="MalletEntryRow, light theme"> <img src="images/components/entry_dark.png" width="320" alt="MalletEntryRow, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiEntryRow
+<io.github.avalonskyafar.mallet.widget.MalletEntryRow
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiTitle="Language"
-    app:sancaiDetail="Used for menus and messages"
-    app:sancaiEntryValue="English"
-    app:sancaiEntryArrow="end" />
+    app:malletTitle="Language"
+    app:malletDetail="Used for menus and messages"
+    app:malletEntryValue="English"
+    app:malletEntryArrow="end" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
-| `app:sancaiTitle` | string | Main line of a row, heading or state view. |
-| `app:sancaiDetail` | string | Supporting line under the title. |
-| `app:sancaiIcon` | one of 51 names (see below) | Icon at the start of the row. |
-| `app:sancaiEntryArrow` | `none` / `end` / `start` | Chevron at the edge of the row. |
-| `app:sancaiEntryAlignment` | `center` / `start` | Whether the text is centred in the row or aligned to its start. |
-| `app:sancaiEntryValue` | string | Short value shown at the end of the row, before the end chevron. |
+| `app:malletTitle` | string | Main line of a row, heading or state view. |
+| `app:malletDetail` | string | Supporting line under the title. |
+| `app:malletIcon` | one of 51 names (see below) | Icon at the start of the row. |
+| `app:malletEntryArrow` | `none` / `end` / `start` | Chevron at the edge of the row. |
+| `app:malletEntryAlignment` | `center` / `start` | Whether the text is centred in the row or aligned to its start. |
+| `app:malletEntryValue` | string | Short value shown at the end of the row, before the end chevron. |
 
 | Member | What it does |
 |---|---|
@@ -1150,18 +1150,18 @@ is set explicitly. It keeps no state of its own, so there is nothing to save or 
 | `var value: CharSequence?` | Short value at the end of the row, before the end chevron; `null` or blank removes it. |
 | `var arrow: Arrow` | Chevron of the row. |
 | `var alignment: Alignment` | Whether the text is centred in the row (the default) or aligned to its start. |
-| `var leadingIcon: SancaiIcon?` | Muted icon at the start of the row, or `null`. |
+| `var leadingIcon: MalletIcon?` | Muted icon at the start of the row, or `null`. |
 | ↳ `const val MIN_HEIGHT_DP: Float` | Height of a row without a detail line, in dp. |
 | ↳ `const val MIN_HEIGHT_DETAIL_DP: Float` | Height of a row with a detail line, in dp. |
 
-### SancaiControlRow
+### MalletControlRow
 
-**Extracted** · `io.github.avalonskyafar.sancai.widget.SancaiControlRow` · Showcase: Components › Rows and lists
+**Extracted** · `io.github.avalonskyafar.mallet.widget.MalletControlRow` · Showcase: Components › Rows and lists
 
 A settings row: a centred title (and optional detail) beside a control.
 
 The row shares its width between the text column and the control by weight. For the common
-case, a `SancaiSegmentedTrack`, `setSegmented` picks the proportions from the option count:
+case, a `MalletSegmentedTrack`, `setSegmented` picks the proportions from the option count:
 two options 2 : 1, three options 1 : 3, four or more 1 : 4. `Layout.UTILITY` is 1 : 1.35
 whatever the count. Any other view (a switch, a stepper, a slider) goes in through
 `setControl`, or as the single child in XML.
@@ -1180,38 +1180,38 @@ and pales the text.
 A track created by the row has no id; the row saves and restores its selection, provided the
 row has an id.
 
-<img src="images/components/controlrow_light.png" width="320" alt="SancaiControlRow, light theme"> <img src="images/components/controlrow_dark.png" width="320" alt="SancaiControlRow, dark theme">
+<img src="images/components/controlrow_light.png" width="320" alt="MalletControlRow, light theme"> <img src="images/components/controlrow_dark.png" width="320" alt="MalletControlRow, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiControlRow
+<io.github.avalonskyafar.mallet.widget.MalletControlRow
     android:id="@+id/strength"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiTitle="Protection"
-    app:sancaiDetail="How strictly apps are held"
-    app:sancaiOptions="@array/strength_levels"
-    app:sancaiSelectedIndex="1" />
+    app:malletTitle="Protection"
+    app:malletDetail="How strictly apps are held"
+    app:malletOptions="@array/strength_levels"
+    app:malletSelectedIndex="1" />
 
-<io.github.avalonskyafar.sancai.widget.SancaiControlRow
+<io.github.avalonskyafar.mallet.widget.MalletControlRow
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiTitle="Haptics">
-    <io.github.avalonskyafar.sancai.widget.SancaiSwitch
+    app:malletTitle="Haptics">
+    <io.github.avalonskyafar.mallet.widget.MalletSwitch
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-</io.github.avalonskyafar.sancai.widget.SancaiControlRow>
+</io.github.avalonskyafar.mallet.widget.MalletControlRow>
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiTitle` | string | Main line of a row, heading or state view. |
-| `app:sancaiDetail` | string | Supporting line under the title. |
-| `app:sancaiOptions` | reference | Options of the segmented track the row creates for itself. |
-| `app:sancaiSelectedIndex` | integer | Index of the option selected at start. |
-| `app:sancaiControlRowLayout` | `auto` / `utility` | How the width is shared between the text and a segmented track. "auto" follows the option count (two options 2 : 1, three 1 : 3, four or more 1 : 4); "utility" is always 1 : 1.35. |
-| `app:sancaiControlRowAlignment` | `center` / `start` | Whether the title and the detail are centred in the text column or aligned to its start. |
-| `app:sancaiControlRowTextWeight` | float | Weight of the text column next to a control declared as the XML child. |
-| `app:sancaiControlRowControlWeight` | float | Weight of a control declared as the XML child. 0 (the default) keeps the control at its own width and gives the rest to the text. |
+| `app:malletTitle` | string | Main line of a row, heading or state view. |
+| `app:malletDetail` | string | Supporting line under the title. |
+| `app:malletOptions` | reference | Options of the segmented track the row creates for itself. |
+| `app:malletSelectedIndex` | integer | Index of the option selected at start. |
+| `app:malletControlRowLayout` | `auto` / `utility` | How the width is shared between the text and a segmented track. "auto" follows the option count (two options 2 : 1, three 1 : 3, four or more 1 : 4); "utility" is always 1 : 1.35. |
+| `app:malletControlRowAlignment` | `center` / `start` | Whether the title and the detail are centred in the text column or aligned to its start. |
+| `app:malletControlRowTextWeight` | float | Weight of the text column next to a control declared as the XML child. |
+| `app:malletControlRowControlWeight` | float | Weight of a control declared as the XML child. 0 (the default) keeps the control at its own width and gives the rest to the text. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
 | Member | What it does |
@@ -1223,18 +1223,18 @@ row has an id.
 | `var layout: Layout` | The proportions used by `setSegmented`. |
 | `var alignment: Alignment` | Whether the text is centred in its column (the default) or aligned to the start. |
 | `var control: View?` | The control of the row, or `null` while there is none. |
-| `val track: SancaiSegmentedTrack? get()` | The control as a segmented track: the one made by `setSegmented`, or one that was put in. |
+| `val track: MalletSegmentedTrack? get()` | The control as a segmented track: the one made by `setSegmented`, or one that was put in. |
 | `var textWeight: Float` | Weight of the text column. |
 | `var controlWeight: Float` | Weight of the control; 0 when the control keeps its own width. |
-| `fun setSegmented(options: List<CharSequence>, selected: Int, listener: SancaiSegmentedTrack.OnSelectionChangeListener?): SancaiSegmentedTrack` | Puts a segmented track into the row and returns it. |
+| `fun setSegmented(options: List<CharSequence>, selected: Int, listener: MalletSegmentedTrack.OnSelectionChangeListener?): MalletSegmentedTrack` | Puts a segmented track into the row and returns it. |
 | `fun setControl(view: View?, textWeight: Float = 1f, controlWeight: Float = 0f)` | Puts any view into the row as its control, replacing the previous one; `null` leaves the text alone. |
 | ↳ `const val MIN_HEIGHT_DP: Float` | Height of a row without a detail line, in dp. |
 | ↳ `const val MIN_HEIGHT_DETAIL_DP: Float` | Height of a row with a detail line, in dp. |
 | ↳ `const val UTILITY_CONTROL_WEIGHT: Float` | Control weight of `Layout.UTILITY`, against a text weight of 1. |
 
-### SancaiLinkRow
+### MalletLinkRow
 
-**Extracted** · `io.github.avalonskyafar.sancai.widget.SancaiLinkRow` · Showcase: Components › Rows and lists
+**Extracted** · `io.github.avalonskyafar.mallet.widget.MalletLinkRow` · Showcase: Components › Rows and lists
 
 A quiet link to another page, usually placed below the last card of a screen: a muted,
 centred label and a chevron that says on which side the destination lies.
@@ -1250,25 +1250,25 @@ nothing changes colour; keyboard focus is shown as a rim inside the row. Set the
 layout direction, so in a right-to-left layout an `ArrowDirection.END` chevron sits on, and
 points to, the left. A label that does not fit on one line is ellipsized.
 
-Pictures: see [SancaiHeading](#sancaiheading).
+Pictures: see [MalletHeading](#malletheading).
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiLinkRow
+<io.github.avalonskyafar.mallet.widget.MalletLinkRow
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiTitle="More settings"
-    app:sancaiLinkRowArrowPlacement="edge"
-    app:sancaiLinkRowArrowDirection="end"
-    app:sancaiTone="muted" />
+    app:malletTitle="More settings"
+    app:malletLinkRowArrowPlacement="edge"
+    app:malletLinkRowArrowDirection="end"
+    app:malletTone="muted" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
-| `app:sancaiTitle` | string | The label of the link. |
-| `app:sancaiTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | Colour role of the label and the chevron. Default: muted. |
-| `app:sancaiLinkRowArrowPlacement` | `edge` / `adjacent` | Where the chevron sits: at the edge of the row, independent of the centred label (default), or right next to the label with the pair centred as a group. |
-| `app:sancaiLinkRowArrowDirection` | `start` / `end` | The side the destination lies on, and so the side and direction of the chevron. Default: end. |
+| `app:malletTitle` | string | The label of the link. |
+| `app:malletTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | Colour role of the label and the chevron. Default: muted. |
+| `app:malletLinkRowArrowPlacement` | `edge` / `adjacent` | Where the chevron sits: at the edge of the row, independent of the centred label (default), or right next to the label with the pair centred as a group. |
+| `app:malletLinkRowArrowDirection` | `start` / `end` | The side the destination lies on, and so the side and direction of the chevron. Default: end. |
 
 | Member | What it does |
 |---|---|
@@ -1277,43 +1277,43 @@ Pictures: see [SancaiHeading](#sancaiheading).
 | `var label: CharSequence?` | The text of the link. |
 | `var arrowPlacement: ArrowPlacement` | `ArrowPlacement.EDGE` (default) or `ArrowPlacement.ADJACENT`. |
 | `var arrowDirection: ArrowDirection` | The side of the destination; `ArrowDirection.END` by default. |
-| `var tone: SancaiTextTone` | Colour role of the label and the chevron; muted by default, because the link is quiet. |
+| `var tone: MalletTextTone` | Colour role of the label and the chevron; muted by default, because the link is quiet. |
 
-### SancaiKeyValueList
+### MalletKeyValueList
 
-**Extracted** · `io.github.avalonskyafar.sancai.widget.SancaiKeyValueList` · Showcase: Components › Rows and lists
+**Extracted** · `io.github.avalonskyafar.mallet.widget.MalletKeyValueList` · Showcase: Components › Rows and lists
 
 A read-only card of facts: keys down the start side, their values down the end side, a
 divider from rim to rim between the rows.
 
 The key column and the value column keep the same widths in every row (1.22 : 1), so values
 line up however long the texts are; long texts wrap inside their column. A value can carry a
-tone: ink by default, `SancaiTextTone.SUCCESS` and `SancaiTextTone.DANGER` for good and bad
+tone: ink by default, `MalletTextTone.SUCCESS` and `MalletTextTone.DANGER` for good and bad
 states. A `null` value is shown as an em dash.
 
 Rows cannot be clicked or focused with the keyboard and show no press feedback. For a
 screen reader each row is one element, "key, value".
 
-Pictures: see [SancaiControlRow](#sancaicontrolrow).
+Pictures: see [MalletControlRow](#malletcontrolrow).
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiKeyValueList
+<io.github.avalonskyafar.mallet.widget.MalletKeyValueList
     android:id="@+id/diagnostics"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />
 ```
 
 ```kotlin
-diagnostics.addItem("Service", "Running", SancaiTextTone.SUCCESS)
+diagnostics.addItem("Service", "Running", MalletTextTone.SUCCESS)
 diagnostics.addItem("Last check", null)
 ```
 
 | Member | What it does |
 |---|---|
-| `data class Item @JvmOverloads constructor(val key: CharSequence, val value: CharSequence?, val tone: SancaiTextTone = SancaiTextTone.INK)` | One fact: a `key`, its `value` (`null` shows an em dash) and the `tone` of the value. |
+| `data class Item @JvmOverloads constructor(val key: CharSequence, val value: CharSequence?, val tone: MalletTextTone = MalletTextTone.INK)` | One fact: a `key`, its `value` (`null` shows an em dash) and the `tone` of the value. |
 | `val items: List<Item> get()` | The facts shown, in order. |
 | `fun setItems(items: List<Item>)` | Replaces all rows. |
-| `fun addItem(key: CharSequence, value: CharSequence?, tone: SancaiTextTone = SancaiTextTone.INK)` | Appends one row, with a divider above it when it is not the first. |
+| `fun addItem(key: CharSequence, value: CharSequence?, tone: MalletTextTone = MalletTextTone.INK)` | Appends one row, with a divider above it when it is not the first. |
 | `fun clearItems()` | Removes all rows. |
 | ↳ `const val KEY_WEIGHT: Float` | Weight of the key column. |
 | ↳ `const val VALUE_WEIGHT: Float` | Weight of the value column. |
@@ -1324,13 +1324,13 @@ diagnostics.addItem("Last check", null)
 
 Long-form content: explanations, notes, steps and pictures.
 
-### SancaiParagraph
+### MalletParagraph
 
-**Extracted** · `io.github.avalonskyafar.sancai.widget.SancaiParagraph` · Showcase: Components › Reading
+**Extracted** · `io.github.avalonskyafar.mallet.widget.MalletParagraph` · Showcase: Components › Reading
 
 Long-form copy: explanations, tutorials, anything that is read rather than scanned.
 
-A paragraph is a `SancaiText` in the body role that is aligned to the start and the top
+A paragraph is a `MalletText` in the body role that is aligned to the start and the top
 and fills every line before it wraps: the simple break strategy and no hyphenation, so
 earlier lines are never shortened to balance the last one.
 
@@ -1339,10 +1339,10 @@ closing punctuation mark when the text is set, which keeps the mark on the line 
 character it closes. `getText` therefore returns the processed text; the text as it was
 given stays available as `rawText`.
 
-<img src="images/components/media_light.png" width="320" alt="SancaiParagraph, light theme"> <img src="images/components/media_dark.png" width="320" alt="SancaiParagraph, dark theme">
+<img src="images/components/media_light.png" width="320" alt="MalletParagraph, light theme"> <img src="images/components/media_dark.png" width="320" alt="MalletParagraph, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiParagraph
+<io.github.avalonskyafar.mallet.widget.MalletParagraph
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:text="@string/tutorial_intro" />
@@ -1350,7 +1350,7 @@ given stays available as `rawText`.
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiParagraphProtectClosingPunctuation` | boolean | Whether CJK closing punctuation is tied to the character before it, so that it never starts a line. Defaults to true. |
+| `app:malletParagraphProtectClosingPunctuation` | boolean | Whether CJK closing punctuation is tied to the character before it, so that it never starts a line. Defaults to true. |
 
 | Member | What it does |
 |---|---|
@@ -1360,9 +1360,9 @@ given stays available as `rawText`.
 | ↳ `const val WORD_JOINER: Char` | The invisible character that forbids a line break on both of its sides. |
 | ↳ `fun protect(text: CharSequence?): CharSequence?` | Returns `text` with a `WORD_JOINER` in front of every mark of `CLOSING_PUNCTUATION` that is not the first character and is not already protected. |
 
-### SancaiCallout
+### MalletCallout
 
-**Extracted** · `io.github.avalonskyafar.sancai.widget.SancaiCallout` · Showcase: Components › Reading
+**Extracted** · `io.github.avalonskyafar.mallet.widget.MalletCallout` · Showcase: Components › Reading
 
 A note beside running text: a thin bar in the tone colour at the start, then a title in the
 same colour over a body in ink. It has no card and no background, so it reads as part of the
@@ -1373,35 +1373,35 @@ edge (the right edge in right-to-left layouts). A missing title or body takes no
 Extra views added in XML or with `addView` stack below the body, beside the bar.
 A screen reader reads the callout as one element.
 
-<img src="images/components/callout_light.png" width="320" alt="SancaiCallout, light theme"> <img src="images/components/callout_dark.png" width="320" alt="SancaiCallout, dark theme">
+<img src="images/components/callout_light.png" width="320" alt="MalletCallout, light theme"> <img src="images/components/callout_dark.png" width="320" alt="MalletCallout, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiCallout
+<io.github.avalonskyafar.mallet.widget.MalletCallout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiTitle="What stays on the device"
-    app:sancaiDetail="Recognition runs locally. Nothing on the screen is uploaded."
-    app:sancaiTone="accent" />
+    app:malletTitle="What stays on the device"
+    app:malletDetail="Recognition runs locally. Nothing on the screen is uploaded."
+    app:malletTone="accent" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiTitle` | string | The title of the note, in the tone colour. |
-| `app:sancaiDetail` | string | The body of the note, in ink. |
-| `app:sancaiTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | Colour of the bar and the title: accent (default), danger, warning or success. |
+| `app:malletTitle` | string | The title of the note, in the tone colour. |
+| `app:malletDetail` | string | The body of the note, in ink. |
+| `app:malletTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | Colour of the bar and the title: accent (default), danger, warning or success. |
 
 | Member | What it does |
 |---|---|
-| `val titleView: SancaiText =` | The view that shows `title`; exposed for fine tuning (max lines, text selection). |
-| `val bodyView: SancaiText =` | The view that shows `body`. |
+| `val titleView: MalletText =` | The view that shows `title`; exposed for fine tuning (max lines, text selection). |
+| `val bodyView: MalletText =` | The view that shows `body`. |
 | `var title: CharSequence?` | The title, in the tone colour. |
 | `var body: CharSequence?` | The body, in ink, 7 dp below the title. |
-| `var tone: SancaiTextTone` | Colour of the bar and of the title: `SancaiTextTone.ACCENT` (default) for a plain note, `DANGER`, `WARNING` or `SUCCESS` for a note with a verdict. |
+| `var tone: MalletTextTone` | Colour of the bar and of the title: `MalletTextTone.ACCENT` (default) for a plain note, `DANGER`, `WARNING` or `SUCCESS` for a note with a verdict. |
 | `val barColor: Int` | The colour the bar is painted with right now. |
 
-### SancaiFlowRow
+### MalletFlowRow
 
-**Extracted** · `io.github.avalonskyafar.sancai.widget.SancaiFlowRow` · Showcase: Components › Reading
+**Extracted** · `io.github.avalonskyafar.mallet.widget.MalletFlowRow` · Showcase: Components › Reading
 
 A flat sequence of steps: equal-width columns, each a centred title over a centred, muted
 detail, with an accent arrow between neighbours. It shows an order without turning the
@@ -1413,30 +1413,30 @@ layouts the first step is on the right and the arrows point left. A screen reade
 element per step, in order, and is told the position of each ("2 of 3"); the arrows are
 decoration. The row is for reading: it takes no clicks and no keyboard focus.
 
-Pictures: see [SancaiCallout](#sancaicallout).
+Pictures: see [MalletCallout](#malletcallout).
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiFlowRow
+<io.github.avalonskyafar.mallet.widget.MalletFlowRow
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiFlowRowTitles="@array/flow_titles"
-    app:sancaiFlowRowDetails="@array/flow_details" />
+    app:malletFlowRowTitles="@array/flow_titles"
+    app:malletFlowRowDetails="@array/flow_details" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiFlowRowTitles` | reference | Titles of the steps, in order, as a string array. |
-| `app:sancaiFlowRowDetails` | reference | Details of the steps, as a string array parallel to the titles. May be shorter or absent. |
+| `app:malletFlowRowTitles` | reference | Titles of the steps, in order, as a string array. |
+| `app:malletFlowRowDetails` | reference | Details of the steps, as a string array parallel to the titles. May be shorter or absent. |
 
 | Member | What it does |
 |---|---|
-| `data class Step @JvmOverloads constructor(/** The name of the step, one or two words. */ val title: CharSequence, /** A supporting line under the titl` | One step of a `SancaiFlowRow`: a short `title` and an optional `detail` below it. |
+| `data class Step @JvmOverloads constructor(/** The name of the step, one or two words. */ val title: CharSequence, /** A supporting line under the titl` | One step of a `MalletFlowRow`: a short `title` and an optional `detail` below it. |
 | `var steps: List<Step>` | The steps shown, in reading order. |
 | `fun setSteps(vararg steps: Pair<CharSequence, CharSequence?>)` | Convenience for code: `setSteps("Read" to "this screen", "Decide" to "on the device")`. |
 
-### SancaiMediaFrame
+### MalletMediaFrame
 
-**Extracted** · `io.github.avalonskyafar.sancai.widget.SancaiMediaFrame` · Showcase: Components › Reading
+**Extracted** · `io.github.avalonskyafar.mallet.widget.MalletMediaFrame` · Showcase: Components › Reading
 
 A picture set into a recessed well: screenshots in a tutorial, an illustration in a card.
 
@@ -1454,10 +1454,10 @@ which makes the frame usable as a placeholder while the image loads.
 Accessibility: the frame is one element that reports itself as an image. It is announced
 only when it has a content description; a picture without one is treated as decoration.
 
-Pictures: see [SancaiParagraph](#sancaiparagraph).
+Pictures: see [MalletParagraph](#malletparagraph).
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiMediaFrame
+<io.github.avalonskyafar.mallet.widget.MalletMediaFrame
     android:layout_width="match_parent"
     android:layout_height="152dp"
     android:src="@drawable/tutorial_step_one"
@@ -1468,7 +1468,7 @@ Pictures: see [SancaiParagraph](#sancaiparagraph).
 |---|---|---|
 | `android:src` | drawable | The picture. |
 | `android:scaleType` | scale type | How the picture is fitted. |
-| `app:sancaiMediaAspectRatio` | float | Width divided by height of the picture inside the well, for example 1.7778 for 16:9. 0 (the default) uses the layout height instead. |
+| `app:malletMediaAspectRatio` | float | Width divided by height of the picture inside the well, for example 1.7778 for 16:9. 0 (the default) uses the layout height instead. |
 
 | Member | What it does |
 |---|---|
@@ -1489,9 +1489,9 @@ Pictures: see [SancaiParagraph](#sancaiparagraph).
 
 Bars and tabs for apps with a few sections, and the spatial host for apps whose pages are places.
 
-### SancaiNavBar
+### MalletNavBar
 
-**Extended** · `io.github.avalonskyafar.sancai.widget.SancaiNavBar` · Showcase: Components › Navigation
+**Extended** · `io.github.avalonskyafar.mallet.widget.MalletNavBar` · Showcase: Components › Navigation
 
 The bottom navigation row: quiet outline icons with labels, standing on the bare canvas.
 
@@ -1500,7 +1500,7 @@ and nothing is ever selected. In `Mode.TABS` one item is selected, and the only 
 says so is ink: the selected icon and label turn from muted to ink and the icon stroke grows
 a little heavier.
 
-`sancaiNavBarIcons` is an integer array of `sancaiIcon` values, one per label; a label without
+`malletNavBarIcons` is an integer array of `malletIcon` values, one per label; a label without
 an icon gets the "more" circle. From code use `addItem` or `setItems`.
 
 With a keyboard, the arrow keys move a cursor from item to item and Space or Enter activates
@@ -1509,36 +1509,36 @@ the item under it; the selection does not follow the cursor on its own.
 The row is 72 dp tall and grows by the navigation-bar inset, so it can sit at the very bottom
 of an edge-to-edge window. Set `elevated` when content scrolls underneath it.
 
-Pictures: see [SancaiBadge](#sancaibadge).
+Pictures: see [MalletBadge](#malletbadge).
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiNavBar
+<io.github.avalonskyafar.mallet.widget.MalletNavBar
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiNavBarMode="tabs"
-    app:sancaiOptions="@array/nav_labels"
-    app:sancaiNavBarIcons="@array/nav_icons"
-    app:sancaiSelectedIndex="0" />
+    app:malletNavBarMode="tabs"
+    app:malletOptions="@array/nav_labels"
+    app:malletNavBarIcons="@array/nav_icons"
+    app:malletSelectedIndex="0" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiNavBarMode` | `launcher` / `tabs` | "launcher": every item is a shortcut and nothing is selected (default). "tabs": one item is selected and drawn in ink. |
-| `app:sancaiOptions` | reference | Item labels, in order. |
-| `app:sancaiNavBarIcons` | reference | Integer array of sancaiIcon values, one per label. |
-| `app:sancaiSelectedIndex` | integer | Selected item in tabs mode. |
-| `app:sancaiElevated` | boolean | Draws a full-bleed hairline above the row, for content that scrolls underneath. |
-| `app:sancaiNavBarFitNavigationBar` | boolean | Whether the row grows by the height of the system navigation bar (default true). Switch it off for a row that does not sit at the bottom of the window. |
+| `app:malletNavBarMode` | `launcher` / `tabs` | "launcher": every item is a shortcut and nothing is selected (default). "tabs": one item is selected and drawn in ink. |
+| `app:malletOptions` | reference | Item labels, in order. |
+| `app:malletNavBarIcons` | reference | Integer array of malletIcon values, one per label. |
+| `app:malletSelectedIndex` | integer | Selected item in tabs mode. |
+| `app:malletElevated` | boolean | Draws a full-bleed hairline above the row, for content that scrolls underneath. |
+| `app:malletNavBarFitNavigationBar` | boolean | Whether the row grows by the height of the system navigation bar (default true). Switch it off for a row that does not sit at the bottom of the window. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
 | Member | What it does |
 |---|---|
 | `enum class Mode` | How the items behave. |
-| `class Item(public val icon: SancaiIcon, public val label: CharSequence)` | One entry of the row: an outline `icon` above a short `label`. |
+| `class Item(public val icon: MalletIcon, public val label: CharSequence)` | One entry of the row: an outline `icon` above a short `label`. |
 | `fun interface OnItemSelectedListener` | Called when the user activates an item. |
-| ↳ `fun onItemSelected(bar: SancaiNavBar, index: Int)` | In `Mode.LAUNCHER` this is called for every tap. |
+| ↳ `fun onItemSelected(bar: MalletNavBar, index: Int)` | In `Mode.LAUNCHER` this is called for every tap. |
 | `fun interface OnItemReselectedListener` | Called in `Mode.TABS` when the user taps the item that is already selected. |
-| ↳ `fun onItemReselected(bar: SancaiNavBar, index: Int)` |  |
+| ↳ `fun onItemReselected(bar: MalletNavBar, index: Int)` |  |
 | `fun setOnItemSelectedListener(listener: OnItemSelectedListener?)` | Listener for user-driven activation. |
 | `fun setOnItemReselectedListener(listener: OnItemReselectedListener?)` | Listener for a tap on the selected item in `Mode.TABS`, typically "scroll to top". |
 | `var mode: Mode` | Shortcut row or tab row. |
@@ -1546,7 +1546,7 @@ Pictures: see [SancaiBadge](#sancaibadge).
 | `var elevated: Boolean` | Draws a full-bleed hairline along the top edge, for content that scrolls underneath the row. |
 | `val items: List<Item> get()` | The items in logical order. |
 | `var fitNavigationBar: Boolean` | Whether the row grows by the height of the system navigation bar, keeping the items above it in an edge-to-edge window. |
-| `fun addItem(icon: SancaiIcon, label: CharSequence): Int` | Appends an item and returns its index. |
+| `fun addItem(icon: MalletIcon, label: CharSequence): Int` | Appends an item and returns its index. |
 | `fun setItems(items: List<Item>)` | Replaces all items. |
 | `fun select(index: Int, animate: Boolean = true)` | Moves the selection to `index` from code; the listeners are not called. |
 | `fun setBadge(index: Int, count: Int)` | Shows a count badge at the top end of the icon of item `index`; a `count` of zero or less removes it. |
@@ -1554,9 +1554,9 @@ Pictures: see [SancaiBadge](#sancaibadge).
 | `fun badgeCount(index: Int): Int` | The count shown on item `index`; zero when it has no badge or only a dot. |
 | `fun hasBadgeDot(index: Int): Boolean` | Whether item `index` shows a dot without a number. |
 
-### SancaiTopBar
+### MalletTopBar
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiTopBar` · Showcase: Components › Navigation
+**New** · `io.github.avalonskyafar.mallet.widget.MalletTopBar` · Showcase: Components › Navigation
 
 The bar at the top of a page: a centred title, a navigation button at the start and up to
 two action icons at the end.
@@ -1579,32 +1579,32 @@ Buttons are 24 dp icons in 48 dp targets. Pressing sinks the icon, a click ticks
 calls the listener. Every button needs a content description; directional icons are
 mirrored in right-to-left layouts.
 
-<img src="images/components/topbar_light.png" width="320" alt="SancaiTopBar, light theme"> <img src="images/components/topbar_dark.png" width="320" alt="SancaiTopBar, dark theme">
+<img src="images/components/topbar_light.png" width="320" alt="MalletTopBar, light theme"> <img src="images/components/topbar_dark.png" width="320" alt="MalletTopBar, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiTopBar
+<io.github.avalonskyafar.mallet.widget.MalletTopBar
     android:id="@+id/top_bar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiTitle="Blocked numbers"
-    app:sancaiTopBarSubtitle="12 entries"
-    app:sancaiIcon="chevron_left" />
+    app:malletTitle="Blocked numbers"
+    app:malletTopBarSubtitle="12 entries"
+    app:malletIcon="chevron_left" />
 ```
 
 ```kotlin
 topBar.setNavigation { finish() }
-topBar.addAction(SancaiIcon.SEARCH, getString(R.string.search)) { openSearch() }
+topBar.addAction(MalletIcon.SEARCH, getString(R.string.search)) { openSearch() }
 topBar.bindTo(scrollView)
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiTitle` | string | The centred title. |
-| `app:sancaiIcon` | one of 51 names (see below) | Icon of the navigation button at the start; without it the bar has none. |
-| `app:sancaiTopBarSubtitle` | string | A quiet second line under the title. |
-| `app:sancaiTopBarNavigationDescription` | string | What the navigation button says to a screen reader (default: "Back"). |
-| `app:sancaiTopBarLifted` | boolean | Whether the hairline along the bottom edge is shown from the start. |
-| `app:sancaiTopBarFitStatusBar` | boolean | Whether the bar pads itself for the status bar and display cutout (default true). Switch it off inside a host that already handles those insets. |
+| `app:malletTitle` | string | The centred title. |
+| `app:malletIcon` | one of 51 names (see below) | Icon of the navigation button at the start; without it the bar has none. |
+| `app:malletTopBarSubtitle` | string | A quiet second line under the title. |
+| `app:malletTopBarNavigationDescription` | string | What the navigation button says to a screen reader (default: "Back"). |
+| `app:malletTopBarLifted` | boolean | Whether the hairline along the bottom edge is shown from the start. |
+| `app:malletTopBarFitStatusBar` | boolean | Whether the bar pads itself for the status bar and display cutout (default true). Switch it off inside a host that already handles those insets. |
 
 | Member | What it does |
 |---|---|
@@ -1614,9 +1614,9 @@ topBar.bindTo(scrollView)
 | `var fitStatusBar: Boolean` | Whether the bar pads itself for the status bar and display cutout (default true). |
 | `val navigationButton: View? get()` | The navigation button, or `null` when the bar has none. |
 | `val actionCount: Int get()` | Number of action icons at the end of the bar (0 to 2). |
-| `fun setNavigation(icon: SancaiIcon = SancaiIcon.CHEVRON_LEFT, description: CharSequence? = null, onClick: OnClickListener?)` | Shows the navigation button at the start of the bar, drawn in ink. right-to-left layouts, as every directional icon is this function again. |
+| `fun setNavigation(icon: MalletIcon = MalletIcon.CHEVRON_LEFT, description: CharSequence? = null, onClick: OnClickListener?)` | Shows the navigation button at the start of the bar, drawn in ink. right-to-left layouts, as every directional icon is this function again. |
 | `fun clearNavigation()` | Removes the navigation button. |
-| `fun addAction(icon: SancaiIcon, description: CharSequence, onClick: OnClickListener?): View` | Adds an action icon at the end of the bar, drawn muted, and returns its view (to disable it, or to anchor a menu to it). |
+| `fun addAction(icon: MalletIcon, description: CharSequence, onClick: OnClickListener?): View` | Adds an action icon at the end of the bar, drawn muted, and returns its view (to disable it, or to anchor a menu to it). |
 | `fun getActionAt(index: Int): View` | The view of the action at `index`, in the order the actions were added. |
 | `fun clearActions()` | Removes every action icon. |
 | `fun bindTo(scrollView: View?)` | Lets the bar follow a scrolling view: `lifted` is true while `scrollView` can scroll back up, that is, once content has moved under the bar. |
@@ -1625,17 +1625,17 @@ topBar.bindTo(scrollView)
 | ↳ `const val ICON_DP: Float` | Side of a button's icon, in dp. |
 | ↳ `const val MAX_ACTIONS: Int` | Most action icons a bar holds. |
 
-### SancaiTabs
+### MalletTabs
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiTabs` · Showcase: Components › Navigation
+**New** · `io.github.avalonskyafar.mallet.widget.MalletTabs` · Showcase: Components › Navigation
 
 Text tabs for switching between sibling views.
 
-Tabs are a different idea from `SancaiSegmentedTrack` on purpose. The track selects a *value*
-and shows it with glaze; tabs select a *view* and stay quiet: muted labels on the bare canvas,
+Tabs are a different idea from `MalletSegmentedTrack` on purpose. The track selects a *value*
+and shows it with hue; tabs select a *view* and stay quiet: muted labels on the bare canvas,
 the selected one in ink, and under it a small accent capsule exactly as wide as the label. The
 capsule glides to the new label when the selection changes and can follow a continuous
-position (`setScrollPosition`), so it tracks the finger while a `SancaiPager` is dragged. A
+position (`setScrollPosition`), so it tracks the finger while a `MalletPager` is dragged. A
 hairline runs along the bottom edge from one side of the view to the other.
 
 With `Layout.FILL` every tab gets the same width. With `Layout.SCROLL` every tab is as wide as
@@ -1647,29 +1647,29 @@ jump to the first and last tab. Accessibility services see a tab list with one t
 a tab that takes accessibility focus while scrolled out of view is scrolled into view.
 The view is 44 dp tall.
 
-<img src="images/components/tabs_light.png" width="320" alt="SancaiTabs, light theme"> <img src="images/components/tabs_dark.png" width="320" alt="SancaiTabs, dark theme">
+<img src="images/components/tabs_light.png" width="320" alt="MalletTabs, light theme"> <img src="images/components/tabs_dark.png" width="320" alt="MalletTabs, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiTabs
+<io.github.avalonskyafar.mallet.widget.MalletTabs
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiOptions="@array/library_sections"
-    app:sancaiSelectedIndex="0"
-    app:sancaiTabsLayout="fill" />
+    app:malletOptions="@array/library_sections"
+    app:malletSelectedIndex="0"
+    app:malletTabsLayout="fill" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiOptions` | reference | The tab labels, a string array. |
-| `app:sancaiSelectedIndex` | integer | Index of the option selected at start. |
-| `app:sancaiTabsLayout` | `fill` / `scroll` | How tabs share the width. "fill" gives every tab the same width. "scroll" gives every tab its natural width and scrolls the row, keeping the selected tab in view. |
+| `app:malletOptions` | reference | The tab labels, a string array. |
+| `app:malletSelectedIndex` | integer | Index of the option selected at start. |
+| `app:malletTabsLayout` | `fill` / `scroll` | How tabs share the width. "fill" gives every tab the same width. "scroll" gives every tab its natural width and scrolls the row, keeping the selected tab in view. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
 | Member | What it does |
 |---|---|
 | `enum class Layout` | How the tabs share the width of the view. |
 | `fun interface OnTabSelectedListener` | Called when the user chooses another tab. |
-| ↳ `fun onTabSelected(tabs: SancaiTabs, index: Int)` |  |
+| ↳ `fun onTabSelected(tabs: MalletTabs, index: Int)` |  |
 | `fun setOnTabSelectedListener(listener: OnTabSelectedListener?)` | Listener for user-driven tab changes: a tap, a key, an accessibility action, or a swipe of the pager given to `attachTo`. |
 | `val selectedIndex: Int get()` | Index of the selected tab. |
 | `val tabs: List<CharSequence> get()` | The tab labels, in order. |
@@ -1678,12 +1678,12 @@ The view is 44 dp tall.
 | `fun setTabs(vararg labels: CharSequence)` | Replaces the tab labels. |
 | `fun select(index: Int, animate: Boolean = true)` | Selects tab `index` from code; the indicator glides there when `animate` is true. |
 | `fun setScrollPosition(index: Int, offset: Float)` | Places the indicator `offset` (0 to 1) of the way from tab `index` to the tab after it, without changing the selection: the indicator's position and width and the ink of the two labels are blended between both tabs. |
-| `fun attachTo(pager: SancaiPager?)` | Couples the tabs with `pager`, or ends the coupling with `null`. |
+| `fun attachTo(pager: MalletPager?)` | Couples the tabs with `pager`, or ends the coupling with `null`. |
 | ↳ `const val HEIGHT_DP: Float` | Height of the view in dp. |
 
-### SancaiPager
+### MalletPager
 
-**Extracted** · `io.github.avalonskyafar.sancai.interaction.SancaiPager` · Showcase: Interactions › Pager
+**Extracted** · `io.github.avalonskyafar.mallet.interaction.MalletPager` · Showcase: Interactions › Pager
 
 A horizontal pager for a handful of pages, such as the steps of a first-launch flow.
 
@@ -1700,26 +1700,26 @@ Non-obvious behaviour:
 - While a move runs, further requests and gestures are ignored.
 - The pager takes no keyboard focus of its own. Left / Right pressed inside a page turn the
   page when focus has nowhere else to go in that direction, Page Up / Page Down always do,
-  and an attached `SancaiPageIndicator` is the focusable handle of the pager.
+  and an attached `MalletPageIndicator` is the focusable handle of the pager.
 - A programmatic move to a distant page brings that page in directly, one width of travel.
 - `OnPageChangeListener.onPageSelected` fires for user input only (drag, keyboard,
   accessibility, a tap on an attached indicator); `OnPageChangeListener.onPageScrolled`
   reports every movement.
 - Vertical movement is left to a scrolling parent, and a gesture that starts on a
-  `SancaiHorizontalDragOwner` (a switch or a track inside a page) is left to that view.
+  `MalletHorizontalDragOwner` (a switch or a track inside a page) is left to that view.
 - A disabled pager keeps its page: no drag, key or accessibility action moves it. The pages
   themselves are not paled, since they are content rather than part of a control.
 - In a right-to-left layout the next page comes in from the left.
 
-<img src="images/components/pager_light.png" width="320" alt="SancaiPager, light theme"> <img src="images/components/pager_dark.png" width="320" alt="SancaiPager, dark theme">
+<img src="images/components/pager_light.png" width="320" alt="MalletPager, light theme"> <img src="images/components/pager_dark.png" width="320" alt="MalletPager, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.interaction.SancaiPager
+<io.github.avalonskyafar.mallet.interaction.MalletPager
     android:id="@+id/pager"
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="1"
-    app:sancaiPagerOffscreenPageLimit="1" />
+    app:malletPagerOffscreenPageLimit="1" />
 ```
 
 ```kotlin
@@ -1729,13 +1729,13 @@ indicator.attachTo(pager)
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiPagerOffscreenPageLimit` | integer | How many pages on each side of the current one stay attached. Default: 1. |
+| `app:malletPagerOffscreenPageLimit` | integer | How many pages on each side of the current one stay attached. Default: 1. |
 
 | Member | What it does |
 |---|---|
-| `fun interface PageProvider` | Creates the pages of a `SancaiPager`. |
+| `fun interface PageProvider` | Creates the pages of a `MalletPager`. |
 | ↳ `fun createPage(index: Int, parent: ViewGroup): View` | Returns the view of page `index`. |
-| `interface OnPageChangeListener` | Receives the movement of a `SancaiPager`. |
+| `interface OnPageChangeListener` | Receives the movement of a `MalletPager`. |
 | ↳ `fun onPageSelected(index: Int) {}` | The user moved to page `index`. |
 | ↳ `fun onPageScrolled(index: Int, offset: Float) {}` | The pager stands `offset` (0 until 1) of the way from page `index` to the page after it. |
 | `var pageCount: Int` | Number of pages, as given to `setPages`. |
@@ -1747,24 +1747,24 @@ indicator.attachTo(pager)
 | `fun setCurrentPage(index: Int, animate: Boolean)` | Moves to page `index`, gliding when `animate` is true and the pager is laid out, else at once. |
 | `fun addOnPageChangeListener(listener: OnPageChangeListener)` | Adds a listener for page changes and movement. |
 | `fun removeOnPageChangeListener(listener: OnPageChangeListener)` | Removes a listener added with `addOnPageChangeListener`. |
-| `fun linkWith(other: SancaiPager)` | Makes `other` follow this pager continuously: every drag, settle and programmatic move of this pager moves `other` by the same share of its own width, as a heading area that moves in step with a content area. |
-| `fun unlink(other: SancaiPager)` | Ends the link made with `linkWith`. |
+| `fun linkWith(other: MalletPager)` | Makes `other` follow this pager continuously: every drag, settle and programmatic move of this pager moves `other` by the same share of its own width, as a heading area that moves in step with a content area. |
+| `fun unlink(other: MalletPager)` | Ends the link made with `linkWith`. |
 | ↳ `const val COMMIT_FRACTION: Float` | Share of the width a drag must cover to land on the neighbour. |
 | ↳ `const val COMMIT_VELOCITY_WIDTHS: Float` | Speed towards the neighbour, in pager widths per second, that lands on it at once. |
 
-### SancaiPageIndicator
+### MalletPageIndicator
 
-**Extracted** · `io.github.avalonskyafar.sancai.widget.SancaiPageIndicator` · Showcase: Interactions › Pager
+**Extracted** · `io.github.avalonskyafar.mallet.widget.MalletPageIndicator` · Showcase: Interactions › Pager
 
 A row of dots, one per page: muted, with the current one in the accent colour.
 
-Attached to a `SancaiPager` it follows the pager continuously: while a page moves, the two
+Attached to a `MalletPager` it follows the pager continuously: while a page moves, the two
 dots involved cross-blend with the position. Tapping a dot goes to that page.
 
 Non-obvious behaviour:
 
-- Standalone use: set `count` and `selectedIndex` (or `app:sancaiPageIndicatorCount` and
-  `app:sancaiSelectedIndex`) and listen with `setOnSelectionChangeListener`. While a
+- Standalone use: set `count` and `selectedIndex` (or `app:malletPageIndicatorCount` and
+  `app:malletSelectedIndex`) and listen with `setOnSelectionChangeListener`. While a
   pager is attached, both mirror the pager: setting `selectedIndex` moves it, setting
   `count` is ignored.
 - The listener fires for user input only (tap, keyboard, accessibility action); the pager's
@@ -1779,10 +1779,10 @@ Non-obvious behaviour:
 - `selectedIndex` is saved and restored for standalone use; an attached indicator takes its
   position from the pager, which saves its own.
 
-Pictures: see [SancaiPager](#sancaipager).
+Pictures: see [MalletPager](#malletpager).
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiPageIndicator
+<io.github.avalonskyafar.mallet.widget.MalletPageIndicator
     android:id="@+id/dots"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -1795,32 +1795,32 @@ dots.attachTo(pager)
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiPageIndicatorCount` | integer | Number of dots of a standalone indicator. |
-| `app:sancaiSelectedIndex` | integer | Index of the selected dot of a standalone indicator. |
+| `app:malletPageIndicatorCount` | integer | Number of dots of a standalone indicator. |
+| `app:malletSelectedIndex` | integer | Index of the selected dot of a standalone indicator. |
 
 | Member | What it does |
 |---|---|
-| `fun interface OnSelectionChangeListener` | Receives the dot the user chose on a `SancaiPageIndicator`. |
-| ↳ `fun onSelectionChanged(indicator: SancaiPageIndicator, index: Int)` | The user moved `indicator` to dot `index`. |
+| `fun interface OnSelectionChangeListener` | Receives the dot the user chose on a `MalletPageIndicator`. |
+| ↳ `fun onSelectionChanged(indicator: MalletPageIndicator, index: Int)` | The user moved `indicator` to dot `index`. |
 | `fun setOnSelectionChangeListener(listener: OnSelectionChangeListener?)` | Called when the user chooses a dot. |
 | `var count: Int` | Number of dots. |
 | `var selectedIndex: Int` | Index of the accent dot. |
-| `fun attachTo(pager: SancaiPager?)` | Follows `pager` and moves it when a dot is tapped; `null` detaches and leaves the dots as they are, for standalone use. |
+| `fun attachTo(pager: MalletPager?)` | Follows `pager` and moves it when a dot is tapped; `null` detaches and leaves the dots as they are, for standalone use. |
 
-### SancaiSpatialGraph
+### MalletSpatialGraph
 
-**Extended** · `io.github.avalonskyafar.sancai.interaction.SancaiSpatialGraph` · Showcase: Interactions › Pages as places
+**Extended** · `io.github.avalonskyafar.mallet.interaction.MalletSpatialGraph` · Showcase: Interactions › Pages as places
 
 Where the pages of an app lie in relation to one another.
 
-In Sancai, pages are places rather than a stack. A page is reached by dragging towards it,
+In Mallet, pages are places rather than a stack. A page is reached by dragging towards it,
 and a chevron on a row points to where its page lies. The graph records those places; a
-`SancaiSpatialHost` moves between them.
+`MalletSpatialHost` moves between them.
 
 Pages are identified by string keys. The graph is immutable.
 
 ```kotlin
-val graph = SancaiSpatialGraph.Builder(root = "main")
+val graph = MalletSpatialGraph.Builder(root = "main")
     .connect("main", Side.BELOW, "settings")      // settings is below main, main above settings
     .connect("main", Side.START, "guide")
     .connect("main", Side.END, "more")
@@ -1843,13 +1843,13 @@ val graph = SancaiSpatialGraph.Builder(root = "main")
 | ↳ `fun connect(from: String, side: Side, to: String, reciprocal: Boolean = true): Builder` | Puts `to` on the `side` side of `from`. |
 | ↳ `fun child(parent: String, side: Side, child: String): Builder` | Places `child` on the `side` side of `parent` as a page that is opened from a row or button. |
 | ↳ `fun parent(key: String, parentKey: String): Builder` | Overrides where "back" leads from `key`. |
-| ↳ `fun build(): SancaiSpatialGraph` | Validates and builds the graph. |
+| ↳ `fun build(): MalletSpatialGraph` | Validates and builds the graph. |
 
-### SancaiSpatialHost
+### MalletSpatialHost
 
-**Extracted** · `io.github.avalonskyafar.sancai.interaction.SancaiSpatialHost` · Showcase: Interactions › Pages as places
+**Extracted** · `io.github.avalonskyafar.mallet.interaction.MalletSpatialHost` · Showcase: Interactions › Pages as places
 
-Shows one page of a `SancaiSpatialGraph` and moves between pages with the finger.
+Shows one page of a `MalletSpatialGraph` and moves between pages with the finger.
 
 The page under the finger and the page it uncovers travel together, edge to edge, at finger
 speed. Nothing fades, scales or lags behind. Letting go past 28 % of the way, or with a
@@ -1858,7 +1858,7 @@ over at once.
 
 How the host shares the screen with what is inside the pages:
 
-- A drag that starts on a `SancaiHorizontalDragOwner` (a track, a switch, a slider) belongs
+- A drag that starts on a `MalletHorizontalDragOwner` (a track, a switch, a slider) belongs
   to that control, unless it turns out to be vertical.
 - Content that can still scroll up or down scrolls first; when it reaches its limit within
   the same gesture, the page starts to follow.
@@ -1874,7 +1874,7 @@ that is, so a page that pads itself for the bars is right from its first frame.
 Page views come from the `PageFactory` and are kept while detached, so returning to a page
 restores it exactly; see `setKeepAlive` and `invalidatePage`.
 
-<img src="images/components/spatial_drag_light.png" width="320" alt="SancaiSpatialHost, light theme">
+<img src="images/components/spatial_drag_light.png" width="320" alt="MalletSpatialHost, light theme">
 
 ```kotlin
 host.setGraph(graph) { key -> createPageView(key) }
@@ -1892,7 +1892,7 @@ row.setOnClickListener { host.navigate("settings") }
 | `var prewarmNeighbours: Boolean` | Builds neighbouring pages ahead of time, while the host is idle. |
 | `val currentKey: String? get()` | The page the host rests on, or is leaving. |
 | `val isMoving: Boolean get()` | Whether pages are being dragged or are landing. |
-| `fun setGraph(graph: SancaiSpatialGraph, factory: PageFactory)` | Sets the places and how to build them. |
+| `fun setGraph(graph: MalletSpatialGraph, factory: PageFactory)` | Sets the places and how to build them. |
 | `fun addListener(listener: Listener)` |  |
 | `fun removeListener(listener: Listener)` |  |
 | `fun setKeepAlive(keys: Set<String>?)` | Limits which pages stay alive while detached; `null` (the default) keeps every visited page. |
@@ -1907,23 +1907,23 @@ row.setOnClickListener { host.navigate("settings") }
 | ↳ `const val EDGE_DP: Float` | Width, in dp, of the screen-edge zones left to the system back gesture. |
 | ↳ `const val BACK_PREVIEW_FRACTION: Float` | Share of the travel that a full system back swipe previews before it commits. |
 
-### SancaiBack
+### MalletBack
 
-**Extended** · `io.github.avalonskyafar.sancai.interaction.SancaiBack` · Showcase: Interactions › Pages as places
+**Extended** · `io.github.avalonskyafar.mallet.interaction.MalletBack` · Showcase: Interactions › Pages as places
 
-Connects the system back gesture to a `SancaiSpatialHost`.
+Connects the system back gesture to a `MalletSpatialHost`.
 
-Back leads to the parent of the current page (see `SancaiSpatialGraph.parentOf`). On
+Back leads to the parent of the current page (see `MalletSpatialGraph.parentOf`). On
 Android 14 and later the back swipe previews that move: the pages follow the swipe for up to
 40 % of the way, land when the gesture is completed and glide back when it is cancelled. On
 the root page the registration steps aside, so the system handles back itself.
 
 ```kotlin
-private lateinit var back: SancaiBack.Registration
+private lateinit var back: MalletBack.Registration
 
 override fun onCreate(savedInstanceState: Bundle?) {
     ...
-    back = SancaiBack.attach(this, host)
+    back = MalletBack.attach(this, host)
 }
 
 // Only needed below Android 13, or without android:enableOnBackInvokedCallback:
@@ -1937,11 +1937,11 @@ override fun onBackPressed() {
 | `interface Registration` | Handle returned by `attach`. |
 | ↳ `fun onBackPressed(): Boolean` | Forwards a legacy back press. |
 | ↳ `fun remove()` | Detaches from the host and from the system. |
-| `fun attach(activity: Activity, host: SancaiSpatialHost): Registration` | Routes back for `activity` to `host` until the registration is removed. |
+| `fun attach(activity: Activity, host: MalletSpatialHost): Registration` | Routes back for `activity` to `host` until the registration is removed. |
 
-### SancaiSpatialTransition
+### MalletSpatialTransition
 
-**Extracted** · `io.github.avalonskyafar.sancai.interaction.SancaiSpatialTransition` · Showcase: Interactions › Pages as places
+**Extracted** · `io.github.avalonskyafar.mallet.interaction.MalletSpatialTransition` · Showcase: Interactions › Pages as places
 
 Makes a second activity behave like a neighbouring page.
 
@@ -1955,10 +1955,10 @@ token and sends the token along in the intent. `wrap` puts that picture behind t
 and moves both itself, so the window animation is switched off. When there is no picture
 (the activity was launched some other way, the process was restarted, or the picture would
 exceed `MAX_SNAPSHOT_BYTES`) the page is shown at once and the plain window slide animations
-`R.anim.sancai_slide_*` are used instead; the swipe back still works.
+`R.anim.mallet_slide_*` are used instead; the swipe back still works.
 
 The swipe leaves alone what needs horizontal drags itself: anything that is a
-`SancaiHorizontalDragOwner`, every `EditText`, whatever can itself scroll the way the finger
+`MalletHorizontalDragOwner`, every `EditText`, whatever can itself scroll the way the finger
 goes when the drag begins (a pager with a page left that way, a row that slides aside, a
 sideways list; they answer through `canScrollHorizontally`), and the 24 dp zones at both
 screen edges, which belong to the system. A page that is in the middle of something can
@@ -1966,20 +1966,20 @@ refuse the swipe with a `SwipeGate`.
 
 Only `Side.START` and `Side.END` are supported; they follow the layout direction.
 
-<img src="images/components/transition_light.png" width="320" alt="SancaiSpatialTransition, light theme"> <img src="images/components/transition_dark.png" width="320" alt="SancaiSpatialTransition, dark theme">
+<img src="images/components/transition_light.png" width="320" alt="MalletSpatialTransition, light theme"> <img src="images/components/transition_dark.png" width="320" alt="MalletSpatialTransition, dark theme">
 
 ```kotlin
 // in the launching activity
-SancaiSpatialTransition.start(this, Intent(this, DetailActivity::class.java), Side.END)
+MalletSpatialTransition.start(this, Intent(this, DetailActivity::class.java), Side.END)
 
 // in the new activity
 override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(SancaiSpatialTransition.wrap(this, pageView))
+    setContentView(MalletSpatialTransition.wrap(this, pageView))
 }
 
 override fun onBackPressed() {
-    SancaiSpatialTransition.finish(this)
+    MalletSpatialTransition.finish(this)
 }
 ```
 
@@ -1999,9 +1999,9 @@ override fun onBackPressed() {
 
 What appears above a page: a question, a set of actions, a small menu, a passing message, a floating panel.
 
-### SancaiDialog
+### MalletDialog
 
-**Extracted** · `io.github.avalonskyafar.sancai.overlay.SancaiDialog` · Showcase: Components › Dialogs and sheets
+**Extracted** · `io.github.avalonskyafar.mallet.overlay.MalletDialog` · Showcase: Components › Dialogs and sheets
 
 A modal question on a porcelain card: a centred title, a muted message, optional content
 and one to three text actions under a rim-to-rim divider.
@@ -2021,13 +2021,13 @@ Behaviour worth knowing:
 - A dialog is a window, not a view, so it has no XML form and is not restored after a
   configuration change; show it again from your own state.
 
-<img src="images/components/dialog_light.png" width="320" alt="SancaiDialog, light theme"> <img src="images/components/dialog_dark.png" width="320" alt="SancaiDialog, dark theme">
+<img src="images/components/dialog_light.png" width="320" alt="MalletDialog, light theme"> <img src="images/components/dialog_dark.png" width="320" alt="MalletDialog, dark theme">
 
 ```kotlin
-SancaiDialog.Builder(context)
+MalletDialog.Builder(context)
     .title("Restore all defaults?")
     .message("Every setting returns to its original value.")
-    .positive("Restore", tone = SancaiTextTone.DANGER) { dialog -> store.reset(); true }
+    .positive("Restore", tone = MalletTextTone.DANGER) { dialog -> store.reset(); true }
     .negative("Cancel")
     .show()
 ```
@@ -2035,11 +2035,11 @@ SancaiDialog.Builder(context)
 | Member | What it does |
 |---|---|
 | `fun interface OnActionListener` | Called when the user chooses an action. |
-| ↳ `fun onAction(dialog: SancaiDialog): Boolean` | Returns `true` to close `dialog`, `false` to keep it open. |
+| ↳ `fun onAction(dialog: MalletDialog): Boolean` | Returns `true` to close `dialog`, `false` to keep it open. |
 | `fun interface OnInputListener` | Called with the text of an input dialog when its positive action is chosen. |
-| ↳ `fun onInput(dialog: SancaiDialog, text: String): Boolean` | Returns `true` to accept `text` and close, `false` to keep `dialog` open. |
+| ↳ `fun onInput(dialog: MalletDialog, text: String): Boolean` | Returns `true` to accept `text` and close, `false` to keep `dialog` open. |
 | `fun interface OnDismissListener` | Called once when the dialog has left the screen. |
-| ↳ `fun onDismiss(dialog: SancaiDialog, positive: Boolean)` | every other way out (another action, back, outside touch, `dismiss`). |
+| ↳ `fun onDismiss(dialog: MalletDialog, positive: Boolean)` | every other way out (another action, back, outside touch, `dismiss`). |
 | `var isClosing: Boolean` | `true` from the moment the dialog starts to close; actions and back are ignored then. |
 | `val isShowing: Boolean` | Whether the dialog window is on screen (it still is while the exit motion runs). |
 | `val contentView: View` | The card, for tests and for code that needs to look something up in the content. |
@@ -2066,18 +2066,18 @@ SancaiDialog.Builder(context)
 | ↳ `fun cancelable(cancelable: Boolean): Builder` | Whether back closes the dialog. |
 | ↳ `fun canceledOnTouchOutside(cancel: Boolean): Builder` | Whether a touch outside the card closes a cancelable dialog. |
 | ↳ `fun onDismiss(listener: OnDismissListener?): Builder` | Called once when the dialog has gone, with a flag for "the positive action closed it". |
-| ↳ `fun build(): SancaiDialog` | Builds the dialog without showing it. |
-| ↳ `fun show(): SancaiDialog` | Builds the dialog and shows it. |
+| ↳ `fun build(): MalletDialog` | Builds the dialog without showing it. |
+| ↳ `fun show(): MalletDialog` | Builds the dialog and shows it. |
 | ↳ `const val ACTION_POSITIVE: Int` | The confirming action. |
 | ↳ `const val ACTION_NEUTRAL: Int` | The optional third action. |
 | ↳ `const val ACTION_NEGATIVE: Int` | The dismissive action. |
 | ↳ `fun confirm(context: Context, title: CharSequence?, message: CharSequence?` | Asks for a confirmation with "Cancel" and one confirming action, and shows it. |
-| ↳ `fun confirm(context: Context, title: CharSequence?, onConfirm: Runnable): SancaiDialog =` | Asks for a confirmation of `title` alone, with "Cancel" and "OK", and shows it. |
+| ↳ `fun confirm(context: Context, title: CharSequence?, onConfirm: Runnable): MalletDialog =` | Asks for a confirmation of `title` alone, with "Cancel" and "OK", and shows it. |
 | ↳ `fun message(context: Context, title: CharSequence?, message: CharSequence?` | Shows a notice with a single "OK" action. |
 
-### SancaiBottomSheet
+### MalletBottomSheet
 
-**New** · `io.github.avalonskyafar.sancai.overlay.SancaiBottomSheet` · Showcase: Components › Dialogs and sheets
+**New** · `io.github.avalonskyafar.mallet.overlay.MalletBottomSheet` · Showcase: Components › Dialogs and sheets
 
 A porcelain sheet that rises from the bottom edge of the window and follows the finger
 back down.
@@ -2088,12 +2088,12 @@ of centred actions with an optional cancel action below a divider.
 
 Behaviour worth knowing:
 
-- It glides up over `SancaiMotion.DIALOG_MS` and glides down again; only the scrim fades,
+- It glides up over `MalletMotion.DIALOG_MS` and glides down again; only the scrim fades,
   in proportion to the position of the sheet.
 - Dragging down on the grabber, the header, or on content that is scrolled to its top
   moves a cancelable sheet (one built with `cancelable(false)` does not follow the
-  finger). Letting go past `SancaiMotion.COMMIT_FRACTION` of its height, or faster than
-  `SancaiMotion.COMMIT_VELOCITY_DP`, dismisses it; otherwise it returns.
+  finger). Letting go past `MalletMotion.COMMIT_FRACTION` of its height, or faster than
+  `MalletMotion.COMMIT_VELOCITY_DP`, dismisses it; otherwise it returns.
 - A tap on the scrim, the back key and the accessibility "dismiss" action dismiss it
   unless it was built with `cancelable(false)`.
 - An action ticks, runs its callback, and then dismisses the sheet.
@@ -2103,13 +2103,13 @@ Behaviour worth knowing:
 
 The context must be an activity (or a themed wrapper around one), as for any dialog.
 
-<img src="images/components/sheet_light.png" width="320" alt="SancaiBottomSheet, light theme"> <img src="images/components/sheet_dark.png" width="320" alt="SancaiBottomSheet, dark theme">
+<img src="images/components/sheet_light.png" width="320" alt="MalletBottomSheet, light theme"> <img src="images/components/sheet_dark.png" width="320" alt="MalletBottomSheet, dark theme">
 
 ```kotlin
-SancaiBottomSheet.Builder(activity)
+MalletBottomSheet.Builder(activity)
     .title("Photo")
-    .action("Share", icon = SancaiIcon.ARROW_UP) { share() }
-    .action("Delete", SancaiTextTone.DANGER) { delete() }
+    .action("Share", icon = MalletIcon.ARROW_UP) { share() }
+    .action("Delete", MalletTextTone.DANGER) { delete() }
     .cancel()
     .show()
 ```
@@ -2117,27 +2117,27 @@ SancaiBottomSheet.Builder(activity)
 | Member | What it does |
 |---|---|
 | `fun interface OnDismissListener` | Told when a sheet has left the screen, whatever made it leave. |
-| ↳ `fun onDismiss(sheet: SancaiBottomSheet)` |  |
+| ↳ `fun onDismiss(sheet: MalletBottomSheet)` |  |
 | `val isShowing: Boolean` | Whether the sheet is on screen, including while it glides in or out. |
 | `var isCancelable: Boolean` | Whether scrim taps, the back key and drags may dismiss the sheet. |
 | `fun setOnDismissListener(listener: OnDismissListener?)` | Replaces the listener that is told when the sheet has left the screen. |
-| `fun show(): SancaiBottomSheet` | Shows the sheet and lets it glide up. |
+| `fun show(): MalletBottomSheet` | Shows the sheet and lets it glide up. |
 | `fun dismiss()` | Lets the sheet glide down and then removes it. |
 | `class Builder(private val context: Context)` | Collects the parts of a sheet. |
 | ↳ `fun title(title: CharSequence?): Builder` | Centred title above the content; it is also announced as the name of the sheet. |
 | ↳ `fun message(message: CharSequence?): Builder` | Centred, muted explanation below the title. |
 | ↳ `fun view(view: View?): Builder` | Any content. |
-| ↳ `fun action(label: CharSequence, tone: SancaiTextTone` | Adds an action row. |
+| ↳ `fun action(label: CharSequence, tone: MalletTextTone` | Adds an action row. |
 | ↳ `fun action(label: CharSequence, onClick: Runnable): Builder =` | Adds a plain action row: `label` in the ink tone, without an icon. |
 | ↳ `fun cancel(label: CharSequence?` | Adds the cancel action below a full-bleed divider. |
 | ↳ `fun cancelable(cancelable: Boolean): Builder` | Whether scrim taps, the back key and drags may dismiss the sheet (default true). |
 | ↳ `fun onDismiss(listener: OnDismissListener?): Builder` | Listener told when the sheet has left the screen. |
-| ↳ `fun build(): SancaiBottomSheet` | Builds the sheet without showing it. |
-| ↳ `fun show(): SancaiBottomSheet` | Builds the sheet and shows it. |
+| ↳ `fun build(): MalletBottomSheet` | Builds the sheet without showing it. |
+| ↳ `fun show(): MalletBottomSheet` | Builds the sheet and shows it. |
 
-### SancaiMenu
+### MalletMenu
 
-**New** · `io.github.avalonskyafar.sancai.overlay.SancaiMenu` · Showcase: Components › Dialogs and sheets
+**New** · `io.github.avalonskyafar.mallet.overlay.MalletMenu` · Showcase: Components › Dialogs and sheets
 
 A small porcelain panel of actions that grows out of the control that opened it.
 
@@ -2156,14 +2156,14 @@ The menu is built in code and shown in its own popup window:
 
 A menu can be shown again after it was dismissed, and changed between showings.
 
-<img src="images/components/menu_light.png" width="320" alt="SancaiMenu, light theme"> <img src="images/components/menu_dark.png" width="320" alt="SancaiMenu, dark theme">
+<img src="images/components/menu_light.png" width="320" alt="MalletMenu, light theme"> <img src="images/components/menu_dark.png" width="320" alt="MalletMenu, dark theme">
 
 ```kotlin
-SancaiMenu(context)
-    .add(getString(R.string.sort_by_name), SancaiIcon.EDIT) { sortByName() }
+MalletMenu(context)
+    .add(getString(R.string.sort_by_name), MalletIcon.EDIT) { sortByName() }
     .add(getString(R.string.sort_by_date)) { sortByDate() }
     .addDivider()
-    .addDanger(getString(R.string.delete_all), SancaiIcon.TRASH) { deleteAll() }
+    .addDanger(getString(R.string.delete_all), MalletIcon.TRASH) { deleteAll() }
     .setChecked(0)
     .show(anchor)
 ```
@@ -2172,17 +2172,17 @@ SancaiMenu(context)
 |---|---|
 | `val itemCount: Int get()` | Number of items; dividers do not count. |
 | `val isShowing: Boolean get()` | Whether the menu is on screen (it still is while it glides away). |
-| `fun add(label: CharSequence, icon: SancaiIcon? = null, onClick: Runnable? = null): SancaiMenu` | Adds an action with an optional leading `icon`. |
-| `fun add(label: CharSequence, onClick: Runnable): SancaiMenu` | Adds an action without an icon. |
-| `fun addDanger(label: CharSequence, icon: SancaiIcon? = null, onClick: Runnable? = null): SancaiMenu` | Adds a destructive action: label and icon are drawn in the danger colour. |
-| `fun addDanger(label: CharSequence, onClick: Runnable): SancaiMenu` | Adds a destructive action without an icon. |
-| `fun addDivider(): SancaiMenu` | Starts a new group: a hairline from rim to rim after the items added so far. |
-| `fun setChecked(index: Int, checked: Boolean = true): SancaiMenu` | Marks the item at `index` as the selected one (a trailing check mark) or, with `checked` false, clears its mark. |
+| `fun add(label: CharSequence, icon: MalletIcon? = null, onClick: Runnable? = null): MalletMenu` | Adds an action with an optional leading `icon`. |
+| `fun add(label: CharSequence, onClick: Runnable): MalletMenu` | Adds an action without an icon. |
+| `fun addDanger(label: CharSequence, icon: MalletIcon? = null, onClick: Runnable? = null): MalletMenu` | Adds a destructive action: label and icon are drawn in the danger colour. |
+| `fun addDanger(label: CharSequence, onClick: Runnable): MalletMenu` | Adds a destructive action without an icon. |
+| `fun addDivider(): MalletMenu` | Starts a new group: a hairline from rim to rim after the items added so far. |
+| `fun setChecked(index: Int, checked: Boolean = true): MalletMenu` | Marks the item at `index` as the selected one (a trailing check mark) or, with `checked` false, clears its mark. |
 | `fun isChecked(index: Int): Boolean` | Whether the item at `index` carries the check mark. |
-| `fun setEnabled(index: Int, enabled: Boolean): SancaiMenu` | Enables or disables the item at `index`. |
+| `fun setEnabled(index: Int, enabled: Boolean): MalletMenu` | Enables or disables the item at `index`. |
 | `fun isEnabled(index: Int): Boolean` | Whether the item at `index` can be picked. |
-| `fun clear(): SancaiMenu` | Removes every item and divider. |
-| `fun setOnDismissListener(listener: Runnable?): SancaiMenu` | Called whenever the menu has closed, whatever closed it. |
+| `fun clear(): MalletMenu` | Removes every item and divider. |
+| `fun setOnDismissListener(listener: Runnable?): MalletMenu` | Called whenever the menu has closed, whatever closed it. |
 | `fun show(anchor: View)` | Opens the menu next to `anchor`, which must be attached to a window. |
 | `fun dismiss()` | Closes the menu; it shrinks back into the anchor corner first. |
 | ↳ `const val MIN_WIDTH_DP: Float` | Narrowest panel body, in dp. |
@@ -2190,15 +2190,15 @@ SancaiMenu(context)
 | ↳ `const val ITEM_HEIGHT_DP: Float` | Height of an item at the default text size, in dp. |
 | ↳ `const val WINDOW_MARGIN_DP: Float` | Distance the panel keeps from the window edges, in dp. |
 
-### SancaiToast
+### MalletToast
 
-**Extended** · `io.github.avalonskyafar.sancai.overlay.SancaiToast` · Showcase: Components › Dialogs and sheets
+**Extended** · `io.github.avalonskyafar.mallet.overlay.MalletToast` · Showcase: Components › Dialogs and sheets
 
 Passing feedback: a pill that rises at the bottom of the activity, says one thing and
 sinks away again.
 
 The toast is a view inside the activity's content (`android.R.id.content`), not a system
-toast and not a window, so it follows the Sancai theme of the activity and never outlives
+toast and not a window, so it follows the Mallet theme of the activity and never outlives
 it. A new toast removes the one on screen at once and takes its place.
 
 A plain toast stays `DURATION_MS`, one with an action `ACTION_DURATION_MS`. While a screen
@@ -2207,12 +2207,12 @@ a polite live region and offers a "dismiss" accessibility action.
 
 Use it from the UI thread only.
 
-<img src="images/components/toast_light.png" width="320" alt="SancaiToast, light theme"> <img src="images/components/toast_dark.png" width="320" alt="SancaiToast, dark theme">
+<img src="images/components/toast_light.png" width="320" alt="MalletToast, light theme"> <img src="images/components/toast_dark.png" width="320" alt="MalletToast, dark theme">
 
 ```kotlin
-SancaiToast.show(activity, "Saved")
-SancaiToast.error(activity, "Could not reach the server")
-SancaiToast.Builder(activity)
+MalletToast.show(activity, "Saved")
+MalletToast.error(activity, "Could not reach the server")
+MalletToast.Builder(activity)
     .message("Entry deleted")
     .action("Undo") { restore() }
     .show()
@@ -2221,11 +2221,11 @@ SancaiToast.Builder(activity)
 | Member | What it does |
 |---|---|
 | `fun interface OnDismissListener` | Told when a toast has left the screen. |
-| ↳ `fun onDismiss(toast: SancaiToast, actionTaken: Boolean)` | `toast` has left the screen for any reason: its time ran out, `SancaiToast.dismiss`, a newer toast, or its action, in which case `actionTaken` is `true`. |
+| ↳ `fun onDismiss(toast: MalletToast, actionTaken: Boolean)` | `toast` has left the screen for any reason: its time ran out, `MalletToast.dismiss`, a newer toast, or its action, in which case `actionTaken` is `true`. |
 | `enum class Tone` | What the colour of the pill says. |
 | `val isShowing: Boolean` | `true` from `show` until the pill has been removed; still `true` while it sinks away. |
 | `val duration: Long` | The time this toast stays before it leaves by itself; 0 means until `dismiss`. |
-| `fun show(): SancaiToast` | Puts the pill into the activity and lets it rise. |
+| `fun show(): MalletToast` | Puts the pill into the activity and lets it rise. |
 | `fun dismiss()` | Lets the pill sink away and removes it. |
 | `class Builder(private val activity: Activity)` | Assembles a toast with more than a message and a tone. |
 | ↳ `fun message(message: CharSequence): Builder` | The one thing the toast says. |
@@ -2233,10 +2233,10 @@ SancaiToast.Builder(activity)
 | ↳ `fun tone(tone: Tone): Builder` | The colour of the pill; `Tone.NEUTRAL` when not set. |
 | ↳ `fun action(label: CharSequence, onClick: Runnable): Builder` | One text action at the end of the pill, for example "Undo". |
 | ↳ `fun action(@StringRes label: Int, onClick: Runnable): Builder =` | The action label as a string resource. |
-| ↳ `fun duration(durationMs: Long): Builder` | How long the toast stays, in milliseconds; 0 keeps it until `SancaiToast.dismiss`. |
+| ↳ `fun duration(durationMs: Long): Builder` | How long the toast stays, in milliseconds; 0 keeps it until `MalletToast.dismiss`. |
 | ↳ `fun onDismiss(listener: OnDismissListener?): Builder` | Listener told once when the pill has left the screen, whatever made it leave. |
-| ↳ `fun build(): SancaiToast` | Creates the toast without showing it. |
-| ↳ `fun show(): SancaiToast` | Creates the toast and shows it. |
+| ↳ `fun build(): MalletToast` | Creates the toast without showing it. |
+| ↳ `fun show(): MalletToast` | Creates the toast and shows it. |
 | ↳ `const val DURATION_MS: Long` | Time a plain toast stays, in milliseconds. |
 | ↳ `const val ACTION_DURATION_MS: Long` | Time a toast with an action stays, in milliseconds. |
 | ↳ `const val SCREEN_READER_DURATION_MS: Long` | Shortest stay while a screen reader explores the screen, in milliseconds. |
@@ -2244,12 +2244,12 @@ SancaiToast.Builder(activity)
 | ↳ `const val SIDE_MARGIN_DP: Float` | Free space kept on each side of the pill, in dp. |
 | ↳ `const val BOTTOM_MARGIN_DP: Float` | Distance between the pill and the bottom of the content (above bars and keyboard), in dp. |
 | ↳ `fun show(activity: Activity, message: CharSequence, tone: Tone` | Shows `message` in a pill of the given `tone` and returns the toast. |
-| ↳ `fun error(activity: Activity, message: CharSequence): SancaiToast =` | Shows `message` as an error: a pill glazed in the danger colour. |
+| ↳ `fun error(activity: Activity, message: CharSequence): MalletToast =` | Shows `message` as an error: a pill glazed in the danger colour. |
 | ↳ `fun cancel(activity: Activity)` | Removes the toast on screen in `activity`, if there is one, without its exit glide. |
 
-### SancaiFloatingPanel
+### MalletFloatingPanel
 
-**Extracted** · `io.github.avalonskyafar.sancai.overlay.SancaiFloatingPanel` · Showcase: Components › Dialogs and sheets
+**Extracted** · `io.github.avalonskyafar.mallet.overlay.MalletFloatingPanel` · Showcase: Components › Dialogs and sheets
 
 A small porcelain panel that floats above a screen and is moved with the finger: a status
 read-out, a mini player, a debug badge.
@@ -2285,24 +2285,24 @@ of type `TYPE_ACCESSIBILITY_OVERLAY` (from an accessibility service) or
 returns non-focusable, wrap-content params and `bindToWindow` makes dragging move the window
 instead of translating the view; the fractions then refer to the screen:
 
-<img src="images/components/panel_light.png" width="320" alt="SancaiFloatingPanel, light theme"> <img src="images/components/panel_dark.png" width="320" alt="SancaiFloatingPanel, dark theme">
+<img src="images/components/panel_light.png" width="320" alt="MalletFloatingPanel, light theme"> <img src="images/components/panel_dark.png" width="320" alt="MalletFloatingPanel, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.overlay.SancaiFloatingPanel
+<io.github.avalonskyafar.mallet.overlay.MalletFloatingPanel
     android:id="@+id/status"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:sancaiFloatingPanelPositionX="1"
-    app:sancaiFloatingPanelPositionY="0.2"
-    app:sancaiFloatingPanelSnapToEdge="true">
-    <io.github.avalonskyafar.sancai.widget.SancaiText ... />
-</io.github.avalonskyafar.sancai.overlay.SancaiFloatingPanel>
+    app:malletFloatingPanelPositionX="1"
+    app:malletFloatingPanelPositionY="0.2"
+    app:malletFloatingPanelSnapToEdge="true">
+    <io.github.avalonskyafar.mallet.widget.MalletText ... />
+</io.github.avalonskyafar.mallet.overlay.MalletFloatingPanel>
 ```
 
 ```kotlin
-val panel = SancaiFloatingPanel(service)          // a context with a Sancai theme
-panel.addView(SancaiText.create(service, "Capturing", SancaiTextRole.CAPTION))
-val params = SancaiFloatingPanel.overlayLayoutParams(
+val panel = MalletFloatingPanel(service)          // a context with a Mallet theme
+panel.addView(MalletText.create(service, "Capturing", MalletTextRole.CAPTION))
+val params = MalletFloatingPanel.overlayLayoutParams(
     WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY)
 val windowManager = service.getSystemService(WindowManager::class.java)
 panel.bindToWindow(windowManager, params)         // before addView
@@ -2313,16 +2313,16 @@ panel.remove()
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiFloatingPanelPositionX` | float | Start position as a fraction of the free travel: 0 start edge, 1 end edge. |
-| `app:sancaiFloatingPanelPositionY` | float | Start position as a fraction of the free travel: 0 top, 1 bottom. |
-| `app:sancaiFloatingPanelSnapToEdge` | boolean | Glide to the nearer side of the parent when a drag ends. Default false. |
+| `app:malletFloatingPanelPositionX` | float | Start position as a fraction of the free travel: 0 start edge, 1 end edge. |
+| `app:malletFloatingPanelPositionY` | float | Start position as a fraction of the free travel: 0 top, 1 bottom. |
+| `app:malletFloatingPanelSnapToEdge` | boolean | Glide to the nearer side of the parent when a drag ends. Default false. |
 
 | Member | What it does |
 |---|---|
 | `var isDragging: Boolean` | True while the finger is moving the panel. |
 | `var snapToEdge: Boolean` | Whether the panel glides to the nearer side of its parent when a drag ends. |
 | `fun interface OnPositionChangeListener` | Called when the user has moved the panel. |
-| ↳ `fun onPositionChanged(panel: SancaiFloatingPanel, x: Float, y: Float)` | The user moved `panel`; `x` and `y` are its new `positionX` and `positionY`. |
+| ↳ `fun onPositionChanged(panel: MalletFloatingPanel, x: Float, y: Float)` | The user moved `panel`; `x` and `y` are its new `positionX` and `positionY`. |
 | `fun setOnPositionChangeListener(listener: OnPositionChangeListener?)` | Listener for moves made by the user: the end of a drag, an arrow key, an accessibility action. |
 | `var positionX: Float` | Horizontal position as a fraction of the free travel: 0 rests on the start edge of the parent's padded bounds, 1 on the end edge. |
 | `var positionY: Float` | Vertical position as a fraction of the free travel: 0 is the top, 1 the bottom. |
@@ -2332,7 +2332,7 @@ panel.remove()
 | `fun remove()` | Takes the panel off the screen: out of its parent, or out of the window manager when it was bound with `bindToWindow`. |
 | ↳ `const val CONTENT_PADDING_HORIZONTAL_DP: Float` | Space between the sides of the porcelain body and the content, in dp. |
 | ↳ `const val CONTENT_PADDING_VERTICAL_DP: Float` | Space between the top and bottom of the porcelain body and the content, in dp. |
-| ↳ `fun attach(activity: Activity, content: View): SancaiFloatingPanel` | Adds a floating panel holding `content` to the content view of `activity` and returns it. |
+| ↳ `fun attach(activity: Activity, content: View): MalletFloatingPanel` | Adds a floating panel holding `content` to the content view of `activity` and returns it. |
 | ↳ `fun overlayLayoutParams(type: Int` | Layout params for hosting a panel in a `WindowManager` overlay: wrap-content, anchored top-left (the panel itself puts the start edge on the right in a right-to-left layout), translucent, not focusable (the app below keeps the keyboard) but touchable so the panel can be dragged. |
 
 ---
@@ -2341,9 +2341,9 @@ panel.remove()
 
 What an area shows when it has nothing, is waiting, or has failed.
 
-### SancaiStateView
+### MalletStateView
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiStateView` · Showcase: Components › Empty, loading, error
+**New** · `io.github.avalonskyafar.mallet.widget.MalletStateView` · Showcase: Components › Empty, loading, error
 
 A centred message for an area that is empty, has failed, is offline or has finished.
 
@@ -2358,35 +2358,35 @@ preset afterwards. The view holds no state the user can change, so it saves none
 To a screen reader the icon, title and detail are one element; the action is a second one.
 Disabling the view pales the message and disables the action.
 
-<img src="images/components/stateview_light.png" width="320" alt="SancaiStateView, light theme"> <img src="images/components/stateview_dark.png" width="320" alt="SancaiStateView, dark theme">
+<img src="images/components/stateview_light.png" width="320" alt="MalletStateView, light theme"> <img src="images/components/stateview_dark.png" width="320" alt="MalletStateView, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiStateView
+<io.github.avalonskyafar.mallet.widget.MalletStateView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiStateViewKind="offline"
-    app:sancaiTitle="No connection"
-    app:sancaiDetail="Nothing was changed. Check the network and try again."
-    app:sancaiStateViewAction="Retry" />
+    app:malletStateViewKind="offline"
+    app:malletTitle="No connection"
+    app:malletDetail="Nothing was changed. Check the network and try again."
+    app:malletStateViewAction="Retry" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiTitle` | string | The title, one short phrase. |
-| `app:sancaiDetail` | string | The supporting sentence under the title. |
-| `app:sancaiIcon` | one of 51 names (see below) | Overrides the icon of the kind; "none" removes the icon. |
-| `app:sancaiStateViewKind` | `empty` / `error` / `offline` / `success` / `info` | The preset of icon and icon colour. Default empty. |
-| `app:sancaiStateViewAction` | string | Label of the action button; without it there is no button. |
-| `app:sancaiStateViewCompact` | boolean | The small form for a card row: 28dp icon and tighter gaps. |
+| `app:malletTitle` | string | The title, one short phrase. |
+| `app:malletDetail` | string | The supporting sentence under the title. |
+| `app:malletIcon` | one of 51 names (see below) | Overrides the icon of the kind; "none" removes the icon. |
+| `app:malletStateViewKind` | `empty` / `error` / `offline` / `success` / `info` | The preset of icon and icon colour. Default empty. |
+| `app:malletStateViewAction` | string | Label of the action button; without it there is no button. |
+| `app:malletStateViewCompact` | boolean | The small form for a card row: 28dp icon and tighter gaps. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
 | Member | What it does |
 |---|---|
-| `enum class Kind(internal val icon: SancaiIcon, internal val tone: SancaiTextTone)` | What the area is telling the user. |
-| `val actionButton: SancaiButton` | The action button. |
+| `enum class Kind(internal val icon: MalletIcon, internal val tone: MalletTextTone)` | What the area is telling the user. |
+| `val actionButton: MalletButton` | The action button. |
 | `var kind: Kind` | The preset. |
-| `var icon: SancaiIcon?` | The icon above the title, or `null` for none. |
-| `var iconTone: SancaiTextTone` | Colour role of the icon, used while `iconColor` is `null`. |
+| `var icon: MalletIcon?` | The icon above the title, or `null` for none. |
+| `var iconTone: MalletTextTone` | Colour role of the icon, used while `iconColor` is `null`. |
 | `var iconColor: Int?` | An explicit icon colour; wins over `iconTone` until set back to `null`. |
 | `var title: CharSequence?` | The title, one short phrase in ink; `null` or empty hides it. |
 | `var detail: CharSequence?` | The supporting sentence in the muted colour; `null` or empty hides it. |
@@ -2395,16 +2395,16 @@ Disabling the view pales the message and disables the action.
 | `var compact: Boolean` | The small form for a card row: a 28 dp icon and tighter gaps. |
 | `fun setAction(label: CharSequence?, listener: OnClickListener?)` | Sets the action in one call: `label` as `actionLabel` and `listener` as the click listener, replacing the previous one. |
 
-### SancaiStateLayout
+### MalletStateLayout
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiStateLayout` · Showcase: Components › Empty, loading, error
+**New** · `io.github.avalonskyafar.mallet.widget.MalletStateLayout` · Showcase: Components › Empty, loading, error
 
 A frame that shows exactly one of four states of an area: its content, a loading
 placeholder, an empty message or an error message.
 
 The first child is the content; the layout takes one child only, like a scroll view. The
 other three views are created the first time their state is shown: loading is a centred
-spinner over a muted caption, empty and error are `SancaiStateView` presets. Configure the
+spinner over a muted caption, empty and error are `MalletStateView` presets. Configure the
 presets with `setEmpty` and `setError`, or replace any of the three with `setLoadingView`,
 `setEmptyView` and `setErrorView`. A state view lives in the hierarchy only while it is on
 screen; the content stays attached and is hidden, so it keeps its own saved state.
@@ -2425,28 +2425,28 @@ services as a pane change, and keyboard focus that was inside the outgoing view 
 into the incoming one. Disabling the layout disables the three state views (the message
 pales, its action cannot be pressed); the content is left to its owner.
 
-<img src="images/components/statelayout_light.png" width="320" alt="SancaiStateLayout, light theme"> <img src="images/components/statelayout_dark.png" width="320" alt="SancaiStateLayout, dark theme">
+<img src="images/components/statelayout_light.png" width="320" alt="MalletStateLayout, light theme"> <img src="images/components/statelayout_dark.png" width="320" alt="MalletStateLayout, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiStateLayout
+<io.github.avalonskyafar.mallet.widget.MalletStateLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:sancaiStateLayoutState="loading"
-    app:sancaiStateLayoutEmptyTitle="No accounts yet">
+    app:malletStateLayoutState="loading"
+    app:malletStateLayoutEmptyTitle="No accounts yet">
 
     <ScrollView android:layout_width="match_parent" android:layout_height="match_parent" />
-</io.github.avalonskyafar.sancai.widget.SancaiStateLayout>
+</io.github.avalonskyafar.mallet.widget.MalletStateLayout>
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiStateLayoutState` | `content` / `loading` / `empty` / `error` | The state shown first. Default content. |
-| `app:sancaiStateLayoutMinimumLoadingMs` | integer | Shortest time the loading state stays on screen, in milliseconds. Default 400. |
-| `app:sancaiStateLayoutLoadingLabel` | string | The caption under the spinner. Default "Loading". |
-| `app:sancaiStateLayoutEmptyTitle` | string | Title of the default empty message. |
-| `app:sancaiStateLayoutEmptyDetail` | string | Supporting sentence of the default empty message. |
-| `app:sancaiStateLayoutErrorTitle` | string | Title of the default error message. |
-| `app:sancaiStateLayoutErrorDetail` | string | Supporting sentence of the default error message. |
+| `app:malletStateLayoutState` | `content` / `loading` / `empty` / `error` | The state shown first. Default content. |
+| `app:malletStateLayoutMinimumLoadingMs` | integer | Shortest time the loading state stays on screen, in milliseconds. Default 400. |
+| `app:malletStateLayoutLoadingLabel` | string | The caption under the spinner. Default "Loading". |
+| `app:malletStateLayoutEmptyTitle` | string | Title of the default empty message. |
+| `app:malletStateLayoutEmptyDetail` | string | Supporting sentence of the default empty message. |
+| `app:malletStateLayoutErrorTitle` | string | Title of the default error message. |
+| `app:malletStateLayoutErrorDetail` | string | Supporting sentence of the default error message. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
 | Member | What it does |
@@ -2465,9 +2465,9 @@ pales, its action cannot be pressed); the content is left to its owner.
 | `fun setEmpty(title: CharSequence?, detail: CharSequence? = null, actionLabel: CharSequence? = null, listener: OnClickListener? = null)` | Configures the default empty message: an inbox icon, `title`, `detail` and, when `actionLabel` is given, the one action that fills the area. |
 | `fun setError(title: CharSequence?, detail: CharSequence? = null, retryLabel: CharSequence? = null, listener: OnClickListener? = null)` | Configures the default error message: an error icon in the danger colour, `title`, `detail` and a retry action. |
 
-### SancaiSkeleton
+### MalletSkeleton
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiSkeleton` · Showcase: Components › Empty, loading, error
+**New** · `io.github.avalonskyafar.mallet.widget.MalletSkeleton` · Showcase: Components › Empty, loading, error
 
 A placeholder shape that stands where content will appear once it has loaded.
 
@@ -2489,21 +2489,21 @@ the height of a line of text (times the text scale of the theme); a circle is 40
 A skeleton takes no focus and no touches and is hidden from accessibility services: mark
 the container that is loading as busy instead. A disabled skeleton pales and stands still.
 
-<img src="images/components/skeleton_light.png" width="320" alt="SancaiSkeleton, light theme"> <img src="images/components/skeleton_dark.png" width="320" alt="SancaiSkeleton, dark theme">
+<img src="images/components/skeleton_light.png" width="320" alt="MalletSkeleton, light theme"> <img src="images/components/skeleton_dark.png" width="320" alt="MalletSkeleton, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiSkeleton
+<io.github.avalonskyafar.mallet.widget.MalletSkeleton
     android:layout_width="match_parent"
     android:layout_height="12dp"
-    app:sancaiSkeletonShape="capsule" />
+    app:malletSkeletonShape="capsule" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiSkeletonShape` | `block` / `capsule` / `circle` | Outline of the placeholder: a block with rounded corners, a capsule or a circle. |
-| `app:sancaiSkeletonAnimated` | boolean | False keeps the block still: no travelling band and no breathing. |
-| `app:sancaiSkeletonWidthFraction` | float | Share of the offered width a wrap_content skeleton takes, 0.05 to 1. Default 1. |
-| `app:sancaiCornerRadius` | dimension | Corner radius of the block shape. Default 6 dp. |
+| `app:malletSkeletonShape` | `block` / `capsule` / `circle` | Outline of the placeholder: a block with rounded corners, a capsule or a circle. |
+| `app:malletSkeletonAnimated` | boolean | False keeps the block still: no travelling band and no breathing. |
+| `app:malletSkeletonWidthFraction` | float | Share of the offered width a wrap_content skeleton takes, 0.05 to 1. Default 1. |
+| `app:malletCornerRadius` | dimension | Corner radius of the block shape. Default 6 dp. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
 | Member | What it does |
@@ -2518,9 +2518,9 @@ the container that is loading as busy instead. A disabled skeleton pales and sta
 | `val bandColor: Int` | The colour at the middle of the travelling band in this theme. |
 | ↳ `fun text(context: Context, @IntRange(from` | Builds the placeholder of a paragraph: `lines` capsule lines, 12 dp high and 8 dp apart (both times the text scale of the theme), in a vertical column. |
 
-### SancaiBanner
+### MalletBanner
 
-**New** · `io.github.avalonskyafar.sancai.widget.SancaiBanner` · Showcase: Components › Empty, loading, error
+**New** · `io.github.avalonskyafar.mallet.widget.MalletBanner` · Showcase: Components › Empty, loading, error
 
 A persistent inline message at the top of a page or a card. It reports a *condition* that
 lasts (offline, a permission is missing, a backup is overdue); a passing *event* belongs in
@@ -2542,45 +2542,45 @@ A screen reader hears the tone ("Warning") with the title, and the banner is a l
 so a banner that appears is announced without stealing focus. The actions and the close icon
 are ordinary focus stops for the keyboard.
 
-<img src="images/components/banner_light.png" width="320" alt="SancaiBanner, light theme"> <img src="images/components/banner_dark.png" width="320" alt="SancaiBanner, dark theme">
+<img src="images/components/banner_light.png" width="320" alt="MalletBanner, light theme"> <img src="images/components/banner_dark.png" width="320" alt="MalletBanner, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.widget.SancaiBanner
+<io.github.avalonskyafar.mallet.widget.MalletBanner
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiBannerTone="warning"
-    app:sancaiTitle="Accessibility service is off"
-    app:sancaiDetail="Nothing is being filtered until it is switched back on."
-    app:sancaiBannerAction="Open settings"
-    app:sancaiBannerDismissible="true" />
+    app:malletBannerTone="warning"
+    app:malletTitle="Accessibility service is off"
+    app:malletDetail="Nothing is being filtered until it is switched back on."
+    app:malletBannerAction="Open settings"
+    app:malletBannerDismissible="true" />
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiTitle` | string | Main line of a row, heading or state view. |
-| `app:sancaiDetail` | string | Supporting line under the title. |
-| `app:sancaiIcon` | one of 51 names (see below) | Replaces the icon the tone brings. |
-| `app:sancaiBannerTone` | `info` / `warning` / `danger` / `success` | What kind of condition the banner reports. |
-| `app:sancaiBannerAction` | string | Label of the main text action, at the very end. |
-| `app:sancaiBannerSecondaryAction` | string | Label of the second text action, before the main one. |
-| `app:sancaiBannerDismissible` | boolean | Shows the close icon. |
-| `app:sancaiBannerShowIcon` | boolean | Hides the tone icon when false. |
-| `app:sancaiBannerShown` | boolean | Whether the banner starts out shown (default) or collapsed. |
+| `app:malletTitle` | string | Main line of a row, heading or state view. |
+| `app:malletDetail` | string | Supporting line under the title. |
+| `app:malletIcon` | one of 51 names (see below) | Replaces the icon the tone brings. |
+| `app:malletBannerTone` | `info` / `warning` / `danger` / `success` | What kind of condition the banner reports. |
+| `app:malletBannerAction` | string | Label of the main text action, at the very end. |
+| `app:malletBannerSecondaryAction` | string | Label of the second text action, before the main one. |
+| `app:malletBannerDismissible` | boolean | Shows the close icon. |
+| `app:malletBannerShowIcon` | boolean | Hides the tone icon when false. |
+| `app:malletBannerShown` | boolean | Whether the banner starts out shown (default) or collapsed. |
 
 | Member | What it does |
 |---|---|
 | `enum class Tone` | What kind of condition a banner reports; picks the colour of the bar and the icon. |
 | `fun interface OnDismissListener` | Called when the user closes the banner with its close icon. |
-| ↳ `fun onDismiss(banner: SancaiBanner)` | `banner` has started to collapse because the user closed it. |
-| `val titleView: SancaiText =` | The view that shows `title`; exposed for fine tuning (max lines, ellipsis). |
-| `val detailView: SancaiText =` | The view that shows `detail`. |
-| `val actionButton: SancaiButton` | The main text action, at the very end of the text column. |
-| `val secondaryActionButton: SancaiButton` | The second text action, before the main one. |
+| ↳ `fun onDismiss(banner: MalletBanner)` | `banner` has started to collapse because the user closed it. |
+| `val titleView: MalletText =` | The view that shows `title`; exposed for fine tuning (max lines, ellipsis). |
+| `val detailView: MalletText =` | The view that shows `detail`. |
+| `val actionButton: MalletButton` | The main text action, at the very end of the text column. |
+| `val secondaryActionButton: MalletButton` | The second text action, before the main one. |
 | `fun setOnDismissListener(listener: OnDismissListener?)` | Called when the user closes the banner. |
 | `var title: CharSequence?` | The title, in ink. |
 | `var detail: CharSequence?` | The muted line under the title. |
 | `var tone: Tone` | Colour of the bar and the icon, and the icon itself unless `icon` replaces it. |
-| `var icon: SancaiIcon?` | Replaces the icon the `tone` brings; `null` (default) goes back to the tone's own. |
+| `var icon: MalletIcon?` | Replaces the icon the `tone` brings; `null` (default) goes back to the tone's own. |
 | `var showIcon: Boolean` | Whether the tone icon is drawn. |
 | `var isDismissible: Boolean` | Whether the close icon is offered. |
 | `var toneDescription: CharSequence?` | What a screen reader says before the title: by default the name of the `tone` ("Warning"). |
@@ -2598,11 +2598,11 @@ are ordinary focus stops for the keyboard.
 
 The behaviour behind the components, usable on views of your own.
 
-### SancaiPress
+### MalletPress
 
-**Extracted** · `io.github.avalonskyafar.sancai.interaction.SancaiPress` · Showcase: Interactions › Press and haptics
+**Extracted** · `io.github.avalonskyafar.mallet.interaction.MalletPress` · Showcase: Interactions › Press and haptics
 
-The Sancai press: what is touched sinks by 1.5 dp and springs straight back.
+The Mallet press: what is touched sinks by 1.5 dp and springs straight back.
 
 Only the content that is actually operated moves. The card or page around it stays still,
 and nothing changes colour. The sink starts on touch-down without the usual tap delay, and
@@ -2616,11 +2616,11 @@ response never carries a half-pressed row with it.
 | `fun sink(content: View, distancePx: Float)` | Starts sinking `content` by `distancePx`. |
 | `fun release(content: View)` | Puts `content` back at once. |
 
-### SancaiHaptics
+### MalletHaptics
 
-**Extended** · `io.github.avalonskyafar.sancai.interaction.SancaiHaptics` · Showcase: Interactions › Press and haptics
+**Extended** · `io.github.avalonskyafar.mallet.interaction.MalletHaptics` · Showcase: Interactions › Press and haptics
 
-The haptic vocabulary of Sancai. Every call is a no-op when `SancaiTheme.haptics` is off.
+The haptic vocabulary of Mallet. Every call is a no-op when `MalletTheme.haptics` is off.
 Each effect falls back to the nearest one the running Android version offers; `detent` is
 silent below Android 8.1.
 
@@ -2640,9 +2640,9 @@ silent below Android 8.1.
 | `fun reject(view: View)` |  |
 | `fun longPress(view: View): Unit` |  |
 
-### SancaiRevealLayout
+### MalletRevealLayout
 
-**Extracted** · `io.github.avalonskyafar.sancai.interaction.SancaiRevealLayout` · Showcase: Interactions › Reveal and expand
+**Extracted** · `io.github.avalonskyafar.mallet.interaction.MalletRevealLayout` · Showcase: Interactions › Reveal and expand
 
 A row inside a card that slides aside to uncover one action, typically "Delete".
 
@@ -2656,50 +2656,50 @@ the open row closes it, and opening one row closes the other open rows of the sa
 The foreground gets a flat row fill when it has no background of its own, so the bed stays
 hidden while the row is closed. The row adds no rim or shadow: it lives in its card.
 
-Gestures that start on a `SancaiHorizontalDragOwner` inside the row (a switch, a track) are
+Gestures that start on a `MalletHorizontalDragOwner` inside the row (a switch, a track) are
 left to that view, and mostly-vertical movement is handed back to the scrolling parent.
 The action is also offered as a custom accessibility action, and from the keyboard: with
 the row focused, the arrow pointing away from the reveal edge opens it, Enter or Space runs
 the uncovered action, and the opposite arrow or Escape closes it. Rows come back closed
 after a configuration change: `isOpen` is deliberately not saved.
 
-In code: `row.setAction(getString(R.string.sancai_action_delete)) { delete(item) }`.
+In code: `row.setAction(getString(R.string.mallet_action_delete)) { delete(item) }`.
 
-<img src="images/components/reveal_light.png" width="320" alt="SancaiRevealLayout, light theme"> <img src="images/components/reveal_dark.png" width="320" alt="SancaiRevealLayout, dark theme">
+<img src="images/components/reveal_light.png" width="320" alt="MalletRevealLayout, light theme"> <img src="images/components/reveal_dark.png" width="320" alt="MalletRevealLayout, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.interaction.SancaiRevealLayout
+<io.github.avalonskyafar.mallet.interaction.MalletRevealLayout
     android:layout_width="match_parent"
     android:layout_height="50dp"
-    app:sancaiRevealActionLabel="@string/sancai_action_delete"
-    app:sancaiRevealActionTone="danger"
-    app:sancaiRevealEdge="start">
+    app:malletRevealActionLabel="@string/mallet_action_delete"
+    app:malletRevealActionTone="danger"
+    app:malletRevealEdge="start">
     <LinearLayout ... />
-</io.github.avalonskyafar.sancai.interaction.SancaiRevealLayout>
+</io.github.avalonskyafar.mallet.interaction.MalletRevealLayout>
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiRevealEdge` | `start` / `end` | The edge at which the action strip is uncovered. Mirrored in RTL. |
-| `app:sancaiRevealActionLabel` | string | The label of the action behind the row. Without it the row does not move. |
-| `app:sancaiRevealActionTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | The tone that colours the bed. Default: danger. |
-| `app:sancaiRevealActionIcon` | integer | Ordinal of the SancaiIcon drawn above the label; -1 (default) for none. |
-| `app:sancaiRevealCloseSiblings` | boolean | Whether opening this row closes the other open rows of the same parent. Default: true. |
+| `app:malletRevealEdge` | `start` / `end` | The edge at which the action strip is uncovered. Mirrored in RTL. |
+| `app:malletRevealActionLabel` | string | The label of the action behind the row. Without it the row does not move. |
+| `app:malletRevealActionTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | The tone that colours the bed. Default: danger. |
+| `app:malletRevealActionIcon` | integer | Ordinal of the MalletIcon drawn above the label; -1 (default) for none. |
+| `app:malletRevealCloseSiblings` | boolean | Whether opening this row closes the other open rows of the same parent. Default: true. |
 
 | Member | What it does |
 |---|---|
 | `enum class Edge { START, END }` | The edge of the row at which the action strip is uncovered. |
 | `fun interface OnOpenChangeListener` | Told when the user opens or closes the row, and when the user's opening of a sibling closes this one (see `closeSiblings`). |
-| ↳ `fun onOpenChanged(layout: SancaiRevealLayout, open: Boolean)` | `open` is the state the row is settling to. |
+| ↳ `fun onOpenChanged(layout: MalletRevealLayout, open: Boolean)` | `open` is the state the row is settling to. |
 | `var actionLabel: CharSequence?` | The label of the action, or null while the row has no action. |
-| `var actionTone: SancaiTextTone` | The tone that colours the bed behind the row. |
-| `var actionIcon: SancaiIcon?` | The icon drawn above the label, or null for a label alone. |
+| `var actionTone: MalletTextTone` | The tone that colours the bed behind the row. |
+| `var actionIcon: MalletIcon?` | The icon drawn above the label, or null for a label alone. |
 | `var revealEdge: Edge` | The edge at which the action appears. |
 | `var closeSiblings: Boolean` | Whether opening this row closes the other open reveal rows of the same parent. |
 | `fun setOnOpenChangeListener(listener: OnOpenChangeListener?)` | Called when the user opens or closes the row by drag, tap, key or accessibility action. |
 | `val isOpen: Boolean get()` | True while the row is open or settling open. |
 | `val row: View? get()` | The single child that slides, or null before it is added. |
-| `fun setAction(label: CharSequence, tone: SancaiTextTone = SancaiTextTone.DANGER, icon: SancaiIcon? = null, onClick: OnClickListener?)` | Sets the one action behind the row. |
+| `fun setAction(label: CharSequence, tone: MalletTextTone = MalletTextTone.DANGER, icon: MalletIcon? = null, onClick: OnClickListener?)` | Sets the one action behind the row. |
 | `fun setOnActionClickListener(onClick: OnClickListener?)` | Replaces the callback of the action; for rows whose action is declared in XML. |
 | `fun clearAction()` | Removes the action and closes the row at once. |
 | `fun open(animate: Boolean = true)` | Opens the row, uncovering the action. |
@@ -2707,9 +2707,9 @@ In code: `row.setAction(getString(R.string.sancai_action_delete)) { delete(item)
 | ↳ `const val STRIP_WIDTH_DP: Float` | Width of the action strip, and the farthest the row travels. |
 | ↳ `const val OPEN_FRACTION: Float` | Share of the strip that must be uncovered on release for the row to open. |
 
-### SancaiExpandableLayout
+### MalletExpandableLayout
 
-**New** · `io.github.avalonskyafar.sancai.interaction.SancaiExpandableLayout` · Showcase: Interactions › Reveal and expand
+**New** · `io.github.avalonskyafar.mallet.interaction.MalletExpandableLayout` · Showcase: Interactions › Reveal and expand
 
 A section that expands and collapses. The first child is the header and is always
 visible; all further children form the body, which opens below it.
@@ -2732,36 +2732,36 @@ the body stays as it is.
 
 The layout is always vertical and top-aligned. Give it an id to have its state saved.
 
-<img src="images/components/expandable_light.png" width="320" alt="SancaiExpandableLayout, light theme"> <img src="images/components/expandable_dark.png" width="320" alt="SancaiExpandableLayout, dark theme">
+<img src="images/components/expandable_light.png" width="320" alt="MalletExpandableLayout, light theme"> <img src="images/components/expandable_dark.png" width="320" alt="MalletExpandableLayout, dark theme">
 
 ```xml
-<io.github.avalonskyafar.sancai.interaction.SancaiExpandableLayout
+<io.github.avalonskyafar.mallet.interaction.MalletExpandableLayout
     android:id="@+id/details"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:sancaiExpandableExpanded="false"
-    app:sancaiExpandableIndicator="@+id/chevron">
+    app:malletExpandableExpanded="false"
+    app:malletExpandableIndicator="@+id/chevron">
 
     <FrameLayout android:layout_width="match_parent" android:layout_height="56dp">
         <!-- centred title, and @id/chevron at the end -->
     </FrameLayout>
 
     <TextView android:layout_width="match_parent" android:layout_height="wrap_content" />
-</io.github.avalonskyafar.sancai.interaction.SancaiExpandableLayout>
+</io.github.avalonskyafar.mallet.interaction.MalletExpandableLayout>
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:sancaiExpandableExpanded` | boolean | Whether the section starts expanded. Default: true. |
-| `app:sancaiExpandableToggleOnHeaderClick` | boolean | Whether a click on the header (the first child) toggles the section. Default: true. |
-| `app:sancaiExpandableIndicator` | reference | Id of a view inside the header that turns half a circle while the section opens. |
+| `app:malletExpandableExpanded` | boolean | Whether the section starts expanded. Default: true. |
+| `app:malletExpandableToggleOnHeaderClick` | boolean | Whether a click on the header (the first child) toggles the section. Default: true. |
+| `app:malletExpandableIndicator` | reference | Id of a view inside the header that turns half a circle while the section opens. |
 
 | Member | What it does |
 |---|---|
 | `fun interface OnExpansionChangeListener` | Told when the user expands or collapses the section. |
-| ↳ `fun onExpansionChanged(layout: SancaiExpandableLayout, expanded: Boolean)` | `expanded` is the state the user just chose; the body may still be moving. |
+| ↳ `fun onExpansionChanged(layout: MalletExpandableLayout, expanded: Boolean)` | `expanded` is the state the user just chose; the body may still be moving. |
 | `fun interface OnExpansionProgressListener` | Told about every step of the opening, so that other views can move with it. |
-| ↳ `fun onExpansionProgress(layout: SancaiExpandableLayout, fraction: Float)` | `fraction` runs from 0 (collapsed) to 1 (fully expanded). |
+| ↳ `fun onExpansionProgress(layout: MalletExpandableLayout, fraction: Float)` | `fraction` runs from 0 (collapsed) to 1 (fully expanded). |
 | `fun setOnExpansionChangeListener(listener: OnExpansionChangeListener?)` | Called after the user toggled the section through the header, the keyboard or an accessibility action. |
 | `fun setOnExpansionProgressListener(listener: OnExpansionProgressListener?)` | Called whenever the open fraction changes, whoever caused it, including each frame of the animation. |
 | `var isExpanded: Boolean` | Whether the section is expanded, or on its way there. |
@@ -2777,9 +2777,9 @@ The layout is always vertical and top-aligned. Give it an id to have its state s
 | `fun setIndicator(view: View?)` | Names the view that shows the direction of the section, usually a chevron inside the header. |
 | `fun getIndicator(): View?` | The view set with `setIndicator` or found through the XML attribute, if any. |
 
-### SancaiThemeTransition
+### MalletThemeTransition
 
-**Extracted** · `io.github.avalonskyafar.sancai.interaction.SancaiThemeTransition` · Showcase: Appearance
+**Extracted** · `io.github.avalonskyafar.mallet.interaction.MalletThemeTransition` · Showcase: Appearance
 
 Changes the theme without a flash.
 
@@ -2795,20 +2795,20 @@ changes with the plain cut. With reduced motion nothing is captured or faded.
 
 All functions must be called on the main thread.
 
-<img src="images/components/themetransition_light.png" width="320" alt="SancaiThemeTransition, light theme"> <img src="images/components/themetransition_dark.png" width="320" alt="SancaiThemeTransition, dark theme">
+<img src="images/components/themetransition_light.png" width="320" alt="MalletThemeTransition, light theme"> <img src="images/components/themetransition_dark.png" width="320" alt="MalletThemeTransition, dark theme">
 
 ```kotlin
-// where the user picks a theme, e.g. in a SancaiSegmentedTrack listener
+// where the user picks a theme, e.g. in a MalletSegmentedTrack listener
 track.setOnSelectionChangeListener { _, index ->
     savePalette(index)
-    SancaiThemeTransition.recreateAfter(track)   // lets the thumb finish its glide first
+    MalletThemeTransition.recreateAfter(track)   // lets the thumb finish its glide first
 }
 
 // in the activity
 override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(page)
-    SancaiThemeTransition.play(this)
+    MalletThemeTransition.play(this)
 }
 ```
 
@@ -2823,11 +2823,11 @@ override fun onCreate(savedInstanceState: Bundle?) {
 | `fun recreate(activity: Activity)` | Captures the current appearance of `activity` and recreates it. |
 | `fun recreateAfter(view: View, delayMs: Long = DEFAULT_DELAY_MS): Boolean` | Recreates the activity that hosts `view` after `delayMs`, so that the control which triggered the change finishes settling in the old theme first. |
 | `fun cancelRecreate(view: View): Boolean` | Withdraws a recreation requested with `recreateAfter` for the activity that hosts `view`. |
-| `fun play(activity: Activity): Boolean` | Lays the appearance captured before the recreation over the content of `activity` and fades it out over `SancaiMotion.THEME_FADE_MS`. |
+| `fun play(activity: Activity): Boolean` | Lays the appearance captured before the recreation over the content of `activity` and fades it out over `MalletMotion.THEME_FADE_MS`. |
 
-### SancaiHorizontalDragOwner
+### MalletHorizontalDragOwner
 
-**Extended** · `io.github.avalonskyafar.sancai.interaction.SancaiHorizontalDragOwner` · Showcase: Interactions › Who owns the gesture
+**Extended** · `io.github.avalonskyafar.mallet.interaction.MalletHorizontalDragOwner` · Showcase: Interactions › Who owns the gesture
 
 Marks a view that claims horizontal drags which start on it: tracks, switches, steppers and
 sliders.
@@ -2836,11 +2836,11 @@ Gesture hosts such as page hosts, pagers, swipe-back layouts and swipe-to-reveal
 a gesture that starts on such a view to the view, unless the gesture turns out to be
 vertical. Implement it on your own horizontally draggable views to get the same treatment.
 
-### SancaiControl
+### MalletControl
 
-`io.github.avalonskyafar.sancai.widget.SancaiControl` · Showcase: Interactions › Who owns the gesture
+`io.github.avalonskyafar.mallet.widget.MalletControl` · Showcase: Interactions › Who owns the gesture
 
-Base class of the custom-drawn Sancai controls, and a starting point for your own.
+Base class of the custom-drawn Mallet controls, and a starting point for your own.
 
 It resolves the `theme` once, owns a `material` painter, fades the whole control when it is
 disabled, repaints on focus changes and offers `settle` for the one kind of animation a
@@ -2862,12 +2862,12 @@ Conventions every control built on this class follows:
 
 | Member | What it does |
 |---|---|
-| `const val DISABLED_ALPHA: Int` | Alpha (0..255) of a disabled control: the glaze pales, the shape stays. |
+| `const val DISABLED_ALPHA: Int` | Alpha (0..255) of a disabled control: the hue pales, the shape stays. |
 
 ---
 
 ## Icon names
 
-Values of `app:sancaiIcon`, which are the constants of `SancaiIcon` in lower case:
+Values of `app:malletIcon`, which are the constants of `MalletIcon` in lower case:
 
 `none`, `chevron_left`, `chevron_right`, `chevron_up`, `chevron_down`, `arrow_left`, `arrow_right`, `arrow_up`, `arrow_down`, `check`, `close`, `plus`, `minus`, `search`, `more_horizontal`, `more_vertical`, `menu`, `power`, `book`, `sliders`, `more_circle`, `info`, `warning`, `error`, `success`, `trash`, `edit`, `copy`, `share`, `download`, `refresh`, `eye`, `eye_off`, `lock`, `bell`, `star`, `heart`, `home`, `user`, `sun`, `moon`, `layers`, `grid`, `list`, `image`, `inbox`, `cloud_off`, `clock`, `shield`, `hand`, `palette`.

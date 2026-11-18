@@ -1,9 +1,9 @@
 # Interaction guide
 
-How things move in Sancai, and how to use the parts that make them move.
+How things move in Mallet, and how to use the parts that make them move.
 
 The interaction system is a small set of rules applied everywhere, plus the classes in
-`io.github.avalonskyafar.sancai.interaction`. Nothing in it knows about any particular app:
+`io.github.avalonskyafar.mallet.interaction`. Nothing in it knows about any particular app:
 the same host that moved the original app's pages moves yours.
 
 Contents: [The rules](#1-the-rules) · [Press](#2-press) · [Haptics](#3-haptics) ·
@@ -22,8 +22,8 @@ Marks: **Extracted** from the original app, **Extended** from an idea in it, **N
 
 1. **Follow, then glide.** While a finger is down, the element is exactly under it: a thumb,
    a page, a sheet, a row. On release it glides to rest along one curve
-   (`SancaiMotion.glide()`); how long depends on how far it still has to go.
-2. **Colour moves with position.** The bed of a track blends between glazes as the thumb
+   (`MalletMotion.glide()`); how long depends on how far it still has to go.
+2. **Colour moves with position.** The bed of a track blends between hues as the thumb
    travels, not after it lands.
 3. **Decide late, commit clearly.** Nothing is decided inside the touch slop. A drag commits
    when it has gone 28 % of the way or is flicked; otherwise it returns. A cancelled gesture
@@ -47,7 +47,7 @@ Marks: **Extracted** from the original app, **Extended** from an idea in it, **N
 **Extracted.** Origin: `UiKit.attachPress`.
 
 ```kotlin
-SancaiPress.attach(row, content = rowContent) { view -> openDetails() }
+MalletPress.attach(row, content = rowContent) { view -> openDetails() }
 ```
 
 - `host` receives the touch; `content` is what sinks. For a row inside a card the host is
@@ -57,14 +57,14 @@ SancaiPress.attach(row, content = rowContent) { view -> openDetails() }
 - On release or cancel the content jumps back **before** the click listener runs. A page
   that starts travelling in response never carries a half-pressed row with it, and a
   snapshot taken for a transition never shows one.
-- The click ticks (see Haptics) and then calls your listener. `SancaiPress.attachSink` gives
+- The click ticks (see Haptics) and then calls your listener. `MalletPress.attachSink` gives
   the sink alone, for views that manage their own click listener.
 
-Controls that draw themselves (`SancaiButton`, tracks, switches) implement the same rule
+Controls that draw themselves (`MalletButton`, tracks, switches) implement the same rule
 internally: their label sinks, their shadow tightens, nothing changes colour.
 
 There is no ripple and no pressed tint anywhere in the system. If you build a custom
-pressable view, use `SancaiPress.attach`, or `SancaiPress.sink` and `SancaiPress.release`
+pressable view, use `MalletPress.attach`, or `MalletPress.sink` and `MalletPress.release`
 from your own touch handling.
 
 ---
@@ -73,8 +73,8 @@ from your own touch handling.
 
 **Extended.** The original had one tick; the vocabulary below is new.
 
-`SancaiHaptics` wraps `View.performHapticFeedback`, needs no permission, and does nothing
-when `SancaiTheme.haptics` is off.
+`MalletHaptics` wraps `View.performHapticFeedback`, needs no permission, and does nothing
+when `MalletTheme.haptics` is off.
 
 | Call | Meaning | Platform effect |
 |---|---|---|
@@ -99,8 +99,8 @@ Rules, all from the original:
 
 **Extracted.** Origin: `UiKit.SegmentControl`, `CompactToggle`, `PowerSwitch`.
 
-The dragged controls (`SancaiSegmentedTrack`, `SancaiSwitch`, `SancaiPowerSwitch`,
-`SancaiSlider`) share one touch model; `SancaiStepper` is tapped or held instead:
+The dragged controls (`MalletSegmentedTrack`, `MalletSwitch`, `MalletPowerSwitch`,
+`MalletSlider`) share one touch model; `MalletStepper` is tapped or held instead:
 
 | Phase | What happens |
 |---|---|
@@ -139,7 +139,7 @@ platform role.
 **Extracted and generalised.** Origin: `MainActivity.GestureHost`, where the page map was
 hard-coded in `targetFor()`.
 
-In Sancai an app is a map. Each page lies beside, above or below another, and you reach it
+In Mallet an app is a map. Each page lies beside, above or below another, and you reach it
 by dragging towards it. The page under the finger and the one it uncovers travel together,
 edge to edge, at finger speed; nothing fades or scales. A chevron on a row points to where
 its page lies, so the row and the motion tell the same story.
@@ -147,7 +147,7 @@ its page lies, so the row and the motion tell the same story.
 ### 5.1 Describe the map
 
 ```kotlin
-val graph = SancaiSpatialGraph.Builder(root = "home")
+val graph = MalletSpatialGraph.Builder(root = "home")
     .connect("home", Side.BELOW, "settings")       // drag up on home, drag down on settings
     .connect("home", Side.START, "guide")
     .connect("home", Side.END, "more")
@@ -171,7 +171,7 @@ pages on one side; `build()` rejects pages that cannot get back to the root.
 ### 5.2 Host it
 
 ```kotlin
-val host = SancaiSpatialHost(this)
+val host = MalletSpatialHost(this)
 host.setGraph(graph) { key -> createPageView(key) }
 host.show("home")
 setContentView(host)
@@ -204,10 +204,10 @@ process death.
    back gesture.
 4. Both pages are translated by the finger offset. The offset cannot leave the travel and
    cannot go against the direction of the move.
-5. Release commits past `SancaiMotion.COMMIT_FRACTION` (28 %) of the travel or with a flick
+5. Release commits past `MalletMotion.COMMIT_FRACTION` (28 %) of the travel or with a flick
    faster than `COMMIT_VELOCITY_DP` (320 dp/s) in the direction of the move; otherwise the
    pages return.
-6. The landing lasts `SancaiMotion.settleDuration(remaining, reduceMotion)`: 220 ms for a
+6. The landing lasts `MalletMotion.settleDuration(remaining, reduceMotion)`: 220 ms for a
    short remainder,
    420 ms for the full distance.
 7. A touch during the landing ends it at once. The page that is at least half way in becomes
@@ -222,11 +222,11 @@ Section 10 describes how the host shares the finger with scrolling content and c
 **Extended.** The original handled only the final back event; the preview is new.
 
 ```kotlin
-private lateinit var back: SancaiBack.Registration
+private lateinit var back: MalletBack.Registration
 
 override fun onCreate(savedInstanceState: Bundle?) {
     ...
-    back = SancaiBack.attach(this, host)
+    back = MalletBack.attach(this, host)
 }
 
 // Needed below Android 13, or without android:enableOnBackInvokedCallback="true"
@@ -237,7 +237,7 @@ override fun onBackPressed() {
 
 - Back leads to `graph.parentOf(currentKey)`: the page the current one was connected from.
 - **Android 14 and later:** the back swipe *previews* the move. The pages follow the swipe
-  for up to 40 % of the way (`SancaiSpatialHost.BACK_PREVIEW_FRACTION`), land when the
+  for up to 40 % of the way (`MalletSpatialHost.BACK_PREVIEW_FRACTION`), land when the
   gesture completes and glide back when it is cancelled. It is the same movement a finger
   inside the page produces, so the system gesture and the in-page gesture look alike.
 - **On the root page** the registration steps aside. The system handles back itself and can
@@ -256,16 +256,16 @@ it.
 
 ```kotlin
 // 1. In the first activity
-SancaiSpatialTransition.start(this, Intent(this, DetailActivity::class.java), enterFrom = Side.END)
+MalletSpatialTransition.start(this, Intent(this, DetailActivity::class.java), enterFrom = Side.END)
 
 // 2. In the second activity
 override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(SancaiSpatialTransition.wrap(this, pageView))
+    setContentView(MalletSpatialTransition.wrap(this, pageView))
 }
 
 // 3. Every way out
-override fun onBackPressed() = SancaiSpatialTransition.finish(this)
+override fun onBackPressed() = MalletSpatialTransition.finish(this)
 ```
 
 How it works: before the second activity starts, the first one's content is drawn into a
@@ -277,7 +277,7 @@ window animation, and the real screen below is exactly where the picture was.
 - A swipe back starts anywhere inside the page except the 24 dp edge zones, text fields,
   horizontal controls, and content that can itself move the way the finger goes (a pager
   with a page left that way, a row that slides aside). Implement
-  `SancaiSpatialTransition.SwipeGate` on the activity (or set one with `setSwipeGate`) to
+  `MalletSpatialTransition.SwipeGate` on the activity (or set one with `setSwipeGate`) to
   refuse it while the page is in the middle of something.
 - Without a picture (a direct launch, a restored process, a screen larger than 16 MB of
   pixels) the wrapper does not move the page: entering through `start` and leaving both use
@@ -285,7 +285,7 @@ window animation, and the real screen below is exactly where the picture was.
   slide animations in `res/anim`.
 - Only `Side.START` and `Side.END` are supported between activities.
 
-Prefer one activity with a `SancaiSpatialHost` when you can. Use this for a screen that has
+Prefer one activity with a `MalletSpatialHost` when you can. Use this for a screen that has
 to be its own activity.
 
 ---
@@ -302,13 +302,13 @@ fade is the right motion.
 ```kotlin
 themeTrack.setOnSelectionChangeListener { track, index ->
     settings.appearance = index
-    SancaiThemeTransition.recreateAfter(track)    // lets the thumb finish its glide first
+    MalletThemeTransition.recreateAfter(track)    // lets the thumb finish its glide first
 }
 
 override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(page)
-    SancaiThemeTransition.play(this)              // fades the old look over the new one
+    MalletThemeTransition.play(this)              // fades the old look over the new one
 }
 ```
 
@@ -320,14 +320,14 @@ the change is seen to arrive; repeated calls coalesce into one recreation. The f
 
 ## 9. Reveal, expand, page
 
-### 9.1 `SancaiRevealLayout` — a row that slides aside
+### 9.1 `MalletRevealLayout` — a row that slides aside
 
 **Extracted.** Origin: the account rows of `WhitelistAccountsPage`.
 
 ```kotlin
-val reveal = SancaiRevealLayout(context)
+val reveal = MalletRevealLayout(context)
 reveal.addView(row)
-reveal.setAction(getString(R.string.delete), SancaiTextTone.DANGER) { remove(item) }
+reveal.setAction(getString(R.string.delete), MalletTextTone.DANGER) { remove(item) }
 ```
 
 - Dragging the row towards the open direction uncovers a 78 dp strip holding one action on a
@@ -340,7 +340,7 @@ reveal.setAction(getString(R.string.delete), SancaiTextTone.DANGER) { remove(ite
   has to swipe to reach it.
 - The row lives inside its card: it draws a flat fill and adds no rim or shadow of its own.
 
-### 9.2 `SancaiExpandableLayout` — a section that opens
+### 9.2 `MalletExpandableLayout` — a section that opens
 
 **New.** The first child is the header; the others form the body. Opening grows the body's
 height while the body stays anchored at its top edge and is clipped, as if a cover slid
@@ -348,7 +348,7 @@ away. Nothing fades or scales, and content below is pushed, not covered. An indi
 (usually a chevron) turns with the progress. A change of mind mid-way reverses from where
 it is.
 
-### 9.3 `SancaiPager` and `SancaiPageIndicator` — a short flow
+### 9.3 `MalletPager` and `MalletPageIndicator` — a short flow
 
 **Extracted.** Origin: the first-launch flow of `FirstLaunchActivity`.
 
@@ -364,7 +364,7 @@ with the offset, and tapping a dot goes there.
 ## 10. Who owns the gesture
 
 The hard part of a finger-driven interface is not the animation, it is deciding who the
-finger belongs to. Sancai uses one protocol everywhere. **Extracted** from `GestureHost`
+finger belongs to. Mallet uses one protocol everywhere. **Extracted** from `GestureHost`
 and made generic.
 
 | The finger lands on… | …and moves | Owner |
@@ -380,12 +380,12 @@ and made generic.
 
 Three mechanisms implement this:
 
-1. **`SancaiHorizontalDragOwner`.** A marker interface on tracks, switches, sliders and
+1. **`MalletHorizontalDragOwner`.** A marker interface on tracks, switches, sliders and
    tabs. Hosts leave a gesture that starts on such a view to it, unless the gesture
    turns out to be vertical. Put it on your own horizontally draggable views.
 2. **`canScrollHorizontally` / `canScrollVertically`.** Hosts ask the views under the finger
    whether they can still move in the drag direction. Lists and scroll views answer
-   correctly by themselves; `SancaiRevealLayout` and `SancaiPager` answer for their own
+   correctly by themselves; `MalletRevealLayout` and `MalletPager` answer for their own
    movement. Implement these on custom scrolling views and they take part automatically.
 3. **Hand-over at the limit, up and down only.** When the content under the finger reaches
    its top or bottom, the page host re-anchors the gesture at that point and begins its own
@@ -404,7 +404,7 @@ ignored by the page host, because otherwise it could never take over at the limi
 
 ## 11. Motion tokens
 
-All in `SancaiMotion`. The design rules behind them are in
+All in `MalletMotion`. The design rules behind them are in
 [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md#9-motion).
 
 | Token | Value |
@@ -423,15 +423,15 @@ All in `SancaiMotion`. The design rules behind them are in
 | `REDUCED_MS`, `FEEDBACK_REDUCED_MS` | 120, 90 |
 
 The original had two different settle formulas (one for its page host, another for
-activity swipe-back and sub-pages) and two flick thresholds in raw pixels. Sancai uses one
+activity swipe-back and sub-pages) and two flick thresholds in raw pixels. Mallet uses one
 of each. **Extended.**
 
 ---
 
 ## 12. Reduced motion
 
-`SancaiTheme.reduceMotion` follows the system setting "remove animations" (animator
-duration scale 0) unless the theme pins it (`sancaiReduceMotion`: `system`, `always`,
+`MalletTheme.reduceMotion` follows the system setting "remove animations" (animator
+duration scale 0) unless the theme pins it (`malletReduceMotion`: `system`, `always`,
 `never`).
 
 With reduced motion:
@@ -449,11 +449,11 @@ With reduced motion:
 
 A new interactive view fits in if it follows the same contract. In short:
 
-- Resolve the theme once: `SancaiTheme.of(context)`; extend `SancaiControl` for a
+- Resolve the theme once: `MalletTheme.of(context)`; extend `MalletControl` for a
   custom-drawn control and use its `settle()` for glides.
-- Follow the finger exactly while it is down; glide with `SancaiMotion.glide()` after.
+- Follow the finger exactly while it is down; glide with `MalletMotion.glide()` after.
 - Leave the decision until the touch slop is crossed; give vertical movement back to the
-  parent; implement `SancaiHorizontalDragOwner` if you own horizontal drags.
+  parent; implement `MalletHorizontalDragOwner` if you own horizontal drags.
 - Call listeners for user input only. Value controls: listener, then tick. Actions: tick,
   then listener.
 - Cancel animators when detached. Honour `theme.reduceMotion`.

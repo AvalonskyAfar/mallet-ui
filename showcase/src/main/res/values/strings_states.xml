@@ -70,5 +70,5 @@
     <string name="states_banner_status" tools:ignore="PluralsCandidate">%1$d of %2$d showing</string>
     <string name="states_banner_again">Show all again</string>
 
-    <string name="states_origin">The capsule button and the card behind these states, and the open ring of the spinner, come from the original app. The spinner itself, the state view, the state layout, the skeleton and the banner are new in Sancai.</string>
+    <string name="states_origin">The capsule button and the card behind these states, and the open ring of the spinner, come from the original app. The spinner itself, the state view, the state layout, the skeleton and the banner are new in Mallet.</string>
 </resources>

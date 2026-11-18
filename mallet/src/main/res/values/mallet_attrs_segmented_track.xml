@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MalletSegmentedTrack">
+        <attr name="malletOptions" />
+        <attr name="malletSelectedIndex" />
+        <!--
+            How options are glazed. "scale" reads the options as an ordinal scale (off, gentle,
+            standard, strict). "uniform" pours the single hue named by malletHue under
+            every option, for plain choices.
+        -->
+        <attr name="malletHueMode" format="enum">
+            <enum name="scale" value="0" />
+            <enum name="uniform" value="1" />
+        </attr>
+        <attr name="malletHue" />
+        <attr name="android:enabled" />
+    </declare-styleable>
+</resources>

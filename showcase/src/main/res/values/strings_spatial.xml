@@ -31,5 +31,5 @@
     <string name="spatial_back_body">On Android 14 and later, the back gesture previews the move: this page follows the swipe part of the way towards the page it came from. Completing the gesture lands there, and cancelling it glides back.</string>
     <string name="spatial_back_go">Back to %1$s</string>
 
-    <string name="spatial_origin" formatted="false">Extracted from the original app: both pages travelling together, the 28 % and flick rules, and the activity that behaves like a neighbour. New in Sancai: a graph that describes any app, listeners and right-to-left.</string>
+    <string name="spatial_origin" formatted="false">Extracted from the original app: both pages travelling together, the 28 % and flick rules, and the activity that behaves like a neighbour. New in Mallet: a graph that describes any app, listeners and right-to-left.</string>
 </resources>

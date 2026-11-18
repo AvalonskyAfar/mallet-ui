@@ -28,5 +28,5 @@
     <string name="type_large_row_on">所有字号按同一比例放大</string>
     <string name="type_large_row_off">字号保持设计时的大小</string>
 
-    <string name="type_origin">九档字号、正文行距、1.13 的大字比例，以及避免中文标点出现在行首的规则取自原应用；命名的角色与色调，以及可复用的段落控件，是为三彩新设计的。</string>
+    <string name="type_origin">九档字号、正文行距、1.13 的大字比例，以及避免中文标点出现在行首的规则取自原应用；命名的角色与色调，以及可复用的段落控件，是为 Mallet 新设计的。</string>
 </resources>

@@ -70,5 +70,5 @@
 
     <string name="rows_facts_title">Facts</string>
     <string name="rows_facts_detail">A read-only list. It shows what the control rows above are set to; tones mark what matters.</string>
-    <string name="rows_note">All five were extracted from the original app. New in Sancai: the page-level heading, the icon, value and start alignment of an entry row, any control in a control row, and a tone for a link or a fact.</string>
+    <string name="rows_note">All five were extracted from the original app. New in Mallet: the page-level heading, the icon, value and start alignment of an entry row, any control in a control row, and a tone for a link or a fact.</string>
 </resources>

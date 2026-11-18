@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Number of digits written after the decimal separator. -->
+    <attr name="malletStepperDecimals" format="integer" />
+    <!-- Suffix written after the value, for example "ms" or "%". -->
+    <attr name="malletStepperUnit" format="string" />
+
+    <!-- Id of the custom accessibility action that requests editing. -->
+    <item name="mallet_stepper_action_edit" type="id" />
+
+    <declare-styleable name="MalletStepper">
+        <attr name="android:enabled" />
+        <attr name="malletHue" />
+        <attr name="malletValueFrom" />
+        <attr name="malletValueTo" />
+        <attr name="malletStepSize" />
+        <attr name="malletValue" />
+        <attr name="malletStepperDecimals" />
+        <attr name="malletStepperUnit" />
+    </declare-styleable>
+</resources>

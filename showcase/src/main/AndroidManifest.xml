@@ -19,7 +19,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_showcase"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Sancai">
+        android:theme="@style/Theme.Mallet">
 
         <activity
             android:name=".MainActivity"
@@ -31,7 +31,7 @@
             </intent-filter>
         </activity>
 
-        <!-- A second activity, opened and closed like a neighbouring page (SancaiSpatialTransition). -->
+        <!-- A second activity, opened and closed like a neighbouring page (MalletSpatialTransition). -->
         <activity
             android:name=".NeighbourActivity"
             android:exported="false" />

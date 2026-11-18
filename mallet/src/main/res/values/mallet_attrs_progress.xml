@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MalletProgressBar">
+        <!-- The hue of the fill. Default cobalt. -->
+        <attr name="malletHue" />
+        <!-- Initial progress, from 0 to 1. -->
+        <attr name="malletProgressValue" format="float" />
+        <!-- True when the amount of work is unknown: a glazed segment travels through the groove. -->
+        <attr name="malletProgressIndeterminate" format="boolean" />
+        <attr name="android:enabled" />
+    </declare-styleable>
+
+    <declare-styleable name="MalletSpinner">
+        <!-- The tone of the ring. Default muted. -->
+        <attr name="malletTone" />
+        <!-- An explicit ring colour; wins over malletTone. -->
+        <attr name="malletProgressSpinnerColor" format="color" />
+        <attr name="android:enabled" />
+    </declare-styleable>
+</resources>

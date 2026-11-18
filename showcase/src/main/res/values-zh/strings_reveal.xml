@@ -31,5 +31,5 @@
     <string name="reveal_topic_keys">不用触摸</string>
     <string name="reveal_topic_keys_body">焦点落在标题行时，按回车或空格即可展开或收起。读屏会读出当前是展开还是收起。</string>
 
-    <string name="reveal_note">滑开一行露出“删除”取自原应用。末端侧的操作、操作的色调与图标，以及可展开的小节为三彩新增。</string>
+    <string name="reveal_note">滑开一行露出“删除”取自原应用。末端侧的操作、操作的色调与图标，以及可展开的小节为 Mallet 新增。</string>
 </resources>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- SancaiPowerSwitch: state label on the thumb. -->
-    <string name="sancai_power_switch_on">On</string>
-    <string name="sancai_power_switch_off">Off</string>
-    <!-- SancaiPowerSwitch: action label on the free half of the bed. -->
-    <string name="sancai_power_switch_turn_on">Turn on</string>
-    <string name="sancai_power_switch_turn_off">Turn off</string>
-</resources>

@@ -2,7 +2,7 @@
 agp = "8.13.2"
 kotlin = "2.2.21"
 # The library is compiled against this Kotlin API level so that apps on older
-# Kotlin compilers can still consume it. See sancai/build.gradle.kts.
+# Kotlin compilers can still consume it. See mallet/build.gradle.kts.
 kotlin-api = "2.0.21"
 androidx-annotation = "1.9.1"
 androidx-core = "1.13.1"

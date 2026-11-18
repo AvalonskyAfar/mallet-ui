@@ -7,10 +7,10 @@
     <string name="appearance_mode_system">System</string>
     <string name="appearance_mode_light">Light</string>
     <string name="appearance_mode_dark">Dark</string>
-    <string name="appearance_glazes">Glazes</string>
-    <string name="appearance_glazes_detail">Another set of colours</string>
-    <string name="appearance_glazes_classic">Classic</string>
-    <string name="appearance_glazes_plum">Plum</string>
+    <string name="appearance_hues">Hues</string>
+    <string name="appearance_hues_detail">Another set of colours</string>
+    <string name="appearance_hues_classic">Classic</string>
+    <string name="appearance_hues_plum">Plum</string>
 
     <string name="appearance_preview_title">Preview</string>
     <string name="appearance_preview_detail">The scale as it looks with these settings</string>
@@ -35,5 +35,5 @@
 
     <string name="appearance_off">Off</string>
     <string name="appearance_on">On</string>
-    <string name="appearance_provenance">The other five settings, the 1 : 1.35 rows and the fade between themes come from the settings page of the original app. The glaze setting and its second set are new: they show that the scale is a token, not a fixed palette.</string>
+    <string name="appearance_provenance">The other five settings, the 1 : 1.35 rows and the fade between themes come from the settings page of the original app. The hue setting and its second set are new: they show that the scale is a token, not a fixed palette.</string>
 </resources>

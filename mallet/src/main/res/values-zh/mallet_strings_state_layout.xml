@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mallet_state_layout_empty_title">暂无内容</string>
+    <string name="mallet_state_layout_error_title">出了点问题</string>
+    <string name="mallet_state_layout_error_detail">未做任何更改。</string>
+    <string name="mallet_state_layout_content_shown">内容已显示</string>
+</resources>

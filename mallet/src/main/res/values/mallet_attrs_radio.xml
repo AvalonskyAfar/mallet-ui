@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MalletRadioButton">
+        <!-- Whether the radio starts checked. Inside a MalletRadioGroup the last checked child wins. -->
+        <attr name="malletChecked" />
+        <!-- Hue poured into the bed when the radio is checked. Cobalt by default. -->
+        <attr name="malletHue" />
+        <!-- Label drawn to the end of the bed. -->
+        <attr name="android:text" />
+        <attr name="android:enabled" />
+    </declare-styleable>
+
+    <declare-styleable name="MalletRadioGroup">
+        <!-- Id of the child radio that is checked at start. -->
+        <attr name="malletRadioCheckedButton" format="reference" />
+    </declare-styleable>
+</resources>

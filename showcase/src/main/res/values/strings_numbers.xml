@@ -14,7 +14,7 @@
     <string name="numbers_slider_detail">An approximate amount, set by dragging the bead or tapping the track.</string>
     <string name="numbers_slider_level">Continuous</string>
     <string name="numbers_slider_volume">Stepped, 0 to 10</string>
-    <string name="numbers_slider_strictness">Through the glaze scale</string>
+    <string name="numbers_slider_strictness">Through the hue scale</string>
     <string-array name="numbers_slider_strictness_names">
         <item>Off</item>
         <item>Gentle</item>
@@ -23,14 +23,14 @@
     </string-array>
 
     <string name="numbers_progress_title">Progress</string>
-    <string name="numbers_progress_detail">A groove that fills with glaze as work completes.</string>
+    <string name="numbers_progress_detail">A groove that fills with hue as work completes.</string>
     <string name="numbers_progress_follow">Follows the continuous slider</string>
     <string name="numbers_progress_task">A task</string>
     <string name="numbers_progress_run">Run</string>
     <string name="numbers_progress_again">Run again</string>
     <string name="numbers_progress_done">Done</string>
     <string name="numbers_progress_unknown">Amount unknown</string>
-    <string name="numbers_progress_glazes">Other glazes, same slider</string>
+    <string name="numbers_progress_hues">Other hues, same slider</string>
 
     <string name="numbers_spinner_title">Spinner</string>
     <string name="numbers_spinner_detail">For a short wait with nothing to measure.</string>
@@ -41,5 +41,5 @@
     <string name="numbers_spinner_save">Save</string>
     <string name="numbers_spinner_saved">Saved</string>
 
-    <string name="numbers_origin">The stepper was extracted from the original app and completed: it now owns its value, range and format. The slider, the progress bar and the spinner were designed for Sancai in the same material.</string>
+    <string name="numbers_origin">The stepper was extracted from the original app and completed: it now owns its value, range and format. The slider, the progress bar and the spinner were designed for Mallet in the same material.</string>
 </resources>

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- State description of a tab list: the selected tab and its place, e.g. "Recent, tab 2 of 4". -->
-    <string name="sancai_tabs_position"><xliff:g id="label" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%1$s</xliff:g>, tab <xliff:g id="index" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%2$d</xliff:g> of <xliff:g id="count" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">%3$d</xliff:g></string>
-</resources>

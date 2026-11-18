@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.Mallet" tools:ignore="ResourceName" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/mallet_canvas_dark</item>
+        <item name="android:statusBarColor">@color/mallet_canvas_dark</item>
+        <item name="android:navigationBarColor">@color/mallet_canvas_dark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:colorAccent">@color/mallet_accent_dark</item>
+        <item name="android:textColorPrimary">@color/mallet_ink_dark</item>
+    </style>
+</resources>

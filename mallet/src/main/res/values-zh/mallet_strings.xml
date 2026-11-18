@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mallet_action_ok">确定</string>
+    <string name="mallet_action_cancel">取消</string>
+    <string name="mallet_action_save">保存</string>
+    <string name="mallet_action_add">添加</string>
+    <string name="mallet_action_delete">删除</string>
+    <string name="mallet_action_retry">重试</string>
+    <string name="mallet_action_close">关闭</string>
+    <string name="mallet_action_back">返回</string>
+    <string name="mallet_state_on">已开启</string>
+    <string name="mallet_state_off">已关闭</string>
+    <string name="mallet_state_loading">正在加载</string>
+</resources>

@@ -31,5 +31,5 @@
     <string name="reveal_topic_keys">Without touch</string>
     <string name="reveal_topic_keys_body">With the header focused, Enter or Space toggles the section. A screen reader hears whether it is expanded or collapsed.</string>
 
-    <string name="reveal_note">The row that slides aside for Delete is extracted from the original app. The end edge, the tones and icons of the action and the expandable section are new in Sancai.</string>
+    <string name="reveal_note">The row that slides aside for Delete is extracted from the original app. The end edge, the tones and icons of the action and the expandable section are new in Mallet.</string>
 </resources>

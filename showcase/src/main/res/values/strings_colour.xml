@@ -17,14 +17,14 @@
     <string name="colour_warning_line">The backup is nine days old.</string>
     <string name="colour_success_line">Saved. Everything is up to date.</string>
 
-    <string name="colour_glaze_title">Glazes</string>
-    <string name="colour_glaze_detail">Five glazes are poured into recessed beds. Each bed shows its colour in this theme, with a label resting on it.</string>
+    <string name="colour_hue_title">Hues</string>
+    <string name="colour_hue_detail">Five hues are poured into recessed beds. Each bed shows its colour in this theme, with a label resting on it.</string>
 
     <string name="colour_scale_title">The scale</string>
-    <string name="colour_scale_detail">A track with ordered options takes its glazes from the scale: warm at the start, cool at the end.</string>
+    <string name="colour_scale_detail">A track with ordered options takes its hues from the scale: warm at the start, cool at the end.</string>
     <string name="colour_scale_idle">Move a thumb to see what it reports.</string>
     <string name="colour_scale_status">%1$s, step %2$d of %3$d</string>
-    <string name="colour_scale_note">Drag a thumb slowly and watch one glaze blend into the next.</string>
+    <string name="colour_scale_note">Drag a thumb slowly and watch one hue blend into the next.</string>
     <string name="colour_opt_off">Off</string>
     <string name="colour_opt_on">On</string>
     <string name="colour_opt_gentle">Gentle</string>
@@ -32,7 +32,7 @@
     <string name="colour_opt_strict">Strict</string>
 
     <string name="colour_plain_title">A plain choice</string>
-    <string name="colour_plain_detail">When the options have no order, one glaze under all of them says so.</string>
+    <string name="colour_plain_detail">When the options have no order, one hue under all of them says so.</string>
     <string name="colour_plain_status">Grouped by: %1$s</string>
     <string name="colour_opt_day">Day</string>
     <string name="colour_opt_week">Week</string>
@@ -46,5 +46,5 @@
     <string name="colour_opt_mid">Mid</string>
     <string name="colour_opt_high">High</string>
 
-    <string name="colour_origin">The neutral and semantic values, the five glazes and the two, three and four step scale were extracted from the original app; only warning was darkened for the light theme. The role names, one glaze for a plain choice, scales of any length and the glaze kept in night tracks were designed for Sancai.</string>
+    <string name="colour_origin">The neutral and semantic values, the five hues and the two, three and four step scale were extracted from the original app; only warning was darkened for the light theme. The role names, one hue for a plain choice, scales of any length and the hue kept in night tracks were designed for Mallet.</string>
 </resources>

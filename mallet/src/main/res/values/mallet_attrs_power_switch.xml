@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="MalletPowerSwitch">
+        <attr name="android:enabled" />
+        <!-- Whether the switch starts on. -->
+        <attr name="malletChecked" />
+        <!-- State label on the thumb while the switch is on. Default "On". -->
+        <attr name="malletPowerSwitchOnLabel" format="string" />
+        <!-- State label on the thumb while the switch is off. Default "Off". -->
+        <attr name="malletPowerSwitchOffLabel" format="string" />
+        <!-- Action label on the bed while the switch is off. Default "Turn on". -->
+        <attr name="malletPowerSwitchTurnOnLabel" format="string" />
+        <!-- Action label on the bed while the switch is on. Default "Turn off". -->
+        <attr name="malletPowerSwitchTurnOffLabel" format="string" />
+        <!-- Hue of the bed while the switch is on. Default cobalt. -->
+        <attr name="malletPowerSwitchOnHue" format="enum">
+            <enum name="bronze" value="0" />
+            <enum name="ochre" value="1" />
+            <enum name="cobalt" value="2" />
+            <enum name="jade" value="3" />
+            <enum name="mist" value="4" />
+        </attr>
+        <!-- Hue of the bed while the switch is off. Default bronze. -->
+        <attr name="malletPowerSwitchOffHue" format="enum">
+            <enum name="bronze" value="0" />
+            <enum name="ochre" value="1" />
+            <enum name="cobalt" value="2" />
+            <enum name="jade" value="3" />
+            <enum name="mist" value="4" />
+        </attr>
+    </declare-styleable>
+</resources>

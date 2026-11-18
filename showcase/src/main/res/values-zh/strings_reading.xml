@@ -39,5 +39,5 @@
     <string name="reading_media_picture_note">这张图用主题色在代码里画成。无论多宽，图片框都保持所选的比例。</string>
     <string name="reading_media_empty_note">没有图片时，凹槽里只有一个浅色图标，也可用作加载时的占位。</string>
 
-    <string name="reading_origin">段落的排版规则、提示条的色条、流程行和图片的凹槽取自原应用；提示条的色调、从右到左的支持、宽高比和空图片框是为三彩新设计的。</string>
+    <string name="reading_origin">段落的排版规则、提示条的色条、流程行和图片的凹槽取自原应用；提示条的色调、从右到左的支持、宽高比和空图片框是为 Mallet 新设计的。</string>
 </resources>

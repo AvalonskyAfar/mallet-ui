@@ -46,5 +46,5 @@
     <string name="tracks_power_status_off">保护已暂停，不再过滤任何内容。</string>
     <string name="tracks_power_disabled">不可用状态，使用默认文字</string>
 
-    <string name="tracks_origin">分段轨道、开关、总开关和按强弱排列的釉色都取自原应用，撤回改动的做法也是。单一釉色、可自选釉色的开关和可自定文字的总开关是为三彩新设计的。</string>
+    <string name="tracks_origin">分段轨道、开关、总开关和按强弱排列的釉色都取自原应用，撤回改动的做法也是。单一釉色、可自选釉色的开关和可自定文字的总开关是为 Mallet 新设计的。</string>
 </resources>

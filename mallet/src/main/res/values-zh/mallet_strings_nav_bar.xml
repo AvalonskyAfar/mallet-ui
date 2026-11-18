@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="mallet_nav_bar_item_with_count">%1$s，%2$s 条新内容</string>
+    <string name="mallet_nav_bar_item_with_dot">%1$s，有新内容</string>
+</resources>

@@ -1,7 +1,7 @@
 # Licence audit
 
-Date: 2026-11-17. Scope: everything Sancai UI takes from the original application
-repository (`Gravekeeper-master`), and everything Sancai UI depends on or ships.
+Date: 2026-11-17. Scope: everything Mallet UI takes from the original application
+repository (`Gravekeeper-master`), and everything Mallet UI depends on or ships.
 
 This document records what was checked, what was found and what was decided. It is an
 engineering record, not legal advice.
@@ -21,7 +21,7 @@ engineering record, not legal advice.
 
 ## 2. Decisions
 
-1. **Sancai UI is MIT licensed**, with the original copyright line unchanged. The UI code it
+1. **Mallet UI is MIT licensed**, with the original copyright line unchanged. The UI code it
    derives from is MIT, both works have the same copyright holder, and MIT only requires
    that its notice be kept, which it is. Nothing in the original repository is relicensed
    or modified; the original checkout is left untouched.
@@ -35,12 +35,12 @@ engineering record, not legal advice.
    code.
 4. **No model file was copied.** They are CC BY-NC 4.0, which is incompatible with an MIT
    distribution, and they are irrelevant to a UI library.
-5. **None of the original's third-party dependencies is used.** Sancai UI depends on three
+5. **None of the original's third-party dependencies is used.** Mallet UI depends on three
    AndroidX libraries and the Kotlin standard library, all Apache-2.0, which is compatible
    with distributing the library under MIT. See `THIRD_PARTY_NOTICES.md`.
 6. **Icons are drawn for this project.** The 50 glyphs are canvas drawings written here; no
    file or path data from an icon library was imported. Because the original states that
-   its chevrons and arrows follow Lucide's proportions, and Sancai keeps those two shapes,
+   its chevrons and arrows follow Lucide's proportions, and Mallet keeps those two shapes,
    the Lucide ISC notice is reproduced as a courtesy.
 7. **No product identity was carried over.** The names "Gravekeeper" / "守目人", the mascot
    and the application copy are not used in the library or the Showcase app.
@@ -49,7 +49,7 @@ engineering record, not legal advice.
 
 - `git grep -n -i "gravekeeper\|守目人"` in this repository returns matches only in
   documentation that describes the provenance.
-- The AAR contains classes and XML resources only: `unzip -l sancai-<version>.aar`.
+- The AAR contains classes and XML resources only: `unzip -l mallet-<version>.aar`.
 - The dependency list in `THIRD_PARTY_NOTICES.md` matches
   `./gradlew :showcase:dependencies --configuration debugRuntimeClasspath`.
 
@@ -59,8 +59,8 @@ These need a human decision before the project is published; none blocks local u
 
 - Confirm the copyright holder name and year in `LICENSE`.
 - Confirm the Maven group id `io.github.avalonskyafar` (taken from the GitHub account named
-  in the original README) and the artifact id `sancai`.
-- The name "Sancai" (三彩) is a generic term for Tang-dynasty three-colour glazed pottery. A
+  in the original README) and the artifact id `mallet`.
+- The name "Mallet" (Mallet) is a generic term for Tang-dynasty three-colour glazed pottery. A
   brief web search on 2026-11-17 found no Android UI library of that name; this is not a
   trademark search.
 - If illustrations from the original app are wanted in the project later, state their

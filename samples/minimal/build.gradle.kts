@@ -3,12 +3,12 @@ plugins {
 }
 
 android {
-    namespace = "com.example.sancaiminimal"
+    namespace = "com.example.malletminimal"
     compileSdk = 36
     buildToolsVersion = "36.0.0"
 
     defaultConfig {
-        applicationId = "com.example.sancaiminimal"
+        applicationId = "com.example.malletminimal"
         minSdk = 23
         targetSdk = 36
         versionCode = 1
@@ -33,5 +33,5 @@ android {
 
 dependencies {
     // The only dependency. AndroidX and the Kotlin standard library follow from its POM.
-    implementation("io.github.avalonskyafar:sancai:0.1.0")
+    implementation("io.github.avalonskyafar:mallet:0.1.0")
 }

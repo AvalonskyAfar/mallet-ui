@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--
+        Optional activity themes. Mallet widgets do not need them: without any mallet*
+        attribute a widget follows the night mode of its context. Use these when you want the
+        window (background and system bars) to match, or to pin an activity to one palette.
+
+        Theme.Mallet follows the system night mode, Theme.Mallet.Light and Theme.Mallet.Dark
+        are fixed.
+
+        Every other resource of the library starts with "mallet". Themes keep the platform's
+        "Theme." form, which is what an app looks for; hence the tools:ignore.
+    -->
+    <style name="Theme.Mallet" tools:ignore="ResourceName" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/mallet_canvas_light</item>
+        <item name="android:statusBarColor">@color/mallet_canvas_light</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:colorAccent">@color/mallet_accent_light</item>
+        <item name="android:textColorPrimary">@color/mallet_ink_light</item>
+    </style>
+
+    <style name="Theme.Mallet.Light" tools:ignore="ResourceName" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/mallet_canvas_light</item>
+        <item name="android:statusBarColor">@color/mallet_canvas_light</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:colorAccent">@color/mallet_accent_light</item>
+        <item name="android:textColorPrimary">@color/mallet_ink_light</item>
+        <item name="malletIsDark">false</item>
+    </style>
+
+    <style name="Theme.Mallet.Dark" tools:ignore="ResourceName" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/mallet_canvas_dark</item>
+        <item name="android:statusBarColor">@color/mallet_canvas_dark</item>
+        <item name="android:navigationBarColor">@color/mallet_canvas_dark</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:colorAccent">@color/mallet_accent_dark</item>
+        <item name="android:textColorPrimary">@color/mallet_ink_dark</item>
+        <item name="malletIsDark">true</item>
+    </style>
+</resources>

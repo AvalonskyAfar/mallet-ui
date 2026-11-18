@@ -9,11 +9,11 @@ plugins {
 // ---------------------------------------------------------------------------------------------
 // Release artifacts:  ./gradlew dist
 //
-//   dist/sancai-<version>.aar                 the library
-//   dist/sancai-<version>-sources.jar         its sources, for IDEs
-//   dist/sancai-<version>-maven-repo.zip      a Maven repository with AAR, POM, module metadata, sources
-//   dist/sancai-showcase-<version>.apk        the demo app (minified)
-//   dist/sancai-ui-<version>-source.zip       this project, without build output
+//   dist/mallet-<version>.aar                 the library
+//   dist/mallet-<version>-sources.jar         its sources, for IDEs
+//   dist/mallet-<version>-maven-repo.zip      a Maven repository with AAR, POM, module metadata, sources
+//   dist/mallet-showcase-<version>.apk        the demo app (minified)
+//   dist/mallet-ui-<version>-source.zip       this project, without build output
 //   dist/SHA256SUMS.txt
 // ---------------------------------------------------------------------------------------------
 
@@ -23,12 +23,12 @@ val staging = layout.buildDirectory.dir("dist-staging")
 val sourceZip = tasks.register<Zip>("sourceZip") {
     group = "distribution"
     description = "Zips the project sources, without build output or machine-local files."
-    archiveFileName.set("sancai-ui-$releaseVersion-source.zip")
+    archiveFileName.set("mallet-ui-$releaseVersion-source.zip")
     destinationDirectory.set(staging)
     isPreserveFileTimestamps = false
     isReproducibleFileOrder = true
     from(rootDir) {
-        into("sancai-ui-$releaseVersion")
+        into("mallet-ui-$releaseVersion")
         exclude(
             "**/build/**", "**/.gradle/**", ".git/**", "**/.kotlin/**", ".idea/**", ".claude/**",
             "dist/**", "local.properties", "**/*.iml",
@@ -40,8 +40,8 @@ val sourceZip = tasks.register<Zip>("sourceZip") {
 val mavenRepoZip = tasks.register<Zip>("mavenRepoZip") {
     group = "distribution"
     description = "Zips a Maven repository that contains the library."
-    dependsOn(":sancai:publishReleasePublicationToDistRepository")
-    archiveFileName.set("sancai-$releaseVersion-maven-repo.zip")
+    dependsOn(":mallet:publishReleasePublicationToDistRepository")
+    archiveFileName.set("mallet-$releaseVersion-maven-repo.zip")
     destinationDirectory.set(staging)
     isPreserveFileTimestamps = false
     isReproducibleFileOrder = true
@@ -52,19 +52,19 @@ val mavenRepoZip = tasks.register<Zip>("mavenRepoZip") {
 tasks.register<Sync>("dist") {
     group = "distribution"
     description = "Builds every release artifact into dist/, which then holds nothing else."
-    dependsOn(":sancai:assembleRelease", ":showcase:assembleRelease", sourceZip, mavenRepoZip)
+    dependsOn(":mallet:assembleRelease", ":showcase:assembleRelease", sourceZip, mavenRepoZip)
     val target = layout.projectDirectory.dir("dist")
     into(target)
-    from(project(":sancai").layout.buildDirectory.file("outputs/aar/sancai-release.aar")) {
-        rename { "sancai-$releaseVersion.aar" }
+    from(project(":mallet").layout.buildDirectory.file("outputs/aar/mallet-release.aar")) {
+        rename { "mallet-$releaseVersion.aar" }
     }
     from(layout.buildDirectory.dir("dist-repo")) {
-        include("**/sancai-$releaseVersion-sources.jar")
+        include("**/mallet-$releaseVersion-sources.jar")
         eachFile { path = name }
         includeEmptyDirs = false
     }
     from(project(":showcase").layout.buildDirectory.file("outputs/apk/release/showcase-release.apk")) {
-        rename { "sancai-showcase-$releaseVersion.apk" }
+        rename { "mallet-showcase-$releaseVersion.apk" }
     }
     from(sourceZip)
     from(mavenRepoZip)
