@@ -5,11 +5,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.ColorFilter
 import android.graphics.Paint
-import android.graphics.PixelFormat
+import android.graphics.Path
 import android.graphics.RectF
-import android.graphics.drawable.Drawable
 import android.text.TextPaint
 import android.text.TextUtils
 import android.util.AttributeSet
@@ -32,19 +30,27 @@ import io.github.avalonskyafar.mallet.theme.MalletTextTone
 import io.github.avalonskyafar.mallet.theme.MalletTheme
 import io.github.avalonskyafar.mallet.theme.MalletWeight
 import io.github.avalonskyafar.mallet.widget.MalletControl
+import io.github.avalonskyafar.mallet.widget.MalletSurface
 
 /**
- * A row inside a card that slides aside to uncover one action, typically "Delete".
+ * A row that slides aside to uncover one action, typically "Delete".
  *
- * The layout takes exactly one child, the foreground row. Behind it lies a recessed coloured
- * bed with the action in a strip [STRIP_WIDTH_DP] wide at the [revealEdge]. Dragging the row
- * away from that edge follows the finger for at most the strip width; on release the row
+ * The layout takes exactly one child, the row. Under it lies a recessed coloured bed that
+ * starts at the [revealEdge] of the layout. Dragging the row away from that edge follows the
+ * finger for at most [STRIP_WIDTH_DP]; the bed shows as far as the row has moved, and the
+ * action (an icon above a label) comes out from the edge with the row. On release the row
  * opens when at least [OPEN_FRACTION] of the strip is uncovered and closes otherwise. A tap on
  * the open row closes it, and opening one row closes the other open rows of the same parent
  * (see [closeSiblings]).
  *
- * The foreground gets a flat row fill when it has no background of its own, so the bed stays
- * hidden while the row is closed. The row adds no rim or shadow: it lives in its card.
+ * **The bed is flush with the edge of the layout.** Padding of the layout and margins of the
+ * row inset the row, never the bed. As a direct child of a vertical
+ * [io.github.avalonskyafar.mallet.widget.MalletSurface] the layout is stretched to the cell of
+ * its row: from rim to rim of the card, up to the divider above and down to the divider below,
+ * or to the rim of the card for the first and the last row, whose corners it then follows. The
+ * row itself stays where the card's padding puts it. So the action comes out from the edge of
+ * the card, not from a box inside it. A closed row shows nothing of the bed, and the layout
+ * gives the row no background of its own.
  *
  * Gestures that start on a [MalletHorizontalDragOwner] inside the row (a switch, a track) are
  * left to that view, and mostly-vertical movement is handed back to the scrolling parent.
@@ -54,14 +60,18 @@ import io.github.avalonskyafar.mallet.widget.MalletControl
  * after a configuration change: [isOpen] is deliberately not saved.
  *
  * ```xml
- * <io.github.avalonskyafar.mallet.interaction.MalletRevealLayout
- *     android:layout_width="match_parent"
- *     android:layout_height="50dp"
- *     app:malletRevealActionLabel="@string/mallet_action_delete"
- *     app:malletRevealActionTone="danger"
- *     app:malletRevealEdge="start">
- *     <LinearLayout ... />
- * </io.github.avalonskyafar.mallet.interaction.MalletRevealLayout>
+ * <io.github.avalonskyafar.mallet.widget.MalletSurface ...>
+ *     <io.github.avalonskyafar.mallet.interaction.MalletRevealLayout
+ *         android:layout_width="match_parent"
+ *         android:layout_height="wrap_content"
+ *         app:malletRevealActionLabel="@string/mallet_action_delete"
+ *         app:malletRevealActionTone="danger"
+ *         app:malletRevealEdge="start">
+ *         <io.github.avalonskyafar.mallet.widget.MalletControlRow ... />
+ *     </io.github.avalonskyafar.mallet.interaction.MalletRevealLayout>
+ *     <io.github.avalonskyafar.mallet.widget.MalletDivider ... />
+ *     <!-- the next row -->
+ * </io.github.avalonskyafar.mallet.widget.MalletSurface>
  * ```
  *
  * In code: `row.setAction(getString(R.string.mallet_action_delete)) { delete(item) }`.
@@ -91,6 +101,17 @@ public class MalletRevealLayout @JvmOverloads constructor(
     private val gate = HorizontalDragGate(ViewConfiguration.get(context).scaledTouchSlop)
     private val labelPaint = TextPaint(Paint.ANTI_ALIAS_FLAG or Paint.SUBPIXEL_TEXT_FLAG)
     private val rect = RectF()
+    private val cellPath = Path()
+    private val cellRadii = FloatArray(8)
+
+    // The cell: how far the layout reaches beyond the row's own place on each side when a card
+    // stretches it from rim to rim, and the corners it shares with that card. All in pixels.
+    private var cellLeft = 0
+    private var cellTop = 0
+    private var cellRight = 0
+    private var cellBottom = 0
+    private var cellTopRadius = 0f
+    private var cellBottomRadius = 0f
 
     private var actionClick: OnClickListener? = null
     private var ownActionId = View.NO_ID
@@ -215,8 +236,7 @@ public class MalletRevealLayout @JvmOverloads constructor(
 
     override fun onViewAdded(child: View) {
         super.onViewAdded(child)
-        check(childCount <= 1) { "MalletRevealLayout takes exactly one child, the foreground row" }
-        if (child.background == null) child.background = RowFillDrawable(material)
+        check(childCount <= 1) { "MalletRevealLayout takes exactly one child, the row" }
         applyOffset(offset)
         syncAccessibility()
     }
@@ -225,12 +245,68 @@ public class MalletRevealLayout @JvmOverloads constructor(
         super.onViewRemoved(child)
         // The row leaves as it came: not shifted, and without the action of this layout.
         child.translationX = 0f
-        if (child.background is RowFillDrawable) child.background = null
         if (child === rowActionTarget) {
             if (rowActionId != View.NO_ID) ViewCompat.removeAccessibilityAction(child, rowActionId)
             rowActionId = View.NO_ID
             rowActionTarget = null
         }
+    }
+
+    /**
+     * Called by a card that stretches this layout over the cell of its row: the distance, in
+     * pixels, from each edge of the cell to the place the card's own layout gave the row, and
+     * the radii of the corners the cell shares with the card. The card lays the layout out
+     * over the cell right afterwards; the row keeps its place inside it.
+     */
+    internal fun setCell(left: Int, top: Int, right: Int, bottom: Int, topRadius: Float, bottomRadius: Float) {
+        if (cellLeft == left && cellTop == top && cellRight == right && cellBottom == bottom &&
+            cellTopRadius == topRadius && cellBottomRadius == bottomRadius
+        ) {
+            return
+        }
+        cellLeft = left
+        cellTop = top
+        cellRight = right
+        cellBottom = bottom
+        cellTopRadius = topRadius
+        cellBottomRadius = bottomRadius
+        shapeCell()
+        invalidate()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        // A cell is only as good as the card that keeps it: moved to another parent, or left
+        // in a card that no longer stretches its rows, the layout is its own cell again.
+        if (cellLeft != 0 || cellTop != 0 || cellRight != 0 || cellBottom != 0 ||
+            cellTopRadius != 0f || cellBottomRadius != 0f
+        ) {
+            if ((parent as? MalletSurface)?.stretchesRows != true) setCell(0, 0, 0, 0, 0f, 0f)
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        // The row is placed as in a layout without the cell, then moved to its place in it.
+        super.onLayout(changed, left + cellLeft, top + cellTop, right - cellRight, bottom - cellBottom)
+        val child = row ?: return
+        if (cellLeft != 0) child.offsetLeftAndRight(cellLeft)
+        if (cellTop != 0) child.offsetTopAndBottom(cellTop)
+    }
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        shapeCell()
+    }
+
+    private fun shapeCell() {
+        cellPath.rewind()
+        val limit = minOf(width, height) / 2f
+        val top = cellTopRadius.coerceIn(0f, limit)
+        val bottom = cellBottomRadius.coerceIn(0f, limit)
+        cellRadii[0] = top; cellRadii[1] = top; cellRadii[2] = top; cellRadii[3] = top
+        cellRadii[4] = bottom; cellRadii[5] = bottom; cellRadii[6] = bottom; cellRadii[7] = bottom
+        rect.set(0f, 0f, width.toFloat(), height.toFloat())
+        cellPath.addRoundRect(rect, cellRadii, Path.Direction.CW)
     }
 
     /** Opens the row, uncovering the action. Does nothing without an action. No callback. */
@@ -319,27 +395,25 @@ public class MalletRevealLayout @JvmOverloads constructor(
         super.onDraw(canvas)
         val label = actionLabel ?: return
         if (offset <= 0f) return
-        // The bed lies where the row was laid out, which padding or a margin moves off the edges.
-        val child = row
-        val l = child?.left?.toFloat() ?: 0f
-        val r = child?.right?.toFloat() ?: width.toFloat()
-        val t = child?.top?.toFloat() ?: 0f
-        val b = child?.bottom?.toFloat() ?: height.toFloat()
-        val left = if (stripOnLeft) l else r - stripWidth
+        val w = width.toFloat()
+        val h = height.toFloat()
+        // The edge of the row. The bed shows between it and the edge of the layout, and only
+        // there: a row with a translucent background must not show the bed through itself.
+        val edge = if (stripOnLeft) offset else w - offset
         val save = canvas.save()
-        // Only the uncovered part: a row with a translucent background must not show the bed.
-        if (stripOnLeft) canvas.clipRect(l, t, l + offset, b) else canvas.clipRect(r - offset, t, r, b)
-        rect.set(left, t, left + stripWidth, b)
-        material.drawRevealBed(canvas, rect, actionTone.resolve(theme.colors))
+        if (stripOnLeft) canvas.clipRect(0f, 0f, edge, h) else canvas.clipRect(edge, 0f, w, h)
+        rect.set(0f, 0f, w, h)
+        material.drawRevealBed(canvas, rect, actionTone.resolve(theme.colors), cellTopRadius, cellBottomRadius)
 
+        // The action comes out from the edge with the row: its strip always ends at the row.
         val sink = if (stripPressed) MalletMotion.PRESS_SINK_DP * density else 0f
-        val cx = left + stripWidth / 2f
+        val cx = if (stripOnLeft) edge - stripWidth / 2f else edge + stripWidth / 2f
         val metrics = labelPaint.fontMetrics
         val textHeight = metrics.descent - metrics.ascent
         val icon = actionIcon
         val iconSize = if (icon != null) ICON_DP * density else 0f
         val gap = if (icon != null) ICON_GAP_DP * density else 0f
-        var top = t + (b - t - iconSize - gap - textHeight) / 2f + sink
+        var top = (h - iconSize - gap - textHeight) / 2f + sink
         if (icon != null) {
             MalletIconPainter.draw(
                 canvas, icon, cx - iconSize / 2f, top, iconSize, Color.WHITE,
@@ -351,18 +425,25 @@ public class MalletRevealLayout @JvmOverloads constructor(
             label, labelPaint, stripWidth - 2 * LABEL_INSET_DP * density, TextUtils.TruncateAt.END,
         )
         canvas.drawText(text, 0, text.length, cx, top - metrics.ascent, labelPaint)
+        // The row is raised above the bed it uncovers.
+        rect.set(0f, 0f, w, h)
+        material.drawRevealShade(canvas, rect, edge, stripOnLeft, cellTopRadius, cellBottomRadius)
         canvas.restoreToCount(save)
     }
 
     override fun dispatchDraw(canvas: Canvas) {
-        // The row slides out under the edge of the layout, never over the card's padding or rim.
+        // The row slides out under the far edge of its cell and never past it.
         val save = canvas.save()
-        canvas.clipRect(0f, 0f, width.toFloat(), height.toFloat())
+        if (cellTopRadius > 0f || cellBottomRadius > 0f) {
+            canvas.clipPath(cellPath)
+        } else {
+            canvas.clipRect(0f, 0f, width.toFloat(), height.toFloat())
+        }
         super.dispatchDraw(canvas)
         canvas.restoreToCount(save)
         if (isFocused && hasWindowFocus() && !isInTouchMode) {
             rect.set(0f, 0f, width.toFloat(), height.toFloat())
-            material.drawFocusRim(canvas, rect, 0f)
+            material.drawFocusRim(canvas, rect, cellTopRadius, cellBottomRadius)
         }
     }
 
@@ -392,15 +473,10 @@ public class MalletRevealLayout @JvmOverloads constructor(
     private fun canMove(fingerMovesRight: Boolean): Boolean =
         if (fingerMovesRight == stripOnLeft) offset < stripWidth else offset > 0f
 
+    /** The uncovered part of the bed: all of it is the action. */
     private fun inStrip(x: Float, y: Float): Boolean {
-        if (offset <= 0f) return false
-        val child = row
-        val l = child?.left?.toFloat() ?: 0f
-        val r = child?.right?.toFloat() ?: width.toFloat()
-        val t = child?.top?.toFloat() ?: 0f
-        val b = child?.bottom?.toFloat() ?: height.toFloat()
-        if (y < t || y >= b) return false
-        return if (stripOnLeft) x >= l && x < l + offset else x >= r - offset && x < r
+        if (offset <= 0f || y < 0f || y >= height) return false
+        return if (stripOnLeft) x >= 0f && x < offset else x >= width - offset && x < width
     }
 
     private fun beginGesture(event: MotionEvent) {
@@ -624,21 +700,4 @@ public class MalletRevealLayout @JvmOverloads constructor(
         private const val ICON_GAP_DP = 2f
         private const val ICON_STROKE_DP = 1.8f
     }
-}
-
-/** The flat fill given to a row that brings no background, so that it hides the bed. */
-private class RowFillDrawable(private val material: MalletMaterial) : Drawable() {
-    private val body = RectF()
-
-    override fun draw(canvas: Canvas) {
-        body.set(bounds)
-        material.drawRowFill(canvas, body)
-    }
-
-    override fun setAlpha(alpha: Int) {}
-
-    override fun setColorFilter(colorFilter: ColorFilter?) {}
-
-    @Deprecated("Deprecated in Java")
-    override fun getOpacity(): Int = PixelFormat.OPAQUE
 }

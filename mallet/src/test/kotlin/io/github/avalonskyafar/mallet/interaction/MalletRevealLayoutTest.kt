@@ -11,15 +11,20 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.google.common.truth.Truth.assertThat
 import io.github.avalonskyafar.mallet.icon.MalletIcon
+import io.github.avalonskyafar.mallet.material.MalletCorners
+import io.github.avalonskyafar.mallet.material.MalletGutters
+import io.github.avalonskyafar.mallet.material.MalletMaterial
 import io.github.avalonskyafar.mallet.testing.Snapshots
 import io.github.avalonskyafar.mallet.testing.Touch
 import io.github.avalonskyafar.mallet.theme.MalletTextRole
 import io.github.avalonskyafar.mallet.theme.MalletTextTone
 import io.github.avalonskyafar.mallet.theme.MalletTheme
+import io.github.avalonskyafar.mallet.widget.MalletDivider
 import io.github.avalonskyafar.mallet.widget.MalletSurface
 import io.github.avalonskyafar.mallet.widget.MalletText
 import java.util.concurrent.TimeUnit
 import kotlin.math.abs
+import kotlin.math.roundToInt
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -294,9 +299,9 @@ class MalletRevealLayoutTest {
     }
 
     @Test
-    fun `the row gets a fill only when it brings no background and a second child is refused`() {
+    fun `the row keeps the background it brings, gets none, and a second child is refused`() {
         val layout = laidOut()
-        assertThat(layout.row!!.background).isNotNull()
+        assertThat(layout.row!!.background).isNull()
         val own = android.graphics.drawable.ColorDrawable(Color.GREEN)
         val content = View(context)
         content.background = own
@@ -312,7 +317,7 @@ class MalletRevealLayoutTest {
             abs(Color.blue(actual) - Color.blue(expected)) <= tolerance
 
     @Test
-    fun `the bed shows the tone beside a flat surface fill and is hidden while closed`() {
+    fun `the bed shows the tone as far as the row has moved and is hidden while closed`() {
         val colors = MalletTheme.light().colors
         val layout = laidOut()
         val y = (layout.height * 0.54f).toInt()
@@ -497,30 +502,37 @@ class MalletRevealLayoutTest {
 
     private fun gallery(theme: MalletTheme, name: String) {
         val ctx = Snapshots.context(theme)
-        val root = FrameLayout(ctx)
+        val root = LinearLayout(ctx)
+        root.orientation = LinearLayout.VERTICAL
         root.setBackgroundColor(theme.colors.canvas)
         root.setPadding(dp(16), dp(16), dp(16), dp(16))
         val card = MalletSurface(ctx)
-        val closed = row(ctx, "Closed row")
-        val half = row(ctx, "Half open")
         val open = row(ctx, "Open, with an icon")
-        open.setAction("Delete", MalletTextTone.DANGER, MalletIcon.CLOSE) { }
-        val end = row(ctx, "End edge, accent tone")
-        end.revealEdge = MalletRevealLayout.Edge.END
-        end.setAction("Archive", MalletTextTone.ACCENT) { }
+        open.setAction("Delete", MalletTextTone.DANGER, MalletIcon.TRASH) { }
+        val half = row(ctx, "Half open")
+        val closed = row(ctx, "Closed row")
         val disabled = row(ctx, "Disabled")
         disabled.isEnabled = false
-        val rows = listOf(closed, half, open, end, disabled)
+        val end = row(ctx, "End edge, accent tone")
+        end.revealEdge = MalletRevealLayout.Edge.END
+        end.setAction("Archive", MalletTextTone.ACCENT, MalletIcon.INBOX) { }
+        val rows = listOf(open, half, closed, disabled, end)
         rows.forEach { it.closeSiblings = false }
         rows.forEachIndexed { index, item ->
             if (index > 0) card.addDivider()
             card.addView(item)
         }
         root.addView(card)
+        // A card of one row: its bed follows both corners of the card.
+        val single = MalletSurface(ctx)
+        val only = row(ctx, "The only row of its card")
+        single.addView(only)
+        root.addView(single, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT).apply { topMargin = dp(14) })
         Snapshots.layout(root, 360)
         Touch.drag(half, 100f, 60f, 100f + strip * 0.7f, 60f, release = false)
         open.open()
         end.open()
+        only.open()
         Snapshots.capture(root, name, 360)
     }
 
@@ -538,30 +550,30 @@ class MalletRevealLayoutTest {
     }
 
     @Test
-    fun `padding on the layout moves the bed and its hit area with the row`() {
+    fun `padding insets the row and never the bed`() {
         val layout = row()
         layout.setBackgroundColor(Color.GREEN)
         layout.setPadding(dp(16), dp(6), 0, dp(6))
         Snapshots.layout(layout, 300)
+        assertThat(layout.row!!.left).isEqualTo(dp(16))
+        assertThat(layout.row!!.top).isEqualTo(dp(6))
         layout.open(animate = false)
         val bitmap = Snapshots.render(layout, 300)
+        val danger = MalletTheme.light().colors.danger
         val middle = layout.height / 2
-        // The padding stays the layout's own; the bed starts where the row was laid out.
-        assertThat(bitmap.getPixel(dp(8), middle)).isEqualTo(Color.GREEN)
-        assertThat(bitmap.getPixel(dp(16) + 8, dp(3))).isEqualTo(Color.GREEN)
-        assertThat(near(bitmap.getPixel(dp(16) + 8, middle), MalletTheme.light().colors.danger)).isTrue()
-        assertThat(bitmap.getPixel(dp(16) + strip.toInt() - 4, middle)).isNotEqualTo(Color.GREEN)
-        // The whole uncovered strip is the action, up to the edge of the shifted row.
-        Touch.tap(layout, dp(16) + strip - 4f)
+        // The bed starts at the edge of the layout: beside the row and above it.
+        assertThat(near(bitmap.getPixel(2, middle), danger)).isTrue()
+        assertThat(near(bitmap.getPixel(dp(8), dp(3)), danger, 40)).isTrue()
+        // It is as wide as the row has moved, wherever the padding put the row.
+        assertThat(layout.shift).isEqualTo(strip)
+        assertThat(near(bitmap.getPixel(strip.toInt() - dp(8), middle), danger)).isTrue()
+        assertThat(bitmap.getPixel(strip.toInt() + 4, middle)).isEqualTo(Color.GREEN)
+        // All of the uncovered bed is the action, the part beside the padding too.
+        Touch.tap(layout, 3f, 3f)
         assertThat(clicks).isEqualTo(1)
         assertThat(layout.isOpen).isTrue()
-        // The padding is not: a tap there closes the row like any tap beside the action,
-        // beside the bed as well as above it.
-        Touch.tap(layout, dp(4).toFloat())
-        assertThat(clicks).isEqualTo(1)
-        assertThat(layout.isOpen).isFalse()
-        layout.open(animate = false)
-        Touch.tap(layout, dp(16) + 8f, dp(3).toFloat())
+        // Beside the bed a tap closes the row.
+        Touch.tap(layout, strip + 8f)
         assertThat(clicks).isEqualTo(1)
         assertThat(layout.isOpen).isFalse()
     }
@@ -604,6 +616,297 @@ class MalletRevealLayoutTest {
         assertThat(layout.shift).isEqualTo(strip)
         assertThat(changes).containsExactly(true)
         assertThat(clicks).isEqualTo(0)
+    }
+
+    // ---- inside a card: the bed starts at the rim ----
+
+    /** A card of [count] rows with a divider between two rows, laid out 320 dp wide. */
+    private fun card(count: Int, dividerMarginDp: Float = 0f, ctx: Context = context): Pair<MalletSurface, List<MalletRevealLayout>> {
+        val card = MalletSurface(ctx)
+        val rows = List(count) { row(ctx, "Row $it") }
+        rows.forEachIndexed { index, item ->
+            if (index > 0) card.addDivider(dividerMarginDp)
+            card.addView(item)
+        }
+        Snapshots.layout(card, 320)
+        return card to rows
+    }
+
+    private fun dividersOf(card: MalletSurface): List<MalletDivider> =
+        (0 until card.childCount).map { card.getChildAt(it) }.filterIsInstance<MalletDivider>()
+
+    private val rim = MalletMaterial.RIM_DP * density
+
+    /** A pixel of a danger-coloured bed, whatever shade or light lies on it. */
+    private fun reddish(color: Int): Boolean =
+        Color.red(color) - Color.green(color) > 50 && Color.red(color) - Color.blue(color) > 50
+
+    @Test
+    fun `in a card the layout reaches from rim to rim and the row keeps its place`() {
+        val plain = MalletSurface(context)
+        val reference = View(context)
+        plain.addView(reference, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(50)))
+        Snapshots.layout(plain, 320)
+        val (card, rows) = card(1)
+        val only = rows[0]
+        assertThat(only.left).isEqualTo((MalletGutters.SURFACE_SIDE_DP * density + rim).roundToInt())
+        assertThat(only.right).isEqualTo((card.width - MalletGutters.SURFACE_SIDE_DP * density - rim).roundToInt())
+        assertThat(only.top).isEqualTo((MalletGutters.SURFACE_TOP_DP * density + rim).roundToInt())
+        assertThat(only.bottom).isEqualTo((card.height - MalletGutters.SURFACE_BOTTOM_DP * density - rim).roundToInt())
+        // The row is exactly where a plain child of the card is, and the card is no taller.
+        val inner = only.row!!
+        assertThat(only.left + inner.left).isEqualTo(reference.left)
+        assertThat(only.top + inner.top).isEqualTo(reference.top)
+        assertThat(inner.width).isEqualTo(reference.width)
+        assertThat(inner.height).isEqualTo(reference.height)
+        assertThat(card.height).isEqualTo(plain.height)
+    }
+
+    @Test
+    fun `between rows the layout ends at the dividers`() {
+        val (card, rows) = card(3)
+        val dividers = dividersOf(card)
+        assertThat(rows[0].bottom).isEqualTo(dividers[0].top)
+        assertThat(rows[1].top).isEqualTo(dividers[0].bottom)
+        assertThat(rows[1].bottom).isEqualTo(dividers[1].top)
+        assertThat(rows[2].top).isEqualTo(dividers[1].bottom)
+        // A second pass changes nothing.
+        val before = rows.map { listOf(it.left, it.top, it.right, it.bottom, it.row!!.left, it.row!!.top) }
+        Snapshots.layout(card, 320)
+        assertThat(rows.map { listOf(it.left, it.top, it.right, it.bottom, it.row!!.left, it.row!!.top) }).isEqualTo(before)
+    }
+
+    @Test
+    fun `a divider with margins still bounds the cell and the row stays put`() {
+        val (plainCard, plainRows) = card(2)
+        val (card, rows) = card(2, dividerMarginDp = 5f)
+        val divider = dividersOf(card)[0]
+        assertThat(rows[0].bottom).isEqualTo(divider.top)
+        assertThat(rows[1].top).isEqualTo(divider.bottom)
+        // The second row sits one margin below the divider, as it did before it was stretched.
+        assertThat(rows[1].row!!.top).isEqualTo((5f * density).roundToInt())
+        assertThat(card.height - plainCard.height).isEqualTo(2 * (5f * density).roundToInt())
+        assertThat(plainRows[1].row!!.top).isEqualTo(0)
+    }
+
+    @Test
+    fun `beside a neighbour that is not a divider the layout keeps its own edge`() {
+        val card = MalletSurface(context)
+        val above = View(context)
+        val below = View(context)
+        val layout = row()
+        card.addView(above, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(20)))
+        card.addView(layout)
+        card.addView(below, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(20)))
+        Snapshots.layout(card, 320)
+        assertThat(layout.top).isEqualTo(above.bottom)
+        assertThat(layout.bottom).isEqualTo(below.top)
+        // Sideways it still runs from rim to rim.
+        assertThat(layout.left).isLessThan(above.left)
+        assertThat(layout.right).isGreaterThan(above.right)
+        assertThat(layout.left + layout.row!!.left).isEqualTo(above.left)
+    }
+
+    @Test
+    fun `a gone neighbour does not count`() {
+        val card = MalletSurface(context)
+        val hidden = View(context)
+        hidden.visibility = View.GONE
+        val layout = row()
+        card.addView(hidden, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, dp(20)))
+        card.addView(layout)
+        Snapshots.layout(card, 320)
+        assertThat(layout.top).isEqualTo((MalletGutters.SURFACE_TOP_DP * density + rim).roundToInt())
+    }
+
+    @Test
+    fun `the open first row is coloured from the rim on and follows the corner of the card`() {
+        val (card, rows) = card(2)
+        rows[0].open(animate = false)
+        val bitmap = Snapshots.render(card, 320)
+        val danger = MalletTheme.light().colors.danger
+        val first = rows[0]
+        val middle = first.top + first.height / 2
+        assertThat(near(bitmap.getPixel(first.left + 1, middle), danger)).isTrue()
+        // Under the upper rim, clear of the corner: the shaded top of the bed.
+        assertThat(reddish(bitmap.getPixel(first.left + dp(12), first.top + 4))).isTrue()
+        // The corner of the cell lies outside the rounded corner of the card: no colour there.
+        assertThat(reddish(bitmap.getPixel(first.left, first.top))).isFalse()
+        assertThat(reddish(bitmap.getPixel(first.left + 1, first.top + 1))).isFalse()
+        // Down to the divider, and not a pixel into the second row.
+        assertThat(reddish(bitmap.getPixel(first.left + 1, first.bottom - 3))).isTrue()
+        val second = rows[1]
+        assertThat(reddish(bitmap.getPixel(second.left + 1, second.top + 3))).isFalse()
+        // As wide as the row has moved.
+        assertThat(near(bitmap.getPixel(first.left + strip.toInt() - dp(8), middle), danger)).isTrue()
+        assertThat(reddish(bitmap.getPixel(first.left + strip.toInt() + 3, middle))).isFalse()
+    }
+
+    @Test
+    fun `the last row follows the lower corner and a single row both`() {
+        val (card, rows) = card(2)
+        rows[1].open(animate = false)
+        val danger = MalletTheme.light().colors.danger
+        var bitmap = Snapshots.render(card, 320)
+        val last = rows[1]
+        assertThat(near(bitmap.getPixel(last.left + 1, last.top + last.height / 2), danger)).isTrue()
+        assertThat(reddish(bitmap.getPixel(last.left, last.bottom - 1))).isFalse()
+        assertThat(reddish(bitmap.getPixel(last.left + 1, last.top + 3))).isTrue()
+
+        val (single, only) = card(1)
+        only[0].open(animate = false)
+        bitmap = Snapshots.render(single, 320)
+        val row = only[0]
+        assertThat(reddish(bitmap.getPixel(row.left, row.top))).isFalse()
+        assertThat(reddish(bitmap.getPixel(row.left, row.bottom - 1))).isFalse()
+        assertThat(near(bitmap.getPixel(row.left + 1, row.top + row.height / 2), danger)).isTrue()
+    }
+
+    @Test
+    fun `closed rows in a card show no colour at all`() {
+        val (card, _) = card(3)
+        val bitmap = Snapshots.render(card, 320)
+        val danger = MalletTheme.light().colors.danger
+        var coloured = 0
+        for (x in 0 until bitmap.width step 2) for (y in 0 until bitmap.height step 2) {
+            if (reddish(bitmap.getPixel(x, y))) coloured++
+        }
+        assertThat(coloured).isEqualTo(0)
+    }
+
+    /** Pixels of the white label inside the uncovered bed of [layout]: their count, lowest and highest x. */
+    private fun labelPixels(card: MalletSurface, layout: MalletRevealLayout): Triple<Int, Int, Int> {
+        val bitmap = Snapshots.render(card, 320)
+        var count = 0
+        var low = Int.MAX_VALUE
+        var high = -1
+        val until = layout.left + abs(layout.shift).toInt()
+        // The middle band only: beyond a rounded corner the card itself is white.
+        for (x in layout.left until until) for (y in layout.top + dp(12) until layout.bottom - dp(12)) {
+            if (near(bitmap.getPixel(x, y), Color.WHITE, 6)) {
+                count++
+                if (x < low) low = x
+                if (x > high) high = x
+            }
+        }
+        return Triple(count, low - layout.left, high - layout.left)
+    }
+
+    @Test
+    fun `the action comes out from the rim with the row`() {
+        val (card, rows) = card(1)
+        val layout = rows[0]
+        layout.open(animate = false)
+        val (openCount, openLow, openHigh) = labelPixels(card, layout)
+        // Open: the label stands in the middle of the strip.
+        assertThat(openCount).isGreaterThan(20)
+        assertThat(abs((openLow + openHigh) / 2f - strip / 2f)).isLessThan(4f)
+        layout.close(animate = false)
+        // Held part of the way: the label has not arrived yet. What shows of it is cut by the
+        // rim and lies as far behind its place as the row is short of being open.
+        Touch.drag(layout, 100f, 30f, 100f + strip * 0.75f, 30f, release = false)
+        val short = strip - layout.shift
+        assertThat(short).isGreaterThan(strip * 0.2f)
+        val (count, low, high) = labelPixels(card, layout)
+        assertThat(count).isGreaterThan(0)
+        assertThat(count).isLessThan(openCount)
+        assertThat(low).isLessThan(3)
+        assertThat(abs(high - (openHigh - short))).isLessThan(3f)
+        Touch.dispatch(layout, MotionEvent.ACTION_CANCEL, 0f, 0f)
+    }
+
+    @Test
+    fun `the whole uncovered bed is the action, from the rim on`() {
+        val (_, rows) = card(1)
+        val layout = rows[0]
+        layout.open(animate = false)
+        Touch.tap(layout, 1f)
+        assertThat(clicks).isEqualTo(1)
+        // The part of the bed that lies in the padding of the card, above the row.
+        Touch.tap(layout, strip - 3f, 2f)
+        assertThat(clicks).isEqualTo(2)
+        assertThat(layout.isOpen).isTrue()
+        Touch.tap(layout, strip + 6f)
+        assertThat(clicks).isEqualTo(2)
+        assertThat(layout.isOpen).isFalse()
+    }
+
+    @Test
+    fun `the end edge uses the far rim and right to left mirrors both`() {
+        val (card, rows) = card(1)
+        val layout = rows[0]
+        layout.revealEdge = MalletRevealLayout.Edge.END
+        layout.open(animate = false)
+        val danger = MalletTheme.light().colors.danger
+        var bitmap = Snapshots.render(card, 320)
+        val middle = layout.top + layout.height / 2
+        assertThat(near(bitmap.getPixel(layout.right - 2, middle), danger)).isTrue()
+        assertThat(reddish(bitmap.getPixel(layout.left + 1, middle))).isFalse()
+        assertThat(reddish(bitmap.getPixel(layout.right - 1, layout.top))).isFalse()
+
+        val app = context.applicationContext
+        app.applicationInfo.flags = app.applicationInfo.flags or android.content.pm.ApplicationInfo.FLAG_SUPPORTS_RTL
+        val mirrored = MalletSurface(context)
+        mirrored.layoutDirection = View.LAYOUT_DIRECTION_RTL
+        val start = row()
+        mirrored.addView(start)
+        Snapshots.layout(mirrored, 320)
+        start.open(animate = false)
+        bitmap = Snapshots.render(mirrored, 320)
+        assertThat(start.shift).isEqualTo(-strip)
+        assertThat(near(bitmap.getPixel(start.right - 2, start.top + start.height / 2), danger)).isTrue()
+        assertThat(reddish(bitmap.getPixel(start.left + 1, start.top + start.height / 2))).isFalse()
+        Touch.tap(start, start.width - 2f)
+        assertThat(clicks).isEqualTo(1)
+    }
+
+    @Test
+    fun `a split card rounds only the corners it has`() {
+        val top = MalletSurface(context)
+        top.corners = MalletCorners.TOP
+        val layout = row()
+        top.addView(layout)
+        Snapshots.layout(top, 320)
+        layout.open(animate = false)
+        val bitmap = Snapshots.render(top, 320)
+        val danger = MalletTheme.light().colors.danger
+        assertThat(reddish(bitmap.getPixel(layout.left, layout.top))).isFalse()
+        // The lower corners of the upper half are square: the bed fills them.
+        assertThat(reddish(bitmap.getPixel(layout.left + 1, layout.bottom - 3))).isTrue()
+    }
+
+    @Test
+    fun `a horizontal card and a plain parent leave the layout where it is`() {
+        val card = MalletSurface(context)
+        card.orientation = LinearLayout.HORIZONTAL
+        val inCard = row()
+        card.addView(inCard, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        Snapshots.layout(card, 320)
+        assertThat(inCard.left).isEqualTo(card.paddingLeft)
+        assertThat(inCard.top).isEqualTo(card.paddingTop)
+        assertThat(inCard.row!!.left).isEqualTo(0)
+
+        val frame = FrameLayout(context)
+        frame.setPadding(dp(9), dp(9), dp(9), dp(9))
+        val inFrame = row()
+        frame.addView(inFrame)
+        Snapshots.layout(frame, 320)
+        assertThat(inFrame.left).isEqualTo(dp(9))
+        assertThat(inFrame.top).isEqualTo(dp(9))
+        assertThat(inFrame.height).isEqualTo(dp(50))
+    }
+
+    @Test
+    fun `a row taken out of its card and used alone is its own cell again`() {
+        val (card, rows) = card(2)
+        val layout = rows[0]
+        card.removeView(layout)
+        val frame = FrameLayout(context)
+        frame.addView(layout)
+        Snapshots.layout(frame, 300)
+        assertThat(layout.row!!.left).isEqualTo(0)
+        assertThat(layout.row!!.top).isEqualTo(0)
+        assertThat(layout.height).isEqualTo(dp(50))
     }
 
     @Test

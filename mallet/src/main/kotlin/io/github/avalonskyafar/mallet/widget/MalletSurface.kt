@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import androidx.core.view.ScrollingView
 import io.github.avalonskyafar.mallet.R
+import io.github.avalonskyafar.mallet.interaction.MalletRevealLayout
 import io.github.avalonskyafar.mallet.material.MalletCorners
 import io.github.avalonskyafar.mallet.material.MalletMaterial
 import io.github.avalonskyafar.mallet.material.MalletSurfaceDrawable
@@ -74,12 +75,15 @@ public class MalletDivider @JvmOverloads constructor(
  * The Mallet card: a porcelain body that groups rows and controls.
  *
  * It is a [LinearLayout] (vertical unless told otherwise) with the porcelain material as its
- * background. Three things differ from a plain layout:
+ * background. Four things differ from a plain layout:
  *
  * - The view is slightly larger than the card the eye sees, because the shadow is drawn inside
  *   the view: 1.4 dp on each side, 1 dp above and 4.8 dp below. Content padding (9 dp by
  *   default) is measured from the view bounds.
  * - [MalletDivider] children marked full-bleed are stretched from rim to rim.
+ * - A [MalletRevealLayout] child of a vertical surface is stretched over the cell of its row,
+ *   from rim to rim and from divider to divider, so that the action it uncovers comes out from
+ *   the edge of the card. The row inside it keeps its place.
  * - Children are not clipped to their bounds, so that the tracks and capsules inside a card
  *   can let their shadows fade out into the room around them. A child that scrolls (a
  *   `ScrollView`, a list, a `RecyclerView`, anything marked as a scroll container) is the
@@ -205,7 +209,79 @@ public open class MalletSurface @JvmOverloads constructor(
                 child.layout(body.left.roundToInt(), child.top, body.right.roundToInt(), child.bottom)
             }
         }
+        if (stretchesRows) layoutRevealCells()
     }
+
+    /** Whether rows that slide aside are stretched over their cells: in a vertical surface. */
+    internal val stretchesRows: Boolean get() = orientation == VERTICAL
+
+    /**
+     * A row that slides aside uncovers its bed from the rim of the card, not from the edge of
+     * the content. Each [MalletRevealLayout] is therefore stretched over the cell of its row:
+     * from rim to rim, up to the divider above it and down to the divider below it, or to the
+     * rim of the body where it is the first or the last child. The row inside keeps the place
+     * that the padding of the card gave it.
+     */
+    private fun layoutRevealCells() {
+        var previous: View? = null
+        var measured = false
+        var index = 0
+        while (index < childCount) {
+            val child = getChildAt(index)
+            index++
+            if (child.visibility == GONE) continue
+            if (child is MalletRevealLayout) {
+                if (!measured) {
+                    viewBounds.set(0, 0, width, height)
+                    surface.bodyBounds(viewBounds, body)
+                    measured = true
+                }
+                var next: View? = null
+                var ahead = index
+                while (ahead < childCount && next == null) {
+                    val candidate = getChildAt(ahead)
+                    if (candidate.visibility != GONE) next = candidate
+                    ahead++
+                }
+                stretchOverCell(child, previous, next)
+            }
+            previous = child
+        }
+    }
+
+    private fun stretchOverCell(child: MalletRevealLayout, previous: View?, next: View?) {
+        val rim = material.dp(MalletMaterial.RIM_DP)
+        val left = (body.left + rim).roundToInt()
+        val right = (body.right - rim).roundToInt()
+        val top = when {
+            previous == null -> (body.top + rim).roundToInt()
+            previous.isRimToRimLine -> previous.bottom
+            else -> child.top
+        }
+        val bottom = when {
+            next == null -> (body.bottom - rim).roundToInt()
+            next.isRimToRimLine -> next.top
+            else -> child.bottom
+        }
+        // A child that already reaches past the cell (a negative margin) is left as it is.
+        if (child.left < left || child.right > right || child.top < top || child.bottom > bottom) {
+            child.setCell(0, 0, 0, 0, 0f, 0f)
+            return
+        }
+        val radius = (material.dp(cornerRadiusDp) - rim).coerceAtLeast(0f)
+        child.setCell(
+            child.left - left, child.top - top, right - child.right, bottom - child.bottom,
+            if (previous == null && corners != MalletCorners.BOTTOM) radius else 0f,
+            if (next == null && corners != MalletCorners.TOP) radius else 0f,
+        )
+        child.layout(left, top, right, bottom)
+    }
+
+    private val View.isRimToRimLine: Boolean
+        get() {
+            val divider = this as? MalletDivider ?: return false
+            return divider.fullBleed && divider.orientation == HORIZONTAL
+        }
 
     override fun drawChild(canvas: Canvas, child: View, drawingTime: Long): Boolean {
         if (!scrolls(child)) return super.drawChild(canvas, child, drawingTime)

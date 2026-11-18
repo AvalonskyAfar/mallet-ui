@@ -538,11 +538,25 @@ public class MalletMaterial @JvmOverloads constructor(
         paint.shader = null
     }
 
-    /** The recessed coloured bed revealed behind a row that is swiped aside. */
+    /**
+     * The recessed coloured bed uncovered behind a row that is slid aside.
+     *
+     * [bounds] is the whole cell of the row, not only the part that shows: the caller clips to
+     * what is uncovered. In a card the cell runs from rim to rim, and [topRadius] and
+     * [bottomRadius] (pixels) round the corners it shares with the card.
+     */
     @JvmOverloads
-    public fun drawRevealBed(canvas: Canvas, bounds: RectF, @ColorInt tint: Int = colors.danger) {
+    public fun drawRevealBed(
+        canvas: Canvas,
+        bounds: RectF,
+        @ColorInt tint: Int = colors.danger,
+        topRadius: Float = 0f,
+        bottomRadius: Float = 0f,
+    ) {
+        if (bounds.width() <= 0f || bounds.height() <= 0f) return
         val dark = theme.isDark
         val base = if (dark) MalletColors.blend(tint, colors.canvas, 0.26f) else tint
+        cell(path, bounds, topRadius, bottomRadius)
         resetPaint()
         paint.shader = LinearGradient(
             0f, bounds.top, 0f, bounds.bottom,
@@ -554,12 +568,58 @@ public class MalletMaterial @JvmOverloads constructor(
             floatArrayOf(0f, 0.54f, 1f),
             Shader.TileMode.CLAMP,
         )
-        canvas.drawRect(bounds, paint)
+        canvas.drawPath(path, paint)
         paint.shader = null
+        // The shade under the upper edge and the light on the lower one keep to the corners.
+        var save = canvas.save()
+        canvas.clipRect(bounds.left, bounds.top, bounds.right, bounds.top + dp(1.2f))
         paint.color = Color.argb(if (dark) 52 else 42, 0, 0, 0)
-        canvas.drawRect(bounds.left, bounds.top, bounds.right, bounds.top + dp(1.2f), paint)
+        canvas.drawPath(path, paint)
+        canvas.restoreToCount(save)
+        save = canvas.save()
+        canvas.clipRect(bounds.left, bounds.bottom - dp(1.1f), bounds.right, bounds.bottom)
         paint.color = Color.argb(if (dark) 26 else 52, 255, 255, 255)
-        canvas.drawRect(bounds.left, bounds.bottom - dp(1.1f), bounds.right, bounds.bottom, paint)
+        canvas.drawPath(path, paint)
+        canvas.restoreToCount(save)
+    }
+
+    /**
+     * The short shade that the raised edge of a row casts on the bed it uncovers.
+     *
+     * [bounds], [topRadius] and [bottomRadius] describe the cell as for [drawRevealBed]. The
+     * edge of the row stands at [edgeX]; the shade falls on the bed, which lies to the left of
+     * the edge when [bedOnLeft] is true and to the right of it otherwise.
+     */
+    @JvmOverloads
+    public fun drawRevealShade(
+        canvas: Canvas,
+        bounds: RectF,
+        edgeX: Float,
+        bedOnLeft: Boolean,
+        topRadius: Float = 0f,
+        bottomRadius: Float = 0f,
+    ) {
+        if (bounds.width() <= 0f || bounds.height() <= 0f) return
+        val reach = dp(REVEAL_SHADE_DP)
+        val far = if (bedOnLeft) max(bounds.left, edgeX - reach) else min(bounds.right, edgeX + reach)
+        if (far == edgeX) return
+        cell(path, bounds, topRadius, bottomRadius)
+        resetPaint()
+        paint.shader = LinearGradient(
+            edgeX, 0f, if (bedOnLeft) edgeX - reach else edgeX + reach, 0f,
+            intArrayOf(
+                Color.argb(if (theme.isDark) 62 else 38, 0, 0, 0),
+                Color.argb(if (theme.isDark) 20 else 12, 0, 0, 0),
+                Color.TRANSPARENT,
+            ),
+            floatArrayOf(0f, 0.45f, 1f),
+            Shader.TileMode.CLAMP,
+        )
+        val save = canvas.save()
+        canvas.clipRect(min(far, edgeX), bounds.top, max(far, edgeX), bounds.bottom)
+        canvas.drawPath(path, paint)
+        canvas.restoreToCount(save)
+        paint.shader = null
     }
 
     /**
@@ -567,15 +627,35 @@ public class MalletMaterial @JvmOverloads constructor(
      * Drawn inside [bounds], so it never needs room outside the material.
      */
     public fun drawFocusRim(canvas: Canvas, bounds: RectF, radius: Float) {
+        drawFocusRim(canvas, bounds, radius, radius)
+    }
+
+    /** The focus rim of a body whose upper and lower corners are rounded differently. */
+    public fun drawFocusRim(canvas: Canvas, bounds: RectF, topRadius: Float, bottomRadius: Float) {
         scratch.set(bounds)
         scratch.inset(dp(1f), dp(1f))
         resetPaint()
         paint.style = Paint.Style.STROKE
         paint.strokeWidth = dp(2f)
         paint.color = colors.ink
-        val r = max(0f, radius - dp(1f))
-        canvas.drawRoundRect(scratch, r, r, paint)
+        cell(path, scratch, max(0f, topRadius - dp(1f)), max(0f, bottomRadius - dp(1f)))
+        canvas.drawPath(path, paint)
         paint.style = Paint.Style.FILL
+    }
+
+    /** A rectangle whose two upper and two lower corners are rounded by one radius each. */
+    private fun cell(out: Path, bounds: RectF, topRadius: Float, bottomRadius: Float) {
+        out.rewind()
+        if (topRadius <= 0f && bottomRadius <= 0f) {
+            out.addRect(bounds, Path.Direction.CW)
+            return
+        }
+        val limit = min(bounds.width(), bounds.height()) / 2f
+        val top = topRadius.coerceIn(0f, limit)
+        val bottom = bottomRadius.coerceIn(0f, limit)
+        radii[0] = top; radii[1] = top; radii[2] = top; radii[3] = top
+        radii[4] = bottom; radii[5] = bottom; radii[6] = bottom; radii[7] = bottom
+        out.addRoundRect(bounds, radii, Path.Direction.CW)
     }
 
     private fun shape(out: Path, bounds: RectF, radius: Float, corners: MalletCorners) {
@@ -613,6 +693,14 @@ public class MalletMaterial @JvmOverloads constructor(
 
         /** Corner radius of media wells, in dp. */
         public const val RADIUS_MEDIA_DP: Float = 7f
+
+        /**
+         * How far the hairline rim of a raised surface reaches into its body, in dp. What is
+         * drawn inside a body from rim to rim starts this far from its edge.
+         */
+        public const val RIM_DP: Float = 0.9f
+
+        private const val REVEAL_SHADE_DP = 5f
 
         private const val SHADOW_LAYERS = 18
         private val DARK_SPREAD_COMPACT = floatArrayOf(2.8f, 2.05f, 1.35f, 0.72f)
