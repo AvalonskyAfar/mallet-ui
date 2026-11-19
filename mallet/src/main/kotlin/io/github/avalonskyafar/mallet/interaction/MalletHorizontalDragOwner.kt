@@ -1,8 +1,7 @@
 package io.github.avalonskyafar.mallet.interaction
 
 /**
- * Marks a view that claims horizontal drags which start on it: tracks, switches, steppers and
- * sliders.
+ * Marks a view that claims horizontal drags which start on it: tracks, switches and sliders.
  *
  * Gesture hosts such as page hosts, pagers, swipe-back layouts and swipe-to-reveal rows leave
  * a gesture that starts on such a view to the view, unless the gesture turns out to be

@@ -123,7 +123,7 @@ class NavigationMarksTest {
     }
 
     @Test
-    fun `the composition never runs under the entry row, also on a short window`() {
+    fun `the composition stays clear of the row on a tall window and is cut by it on a short one`() {
         // A phone in portrait: the block stands above the row with room to spare.
         val tall = page(Pages.HOME)
         val tallRow = tall.all<MalletNavBar>().single()

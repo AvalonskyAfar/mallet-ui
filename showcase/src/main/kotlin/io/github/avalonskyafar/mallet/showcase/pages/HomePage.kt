@@ -115,8 +115,9 @@ object HomePage : DemoPage(Pages.HOME, R.string.page_home_title, 0) {
      * The page as a stage over an entry row. The stage is the composition: it stands centred
      * in the room the row leaves, lifted by [CENTRE_LIFT_DP] so it reads a little above the
      * middle, and the row keeps its whole height at the bottom. In a window too short for the
-     * composition, the row is drawn over the lower part of the stage instead of over the
-     * composition's middle, so the wordmark stays whole and the switch stays reachable.
+     * composition, the composition is pinned to the top and the row covers its lower part
+     * rather than its middle: the wordmark stays whole, and what the row covers is reachable
+     * again once the window is tall enough — the page has nothing to scroll.
      */
     private class StageColumn(context: Context) : ViewGroup(context) {
 
@@ -132,6 +133,8 @@ object HomePage : DemoPage(Pages.HOME, R.string.page_home_title, 0) {
             val height = MeasureSpec.getSize(heightMeasureSpec)
             val innerWidth = max(0, width - paddingLeft - paddingRight)
             val innerHeight = max(0, height - paddingTop - paddingBottom)
+            check(childCount == 2) { "StageColumn holds the composition and the entry row, and nothing else" }
+            // The row is as tall as it wants to be, but never taller than the page.
             row.measure(
                 MeasureSpec.makeMeasureSpec(innerWidth, MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(innerHeight, MeasureSpec.AT_MOST),

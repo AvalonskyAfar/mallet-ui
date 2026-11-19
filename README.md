@@ -37,7 +37,7 @@ ships as one AAR without a single image or font file.
 | **55 components** | tracks, switches, steppers, sliders, buttons, chips, fields, rows, bars, tabs, dialogs, sheets, menus, toasts, loading, empty and error states |
 | **An interaction system** | press that sinks, thumbs and pages that follow the finger, pages laid out as places, rows that slide aside, sections that open, one curve for everything that glides |
 | **A design system** | colour roles, five hues, an eleven-step type scale, spacing, shape, four materials, motion tokens, 50 icons drawn in code; light, dark and high contrast |
-| **Proof** | 1,080 tests on the JVM, 54 tests with real touches on an Android 16 emulator, a demo app built on the library alone, without another UI kit |
+| **Proof** | 1,080 tests on the JVM, 54 tests with real touches on an Android 16 emulator and 51 on Android 6.0, a demo app built on the library alone, without another UI kit |
 
 ## See it move
 
@@ -304,7 +304,7 @@ library contains none of the original app's business logic, models or artwork.
 | | |
 |---|---|
 | Unit tests | 1,045 for the library and 35 for the showcase, on the JVM with Robolectric and Android's native graphics, none failing (8 more are film tests, run when asked for); every view is also run through a whole life on API 23, 28 and 32 |
-| Device tests | 54 tests drive the installed showcase with real touch events on an Android 16 emulator; all pass. The Android 6.0 run is from before the last revision and has not been repeated |
+| Device tests | 54 tests drive the installed showcase with real touch events on an Android 16 emulator, and 51 on Android 6.0, the oldest version supported; all pass |
 | Static checks | Android Lint with warnings as errors, both modules; a source-rule test that forbids ripples, elevation and text sizes outside the scale |
 | Shrinking | the release demo APK is built with R8 and resource shrinking; the library needs no keep rules |
 | Integration | `samples/minimal`, a separate Java project, resolves the library from the release's Maven repository, builds shrunk and runs; the source archive, unpacked elsewhere, builds and passes its tests |

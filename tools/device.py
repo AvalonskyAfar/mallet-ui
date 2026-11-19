@@ -76,7 +76,8 @@ def shell(command, check=True, timeout=None):
 
 
 def gradle(*tasks):
-    wrapper = "gradlew.bat" if os.name == "nt" else "./gradlew"
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    wrapper = os.path.join(root, "gradlew.bat" if os.name == "nt" else "gradlew")
     code = subprocess.call([wrapper, *tasks, "--console=plain", "-q"])
     if code != 0:
         sys.exit("gradle %s failed with exit code %d" % (" ".join(tasks), code))

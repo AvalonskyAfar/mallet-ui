@@ -19,11 +19,11 @@ Contents: [Summary](#summary) · [Environment](#environment) · [Tests on the JV
 | Unit tests of the library (JVM, Robolectric) | 1,045 tests, 0 failures |
 | Unit tests of the showcase (JVM, Robolectric) | 35 tests, 0 failures; 8 more (films) pass when asked for |
 | Android Lint, warnings as errors | no issues in `:mallet`, no issues in `:showcase` |
-| Device tests, Android 16 (API 36) emulator | 54 tests, 0 failures (re-run at the revision commit) |
-| Device tests, Android 6.0 (API 23) emulator | 37 tests, 0 failures (recorded before the revision; not re-run) |
+| Device tests, Android 16 (API 36) emulator | 36 tests, 0 failures, and 18 with the two tours (54 in all) |
+| Device tests, Android 6.0 (API 23) emulator | 35 tests, 0 failures, and 16 with the two tours (51 in all) |
 | Shrunk release APK, every page opened on both emulators | 27 of 27 pages on each, no crash |
 | Library used as a binary by a separate Java project | builds shrunk, runs on both emulators |
-| The source archive, unpacked elsewhere, builds and passes its tests | 1,038 + 35 tests, lint without issues, both release builds |
+| The source archive, unpacked elsewhere, builds and passes its tests | 1,045 + 35 tests, lint without issues, both release builds |
 
 Nothing was published: no push, no release, no upload.
 
@@ -59,7 +59,7 @@ order of listener and haptic; saved and restored state; right-to-left placement;
 accessibility nodes, roles and actions; exact pixels where colour is the contract (hue
 under a thumb, contrast ratios of every text and label colour); and geometry in dp.
 
-**Showcase: 20 tests, 0 failures.** Every page of the demo app is built the way the app
+**Showcase: 35 tests, 0 failures**, 8 of them film tests that run only when asked for. Every page of the demo app is built the way the app
 builds it and drawn in five variants: light, dark, Chinese, right-to-left, and large text
 (system font scale 1.3 with the app's own 1.13). A page that throws or comes out blank
 fails. The XML demonstration is checked against the layout file it shows.
@@ -123,12 +123,14 @@ the window, the view tree. State is read from the views afterwards.
 | `AppearanceDeviceTest` | 2 | switching to dark and back, and to larger text, while the app runs |
 | `PagesDeviceTest` | 3 | every page opened and scrolled from top to bottom in light and in dark with hardware rendering; every page opens at its top; the window is not blank |
 
-**Device A, Android 16: 38 tests, 0 failures**, in 331 s
-([report](verification/device-tests-android-16.txt)).
+**Device A, Android 16: 36 tests, 0 failures**, recorded 2026-11-18
+([report](verification/device-tests-android-16.txt)); the two tours add 18 cases, and the re-run at
+commit `00e76d0` passed all 54.
 
-**Device B, Android 6.0: 37 tests, 0 failures**, in 229 s
-([report](verification/device-tests-android-6.txt)). The one test that does not run there needs an
-API from Android 8.0 to read the window's pixels. Every page was also photographed on this
+**Device B, Android 6.0: 35 tests, 0 failures**, recorded 2026-11-18
+([report](verification/device-tests-android-6.txt)); the tours add 16, and the re-run at commit
+`00e76d0` passed all 51. One case, the window-is-not-blank pixel check, needs an API from
+Android 8.0 and does not run there. Every page was also photographed on this
 device in both themes, and the overlays in both themes, and the pictures were looked at.
 
 The screenshot tour (8 parts, 159 pictures;

@@ -14,19 +14,24 @@ Contents: [In motion](#in-motion) · [Pages](#pages) · [Overlays](#overlays) ·
 
 ## In motion
 
-| <img src="images/motion/places.gif" width="230" alt="Pages are places: to the page beside Home and back, to the page below, into a page from a row"> | <img src="images/motion/tracks.gif" width="230" alt="A thumb follows the finger and takes the hue of where it is"> | <img src="images/motion/switches.gif" width="230" alt="A tap, a drag, and a drag that is taken back"> | <img src="images/motion/sliders.gif" width="230" alt="Sliders: continuous, in steps, and through the hue scale"> |
+| <img src="images/motion/places.gif" width="230" alt="Pages are places: to the page beside Home and back, to the page below, and from one of its rows into a deeper page"> | <img src="images/motion/tracks.gif" width="230" alt="A thumb follows the finger; the track takes the hue of where the thumb is"> | <img src="images/motion/switches.gif" width="230" alt="A tap, a drag, and a drag that is taken back"> | <img src="images/motion/sliders.gif" width="230" alt="Sliders: continuous, in steps, and through the hue scale"> |
 |:---:|:---:|:---:|:---:|
-| Pages are places: to the page beside Home and back, to the page below, into a page from a row | A thumb follows the finger and takes the hue of where it is | A tap, a drag, and a drag that is taken back | Sliders: continuous, in steps, and through the hue scale |
+| Pages are places: to the page beside Home and back, to the page below, and from one of its rows into a deeper page | A thumb follows the finger; the track takes the hue of where the thumb is | A tap, a drag, and a drag that is taken back | Sliders: continuous, in steps, and through the hue scale |
 
-| <img src="images/motion/reveal.gif" width="230" alt="Rows slide aside for one action; sections open in place"> | <img src="images/motion/pager.gif" width="230" alt="Two pagers that turn together"> | <img src="images/motion/overlays.gif" width="230" alt="A dialog, a sheet dragged down, a menu, a toast"> | <img src="images/motion/appearance.gif" width="230" alt="The theme changes while the app runs"> |
+| <img src="images/motion/reveal.gif" width="230" alt="Rows slide aside and uncover one action from the rim of the card; sections open in place"> | <img src="images/motion/pager.gif" width="230" alt="Two pagers that turn together"> | <img src="images/motion/overlays.gif" width="230" alt="A dialog, a sheet dragged down, a menu, a toast"> | <img src="images/motion/appearance.gif" width="230" alt="The theme changes while the app runs"> |
 |:---:|:---:|:---:|:---:|
-| Rows slide aside for one action; sections open in place | Two pagers that turn together | A dialog, a sheet dragged down, a menu, a toast | The theme changes while the app runs |
+| Rows slide aside and uncover one action from the rim of the card; sections open in place | Two pagers that turn together | A dialog, a sheet dragged down, a menu, a toast | The theme changes while the app runs |
 
 ## Pages
 
 Every page of the app as it opens, in both themes.
 
 ### Home and the four pages around it
+
+Home shows nothing that points at its neighbours: no arrows, no page names at the edges. It
+names the pages around it once, in a row of four entries at its bottom, one for each
+first-level page. A first-level page shows no way back: it is left by dragging back towards
+Home, or with the system's Back.
 
 | | Light | Dark |
 |---|:---:|:---:|
@@ -96,7 +101,7 @@ Taken while the finger was still on the glass.
 | Between two places: Home leaves upwards while Components arrives from below | <img src="images/device/gesture_between_pages_light.png" width="230" alt="Between two places: Home leaves upwards while Components arrives from below, light theme"> | <img src="images/device/gesture_between_pages_dark.png" width="230" alt="Between two places: Home leaves upwards while Components arrives from below, dark theme"> |
 | A thumb between two options: the hue under it is a blend of the two | <img src="images/device/gesture_track_light.png" width="230" alt="A thumb between two options: the hue under it is a blend of the two, light theme"> | <img src="images/device/gesture_track_dark.png" width="230" alt="A thumb between two options: the hue under it is a blend of the two, dark theme"> |
 | The power switch half-way to off | <img src="images/device/gesture_power_light.png" width="230" alt="The power switch half-way to off, light theme"> | <img src="images/device/gesture_power_dark.png" width="230" alt="The power switch half-way to off, dark theme"> |
-| A row that has slid aside for its action | <img src="images/device/gesture_row_open_light.png" width="230" alt="A row that has slid aside for its action, light theme"> | <img src="images/device/gesture_row_open_dark.png" width="230" alt="A row that has slid aside for its action, dark theme"> |
+| A row that has slid aside and uncovered its action from the rim of the card | <img src="images/device/gesture_row_open_light.png" width="230" alt="A row that has slid aside and uncovered its action from the rim of the card, light theme"> | <img src="images/device/gesture_row_open_dark.png" width="230" alt="A row that has slid aside and uncovered its action from the rim of the card, dark theme"> |
 
 ## Other appearances
 

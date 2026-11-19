@@ -38,7 +38,7 @@ WIDTH = 480
 SHOWN = 230
 
 HERO_SCREENS = [
-    "page_home_light", "gesture_track_light", "overlay_dialog_light", "page_c_tracks_dark", "gesture_between_pages_dark",
+    "page_home_light", "gesture_track_light", "overlay_dialog_light", "page_c_tracks_dark", "page_c_rows_light",
 ]
 HERO_SCREEN_WIDTH = 330
 HERO_GAP = 34
