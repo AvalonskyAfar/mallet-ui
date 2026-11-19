@@ -88,5 +88,5 @@ screen readers; mirrors in right-to-left layouts; and keeps its state across rot
 ### Verified
 
 - 1,045 library tests and 35 showcase tests on the JVM; Android Lint without issues in
-  both modules; 38 device tests on an Android 16 emulator and 37 on Android 6.0. What was
+  both modules; 54 device tests on an Android 16 emulator. What was
   run, and what was not, is in [docs/VERIFICATION.md](docs/VERIFICATION.md).

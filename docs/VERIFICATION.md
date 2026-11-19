@@ -19,8 +19,8 @@ Contents: [Summary](#summary) · [Environment](#environment) · [Tests on the JV
 | Unit tests of the library (JVM, Robolectric) | 1,045 tests, 0 failures |
 | Unit tests of the showcase (JVM, Robolectric) | 35 tests, 0 failures; 8 more (films) pass when asked for |
 | Android Lint, warnings as errors | no issues in `:mallet`, no issues in `:showcase` |
-| Device tests, Android 16 (API 36) emulator | 38 tests, 0 failures |
-| Device tests, Android 6.0 (API 23) emulator | 37 tests, 0 failures |
+| Device tests, Android 16 (API 36) emulator | 54 tests, 0 failures (re-run at the revision commit) |
+| Device tests, Android 6.0 (API 23) emulator | 37 tests, 0 failures (recorded before the revision; not re-run) |
 | Shrunk release APK, every page opened on both emulators | 27 of 27 pages on each, no crash |
 | Library used as a binary by a separate Java project | builds shrunk, runs on both emulators |
 | The source archive, unpacked elsewhere, builds and passes its tests | 1,038 + 35 tests, lint without issues, both release builds |
