@@ -39,7 +39,7 @@ GROUPS = [
         ("MalletChip", "widget", "chip", "Components › Buttons and chips"),
         ("MalletChipGroup", "widget", "chip", "Components › Buttons and chips"),
         ("MalletTag", "widget", "chip", "Components › Buttons and chips"),
-        ("MalletBadge", "widget", "navbar", "Components › Buttons and chips"),
+        ("MalletBadge", "widget", None, "Components › Buttons and chips"),
     ]),
     ("Choice", "Controls whose state is a colour in a recessed bed. The thumb or bead that moves over it stays neutral.", [
         ("MalletSegmentedTrack", "widget", "segmented_track", "Components › Tracks and switches"),
@@ -147,7 +147,19 @@ def kdoc_before(lines, index):
 
 
 def first_sentence(doc_lines):
-    text = re.sub(r"\s+", " ", " ".join(line.strip() for line in doc_lines if not line.strip().startswith("@"))).strip()
+    # A tag line and the indented lines that continue it are parameter documentation, not
+    # summary; only the prose before the first tag is kept.
+    prose = []
+    in_tag = False
+    for raw in doc_lines:
+        stripped = raw.strip()
+        if stripped.startswith("@"):
+            in_tag = True
+            continue
+        if in_tag and (raw.startswith(" ") or raw.startswith("\t") or not stripped):
+            continue
+        prose.append(stripped)
+    text = re.sub(r"\s+", " ", " ".join(prose)).strip()
     # A sentence ends at a full stop that is followed by a space and a capital letter or a
     # bracket; "e.g. " and "1.5 dp" are not ends.
     cut = re.search(r"(?<=[a-z0-9)\]`'\"])\.\s+(?=[A-Z\[`(])", text)
@@ -311,7 +323,14 @@ def describe(attr, shared):
         kind = platform[0]
         comment = comment or platform[1]
     elif values:
-        kind = " / ".join("`%s`" % value for value in values) if len(values) <= 8 else "one of %d names (see below)" % len(values)
+        listed = values
+        # An icon attribute lists its glyphs plus `none`; the names, not the entries, are what
+        # the docs count, so say which is which instead of churning out one more than the icons.
+        if "none" in values and len(values) > 8:
+            names = [value for value in values if value != "none"]
+            kind = "one of %d names, or `none` (see below)" % len(names)
+        else:
+            kind = " / ".join("`%s`" % value for value in values) if len(listed) <= 8 else "one of %d names (see below)" % len(listed)
     else:
         kind = (fmt or "").replace("|", " or ")
     prefix = "" if attr["name"].startswith("android:") else "app:"

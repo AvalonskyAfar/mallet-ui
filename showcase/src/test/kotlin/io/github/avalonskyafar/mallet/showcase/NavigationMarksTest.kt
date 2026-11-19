@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
+import io.github.avalonskyafar.mallet.icon.MalletIcon
 import io.github.avalonskyafar.mallet.icon.MalletIconView
 import io.github.avalonskyafar.mallet.theme.MalletTheme
+import io.github.avalonskyafar.mallet.widget.MalletText
 import io.github.avalonskyafar.mallet.widget.MalletEntryRow
 import io.github.avalonskyafar.mallet.widget.MalletNavBar
 import io.github.avalonskyafar.mallet.widget.MalletPowerSwitch
@@ -55,7 +57,7 @@ class NavigationMarksTest {
     }
 
     /** The page with [key], built as the app builds it and laid out on a phone screen. */
-    private fun page(key: String): View {
+    private fun page(key: String, heightDp: Int = 914): View {
         val activity = Robolectric.buildActivity(Activity::class.java).setup().get()
         val settings = ShowcaseSettings(activity)
         MalletTheme.resolver = MalletTheme.Resolver { context -> settings.toTheme(context) }
@@ -66,7 +68,7 @@ class NavigationMarksTest {
         val density = activity.resources.displayMetrics.density
         view.measure(
             View.MeasureSpec.makeMeasureSpec((411 * density).toInt(), View.MeasureSpec.EXACTLY),
-            View.MeasureSpec.makeMeasureSpec((914 * density).toInt(), View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.makeMeasureSpec((heightDp * density).toInt(), View.MeasureSpec.EXACTLY),
         )
         view.layout(0, 0, view.measuredWidth, view.measuredHeight)
         return view
@@ -111,9 +113,54 @@ class NavigationMarksTest {
         assertThat(row.items.map { it.label.toString() })
             .containsExactlyElementsIn(FIRST_LEVEL.map { home.context.getString(Pages.titleOf(it)) })
             .inOrder()
+        // Each entry carries the icon that stands for its page.
+        assertThat(row.items.map { it.icon }).containsExactly(
+            MalletIcon.PALETTE, MalletIcon.GRID, MalletIcon.SLIDERS, MalletIcon.HAND,
+        ).inOrder()
         // The row stands at the bottom and is as wide as the page.
         assertThat(row.bottom).isEqualTo(home.height - home.paddingBottom)
         assertThat(row.width).isEqualTo(home.width - home.paddingLeft - home.paddingRight)
+    }
+
+    @Test
+    fun `the composition never runs under the entry row, also on a short window`() {
+        // A phone in portrait: the block stands above the row with room to spare.
+        val tall = page(Pages.HOME)
+        val tallRow = tall.all<MalletNavBar>().single()
+        assertThat(compositionBottom(tall)).isLessThan(tallRow.top)
+        // A short window, wider than it is tall: the row keeps its whole height and the
+        // composition is cut at the row, not painted over it.
+        val short = page(Pages.HOME, heightDp = 240)
+        val shortRow = short.all<MalletNavBar>().single()
+        val density = short.resources.displayMetrics.density
+        assertThat(shortRow.height).isEqualTo((72 * density).toInt())
+        assertThat(shortRow.bottom - short.paddingBottom).isEqualTo(short.height)
+        val stage = short.findViewById<ViewGroup>(R.id.showcase_home_stage)
+        assertThat(stage).isNotNull()
+        // The row is the stage's second child, so it is drawn over the lower part of the
+        // composition rather than under it.
+        assertThat(stage.childCount).isEqualTo(2)
+        assertThat(stage.getChildAt(1)).isSameInstanceAs(shortRow)
+        assertThat(shortRow.top).isEqualTo(short.height - short.paddingBottom - shortRow.height)
+        // The composition is pinned to the top of the room instead of being centred out of
+        // the window: its top edge stays below the page's padding, and it reaches down into
+        // the row's band, where the row covers it.
+        assertThat(compositionTop(short)).isAtLeast(short.paddingTop)
+        assertThat(compositionBottom(short)).isGreaterThan(shortRow.top)
+    }
+
+    /** The bottom edge of the composition: the wordmark, the switch and the status line. */
+    private fun compositionBottom(home: View): Int {
+        var bottom = 0
+        walk(home) { if (it is MalletText || it is MalletPowerSwitch) bottom = maxOf(bottom, it.bottom) }
+        return bottom
+    }
+
+    /** The top edge of the same composition. */
+    private fun compositionTop(home: View): Int {
+        var top = home.height
+        walk(home) { if (it is MalletText || it is MalletPowerSwitch) top = minOf(top, it.top) }
+        return top
     }
 
     @Test

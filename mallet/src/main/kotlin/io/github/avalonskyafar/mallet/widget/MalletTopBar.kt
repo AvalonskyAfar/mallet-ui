@@ -44,7 +44,7 @@ import kotlin.math.roundToInt
  * ```
  *
  * ```kotlin
- * topBar.setNavigation { finish() }
+ * topBar.setNavigation(onClick = View.OnClickListener { finish() })
  * topBar.addAction(MalletIcon.SEARCH, getString(R.string.search)) { openSearch() }
  * topBar.bindTo(scrollView)
  * ```
@@ -181,10 +181,10 @@ public class MalletTopBar @JvmOverloads constructor(
     /**
      * Shows the navigation button at the start of the bar, drawn in ink.
      *
-     * @param icon the glyph; the default chevron points back and is mirrored in
-     *   right-to-left layouts, as every directional icon is
-     * @param description what a screen reader says; `null` uses the library's "Back"
-     * @param onClick called after the tick when the button is operated; to set it later, call
+     * @param icon The glyph. The default chevron points back and is mirrored in right-to-left
+     *   layouts, as every directional icon is.
+     * @param description What a screen reader says. `null` uses the library's "Back".
+     * @param onClick Called after the tick when the button is operated. To set it later, call
      *   this function again. A click listener set directly on [navigationButton] replaces the
      *   one that ticks, so the button then works without the tick.
      */

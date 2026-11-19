@@ -398,6 +398,7 @@ public class MalletNavBar @JvmOverloads constructor(
         return baseSize * max(floor, room / widest)
     }
 
+
     /** The labels as the row draws them at its present width: whole, or cut with an ellipsis. */
     internal fun drawnLabels(): List<String> {
         if (entries.isEmpty() || width == 0) return emptyList()

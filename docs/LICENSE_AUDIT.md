@@ -49,7 +49,8 @@ engineering record, not legal advice.
 ## 3. What a reader can verify
 
 - `git grep -n -i "gravekeeper\|守目人"` in this repository returns matches only in
-  documentation that describes the provenance.
+  documentation that describes the provenance: `README.md`, `CHANGELOG.md`, `NOTICE.md`,
+  this audit and the decision record. No source file, resource or string carries the name.
 - The AAR contains classes and XML resources only: `unzip -l mallet-<version>.aar`.
 - The dependency list in `THIRD_PARTY_NOTICES.md` matches
   `./gradlew :showcase:dependencies --configuration debugRuntimeClasspath`.

@@ -1,4 +1,4 @@
-Sancai showcase: device tests
+Mallet showcase: device tests
 device: unknown Android SDK built for x86_64, Android 6.0 (API 23), x86_64, Physical size: 1080x1920, Physical density: 420
 date:   2026-11-18 02:38 +0800
 

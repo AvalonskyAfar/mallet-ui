@@ -37,10 +37,10 @@ Contents: [Principles](#1-principles) · [Colour](#2-colour) · [Hues](#3-hues) 
 1. **Colour is state, and it lives in the bed.** A switch that is off is bronze; on, it is
    cobalt. A four-level control runs bronze, ochre, cobalt, jade. The thumb that
    travels over the bed is always the same neutral bead. *(Extracted)*
-2. **Three materials, nothing else.** Surface (raised, neutral), track (recessed, carries
-   the hue), thumb (raised, neutral, inside a track). A fourth, the well, is a recessed
-   neutral field for text and pictures. There are no flat tinted buttons, no ripples, no
-   elevation overlays. *(Extracted)*
+2. **Four materials, nothing else.** Surface (raised, neutral), track (recessed, carries the
+   hue), thumb (raised, neutral, inside a track) and the well (recessed, neutral, for text
+   and pictures; section 7). There are no flat tinted buttons, no ripples, no elevation
+   overlays. *(Extracted; the well completes the three)*
 3. **Text is centred; arrows are not part of the text.** In rows, title and detail are
    centred on the row. A chevron is placed on its own at the edge and never pushes the text
    aside. It points to where the next page lies. *(Extracted)*
@@ -54,8 +54,9 @@ Contents: [Principles](#1-principles) · [Colour](#2-colour) · [Hues](#3-hues) 
 6. **Everything follows the finger, or glides.** Thumbs, pages, sheets and rows that slide
    aside move with the finger at finger speed. When released they settle along one easing
    curve. Nothing bounces, nothing fades in. *(Extracted)*
-7. **Pages are places.** A page lies beside, above or below another one and is reached by
-   dragging towards it. Navigation is movement through a map, not a stack of cards. A place
+7. **Pages are places.** A page lies beside, above or below another one; dragging the current
+   page towards that side slides it in from there. Navigation is movement through a map, not a
+   stack of cards. A place
    carries no signpost. Home, the root page of the map, shows nothing that points at its
    neighbours: no arrows, no page names at the edges. It names the pages around it once, in
    a row of entries at its bottom, one entry for each first-level page (a page that lies
@@ -555,8 +556,9 @@ Rules:
   and grow from 97.8 %.
 - **Interruptible.** A touch during a landing takes over at once; whichever page is at least
   half way in becomes the current one.
-- **Colour moves with position.** The bed blends between hues as the thumb travels, not
-  after it arrives.
+- **Colour moves with position.** A track's bed blends between hues as the thumb travels, not
+  after it arrives; a slider's stretch holds the hue nearest to the bead and switches at the
+  half-way point between two hues, over a short fade.
 - **Reduced motion** shortens every animation to a brief settle and removes decorative
   movement. It is on when the system has animations switched off, unless the theme says
   otherwise.

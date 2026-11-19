@@ -14,18 +14,18 @@ data class MalletColors(val isDark: Boolean, @ColorInt val canvas: Int, @ColorIn
     fun light(highContrast: Boolean = false): MalletColors
     fun dark(highContrast: Boolean = false): MalletColors
     fun blend(@ColorInt first: Int, @ColorInt second: Int, @FloatRange(from = 0.0, to = 1.0) secondShare: Float): Int    // Opaque linear mix of two colours; [secondShare] is the weight of [second].
-    fun contrast(@ColorInt first: Int, @ColorInt second: Int): Float    // WCAG 2 contrast ratio of two opaque colours, from 1 (identical) to 21 (black on white).
+    fun contrast(@ColorInt first: Int, @ColorInt second: Int): Float    // WCAG 2 contrast ratio of two opaque colours, from 1 (identical) to 21 (black on white). 
     fun withAlpha(@ColorInt color: Int, alpha: Int): Int =    // [color] with its alpha channel replaced by [alpha] (clamped to 0..255).
 ```
 
 ### theme/MalletHue.kt
 
 ```
-data class MalletHue(@ColorInt val bed: Int, @ColorInt val edge: Int, @ColorInt val onBed: Int)    // One hue:
-data class MalletHues(val bronze: MalletHue, val ochre: MalletHue, val cobalt: MalletHue, val jade: MalletHue, val mist: MalletHue)    // The hue set of a theme.
-  fun scale(count: Int): List<MalletHue> = when    // Default hue per option for an ordinal control with [count] options:
-  fun fromAttr(value: Int): MalletHue = when (value)    // The hue for a value of the `malletHue` XML attribute:
-  fun uniform(count: Int, hue: MalletHue = cobalt): List<MalletHue> =    // The same [hue] for every option:
+data class MalletHue(@ColorInt val bed: Int, @ColorInt val edge: Int, @ColorInt val onBed: Int)    // One hue: the colour that fills a recessed track. 
+data class MalletHues(val bronze: MalletHue, val ochre: MalletHue, val cobalt: MalletHue, val jade: MalletHue, val mist: MalletHue)    // The hue set of a theme. 
+  fun scale(count: Int): List<MalletHue> = when    // Default hue per option for an ordinal control with [count] options: two options read off and on, three add the gentle step, four add the strict step. 
+  fun fromAttr(value: Int): MalletHue = when (value)    // The hue for a value of the `malletHue` XML attribute: 0 bronze, 1 ochre, 2 cobalt, 3 jade, 4 mist. 
+  fun uniform(count: Int, hue: MalletHue = cobalt): List<MalletHue> =    // The same [hue] for every option: a plain, non-ordinal choice.
   companion object
     fun default(): MalletHues = MalletHues(bronze = MalletHue(Color.rgb(206, 131, 83), Color.rgb(190, 105, 56), Color.WHITE), ochre = MalletHue(Color.rgb(222, 190, 119), Color.rgb(194, 158, 82), Color.rgb(44, 33, 4)), cobalt = MalletHue(Color.rgb(134, 172, 247
 ```
@@ -33,9 +33,9 @@ data class MalletHues(val bronze: MalletHue, val ochre: MalletHue, val cobalt: M
 ### theme/MalletMotion.kt
 
 ```
-object MalletMotion    // Timing and distance tokens shared by every Mallet interaction.
+object MalletMotion    // Timing and distance tokens shared by every Mallet interaction. 
   const val CONTROL_MS: Long    // Thumb and hue settle after a tap or release.
-  const val REDUCED_MS: Long    // Controls, pages, sheets and sections while motion is reduced.
+  const val REDUCED_MS: Long    // Controls, pages, sheets and sections while motion is reduced. 
   const val PAGE_MS: Long    // Programmatic full-distance page transition.
   const val SETTLE_MIN_MS: Long    // Shortest finger-release settle of a page.
   const val SETTLE_MAX_MS: Long    // Longest finger-release settle of a page.
@@ -47,17 +47,17 @@ object MalletMotion    // Timing and distance tokens shared by every Mallet inte
   const val THEME_FADE_MS: Long    // Old-palette snapshot fading over the new theme.
   const val COMMIT_FRACTION: Float    // A drag past this share of the travel commits on release.
   const val COMMIT_VELOCITY_DP: Float    // A fling faster than this (dp per second, in the travel direction) commits on release.
-  fun glide(): Interpolator = PathInterpolator(0.22f, 0.78f, 0.18f, 1f)    // The single Mallet easing curve:
-  fun fade(): Interpolator = PathInterpolator(0.2f, 0f, 0f, 1f)    // Curve of the theme cross-fade:
+  fun glide(): Interpolator = PathInterpolator(0.22f, 0.78f, 0.18f, 1f)    // The single Mallet easing curve: cubic-bezier(0.22, 0.78, 0.18, 1).
+  fun fade(): Interpolator = PathInterpolator(0.2f, 0f, 0f, 1f)    // Curve of the theme cross-fade: cubic-bezier(0.2, 0, 0, 1).
   fun controlDuration(reduceMotion: Boolean): Long = if (reduceMotion) REDUCED_MS else CONTROL_MS
   fun feedbackDuration(reduceMotion: Boolean): Long =
-  fun settleDuration(remainingFraction: Float, reduceMotion: Boolean): Long    // Duration for settling the remaining share of a travel (0 = already there, 1 = full distance).
+  fun settleDuration(remainingFraction: Float, reduceMotion: Boolean): Long    // Duration for settling the remaining share of a travel (0 = already there, 1 = full distance). 
 ```
 
 ### theme/MalletSpacing.kt
 
 ```
-object MalletSpacing    // The vertical rhythm of a Mallet page, in dp.
+object MalletSpacing    // The vertical rhythm of a Mallet page, in dp. 
   const val PAGE_SIDE: Float    // Page padding on the left and on the right of the column.
   const val PAGE_TOP: Float    // Page padding above the first element.
   const val PAGE_BOTTOM: Float    // Page padding below the last element; deeper than the top so the page ends calmly.
@@ -76,30 +76,30 @@ object MalletSpacing    // The vertical rhythm of a Mallet page, in dp.
 data class MalletTheme (val colors: MalletColors, val hues: MalletHues = MalletHues.default(), val textScale: Float = 1f, val highContrast: Boolean = false, val reduceMotion: Boolean = false, val haptics: Boolean = true, val nightHue: Float = DEFAULT_NIGHT_HUE
   fun bedColor(hue: MalletHue): Int =    // Fill of a recessed track coloured with [hue] in this theme.
   fun bedEdgeColor(hue: MalletHue): Int    // Rim of a recessed track coloured with [hue] in this theme.
-  fun labelOnBed(active: MalletHue, own: MalletHue = active, optionCount: Int = 2): Int    // Colour of a label resting directly on a coloured bed.
-  fun labelOnTint(@ColorInt tint: Int): Int    // Colour of a label on a body coloured with [tint], such as a primary or destructive capsule.
+  fun labelOnBed(active: MalletHue, own: MalletHue = active, optionCount: Int = 2): Int    // Colour of a label resting directly on a coloured bed. 
+  fun labelOnTint(@ColorInt tint: Int): Int    // Colour of a label on a body coloured with [tint], such as a primary or destructive capsule. 
   fun interface Resolver    // Supplies a theme for a context, or `null` to fall through to the Android theme.
     fun resolve(context: Context): MalletTheme?
   companion object
     const val LARGE_TEXT_SCALE: Float    // Scale used by the original "larger text" preference.
     const val DEFAULT_NIGHT_HUE: Float    // Default share of the hue kept in dark tracks.
-    var resolver: Resolver?    // Optional process-wide theme source, for apps that keep appearance settings in their own preferences.
+    var resolver: Resolver?    // Optional process-wide theme source, for apps that keep appearance settings in their own preferences. 
     fun light(highContrast: Boolean = false): MalletTheme =
     fun dark(highContrast: Boolean = false): MalletTheme =
     fun wrap(base: Context, theme: MalletTheme): Context = MalletThemedContext(base, theme)    // A context whose Mallet views use [theme], whatever the Android theme says.
     fun of(context: Context): MalletTheme    // The theme in effect for [context].
     fun systemReducesMotion(context: Context): Boolean = try    // Whether the system has animations switched off (animator duration scale of zero).
-    fun systemPrefersHighContrast(context: Context): Boolean    // Whether the system's high-contrast text setting is on.
+    fun systemPrefersHighContrast(context: Context): Boolean    // Whether the system's high-contrast text setting is on. 
     fun systemIsDark(context: Context): Boolean    // Whether [context] is currently in night mode.
 ```
 
 ### theme/MalletType.kt
 
 ```
-enum class MalletWeight    // The three weights of the Mallet type scale.
+enum class MalletWeight    // The three weights of the Mallet type scale. 
   fun typeface(): Typeface = when (this)    // The platform typeface for this weight.
-enum class MalletTextRole(public val sizeSp: Float, public val weight: MalletWeight, public val lineExtraDp: Float = 0f, public val lineMultiplier: Float = 1.16f, public val letterSpacing: Float = 0f)    // The Mallet type scale.
-  fun applyTo(view: TextView, theme: MalletTheme)    // Applies size, weight and leading to [view].
+enum class MalletTextRole(public val sizeSp: Float, public val weight: MalletWeight, public val lineExtraDp: Float = 0f, public val lineMultiplier: Float = 1.16f, public val letterSpacing: Float = 0f)    // The Mallet type scale. 
+  fun applyTo(view: TextView, theme: MalletTheme)    // Applies size, weight and leading to [view]. 
   fun applyTo(paint: Paint, theme: MalletTheme, scaledDensity: Float)    // Configures [paint] for drawing this role directly on a canvas.
 enum class MalletTextTone    // The colour roles text can take.
   fun resolve(colors: MalletColors): Int = when (this)
@@ -108,10 +108,10 @@ enum class MalletTextTone    // The colour roles text can take.
 ### theme/MalletWindow.kt
 
 ```
-object MalletWindow    // Window-level helpers:
-  fun apply(activity: Activity, theme: MalletTheme = MalletTheme.of(activity), edgeToEdge: Boolean = true)    // Paints the window of [activity] in the canvas colour of [theme] and gives the status and navigation bars dark or light icons to match.
-  fun padForSystemBars(view: View, includeIme: Boolean = false)    // Adds the system-bar and display-cutout insets to the padding [view] has right now, and keeps doing so when the insets change and whenever the view is attached to a window.
-  fun preferHighestRefreshRate(activity: Activity)    // Asks for the fastest refresh rate the display offers at its current resolution.
+object MalletWindow    // Window-level helpers: the part of a Mallet screen that lies outside any view. 
+  fun apply(activity: Activity, theme: MalletTheme = MalletTheme.of(activity), edgeToEdge: Boolean = true)    // Paints the window of [activity] in the canvas colour of [theme] and gives the status and navigation bars dark or light icons to match. 
+  fun padForSystemBars(view: View, includeIme: Boolean = false)    // Adds the system-bar and display-cutout insets to the padding [view] has right now, and keeps doing so when the insets change and whenever the view is attached to a window. 
+  fun preferHighestRefreshRate(activity: Activity)    // Asks for the fastest refresh rate the display offers at its current resolution. 
 ```
 
 ## material
@@ -119,17 +119,17 @@ object MalletWindow    // Window-level helpers:
 ### material/MalletDrawables.kt
 
 ```
-object MalletGutters    // Room, in dp, that a raised body leaves around itself for its shadow.
+object MalletGutters    // Room, in dp, that a raised body leaves around itself for its shadow. 
   const val SURFACE_SIDE_DP: Float
   const val SURFACE_TOP_DP: Float
   const val SURFACE_BOTTOM_DP: Float
   const val FLAT_DP: Float    // Gutter of a flat body that carries no shadow.
 class MalletSurfaceDrawable (private val material: MalletMaterial, private val radiusDp: Float = MalletMaterial.RADIUS_CARD_DP, private val pill: Boolean = false, @ColorInt tint: Int? = null, private val shadow: Boolean = true, private val corners: MalletCorne
-  var tint: Int?    // Colour of a coloured body, or `null` for a neutral surface.
+  var tint: Int?    // Colour of a coloured body, or `null` for a neutral surface. 
   var pressed: Boolean    // Draws the tighter shadow of a pressed body and lets it sink by [sinkPx].
   var sinkPx: Float    // Distance the body sinks while [pressed], in pixels.
   fun bodyBounds(bounds: Rect, out: RectF)    // The rectangle of the visible body inside [bounds], without the shadow gutter.
-class MalletWellDrawable (private val material: MalletMaterial, private val radiusDp: Float = MalletMaterial.RADIUS_WELL_DP) : Drawable()    // Background drawable for a recessed well:
+class MalletWellDrawable (private val material: MalletMaterial, private val radiusDp: Float = MalletMaterial.RADIUS_WELL_DP) : Drawable()    // Background drawable for a recessed well: text fields, bulk editors and media frames. 
   var rim: Int?
   var focused: Boolean    // Draws the two-dp ink rim of keyboard focus on top of the well.
 ```
@@ -137,19 +137,19 @@ class MalletWellDrawable (private val material: MalletMaterial, private val radi
 ### material/MalletMaterial.kt
 
 ```
-enum class MalletCorners { ALL, TOP, BOTTOM }    // Which corners of a surface are rounded.
-class MalletMaterial (context: Context, public val theme: MalletTheme = MalletTheme.of(context))    // The Mallet material engine:
+enum class MalletCorners { ALL, TOP, BOTTOM }    // Which corners of a surface are rounded. 
+class MalletMaterial (context: Context, public val theme: MalletTheme = MalletTheme.of(context))    // The Mallet material engine: every shadow, rim and recess in the toolkit is painted here. 
   fun dp(value: Float): Float = value * density    // Converts density-independent pixels to pixels.
-  fun drawOuterShadow(canvas: Canvas, bounds: RectF, radius: Float, blurDp: Float, offsetDp: Float, opacity: Int)    // A soft shadow below [bounds], built from low-alpha shells so that it reaches zero inside whatever gutter the current clip leaves.
-  fun drawLift(canvas: Canvas, bounds: RectF, radius: Float, pressed: Boolean, compact: Boolean)    // The standard lift of a raised or recessed element.
+  fun drawOuterShadow(canvas: Canvas, bounds: RectF, radius: Float, blurDp: Float, offsetDp: Float, opacity: Int)    // A soft shadow below [bounds], built from low-alpha shells so that it reaches zero inside whatever gutter the current clip leaves. 
+  fun drawLift(canvas: Canvas, bounds: RectF, radius: Float, pressed: Boolean, compact: Boolean)    // The standard lift of a raised or recessed element. 
   fun drawTrack(canvas: Canvas, bounds: RectF, @ColorInt bed: Int, @ColorInt edge: Int, pressed: Boolean = false, hero: Boolean = false, radius: Float = bounds.height() / 2f, lifted: Boolean = true)    // A recessed capsule filled with [bed] and rimmed with [e
-  fun drawThumb(canvas: Canvas, bounds: RectF, pressed: Boolean = false, radius: Float = bounds.height() / 2f, lifted: Boolean = true)    // The neutral raised bead that rides inside a track.
-  fun drawSurface(canvas: Canvas, bounds: RectF, radius: Float, @ColorInt tint: Int? = null, shadow: Boolean = true, pressed: Boolean = false, corners: MalletCorners = MalletCorners.ALL)    // A raised surface.
-  fun drawWell(canvas: Canvas, bounds: RectF, radius: Float, @ColorInt rim: Int? = null, pressed: Boolean = false)    // A recessed well:
+  fun drawThumb(canvas: Canvas, bounds: RectF, pressed: Boolean = false, radius: Float = bounds.height() / 2f, lifted: Boolean = true)    // The neutral raised bead that rides inside a track. 
+  fun drawSurface(canvas: Canvas, bounds: RectF, radius: Float, @ColorInt tint: Int? = null, shadow: Boolean = true, pressed: Boolean = false, corners: MalletCorners = MalletCorners.ALL)    // A raised surface. @param bounds the material itself; leave a gutter
+  fun drawWell(canvas: Canvas, bounds: RectF, radius: Float, @ColorInt rim: Int? = null, pressed: Boolean = false)    // A recessed well: text fields, bulk editors and media frames. 
   fun drawRowFill(canvas: Canvas, bounds: RectF)    // The flat fill of a row that lives inside a card and must not add its own rim or shadow.
-  fun drawRevealBed(canvas: Canvas, bounds: RectF, @ColorInt tint: Int = colors.danger, topRadius: Float = 0f, bottomRadius: Float = 0f)    // The recessed coloured bed uncovered behind a row that is slid aside.
-  fun drawRevealShade(canvas: Canvas, bounds: RectF, edgeX: Float, bedOnLeft: Boolean, topRadius: Float = 0f, bottomRadius: Float = 0f)    // The short shade that the raised edge of a row casts on the bed it uncovers.
-  fun drawFocusRim(canvas: Canvas, bounds: RectF, radius: Float)    // Keyboard focus:
+  fun drawRevealBed(canvas: Canvas, bounds: RectF, @ColorInt tint: Int = colors.danger, topRadius: Float = 0f, bottomRadius: Float = 0f)    // The recessed coloured bed uncovered behind a row that is slid aside. 
+  fun drawRevealShade(canvas: Canvas, bounds: RectF, edgeX: Float, bedOnLeft: Boolean, topRadius: Float = 0f, bottomRadius: Float = 0f)    // The short shade that the raised edge of a row casts on the bed it uncovers. 
+  fun drawFocusRim(canvas: Canvas, bounds: RectF, radius: Float)    // Keyboard focus: the hairline rim of the focused material thickens into a two-dp ink rim. 
   fun drawFocusRim(canvas: Canvas, bounds: RectF, topRadius: Float, bottomRadius: Float)    // The focus rim of a body whose upper and lower corners are rounded differently.
   companion object
     const val RADIUS_CARD_DP: Float    // Corner radius of cards, in dp.
@@ -157,7 +157,7 @@ class MalletMaterial (context: Context, public val theme: MalletTheme = MalletTh
     const val RADIUS_PANEL_DP: Float    // Corner radius of floating panels and menus, in dp.
     const val RADIUS_WELL_DP: Float    // Corner radius of text wells, in dp.
     const val RADIUS_MEDIA_DP: Float    // Corner radius of media wells, in dp.
-    const val RIM_DP: Float    // How far the hairline rim of a raised surface reaches into its body, in dp.
+    const val RIM_DP: Float    // How far the hairline rim of a raised surface reaches into its body, in dp. 
 ```
 
 ## icon
@@ -165,7 +165,7 @@ class MalletMaterial (context: Context, public val theme: MalletTheme = MalletTh
 ### icon/MalletIcon.kt
 
 ```
-enum class MalletIcon    // The built-in Mallet icon set.
+enum class MalletIcon    // The built-in Mallet icon set. 
   val isDirectional: Boolean    // Whether the icon points along the reading direction and must be mirrored in right-to-left layouts.
   companion object
     fun fromAttr(value: Int): MalletIcon? = all.getOrNull(value)    // The icon for a value of the `malletIcon` XML attribute, or `null` for "none".
@@ -181,15 +181,15 @@ class MalletIconDrawable (context: Context, public val icon: MalletIcon, @ColorI
 ### icon/MalletIconPainter.kt
 
 ```
-object MalletIconPainter    // Draws [MalletIcon]s.
+object MalletIconPainter    // Draws [MalletIcon]s. 
   const val STROKE_DP: Float    // Default stroke width in dp for a 24 dp icon.
-  fun draw(canvas: Canvas, icon: MalletIcon, left: Float, top: Float, sizePx: Float, @ColorInt color: Int, strokePx: Float, mirrored: Boolean = false)    // Draws [icon] into the square whose top-left corner is ([left], [top]) and whose side is [sizePx].
+  fun draw(canvas: Canvas, icon: MalletIcon, left: Float, top: Float, sizePx: Float, @ColorInt color: Int, strokePx: Float, mirrored: Boolean = false)    // Draws [icon] into the square whose top-left corner is ([left], [top]) and whose side is [sizePx]. 
 ```
 
 ### icon/MalletIconView.kt
 
 ```
-class MalletIconView (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr)    // Shows one [MalletIcon].
+class MalletIconView (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr)    // Shows one [MalletIcon]. 
   var icon: MalletIcon?    // The icon to draw, or `null` for nothing.
   var tone: MalletTextTone    // Colour role of the stroke, used when [color] is `null`.
   var color: Int?    // Explicit stroke colour; overrides [tone] when set.
@@ -203,49 +203,49 @@ class MalletIconView (context: Context, attrs: AttributeSet? = null, defStyleAtt
 ### widget/MalletBadge.kt
 
 ```
-class MalletBadge (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr)    // A count badge:
-  var count: Int    // The number shown.
+class MalletBadge (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr)    // A count badge: a small capsule in the danger colour with a white number on it. 
+  var count: Int    // The number shown. 
   var showDot: Boolean    // Whether a count of zero is drawn as a small dot instead of nothing.
   var maxCount: Int    // The largest number written out; anything above is shown as this number and a plus sign.
-  val text: String    // What the badge currently says:
-  val isShowing: Boolean get()    // Whether anything is drawn at all:
-  fun detach()    // Removes a badge created with [attach] from its anchor.
+  val text: String    // What the badge currently says: the number, "99+" style overflow, or nothing.
+  val isShowing: Boolean get()    // Whether anything is drawn at all: a count above zero, or the dot.
+  fun detach()    // Removes a badge created with [attach] from its anchor. 
   companion object
-    fun attach(anchor: View): MalletBadge    // Overlays a new badge on the top end corner of [anchor] and returns it.
+    fun attach(anchor: View): MalletBadge    // Overlays a new badge on the top end corner of [anchor] and returns it. 
 ```
 
 ### widget/MalletBanner.kt
 
 ```
-class MalletBanner (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A persistent inline message at the top of a page or a card.
+class MalletBanner (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A persistent inline message at the top of a page or a card. 
   enum class Tone    // What kind of condition a banner reports; picks the colour of the bar and the icon.
   fun interface OnDismissListener    // Called when the user closes the banner with its close icon.
     fun onDismiss(banner: MalletBanner)    // [banner] has started to collapse because the user closed it.
   val titleView: MalletText =    // The view that shows [title]; exposed for fine tuning (max lines, ellipsis).
   val detailView: MalletText =    // The view that shows [detail].
-  val actionButton: MalletButton    // The main text action, at the very end of the text column.
-  val secondaryActionButton: MalletButton    // The second text action, before the main one.
-  fun setOnDismissListener(listener: OnDismissListener?)    // Called when the user closes the banner.
-  var title: CharSequence?    // The title, in ink.
-  var detail: CharSequence?    // The muted line under the title.
+  val actionButton: MalletButton    // The main text action, at the very end of the text column. 
+  val secondaryActionButton: MalletButton    // The second text action, before the main one. 
+  fun setOnDismissListener(listener: OnDismissListener?)    // Called when the user closes the banner. 
+  var title: CharSequence?    // The title, in ink. 
+  var detail: CharSequence?    // The muted line under the title. 
   var tone: Tone    // Colour of the bar and the icon, and the icon itself unless [icon] replaces it.
   var icon: MalletIcon?    // Replaces the icon the [tone] brings; `null` (default) goes back to the tone's own.
-  var showIcon: Boolean    // Whether the tone icon is drawn.
-  var isDismissible: Boolean    // Whether the close icon is offered.
-  var toneDescription: CharSequence?    // What a screen reader says before the title:
+  var showIcon: Boolean    // Whether the tone icon is drawn. 
+  var isDismissible: Boolean    // Whether the close icon is offered. 
+  var toneDescription: CharSequence?    // What a screen reader says before the title: by default the name of the [tone] ("Warning"). 
   var closeDescription: CharSequence    // Description of the close icon for screen readers; "Close" by default.
   val toneColor: Int    // The colour the bar and the icon are painted with right now.
-  val isShowing: Boolean    // Whether the banner is showing or on its way in.
-  fun setAction(text: CharSequence?, listener: OnClickListener?)    // Sets the main text action.
-  fun setSecondaryAction(text: CharSequence?, listener: OnClickListener?)    // Sets the second text action, placed before the main one.
-  fun show(animate: Boolean = true)    // Shows the banner by growing its height from where it is to its full height, pushing the content below it; a banner that started hidden, or was dismissed, grows from zero.
-  fun dismiss(animate: Boolean = true)    // Collapses the banner to zero height and then sets its visibility to `GONE`.
+  val isShowing: Boolean    // Whether the banner is showing or on its way in. 
+  fun setAction(text: CharSequence?, listener: OnClickListener?)    // Sets the main text action. 
+  fun setSecondaryAction(text: CharSequence?, listener: OnClickListener?)    // Sets the second text action, placed before the main one. 
+  fun show(animate: Boolean = true)    // Shows the banner by growing its height from where it is to its full height, pushing the content below it; a banner that started hidden, or was dismissed, grows from zero. 
+  fun dismiss(animate: Boolean = true)    // Collapses the banner to zero height and then sets its visibility to `GONE`. 
 ```
 
 ### widget/MalletButton.kt
 
 ```
-class MalletButton (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : TextView(context, attrs, defStyleAttr)    // The Mallet capsule button.
+class MalletButton (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : TextView(context, attrs, defStyleAttr)    // The Mallet capsule button. | Variant | Body | Use | |---|---|---| | [Variant.NEUTRAL] | neutral capsule | ordinary actions 
   enum class Variant { NEUTRAL, PRIMARY, DANGER, TEXT }
   var variant: Variant    // Visual variant.
   var tone: MalletTextTone    // Label colour of the [Variant.TEXT] variant.
@@ -257,85 +257,85 @@ class MalletButton (context: Context, attrs: AttributeSet? = null, defStyleAttr:
 ### widget/MalletCallout.kt
 
 ```
-class MalletCallout (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A note beside running text:
+class MalletCallout (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A note beside running text: a thin bar in the tone colour at the start, then a title in the same colour over a body in
   val titleView: MalletText =    // The view that shows [title]; exposed for fine tuning (max lines, text selection).
   val bodyView: MalletText =    // The view that shows [body].
-  var title: CharSequence?    // The title, in the tone colour.
-  var body: CharSequence?    // The body, in ink, 7 dp below the title.
-  var tone: MalletTextTone    // Colour of the bar and of the title:
+  var title: CharSequence?    // The title, in the tone colour. 
+  var body: CharSequence?    // The body, in ink, 7 dp below the title. 
+  var tone: MalletTextTone    // Colour of the bar and of the title: 
   val barColor: Int    // The colour the bar is painted with right now.
 ```
 
 ### widget/MalletCheckbox.kt
 
 ```
-class MalletCheckbox (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), Checkable    // A small recessed bed that fills with its hue when it is checked.
+class MalletCheckbox (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), Checkable    // A small recessed bed that fills with its hue when it is checked. 
   fun interface OnCheckedChangeListener    // Called when the user checks or unchecks the box.
     fun onCheckedChanged(checkbox: MalletCheckbox, isChecked: Boolean)    // The user checked or unchecked [checkbox]; [isChecked] is its new state.
-  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes.
-  var hue: MalletHue    // The hue that fills the box when it is checked.
+  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes. 
+  var hue: MalletHue    // The hue that fills the box when it is checked. 
   var text: CharSequence    // The label at the end of the box, or empty for a box without a label.
-  fun setChecked(checked: Boolean, animate: Boolean)    // Checks or unchecks the box from code.
+  fun setChecked(checked: Boolean, animate: Boolean)    // Checks or unchecks the box from code. 
 ```
 
 ### widget/MalletChip.kt
 
 ```
-class MalletChip (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A small neutral capsule for filters, suggestions and short actions.
+class MalletChip (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A small neutral capsule for filters, suggestions and short actions. | Kind | Behaviour | |---|---| | [Kind.ACTION] | a s
   enum class Kind { ACTION, FILTER }    // What a chip does when it is tapped.
   fun interface OnCheckedChangeListener    // Called when the user checks or unchecks a filter chip.
     fun onCheckedChanged(chip: MalletChip, isChecked: Boolean)
   fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes of [isChecked].
-  var text: CharSequence    // The label.
+  var text: CharSequence    // The label. 
   var kind: Kind    // Whether the chip is pressed like a button or checked like a filter.
-  var hue: MalletHue    // Hue that fills a checked filter chip.
-  var icon: MalletIcon?    // Icon drawn before the label, or `null`.
-  var isChecked: Boolean    // Whether a filter chip is checked.
-  fun setChecked(checked: Boolean, animate: Boolean)    // Checks or unchecks a filter chip from code, gliding when [animate] is set.
-  fun getBodyBounds(out: RectF)    // The visible capsule in view coordinates, written to [out].
+  var hue: MalletHue    // Hue that fills a checked filter chip. 
+  var icon: MalletIcon?    // Icon drawn before the label, or `null`. 
+  var isChecked: Boolean    // Whether a filter chip is checked. 
+  fun setChecked(checked: Boolean, animate: Boolean)    // Checks or unchecks a filter chip from code, gliding when [animate] is set. 
+  fun getBodyBounds(out: RectF)    // The visible capsule in view coordinates, written to [out]. 
 ```
 
 ### widget/MalletChipGroup.kt
 
 ```
-class MalletChipGroup (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ViewGroup(context, attrs, defStyleAttr)    // A wrapping row of [MalletChip]s:
+class MalletChipGroup (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ViewGroup(context, attrs, defStyleAttr)    // A wrapping row of [MalletChip]s: chips flow from the start edge and continue on the next line when the width runs out. 
   fun interface OnCheckedStateChangeListener    // Called when the user changes which chips of the group are checked.
     fun onCheckedStateChanged(group: MalletChipGroup, checkedIds: List<Int>)
   fun setOnCheckedStateChangeListener(listener: OnCheckedStateChangeListener?)    // Listener for user-driven changes of the checked chips.
-  var isSingleSelection: Boolean    // Whether at most one chip can be checked.
+  var isSingleSelection: Boolean    // Whether at most one chip can be checked. 
   var isSelectionRequired: Boolean    // Whether the user is kept from unchecking the last checked chip.
   var horizontalGap: Int    // Gap between the capsules of neighbouring chips in a row, in pixels.
   var verticalGap: Int    // Gap between the capsules of neighbouring rows, in pixels.
   val checkedChipIds: List<Int>    // Ids of the checked chips, in child order.
   val checkedChipId: Int get()    // Id of the first checked chip, or [View.NO_ID] while none is checked.
-  fun check(id: Int, animate: Boolean = true)    // Checks the chip with [id] from code; listeners are not called.
-  fun clearCheck(animate: Boolean = true)    // Leaves no chip checked.
+  fun check(id: Int, animate: Boolean = true)    // Checks the chip with [id] from code; listeners are not called. 
+  fun clearCheck(animate: Boolean = true)    // Leaves no chip checked. 
 ```
 
 ### widget/MalletControl.kt
 
 ```
-abstract class MalletControl (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr)    // Base class of the custom-drawn Mallet controls, and a starting point for your own.
+abstract class MalletControl (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr)    // Base class of the custom-drawn Mallet controls, and a starting point for your own. 
   companion object
-    const val DISABLED_ALPHA: Int    // Alpha (0..255) of a disabled control:
+    const val DISABLED_ALPHA: Int    // Alpha (0..255) of a disabled control: the colour pales, the shape stays.
 ```
 
 ### widget/MalletControlRow.kt
 
 ```
-class MalletControlRow (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A settings row:
+class MalletControlRow (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A settings row: a centred title (and optional detail) beside a control. 
   enum class Layout    // How the width is shared between the text and a segmented track.
   enum class Alignment    // How the title and the detail stand in the text column.
-  var title: CharSequence?    // The main line.
-  var detail: CharSequence?    // The supporting line under the title.
-  var layout: Layout    // The proportions used by [setSegmented].
+  var title: CharSequence?    // The main line. 
+  var detail: CharSequence?    // The supporting line under the title. 
+  var layout: Layout    // The proportions used by [setSegmented]. 
   var alignment: Alignment    // Whether the text is centred in its column (the default) or aligned to the start.
   var control: View?    // The control of the row, or `null` while there is none.
-  val track: MalletSegmentedTrack? get()    // The control as a segmented track:
+  val track: MalletSegmentedTrack? get()    // The control as a segmented track: the one made by [setSegmented], or one that was put in.
   var textWeight: Float    // Weight of the text column.
   var controlWeight: Float    // Weight of the control; 0 when the control keeps its own width.
-  fun setSegmented(options: List<CharSequence>, selected: Int, listener: MalletSegmentedTrack.OnSelectionChangeListener?): MalletSegmentedTrack    // Puts a segmented track into the row and returns it.
-  fun setControl(view: View?, textWeight: Float = 1f, controlWeight: Float = 0f)    // Puts any view into the row as its control, replacing the previous one; `null` leaves the text alone.
+  fun setSegmented(options: List<CharSequence>, selected: Int, listener: MalletSegmentedTrack.OnSelectionChangeListener?): MalletSegmentedTrack    // Puts a segmented track into the row and returns it. 
+  fun setControl(view: View?, textWeight: Float = 1f, controlWeight: Float = 0f)    // Puts any view into the row as its control, replacing the previous one; `null` leaves the text alone. 
   companion object
     const val MIN_HEIGHT_DP: Float    // Height of a row without a detail line, in dp.
     const val MIN_HEIGHT_DETAIL_DP: Float    // Height of a row with a detail line, in dp.
@@ -345,13 +345,13 @@ class MalletControlRow (context: Context, attrs: AttributeSet? = null, defStyleA
 ### widget/MalletEntryRow.kt
 
 ```
-class MalletEntryRow (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A row of a card that leads somewhere:
+class MalletEntryRow (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A row of a card that leads somewhere: a sub-page, a picker, a dialog. 
   enum class Arrow { NONE, END, START }    // Where the chevron of the row sits.
   enum class Alignment { CENTER, START }    // How the title and the detail are aligned in the row.
   var title: CharSequence?    // Main line of the row.
   var detail: CharSequence?    // Supporting line under the title; `null` or blank removes it and lowers the row.
-  var value: CharSequence?    // Short value at the end of the row, before the end chevron; `null` or blank removes it.
-  var arrow: Arrow    // Chevron of the row.
+  var value: CharSequence?    // Short value at the end of the row, before the end chevron; `null` or blank removes it. 
+  var arrow: Arrow    // Chevron of the row. 
   var alignment: Alignment    // Whether the text is centred in the row (the default) or aligned to its start.
   var leadingIcon: MalletIcon?    // Muted icon at the start of the row, or `null`.
   companion object
@@ -362,16 +362,16 @@ class MalletEntryRow (context: Context, attrs: AttributeSet? = null, defStyleAtt
 ### widget/MalletFlowRow.kt
 
 ```
-class MalletFlowRow (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A flat sequence of steps:
-  data class Step (/** The name of the step, one or two words. */ val title: CharSequence, /** A supporting line under the title; `null` or empty leaves it out. */ val detail: CharSequence? = null)    // One step of a [MalletFlowRow]:
-  var steps: List<Step>    // The steps shown, in reading order.
-  fun setSteps(vararg steps: Pair<CharSequence, CharSequence?>)    // Convenience for code:
+class MalletFlowRow (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A flat sequence of steps: equal-width columns, each a centred title over a centred, muted detail, with an accent arrow
+  data class Step (/** The name of the step, one or two words. */ val title: CharSequence, /** A supporting line under the title; `null` or empty leaves it out. */ val detail: CharSequence? = null)    // One step of a [MalletFlowRow]: a short [title] and an op
+  var steps: List<Step>    // The steps shown, in reading order. 
+  fun setSteps(vararg steps: Pair<CharSequence, CharSequence?>)    // Convenience for code: 
 ```
 
 ### widget/MalletHeading.kt
 
 ```
-class MalletHeading (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // The heading above a card or at the top of a page:
+class MalletHeading (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // The heading above a card or at the top of a page: a title in ink and, optionally, one quiet line of detail below it. 
   enum class Level    // How much weight the title carries.
   var title: CharSequence?    // The heading itself; `null` or empty hides the title line.
   var detail: CharSequence?    // Supporting line under the title; `null`, empty or blank hides the line.
@@ -381,8 +381,8 @@ class MalletHeading (context: Context, attrs: AttributeSet? = null, defStyleAttr
 ### widget/MalletKeyValueList.kt
 
 ```
-class MalletKeyValueList (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletSurface(context, attrs, defStyleAttr)    // A read-only card of facts:
-  data class Item (val key: CharSequence, val value: CharSequence?, val tone: MalletTextTone = MalletTextTone.INK)    // One fact:
+class MalletKeyValueList (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletSurface(context, attrs, defStyleAttr)    // A read-only card of facts: keys down the start side, their values down the end side, a divider from rim to rim b
+  data class Item (val key: CharSequence, val value: CharSequence?, val tone: MalletTextTone = MalletTextTone.INK)    // One fact: a [key], its [value] (`null` shows an em dash) and the [tone] of the value.
   val items: List<Item> get()    // The facts shown, in order.
   fun setItems(items: List<Item>)    // Replaces all rows.
   fun addItem(key: CharSequence, value: CharSequence?, tone: MalletTextTone = MalletTextTone.INK)    // Appends one row, with a divider above it when it is not the first.
@@ -395,10 +395,10 @@ class MalletKeyValueList (context: Context, attrs: AttributeSet? = null, defStyl
 ### widget/MalletLinkRow.kt
 
 ```
-class MalletLinkRow (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A quiet link to another page, usually placed below the last card of a screen:
+class MalletLinkRow (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A quiet link to another page, usually placed below the last card of a screen: a muted, centred label and a chevron th
   enum class ArrowPlacement    // Where the chevron sits relative to the label.
-  enum class ArrowDirection    // The side the destination lies on.
-  var label: CharSequence?    // The text of the link.
+  enum class ArrowDirection    // The side the destination lies on. 
+  var label: CharSequence?    // The text of the link. 
   var arrowPlacement: ArrowPlacement    // [ArrowPlacement.EDGE] (default) or [ArrowPlacement.ADJACENT].
   var arrowDirection: ArrowDirection    // The side of the destination; [ArrowDirection.END] by default.
   var tone: MalletTextTone    // Colour role of the label and the chevron; muted by default, because the link is quiet.
@@ -407,11 +407,11 @@ class MalletLinkRow (context: Context, attrs: AttributeSet? = null, defStyleAttr
 ### widget/MalletMediaFrame.kt
 
 ```
-open class MalletMediaFrame (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A picture set into a recessed well:
-  val imageView: ImageView    // The view that shows the picture, for image loaders and anything this class does not forward.
-  var scaleType: ImageView.ScaleType    // How the picture is fitted into the frame.
-  var aspectRatio: Float    // Width divided by height of the picture inside the well, for example `16f / 9f`.
-  val hasImage: Boolean get()    // Whether a picture is set.
+open class MalletMediaFrame (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A picture set into a recessed well: screenshots in a tutorial, an illustration in a card. 
+  val imageView: ImageView    // The view that shows the picture, for image loaders and anything this class does not forward. 
+  var scaleType: ImageView.ScaleType    // How the picture is fitted into the frame. 
+  var aspectRatio: Float    // Width divided by height of the picture inside the well, for example `16f / 9f`. 
+  val hasImage: Boolean get()    // Whether a picture is set. 
   fun setImageDrawable(drawable: Drawable?)    // Shows [drawable], or the empty well when it is `null`.
   fun setImageBitmap(bitmap: Bitmap?)    // Shows [bitmap], or the empty well when it is `null`.
   fun setImageResource(@DrawableRes resId: Int)    // Shows the drawable resource [resId]; `0` clears the picture.
@@ -424,24 +424,24 @@ open class MalletMediaFrame (context: Context, attrs: AttributeSet? = null, defS
 ### widget/MalletNavBar.kt
 
 ```
-class MalletNavBar (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // The bottom navigation row:
+class MalletNavBar (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // The bottom navigation row: quiet outline icons with labels, standing on the bare canvas. 
   enum class Mode    // How the items behave.
-  class Item(public val icon: MalletIcon, public val label: CharSequence)    // One entry of the row:
+  class Item(public val icon: MalletIcon, public val label: CharSequence)    // One entry of the row: an outline [icon] above a short [label].
   fun interface OnItemSelectedListener    // Called when the user activates an item.
-    fun onItemSelected(bar: MalletNavBar, index: Int)    // In [Mode.LAUNCHER] this is called for every tap.
+    fun onItemSelected(bar: MalletNavBar, index: Int)    // In [Mode.LAUNCHER] this is called for every tap. 
   fun interface OnItemReselectedListener    // Called in [Mode.TABS] when the user taps the item that is already selected.
     fun onItemReselected(bar: MalletNavBar, index: Int)
-  fun setOnItemSelectedListener(listener: OnItemSelectedListener?)    // Listener for user-driven activation.
+  fun setOnItemSelectedListener(listener: OnItemSelectedListener?)    // Listener for user-driven activation. 
   fun setOnItemReselectedListener(listener: OnItemReselectedListener?)    // Listener for a tap on the selected item in [Mode.TABS], typically "scroll to top".
-  var mode: Mode    // Shortcut row or tab row.
-  var selectedIndex: Int    // Index of the selected item in [Mode.TABS]; `-1` in [Mode.LAUNCHER] or without items.
-  var elevated: Boolean    // Draws a full-bleed hairline along the top edge, for content that scrolls underneath the row.
-  val items: List<Item> get()    // The items in logical order.
-  var fitNavigationBar: Boolean    // Whether the row grows by the height of the system navigation bar, keeping the items above it in an edge-to-edge window.
+  var mode: Mode    // Shortcut row or tab row. 
+  var selectedIndex: Int    // Index of the selected item in [Mode.TABS]; `-1` in [Mode.LAUNCHER] or without items. 
+  var elevated: Boolean    // Draws a full-bleed hairline along the top edge, for content that scrolls underneath the row. 
+  val items: List<Item> get()    // The items in logical order. 
+  var fitNavigationBar: Boolean    // Whether the row grows by the height of the system navigation bar, keeping the items above it in an edge-to-edge window. 
   fun addItem(icon: MalletIcon, label: CharSequence): Int    // Appends an item and returns its index.
-  fun setItems(items: List<Item>)    // Replaces all items.
-  fun select(index: Int, animate: Boolean = true)    // Moves the selection to [index] from code; the listeners are not called.
-  fun setBadge(index: Int, count: Int)    // Shows a count badge at the top end of the icon of item [index]; a [count] of zero or less removes it.
+  fun setItems(items: List<Item>)    // Replaces all items. 
+  fun select(index: Int, animate: Boolean = true)    // Moves the selection to [index] from code; the listeners are not called. 
+  fun setBadge(index: Int, count: Int)    // Shows a count badge at the top end of the icon of item [index]; a [count] of zero or less removes it. 
   fun setBadgeDot(index: Int, show: Boolean)    // Shows or removes a small dot without a number at the top end of the icon of item [index].
   fun badgeCount(index: Int): Int = badges.getOrNull(index)?.count ?: 0    // The count shown on item [index]; zero when it has no badge or only a dot.
   fun hasBadgeDot(index: Int): Boolean = badges.getOrNull(index)?.let { it.count == 0 && it.showDot } ?: false    // Whether item [index] shows a dot without a number.
@@ -450,15 +450,15 @@ class MalletNavBar (context: Context, attrs: AttributeSet? = null, defStyleAttr:
 ### widget/MalletPage.kt
 
 ```
-open class MalletPage (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ScrollView(context, attrs, defStyleAttr)    // A vertically scrolling page:
+open class MalletPage (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ScrollView(context, attrs, defStyleAttr)    // A vertically scrolling page: the canvas every Mallet screen stands on. 
   val content: LinearLayout    // The vertical column that holds the children of the page.
-  var fitSystemBars: Boolean    // Whether the page adds the system-bar and display-cutout insets to its padding, and the keyboard inset to the bottom.
-  var maxContentWidthDp: Float    // The widest the column of the page gets, in dp.
-  fun setPagePadding(startDp: Float, topDp: Float, endDp: Float, bottomDp: Float)    // Replaces the padding of the page, in dp.
-  fun addTitle(text: CharSequence?): MalletText    // Adds the title of the page:
-  fun <T : View> addSection(title: CharSequence?, detail: CharSequence?, card: T): T    // Adds a section:
-  fun <T : View> addButton(button: T): T    // Adds a full-width button that stands on the page rather than in a card:
-  fun addSpace(dp: Float): View    // Adds [dp] of empty vertical space; accessibility services skip it.
+  var fitSystemBars: Boolean    // Whether the page adds the system-bar and display-cutout insets to its padding, and the keyboard inset to the bottom. 
+  var maxContentWidthDp: Float    // The widest the column of the page gets, in dp. 
+  fun setPagePadding(startDp: Float, topDp: Float, endDp: Float, bottomDp: Float)    // Replaces the padding of the page, in dp. 
+  fun addTitle(text: CharSequence?): MalletText    // Adds the title of the page: 20 sp, start aligned, inset like a heading and followed by [MalletSpacing.TITLE_GAP]. 
+  fun <T : View> addSection(title: CharSequence?, detail: CharSequence?, card: T): T    // Adds a section: a [MalletHeading] ([title] over an optional muted [detail] line), then [MalletSpacing.HEADING_GAP], then [card] across the full column, then [MalletSpaci
+  fun <T : View> addButton(button: T): T    // Adds a full-width button that stands on the page rather than in a card: side margins of [MalletSpacing.BUTTON_SIDE] and [MalletSpacing.SECTION_GAP] below. 
+  fun addSpace(dp: Float): View    // Adds [dp] of empty vertical space; accessibility services skip it. 
   companion object
     const val DEFAULT_MAX_CONTENT_WIDTH_DP: Float    // The widest the column of a page gets unless [maxContentWidthDp] says otherwise, in dp.
     const val BAR_FADE_DP: Float    // The distance over which scrolling content fades out before a system bar, in dp.
@@ -467,63 +467,63 @@ open class MalletPage (context: Context, attrs: AttributeSet? = null, defStyleAt
 ### widget/MalletPageIndicator.kt
 
 ```
-class MalletPageIndicator (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A row of dots, one per page:
+class MalletPageIndicator (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A row of dots, one per page: muted, with the current one in the accent colour. 
   fun interface OnSelectionChangeListener    // Receives the dot the user chose on a [MalletPageIndicator].
     fun onSelectionChanged(indicator: MalletPageIndicator, index: Int)    // The user moved [indicator] to dot [index].
-  fun setOnSelectionChangeListener(listener: OnSelectionChangeListener?)    // Called when the user chooses a dot.
-  var count: Int    // Number of dots.
-  var selectedIndex: Int    // Index of the accent dot.
-  fun attachTo(pager: MalletPager?)    // Follows [pager] and moves it when a dot is tapped; `null` detaches and leaves the dots as they are, for standalone use.
+  fun setOnSelectionChangeListener(listener: OnSelectionChangeListener?)    // Called when the user chooses a dot. 
+  var count: Int    // Number of dots. 
+  var selectedIndex: Int    // Index of the accent dot. 
+  fun attachTo(pager: MalletPager?)    // Follows [pager] and moves it when a dot is tapped; `null` detaches and leaves the dots as they are, for standalone use. 
 ```
 
 ### widget/MalletParagraph.kt
 
 ```
-open class MalletParagraph (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = android.R.attr.textViewStyle) : MalletText(context, attrs, defStyleAttr)    // Long-form copy:
-  var rawText: CharSequence?    // The text as it was handed to [setText], without the inserted word joiners.
-  var protectClosingPunctuation: Boolean    // Whether CJK closing punctuation (`，。！？；：、）】》”’`) is tied to the character before it so that it never starts a line.
+open class MalletParagraph (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = android.R.attr.textViewStyle) : MalletText(context, attrs, defStyleAttr)    // Long-form copy: explanations, tutorials, anything that is read rather than scanned. 
+  var rawText: CharSequence?    // The text as it was handed to [setText], without the inserted word joiners. 
+  var protectClosingPunctuation: Boolean    // Whether CJK closing punctuation (`，。！？；：、）】》”’`) is tied to the character before it so that it never starts a line. 
   companion object
     const val CLOSING_PUNCTUATION: String    // The CJK closing punctuation marks that must not start a line.
     const val WORD_JOINER: Char    // The invisible character that forbids a line break on both of its sides.
-    fun protect(text: CharSequence?): CharSequence?    // Returns [text] with a [WORD_JOINER] in front of every mark of [CLOSING_PUNCTUATION] that is not the first character and is not already protected.
+    fun protect(text: CharSequence?): CharSequence?    // Returns [text] with a [WORD_JOINER] in front of every mark of [CLOSING_PUNCTUATION] that is not the first character and is not already protected. 
 ```
 
 ### widget/MalletPowerSwitch.kt
 
 ```
-class MalletPowerSwitch (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), Checkable, MalletHorizontalDragOwner    // The hero switch of a screen:
+class MalletPowerSwitch (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), Checkable, MalletHorizontalDragOwner    // The hero switch of a screen: a large coloured capsule whose wide neutral th
   fun interface OnCheckedChangeListener    // Called when the user turns the switch on or off.
-    fun onCheckedChanged(switch: MalletPowerSwitch, isChecked: Boolean)    // The user turned [switch] on or off; [isChecked] is the new state.
-  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes.
-  var onLabel: CharSequence    // State label shown on the thumb while the switch is on.
-  var offLabel: CharSequence    // State label shown on the thumb while the switch is off.
-  var turnOnLabel: CharSequence    // Action label shown on the bed while the switch is off.
-  var turnOffLabel: CharSequence    // Action label shown on the bed while the switch is on.
-  var offHue: MalletHue    // Hue of the bed while the switch is off.
-  var onHue: MalletHue    // Hue of the bed while the switch is on.
-  fun setChecked(checked: Boolean, animate: Boolean)    // Turns the switch on or off from code.
+    fun onCheckedChanged(switch: MalletPowerSwitch, isChecked: Boolean)    // The user turned [switch] on or off; [isChecked] is the new state. 
+  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes. 
+  var onLabel: CharSequence    // State label shown on the thumb while the switch is on. 
+  var offLabel: CharSequence    // State label shown on the thumb while the switch is off. 
+  var turnOnLabel: CharSequence    // Action label shown on the bed while the switch is off. 
+  var turnOffLabel: CharSequence    // Action label shown on the bed while the switch is on. 
+  var offHue: MalletHue    // Hue of the bed while the switch is off. 
+  var onHue: MalletHue    // Hue of the bed while the switch is on. 
+  fun setChecked(checked: Boolean, animate: Boolean)    // Turns the switch on or off from code. 
 ```
 
 ### widget/MalletProgressBar.kt
 
 ```
-class MalletProgressBar (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A slim recessed groove that fills with its hue as work completes.
-  var hue: MalletHue    // The hue of the fill.
-  var progress: Float    // The completed share of the work, from 0 to 1.
-  var isIndeterminate: Boolean    // True when the amount of work is unknown.
-  fun setProgress(@FloatRange(from = 0.0, to = 1.0) value: Float, animate: Boolean = true)    // Sets the completed share to [value] (clamped to 0..1).
+class MalletProgressBar (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A slim recessed groove that fills with its hue as work completes. 
+  var hue: MalletHue    // The hue of the fill. 
+  var progress: Float    // The completed share of the work, from 0 to 1. 
+  var isIndeterminate: Boolean    // True when the amount of work is unknown. 
+  fun setProgress(@FloatRange(from = 0.0, to = 1.0) value: Float, animate: Boolean = true)    // Sets the completed share to [value] (clamped to 0..1). 
 ```
 
 ### widget/MalletRadioButton.kt
 
 ```
-class MalletRadioButton (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), Checkable    // One choice out of several:
+class MalletRadioButton (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), Checkable    // One choice out of several: a small round recessed bed that fills with its hue and grows a neutral bead
   fun interface OnCheckedChangeListener    // Called when the user changes the checked state of a radio.
     fun onCheckedChanged(radio: MalletRadioButton, isChecked: Boolean)    // The user changed [radio]; [isChecked] is its new state.
-  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes:
+  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes: a tap, a key or an accessibility action on this radio, or the user choosing a sibling in the same [MalletRadioGroup] (which reports `false` here). 
   var hue: MalletHue    // Hue that fills the bed while the radio is checked.
-  var text: CharSequence?    // Label drawn to the end of the bed, or `null` for a radio without a label.
-  fun setChecked(checked: Boolean, animate: Boolean)    // Sets the state from code; with [animate] the hue and the bead glide in or out.
+  var text: CharSequence?    // Label drawn to the end of the bed, or `null` for a radio without a label. 
+  fun setChecked(checked: Boolean, animate: Boolean)    // Sets the state from code; with [animate] the hue and the bead glide in or out. 
   companion object
     const val BED_DP: Float    // Diameter of the round bed in dp.
     const val BEAD_DP: Float    // Diameter of the neutral bead of a checked radio in dp.
@@ -533,149 +533,149 @@ class MalletRadioButton (context: Context, attrs: AttributeSet? = null, defStyle
 ### widget/MalletRadioGroup.kt
 
 ```
-class MalletRadioGroup (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A vertical column of [MalletRadioButton]s that answers one question:
+class MalletRadioGroup (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A vertical column of [MalletRadioButton]s that answers one question: checking one radio unchecks the one that was c
   fun interface OnCheckedChangeListener    // Called when the user moves the choice to another radio of the group.
     fun onCheckedChanged(group: MalletRadioGroup, checkedId: Int)
-  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes of the choice.
+  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes of the choice. 
   val checkedId: Int get()    // Id of the checked radio, or [View.NO_ID] while nothing is chosen.
-  fun check(id: Int, animate: Boolean = true)    // Moves the choice to the radio with [id] from code; [View.NO_ID] clears it.
-  fun clearCheck(animate: Boolean = true)    // Leaves no radio checked.
+  fun check(id: Int, animate: Boolean = true)    // Moves the choice to the radio with [id] from code; [View.NO_ID] clears it. 
+  fun clearCheck(animate: Boolean = true)    // Leaves no radio checked. 
 ```
 
 ### widget/MalletSegmentedTrack.kt
 
 ```
-class MalletSegmentedTrack (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), MalletHorizontalDragOwner    // The signature Mallet control:
+class MalletSegmentedTrack (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), MalletHorizontalDragOwner    // The signature Mallet control: a recessed coloured track with two or more options an
   fun interface OnSelectionChangeListener    // Called when the user moves the selection to another option.
     fun onSelectionChanged(track: MalletSegmentedTrack, index: Int)
-  fun setOnSelectionChangeListener(listener: OnSelectionChangeListener?)    // Listener for user-driven selection changes.
-  var options: List<CharSequence>    // The option labels.
+  fun setOnSelectionChangeListener(listener: OnSelectionChangeListener?)    // Listener for user-driven selection changes. 
+  var options: List<CharSequence>    // The option labels. 
   val selectedIndex: Int get()    // Index of the selected option.
   fun setOptions(vararg labels: CharSequence)    // Replaces the option labels.
-  fun setHues(hues: List<MalletHue>?)    // Sets the hue under each option, or `null` to return to the default ordinal scale.
-  fun select(index: Int, animate: Boolean = true)    // Moves the selection to [index] from code.
+  fun setHues(hues: List<MalletHue>?)    // Sets the hue under each option, or `null` to return to the default ordinal scale. 
+  fun select(index: Int, animate: Boolean = true)    // Moves the selection to [index] from code. 
   companion object
-    const val HEIGHT_DP: Float    // Default height of the view in dp:
+    const val HEIGHT_DP: Float    // Default height of the view in dp: a 52 dp track plus its shadow gutter.
     const val GUTTER_SIDE_DP: Float    // Room at each side of the capsule, inside the view, in dp.
     const val GUTTER_TOP_DP: Float    // Room above the capsule, inside the view, in dp.
-    const val GUTTER_BOTTOM_DP: Float    // Room below the capsule, inside the view, in dp.
+    const val GUTTER_BOTTOM_DP: Float    // Room below the capsule, inside the view, in dp. 
 ```
 
 ### widget/MalletSkeleton.kt
 
 ```
-class MalletSkeleton (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A placeholder shape that stands where content will appear once it has loaded.
+class MalletSkeleton (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A placeholder shape that stands where content will appear once it has loaded. 
   enum class Shape    // The outline of a skeleton.
-  var shape: Shape    // The outline of the block.
-  var cornerRadiusDp: Float    // Corner radius of a [Shape.BLOCK] in dp, limited to half the smaller side.
-  var widthFraction: Float    // The share of the offered width the skeleton takes when its layout width is `wrap_content`, 0.05 to 1.
-  var isAnimated: Boolean    // Whether the block moves at all.
-  val isRunning: Boolean get()    // True while the band travels or the block breathes:
+  var shape: Shape    // The outline of the block. 
+  var cornerRadiusDp: Float    // Corner radius of a [Shape.BLOCK] in dp, limited to half the smaller side. 
+  var widthFraction: Float    // The share of the offered width the skeleton takes when its layout width is `wrap_content`, 0.05 to 1. 
+  var isAnimated: Boolean    // Whether the block moves at all. 
+  val isRunning: Boolean get()    // True while the band travels or the block breathes: animated, enabled, attached and visible.
   val fillColor: Int    // The resting colour of the block in this theme.
-  val bandColor: Int    // The colour at the middle of the travelling band in this theme.
+  val bandColor: Int    // The colour at the middle of the travelling band in this theme. 
   companion object
-    fun text(context: Context, @IntRange(from = 1) lines: Int = 3, @FloatRange(from = 0.05, to = 1.0) lastLineFraction: Float = LAST_LINE_FRACTION): LinearLayout    // Builds the placeholder of a paragraph:
+    fun text(context: Context, @IntRange(from = 1) lines: Int = 3, @FloatRange(from = 0.05, to = 1.0) lastLineFraction: Float = LAST_LINE_FRACTION): LinearLayout    // Builds the placeholder of a paragraph: 
 ```
 
 ### widget/MalletSlider.kt
 
 ```
-class MalletSlider (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), MalletHorizontalDragOwner    // A slim recessed track with a coloured stretch that runs from the start to a neutral bead.
+class MalletSlider (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), MalletHorizontalDragOwner    // A slim recessed track with a coloured stretch that runs from the start to a neutral bead. 
   fun interface OnValueChangeListener    // Called when the user changes the value by touch, keyboard or an accessibility action.
-    fun onValueChanged(slider: MalletSlider, value: Float)    // The user moved the bead of [slider]; [value] is the new value, already clamped and snapped.
-  fun interface OnStopTrackingTouchListener    // Called when a touch that moved the bead ends:
+    fun onValueChanged(slider: MalletSlider, value: Float)    // The user moved the bead of [slider]; [value] is the new value, already clamped and snapped. 
+  fun interface OnStopTrackingTouchListener    // Called when a touch that moved the bead ends: after a drag or a tap, once per gesture.
     fun onStopTrackingTouch(slider: MalletSlider)    // The finger has lifted (or the drag was taken away); [MalletSlider.value] is final.
   fun setOnValueChangeListener(listener: OnValueChangeListener?)    // Listener for value changes made by the user.
   fun setOnStopTrackingTouchListener(listener: OnStopTrackingTouchListener?)    // Listener for the end of a touch gesture, the moment to commit an expensive change.
-  var valueFormatter: ((Float) -> CharSequence)?    // Turns a value into the text accessibility services read, for example `"40 %"`.
+  var valueFormatter: ((Float) -> CharSequence)?    // Turns a value into the text accessibility services read, for example `"40 %"`. 
   var value: Float    // The current value, always inside [valueFrom]..[valueTo] and on the step grid.
-  var valueFrom: Float    // Lower bound, at the start of the track.
-  var valueTo: Float    // Upper bound, at the end of the track.
+  var valueFrom: Float    // Lower bound, at the start of the track. 
+  var valueTo: Float    // Upper bound, at the end of the track. 
   var stepSize: Float    // Distance between two stops, counted from [valueFrom]; `0` makes the slider continuous, and so does a negative, NaN or infinite step.
-  var hue: MalletHue    // The hue of the stretch behind the bead.
-  fun setValue(value: Float, animate: Boolean)    // Sets the value from code, optionally gliding the bead there.
-  fun setHueScale(hues: List<MalletHue>?)    // Colours the stretch with a scale of hues instead of one hue.
+  var hue: MalletHue    // The hue of the stretch behind the bead. 
+  fun setValue(value: Float, animate: Boolean)    // Sets the value from code, optionally gliding the bead there. 
+  fun setHueScale(hues: List<MalletHue>?)    // Colours the stretch with a scale of hues instead of one hue. 
 ```
 
 ### widget/MalletSpinner.kt
 
 ```
-class MalletSpinner (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // An open ring that turns while something is going on and its amount is unknown.
-  var tone: MalletTextTone    // The tone of the ring.
-  var color: Int    // The colour of the ring.
-  val isSpinning: Boolean get()    // True while the ring is actually turning:
+class MalletSpinner (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // An open ring that turns while something is going on and its amount is unknown. 
+  var tone: MalletTextTone    // The tone of the ring. 
+  var color: Int    // The colour of the ring. 
+  val isSpinning: Boolean get()    // True while the ring is actually turning: attached, visible and shown.
 ```
 
 ### widget/MalletStateLayout.kt
 
 ```
-class MalletStateLayout (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A frame that shows exactly one of four states of an area:
+class MalletStateLayout (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A frame that shows exactly one of four states of an area: its content, a loading placeholder, an empty message or a
   enum class State { CONTENT, LOADING, EMPTY, ERROR }    // What the area shows.
-  var contentView: View?    // The content:
-  var state: State    // The state the area is asked to show.
-  val displayedState: State get()    // The state that is on screen right now.
-  var minimumLoadingMs: Long    // The shortest time the loading state stays on screen once shown, in milliseconds.
-  var loadingLabel: CharSequence    // The caption under the default spinner, also read by screen readers.
-  fun setState(state: State, animate: Boolean)    // Shows [state].
-  fun stateView(state: State): View? =    // The view used for [state]:
-  fun setLoadingView(view: View?): Unit = replace(State.LOADING, view)    // Replaces the loading view.
-  fun setEmptyView(view: View?): Unit = replace(State.EMPTY, view)    // Replaces the empty view.
-  fun setErrorView(view: View?): Unit = replace(State.ERROR, view)    // Replaces the error view.
-  fun setEmpty(title: CharSequence?, detail: CharSequence? = null, actionLabel: CharSequence? = null, listener: OnClickListener? = null)    // Configures the default empty message:
-  fun setError(title: CharSequence?, detail: CharSequence? = null, retryLabel: CharSequence? = null, listener: OnClickListener? = null)    // Configures the default error message:
+  var contentView: View?    // The content: the first (and only) child added by the owner, or `null` while there is none. 
+  var state: State    // The state the area is asked to show. 
+  val displayedState: State get()    // The state that is on screen right now. 
+  var minimumLoadingMs: Long    // The shortest time the loading state stays on screen once shown, in milliseconds. 
+  var loadingLabel: CharSequence    // The caption under the default spinner, also read by screen readers. 
+  fun setState(state: State, animate: Boolean)    // Shows [state]. 
+  fun stateView(state: State): View? =    // The view used for [state]: the content, or the loading, empty or error view. 
+  fun setLoadingView(view: View?): Unit = replace(State.LOADING, view)    // Replaces the loading view. 
+  fun setEmptyView(view: View?): Unit = replace(State.EMPTY, view)    // Replaces the empty view. 
+  fun setErrorView(view: View?): Unit = replace(State.ERROR, view)    // Replaces the error view. 
+  fun setEmpty(title: CharSequence?, detail: CharSequence? = null, actionLabel: CharSequence? = null, listener: OnClickListener? = null)    // Configures the default empty message: an inbox icon, [title], [detail] and, when [actionLabel] is given, the one acti
+  fun setError(title: CharSequence?, detail: CharSequence? = null, retryLabel: CharSequence? = null, listener: OnClickListener? = null)    // Configures the default error message: an error icon in the danger colour, [title], [detail] and a retry action. 
 ```
 
 ### widget/MalletStateView.kt
 
 ```
-class MalletStateView (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A centred message for an area that is empty, has failed, is offline or has finished.
-  enum class Kind(internal val icon: MalletIcon, internal val tone: MalletTextTone)    // What the area is telling the user.
-  val actionButton: MalletButton    // The action button.
-  var kind: Kind    // The preset.
+class MalletStateView (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A centred message for an area that is empty, has failed, is offline or has finished. 
+  enum class Kind(internal val icon: MalletIcon, internal val tone: MalletTextTone)    // What the area is telling the user. 
+  val actionButton: MalletButton    // The action button. 
+  var kind: Kind    // The preset. 
   var icon: MalletIcon?    // The icon above the title, or `null` for none.
   var iconTone: MalletTextTone    // Colour role of the icon, used while [iconColor] is `null`.
   var iconColor: Int?    // An explicit icon colour; wins over [iconTone] until set back to `null`.
   var title: CharSequence?    // The title, one short phrase in ink; `null` or empty hides it.
   var detail: CharSequence?    // The supporting sentence in the muted colour; `null` or empty hides it.
-  var actionLabel: CharSequence?    // The label of the action, or `null` while there is no action.
-  fun setOnActionClickListener(listener: OnClickListener?)    // Called when the user presses the action (touch, keyboard or accessibility click), with [actionButton] as the view.
-  var compact: Boolean    // The small form for a card row:
-  fun setAction(label: CharSequence?, listener: OnClickListener?)    // Sets the action in one call:
+  var actionLabel: CharSequence?    // The label of the action, or `null` while there is no action. 
+  fun setOnActionClickListener(listener: OnClickListener?)    // Called when the user presses the action (touch, keyboard or accessibility click), with [actionButton] as the view. 
+  var compact: Boolean    // The small form for a card row: a 28 dp icon and tighter gaps. 
+  fun setAction(label: CharSequence?, listener: OnClickListener?)    // Sets the action in one call: 
 ```
 
 ### widget/MalletStepper.kt
 
 ```
-class MalletStepper (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A precise number control:
+class MalletStepper (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A precise number control: a recessed coloured track with a minus zone, a plus zone and a neutral thumb in the centre 
   fun interface OnValueChangeListener    // Called when the user changes the value by touch, keyboard or an accessibility action.
     fun onValueChanged(stepper: MalletStepper, value: Float)
   fun interface OnEditRequestListener    // Called when the user taps the value (or presses Enter) to type a number directly.
     fun onEditRequest(stepper: MalletStepper)
-  fun setOnValueChangeListener(listener: OnValueChangeListener?)    // Listener for user-driven value changes.
-  fun setOnEditRequestListener(listener: OnEditRequestListener?)    // Listener for a tap on the value.
-  var value: Float    // The current value.
+  fun setOnValueChangeListener(listener: OnValueChangeListener?)    // Listener for user-driven value changes. 
+  fun setOnEditRequestListener(listener: OnEditRequestListener?)    // Listener for a tap on the value. 
+  var value: Float    // The current value. 
   var valueFrom: Float    // Lower bound of the range and origin of the step grid.
-  var valueTo: Float    // Upper bound of the range.
+  var valueTo: Float    // Upper bound of the range. 
   var stepSize: Float    // Distance between two neighbouring values; must be greater than zero.
-  var decimals: Int    // Number of digits written after the decimal separator (0 to 6).
-  var unit: CharSequence?    // Suffix written directly after the number, for example `" ms"` or `"%"`.
-  var valueFormatter: ((Float) -> CharSequence)?    // Turns a value into the text written on the thumb and read by accessibility services.
-  var hue: MalletHue    // The hue of the track.
+  var decimals: Int    // Number of digits written after the decimal separator (0 to 6). 
+  var unit: CharSequence?    // Suffix written directly after the number, for example `" ms"` or `"%"`. 
+  var valueFormatter: ((Float) -> CharSequence)?    // Turns a value into the text written on the thumb and read by accessibility services. 
+  var hue: MalletHue    // The hue of the track. 
   val formattedValue: CharSequence    // The value as it is written on the thumb and announced by accessibility services.
-  fun setRange(valueFrom: Float, valueTo: Float)    // Sets both bounds at once; [valueTo] must not be below [valueFrom].
+  fun setRange(valueFrom: Float, valueTo: Float)    // Sets both bounds at once; [valueTo] must not be below [valueFrom]. 
 ```
 
 ### widget/MalletSurface.kt
 
 ```
-class MalletDivider (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr)    // A hairline divider:
+class MalletDivider (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr)    // A hairline divider: 14 % of the ink colour laid over the canvas, one dp thick. 
   var fullBleed: Boolean    // Whether a parent [MalletSurface] stretches this divider to its rims.
   var orientation: Int    // [LinearLayout.HORIZONTAL] for a horizontal line (the default) or [LinearLayout.VERTICAL].
-open class MalletSurface (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // The Mallet card:
+open class MalletSurface (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // The Mallet card: a raised surface that groups rows and controls. 
   var cornerRadiusDp: Float    // Corner radius in dp.
   var elevated: Boolean    // Lifted (rim and shadow) or flat (rim only).
-  var corners: MalletCorners    // Which corners are rounded.
-  fun addDivider(verticalMarginDp: Float = 0f): MalletDivider    // Adds a full-bleed divider.
+  var corners: MalletCorners    // Which corners are rounded. 
+  fun addDivider(verticalMarginDp: Float = 0f): MalletDivider    // Adds a full-bleed divider. 
   companion object
     const val CONTENT_PADDING_DP: Float    // Default padding between the view bounds and the content, in dp.
 ```
@@ -683,37 +683,37 @@ open class MalletSurface (context: Context, attrs: AttributeSet? = null, defStyl
 ### widget/MalletSwitch.kt
 
 ```
-class MalletSwitch (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), Checkable, MalletHorizontalDragOwner    // The compact two-state switch:
+class MalletSwitch (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), Checkable, MalletHorizontalDragOwner    // The compact two-state switch: a small recessed coloured track with a neutral rou
   fun interface OnCheckedChangeListener    // Called when the user turns the switch on or off.
     fun onCheckedChanged(switch: MalletSwitch, isChecked: Boolean)    // The user turned [switch] on or off; [isChecked] is its new state.
-  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes.
-  var offHue: MalletHue    // Hue of the bed while the switch is off.
-  var onHue: MalletHue    // Hue of the bed while the switch is on.
-  var onStateDescription: CharSequence    // What accessibility services say for the on state.
-  var offStateDescription: CharSequence    // What accessibility services say for the off state.
-  fun setChecked(checked: Boolean, animate: Boolean)    // Sets the state from code.
+  fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes. 
+  var offHue: MalletHue    // Hue of the bed while the switch is off. 
+  var onHue: MalletHue    // Hue of the bed while the switch is on. 
+  var onStateDescription: CharSequence    // What accessibility services say for the on state. 
+  var offStateDescription: CharSequence    // What accessibility services say for the off state. 
+  fun setChecked(checked: Boolean, animate: Boolean)    // Sets the state from code. 
   companion object
-    const val WIDTH_DP: Float    // Default width of the view in dp:
-    const val HEIGHT_DP: Float    // Height of the box the track is drawn in, in dp:
-    const val TARGET_HEIGHT_DP: Float    // Height of the view on `wrap_content`, in dp:
+    const val WIDTH_DP: Float    // Default width of the view in dp: a 58 dp track plus its side gutters.
+    const val HEIGHT_DP: Float    // Height of the box the track is drawn in, in dp: a 30 dp bed plus its shadow gutter.
+    const val TARGET_HEIGHT_DP: Float    // Height of the view on `wrap_content`, in dp: the track centred in a 44 dp touch target.
 ```
 
 ### widget/MalletTabs.kt
 
 ```
-class MalletTabs (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), MalletHorizontalDragOwner    // Text tabs for switching between sibling views.
+class MalletTabs (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), MalletHorizontalDragOwner    // Text tabs for switching between sibling views. 
   enum class Layout    // How the tabs share the width of the view.
   fun interface OnTabSelectedListener    // Called when the user chooses another tab.
     fun onTabSelected(tabs: MalletTabs, index: Int)
-  fun setOnTabSelectedListener(listener: OnTabSelectedListener?)    // Listener for user-driven tab changes:
+  fun setOnTabSelectedListener(listener: OnTabSelectedListener?)    // Listener for user-driven tab changes: a tap, a key, an accessibility action, or a swipe of the pager given to [attachTo]. 
   val selectedIndex: Int get()    // Index of the selected tab.
-  val tabs: List<CharSequence> get()    // The tab labels, in order.
-  var layout: Layout    // How the tabs share the width:
-  fun setTabs(labels: List<CharSequence>)    // Replaces the tab labels.
-  fun setTabs(vararg labels: CharSequence)    // Replaces the tab labels.
-  fun select(index: Int, animate: Boolean = true)    // Selects tab [index] from code; the indicator glides there when [animate] is true.
-  fun setScrollPosition(index: Int, offset: Float)    // Places the indicator [offset] (0 to 1) of the way from tab [index] to the tab after it, without changing the selection:
-  fun attachTo(pager: MalletPager?)    // Couples the tabs with [pager], or ends the coupling with `null`.
+  val tabs: List<CharSequence> get()    // The tab labels, in order. 
+  var layout: Layout    // How the tabs share the width: equal parts or natural widths in a scrolling row.
+  fun setTabs(labels: List<CharSequence>)    // Replaces the tab labels. 
+  fun setTabs(vararg labels: CharSequence)    // Replaces the tab labels. 
+  fun select(index: Int, animate: Boolean = true)    // Selects tab [index] from code; the indicator glides there when [animate] is true. 
+  fun setScrollPosition(index: Int, offset: Float)    // Places the indicator [offset] (0 to 1) of the way from tab [index] to the tab after it, without changing the selection: the indicator's position and width and the ink of the two labels are blended bet
+  fun attachTo(pager: MalletPager?)    // Couples the tabs with [pager], or ends the coupling with `null`. 
   companion object
     const val HEIGHT_DP: Float    // Height of the view in dp.
 ```
@@ -721,17 +721,17 @@ class MalletTabs (context: Context, attrs: AttributeSet? = null, defStyleAttr: I
 ### widget/MalletTag.kt
 
 ```
-class MalletTag (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr)    // A status tag:
+class MalletTag (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : View(context, attrs, defStyleAttr)    // A status tag: a miniature recessed coloured capsule with a short bold label. 
   enum class Tone { POSITIVE, CAUTION, NEGATIVE, INFO, NEUTRAL }    // What the tag says about its subject; each tone is one hue of the theme.
-  var text: CharSequence    // The label.
-  var tone: Tone    // What the tag says about its subject.
+  var text: CharSequence    // The label. 
+  var tone: Tone    // What the tag says about its subject. 
   val hue: MalletHue    // The hue [tone] maps to in the theme of this view.
 ```
 
 ### widget/MalletText.kt
 
 ```
-open class MalletText (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = android.R.attr.textViewStyle) : TextView(context, attrs, defStyleAttr)    // A text view that speaks the Mallet type scale:
+open class MalletText (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = android.R.attr.textViewStyle) : TextView(context, attrs, defStyleAttr)    // A text view that speaks the Mallet type scale: pick a [role] for size, weight and leading and
   var role: MalletTextRole    // Size, weight and leading.
   var tone: MalletTextTone    // Colour role.
   companion object
@@ -741,45 +741,45 @@ open class MalletText (context: Context, attrs: AttributeSet? = null, defStyleAt
 ### widget/MalletTextField.kt
 
 ```
-class MalletTextField (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A text field:
+class MalletTextField (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A text field: an optional label, a recessed well that holds the text, and an optional support line with a helper or 
   enum class EndAction    // What sits inside the well at its end.
   fun interface OnTextChangeListener    // Hears about text the user typed, pasted or cleared.
     fun onTextChanged(field: MalletTextField, text: CharSequence)    // Called after [text] of [field] changed through user input.
-  val editText: EditText    // The `EditText` inside the well, for everything this class has no property for:
-  fun setOnTextChangeListener(listener: OnTextChangeListener?)    // Called after the user changed the text.
-  var text: CharSequence    // The text in the field.
+  val editText: EditText    // The `EditText` inside the well, for everything this class has no property for: 
+  fun setOnTextChangeListener(listener: OnTextChangeListener?)    // Called after the user changed the text. 
+  var text: CharSequence    // The text in the field. 
   var hint: CharSequence?    // The hint shown in the muted colour while the field is empty.
-  var label: CharSequence?    // The label above the well, or null for none.
-  var helperText: CharSequence?    // Helper text below the well in the muted colour.
-  var error: CharSequence?    // The error below the well, or null for none.
-  var counterMaxLength: Int    // The length the counter (`12 / 64`) counts towards; 0 hides the counter.
+  var label: CharSequence?    // The label above the well, or null for none. 
+  var helperText: CharSequence?    // Helper text below the well in the muted colour. 
+  var error: CharSequence?    // The error below the well, or null for none. 
+  var counterMaxLength: Int    // The length the counter (`12 / 64`) counts towards; 0 hides the counter. 
   var leadingIcon: MalletIcon?    // The icon inside the well at the start, or null for none.
-  var endAction: EndAction    // The action inside the well at the end.
-  var isPasswordVisible: Boolean    // Whether a password is shown as typed.
-  var isMultiline: Boolean    // Several lines instead of one:
+  var endAction: EndAction    // The action inside the well at the end. 
+  var isPasswordVisible: Boolean    // Whether a password is shown as typed. 
+  var isMultiline: Boolean    // Several lines instead of one: the text starts at the top and the well grows with it.
   var minLines: Int    // Lines the well is at least high for while [isMultiline].
   var maxLines: Int    // Lines after which the text scrolls inside the well while [isMultiline].
-  var inputType: Int    // The `android.text.InputType` of the field.
-  var isMonospace: Boolean    // Monospace type at a smaller size, for code and configuration editors.
-  fun validate(rule: (CharSequence) -> CharSequence?): Boolean    // Checks the text with [rule], which returns the error to show or null when the text is fine.
+  var inputType: Int    // The `android.text.InputType` of the field. 
+  var isMonospace: Boolean    // Monospace type at a smaller size, for code and configuration editors. 
+  fun validate(rule: (CharSequence) -> CharSequence?): Boolean    // Checks the text with [rule], which returns the error to show or null when the text is fine. 
 ```
 
 ### widget/MalletTopBar.kt
 
 ```
-class MalletTopBar (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ViewGroup(context, attrs, defStyleAttr)    // The bar at the top of a page:
-  var title: CharSequence?    // The title, centred in the bar on one line.
-  var subtitle: CharSequence?    // A quiet second line under the title.
-  var lifted: Boolean    // Whether content lies under the bar.
-  var fitStatusBar: Boolean    // Whether the bar pads itself for the status bar and display cutout (default true).
+class MalletTopBar (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : ViewGroup(context, attrs, defStyleAttr)    // The bar at the top of a page: a centred title, a navigation button at the start and up to two action icons at the end. 
+  var title: CharSequence?    // The title, centred in the bar on one line. 
+  var subtitle: CharSequence?    // A quiet second line under the title. 
+  var lifted: Boolean    // Whether content lies under the bar. 
+  var fitStatusBar: Boolean    // Whether the bar pads itself for the status bar and display cutout (default true). 
   val navigationButton: View? get()    // The navigation button, or `null` when the bar has none.
   val actionCount: Int get()    // Number of action icons at the end of the bar (0 to 2).
-  fun setNavigation(icon: MalletIcon = MalletIcon.CHEVRON_LEFT, description: CharSequence? = null, onClick: OnClickListener?)    // Shows the navigation button at the start of the bar, drawn in ink.
-  fun clearNavigation()    // Removes the navigation button.
-  fun addAction(icon: MalletIcon, description: CharSequence, onClick: OnClickListener?): View    // Adds an action icon at the end of the bar, drawn muted, and returns its view (to disable it, or to anchor a menu to it).
+  fun setNavigation(icon: MalletIcon = MalletIcon.CHEVRON_LEFT, description: CharSequence? = null, onClick: OnClickListener?)    // Shows the navigation button at the start of the bar, drawn in ink. @param icon The glyph. 
+  fun clearNavigation()    // Removes the navigation button. 
+  fun addAction(icon: MalletIcon, description: CharSequence, onClick: OnClickListener?): View    // Adds an action icon at the end of the bar, drawn muted, and returns its view (to disable it, or to anchor a menu to it). 
   fun getActionAt(index: Int): View = actions[index]    // The view of the action at [index], in the order the actions were added.
   fun clearActions()    // Removes every action icon.
-  fun bindTo(scrollView: View?)    // Lets the bar follow a scrolling view:
+  fun bindTo(scrollView: View?)    // Lets the bar follow a scrolling view: 
   companion object
     const val HEIGHT_DP: Float    // Height of the bar without insets, in dp.
     const val TARGET_DP: Float    // Side of a button's touch target, in dp.
@@ -792,9 +792,9 @@ class MalletTopBar (context: Context, attrs: AttributeSet? = null, defStyleAttr:
 ### interaction/MalletBack.kt
 
 ```
-object MalletBack    // Connects the system back gesture to a [MalletSpatialHost].
+object MalletBack    // Connects the system back gesture to a [MalletSpatialHost]. 
   interface Registration    // Handle returned by [attach].
-    fun onBackPressed(): Boolean    // Forwards a legacy back press.
+    fun onBackPressed(): Boolean    // Forwards a legacy back press. 
     fun remove()    // Detaches from the host and from the system.
   fun attach(activity: Activity, host: MalletSpatialHost): Registration = HostRegistration(activity, host)    // Routes back for [activity] to [host] until the registration is removed.
 ```
@@ -802,31 +802,31 @@ object MalletBack    // Connects the system back gesture to a [MalletSpatialHost
 ### interaction/MalletExpandableLayout.kt
 
 ```
-class MalletExpandableLayout (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A section that expands and collapses.
+class MalletExpandableLayout (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // A section that expands and collapses. 
   fun interface OnExpansionChangeListener    // Told when the user expands or collapses the section.
     fun onExpansionChanged(layout: MalletExpandableLayout, expanded: Boolean)    // [expanded] is the state the user just chose; the body may still be moving.
   fun interface OnExpansionProgressListener    // Told about every step of the opening, so that other views can move with it.
     fun onExpansionProgress(layout: MalletExpandableLayout, fraction: Float)    // [fraction] runs from 0 (collapsed) to 1 (fully expanded).
-  fun setOnExpansionChangeListener(listener: OnExpansionChangeListener?)    // Called after the user toggled the section through the header, the keyboard or an accessibility action.
+  fun setOnExpansionChangeListener(listener: OnExpansionChangeListener?)    // Called after the user toggled the section through the header, the keyboard or an accessibility action. 
   fun setOnExpansionProgressListener(listener: OnExpansionProgressListener?)    // Called whenever the open fraction changes, whoever caused it, including each frame of the animation.
-  var isExpanded: Boolean    // Whether the section is expanded, or on its way there.
-  val expansionFraction: Float get()    // How far the body is open right now:
+  var isExpanded: Boolean    // Whether the section is expanded, or on its way there. 
+  val expansionFraction: Float get()    // How far the body is open right now: 0 collapsed, 1 fully expanded.
   val isSettling: Boolean get()    // Whether the body is on its way to the state given by [isExpanded].
   val header: View? get()    // The first child, or null while the layout is empty.
-  var toggleOnHeaderClick: Boolean    // Whether a click on the header toggles the section.
-  var expandedStateDescription: CharSequence?    // State description of the header while expanded.
-  var collapsedStateDescription: CharSequence?    // State description of the header while collapsed.
-  var headerFocusRadiusDp: Float    // Corner radius, in dp, of the rim drawn inside the header while it has keyboard focus.
-  fun setExpanded(expanded: Boolean, animate: Boolean)    // Expands or collapses the section without calling [setOnExpansionChangeListener].
+  var toggleOnHeaderClick: Boolean    // Whether a click on the header toggles the section. 
+  var expandedStateDescription: CharSequence?    // State description of the header while expanded. 
+  var collapsedStateDescription: CharSequence?    // State description of the header while collapsed. 
+  var headerFocusRadiusDp: Float    // Corner radius, in dp, of the rim drawn inside the header while it has keyboard focus. 
+  fun setExpanded(expanded: Boolean, animate: Boolean)    // Expands or collapses the section without calling [setOnExpansionChangeListener]. 
   fun toggle()    // Switches between expanded and collapsed with the animation, like [setExpanded].
-  fun setIndicator(view: View?)    // Names the view that shows the direction of the section, usually a chevron inside the header.
+  fun setIndicator(view: View?)    // Names the view that shows the direction of the section, usually a chevron inside the header. 
   fun getIndicator(): View? = indicatorView    // The view set with [setIndicator] or found through the XML attribute, if any.
 ```
 
 ### interaction/MalletHaptics.kt
 
 ```
-object MalletHaptics    // The haptic vocabulary of Mallet.
+object MalletHaptics    // The haptic vocabulary of Mallet. 
   fun tick(view: View): Unit = perform(view, HapticFeedbackConstants.CLOCK_TICK)
   fun detent(view: View)
   fun confirm(view: View)
@@ -837,40 +837,40 @@ object MalletHaptics    // The haptic vocabulary of Mallet.
 ### interaction/MalletHorizontalDragOwner.kt
 
 ```
-interface MalletHorizontalDragOwner    // Marks a view that claims horizontal drags which start on it:
+interface MalletHorizontalDragOwner    // Marks a view that claims horizontal drags which start on it: tracks, switches, steppers and sliders. 
 ```
 
 ### interaction/MalletPager.kt
 
 ```
-class MalletPager (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A horizontal pager for a handful of pages, such as the steps of a first-launch flow.
+class MalletPager (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A horizontal pager for a handful of pages, such as the steps of a first-launch flow. 
   fun interface PageProvider    // Creates the pages of a [MalletPager].
-    fun createPage(index: Int, parent: ViewGroup): View    // Returns the view of page [index].
+    fun createPage(index: Int, parent: ViewGroup): View    // Returns the view of page [index]. 
   interface OnPageChangeListener    // Receives the movement of a [MalletPager].
-    fun onPageSelected(index: Int) {}    // The user moved to page [index].
-    fun onPageScrolled(index: Int, offset: Float) {}    // The pager stands [offset] (0 until 1) of the way from page [index] to the page after it.
+    fun onPageSelected(index: Int) {}    // The user moved to page [index]. 
+    fun onPageScrolled(index: Int, offset: Float) {}    // The pager stands [offset] (0 until 1) of the way from page [index] to the page after it. 
   var pageCount: Int    // Number of pages, as given to [setPages].
-  var currentPage: Int    // The page the pager shows or is landing on.
-  var offscreenPageLimit: Int    // How many visited pages on each side of the current one stay attached (invisible) so that they need no layout pass when they move in.
+  var currentPage: Int    // The page the pager shows or is landing on. 
+  var offscreenPageLimit: Int    // How many visited pages on each side of the current one stay attached (invisible) so that they need no layout pass when they move in. 
   val isMoving: Boolean get()    // Whether a drag, a settle or an animated [setCurrentPage] is in progress.
-  val scrollPosition: Float    // The continuous position:
-  fun setPages(count: Int, provider: PageProvider)    // Sets the pages:
-  fun setCurrentPage(index: Int, animate: Boolean)    // Moves to page [index], gliding when [animate] is true and the pager is laid out, else at once.
+  val scrollPosition: Float    // The continuous position: 
+  fun setPages(count: Int, provider: PageProvider)    // Sets the pages: 
+  fun setCurrentPage(index: Int, animate: Boolean)    // Moves to page [index], gliding when [animate] is true and the pager is laid out, else at once. 
   fun addOnPageChangeListener(listener: OnPageChangeListener)    // Adds a listener for page changes and movement.
   fun removeOnPageChangeListener(listener: OnPageChangeListener)    // Removes a listener added with [addOnPageChangeListener].
-  fun linkWith(other: MalletPager)    // Makes [other] follow this pager continuously:
-  fun unlink(other: MalletPager)    // Ends the link made with [linkWith].
+  fun linkWith(other: MalletPager)    // Makes [other] follow this pager continuously: every drag, settle and programmatic move of this pager moves [other] by the same share of its own width, as a heading area that moves in step with a conte
+  fun unlink(other: MalletPager)    // Ends the link made with [linkWith]. 
   companion object
-    const val COMMIT_FRACTION: Float    // Share of the width a drag must cover to land on the neighbour.
+    const val COMMIT_FRACTION: Float    // Share of the width a drag must cover to land on the neighbour. 
     const val COMMIT_VELOCITY_WIDTHS: Float    // Speed towards the neighbour, in pager widths per second, that lands on it at once.
 ```
 
 ### interaction/MalletPress.kt
 
 ```
-object MalletPress    // The Mallet press:
-  fun attach(host: View, content: View = host, onClick: View.OnClickListener? = null)    // Makes [host] pressable.
-  fun attachSink(host: View, content: View = host)    // The sink alone:
+object MalletPress    // The Mallet press: what is touched sinks by 1.5 dp and springs straight back. 
+  fun attach(host: View, content: View = host, onClick: View.OnClickListener? = null)    // Makes [host] pressable. 
+  fun attachSink(host: View, content: View = host)    // The sink alone: touching [host] sinks [content], releasing puts it back. 
   fun sink(content: View, distancePx: Float)    // Starts sinking [content] by [distancePx].
   fun release(content: View)    // Puts [content] back at once.
 ```
@@ -878,23 +878,23 @@ object MalletPress    // The Mallet press:
 ### interaction/MalletRevealLayout.kt
 
 ```
-class MalletRevealLayout (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A row that slides aside to uncover one action, typically "Delete".
+class MalletRevealLayout (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A row that slides aside to uncover one action, typically "Delete". 
   enum class Edge { START, END }    // The edge of the row at which the action strip is uncovered.
-  fun interface OnOpenChangeListener    // Told when the user opens or closes the row, and when the user's opening of a sibling closes this one (see [closeSiblings]).
+  fun interface OnOpenChangeListener    // Told when the user opens or closes the row, and when the user's opening of a sibling closes this one (see [closeSiblings]). 
     fun onOpenChanged(layout: MalletRevealLayout, open: Boolean)    // [open] is the state the row is settling to.
-  var actionLabel: CharSequence?    // The label of the action, or null while the row has no action.
+  var actionLabel: CharSequence?    // The label of the action, or null while the row has no action. 
   var actionTone: MalletTextTone    // The tone that colours the bed behind the row.
   var actionIcon: MalletIcon?    // The icon drawn above the label, or null for a label alone.
-  var revealEdge: Edge    // The edge at which the action appears.
+  var revealEdge: Edge    // The edge at which the action appears. 
   var closeSiblings: Boolean    // Whether opening this row closes the other open reveal rows of the same parent.
   fun setOnOpenChangeListener(listener: OnOpenChangeListener?)    // Called when the user opens or closes the row by drag, tap, key or accessibility action.
   val isOpen: Boolean get()    // True while the row is open or settling open.
   val row: View? get()    // The single child that slides, or null before it is added.
-  fun setAction(label: CharSequence, tone: MalletTextTone = MalletTextTone.DANGER, icon: MalletIcon? = null, onClick: OnClickListener?)    // Sets the one action behind the row.
+  fun setAction(label: CharSequence, tone: MalletTextTone = MalletTextTone.DANGER, icon: MalletIcon? = null, onClick: OnClickListener?)    // Sets the one action behind the row. 
   fun setOnActionClickListener(onClick: OnClickListener?)    // Replaces the callback of the action; for rows whose action is declared in XML.
-  fun clearAction()    // Removes the action and closes the row at once.
-  fun open(animate: Boolean = true)    // Opens the row, uncovering the action.
-  fun close(animate: Boolean = true)    // Closes the row.
+  fun clearAction()    // Removes the action and closes the row at once. 
+  fun open(animate: Boolean = true)    // Opens the row, uncovering the action. 
+  fun close(animate: Boolean = true)    // Closes the row. 
   companion object
     const val STRIP_WIDTH_DP: Float    // Width of the action strip, and the farthest the row travels.
     const val OPEN_FRACTION: Float    // Share of the strip that must be uncovered on release for the row to open.
@@ -904,17 +904,17 @@ class MalletRevealLayout (context: Context, attrs: AttributeSet? = null, defStyl
 
 ```
 class MalletSpatialGraph private constructor(/** The page everything else is reached from; "back" ends here. */ public val root: String, private val draggable: Map<String, Map<Side, String>>, private val placed: Map<String, Map<String, Side>>, private val pare
-  enum class Side    // A side of a page.
+  enum class Side    // A side of a page. 
     val opposite: Side    // The side facing this one.
     val isHorizontal: Boolean get()    // Whether moving to this side is a horizontal move.
   val keys: Set<String> get()    // Every page of the graph.
   fun contains(key: String): Boolean = draggable.containsKey(key)
   fun neighbour(key: String, side: Side): String? = draggable[key]?.get(side)    // The page that a drag from [key] towards [side] reveals, or `null`.
-  fun sideOf(from: String, to: String): Side?    // The side of [from] on which [to] lies, or `null` when the two are not adjacent.
+  fun sideOf(from: String, to: String): Side?    // The side of [from] on which [to] lies, or `null` when the two are not adjacent. 
   fun parentOf(key: String): String? = parents[key]    // Where "back" leads from [key]; `null` for the root.
   class Builder(private val root: String)    // Collects connections and builds a validated graph.
-    fun connect(from: String, side: Side, to: String, reciprocal: Boolean = true): Builder    // Puts [to] on the [side] side of [from].
-    fun child(parent: String, side: Side, child: String): Builder    // Places [child] on the [side] side of [parent] as a page that is opened from a row or button.
+    fun connect(from: String, side: Side, to: String, reciprocal: Boolean = true): Builder    // Puts [to] on the [side] side of [from]. 
+    fun child(parent: String, side: Side, child: String): Builder    // Places [child] on the [side] side of [parent] as a page that is opened from a row or button. 
     fun parent(key: String, parentKey: String): Builder    // Overrides where "back" leads from [key].
     fun build(): MalletSpatialGraph    // Validates and builds the graph.
 ```
@@ -922,26 +922,26 @@ class MalletSpatialGraph private constructor(/** The page everything else is rea
 ### interaction/MalletSpatialHost.kt
 
 ```
-class MalletSpatialHost (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // Shows one page of a [MalletSpatialGraph] and moves between pages with the finger.
-  fun interface PageFactory    // Creates the view of a page.
+class MalletSpatialHost (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // Shows one page of a [MalletSpatialGraph] and moves between pages with the finger. 
+  fun interface PageFactory    // Creates the view of a page. 
     fun createPage(key: String): View
   interface Listener    // Observes page changes.
     fun onPageSettled(key: String) {}    // The host has come to rest on [key].
-    fun onPageScrolled(from: String, to: String, fraction: Float) {}    // Pages are moving:
-  var prewarmNeighbours: Boolean    // Builds neighbouring pages ahead of time, while the host is idle.
+    fun onPageScrolled(from: String, to: String, fraction: Float) {}    // Pages are moving: 
+  var prewarmNeighbours: Boolean    // Builds neighbouring pages ahead of time, while the host is idle. 
   val currentKey: String? get()    // The page the host rests on, or is leaving.
   val isMoving: Boolean get()    // Whether pages are being dragged or are landing.
-  fun setGraph(graph: MalletSpatialGraph, factory: PageFactory)    // Sets the places and how to build them.
+  fun setGraph(graph: MalletSpatialGraph, factory: PageFactory)    // Sets the places and how to build them. 
   fun addListener(listener: Listener)
   fun removeListener(listener: Listener)
-  fun setKeepAlive(keys: Set<String>?)    // Limits which pages stay alive while detached; `null` (the default) keeps every visited page.
+  fun setKeepAlive(keys: Set<String>?)    // Limits which pages stay alive while detached; `null` (the default) keeps every visited page. 
   fun invalidatePage(key: String)    // Discards the kept view of [key], so the next visit builds a fresh one.
-  fun invalidatePages()    // Discards every kept view.
+  fun invalidatePages()    // Discards every kept view. 
   fun show(key: String)    // Shows [key] at once, without movement.
-  fun refreshCurrent()    // Rebuilds the page on screen in place, for example after its data changed.
-  fun navigate(key: String, animate: Boolean = true)    // Moves to [key], which slides in from the side where it lies.
+  fun refreshCurrent()    // Rebuilds the page on screen in place, for example after its data changed. 
+  fun navigate(key: String, animate: Boolean = true)    // Moves to [key], which slides in from the side where it lies. 
   fun navigate(key: String, from: Side, animate: Boolean)    // Moves to [key], sliding it in from [from].
-  fun back(): Boolean    // Moves to the parent of the current page.
+  fun back(): Boolean    // Moves to the parent of the current page. 
   fun canGoBack(): Boolean    // Whether [back] would move.
   companion object
     const val EDGE_DP: Float    // Width, in dp, of the screen-edge zones left to the system back gesture.
@@ -951,30 +951,30 @@ class MalletSpatialHost (context: Context, attrs: AttributeSet? = null, defStyle
 ### interaction/MalletSpatialTransition.kt
 
 ```
-object MalletSpatialTransition    // Makes a second activity behave like a neighbouring page.
-  fun interface SwipeGate    // Lets a page refuse the swipe back while it is in the middle of something, for example while it shows a detail pane of its own or while one of its controls is being dragged.
+object MalletSpatialTransition    // Makes a second activity behave like a neighbouring page. 
+  fun interface SwipeGate    // Lets a page refuse the swipe back while it is in the middle of something, for example while it shows a detail pane of its own or while one of its controls is being dragged. 
     fun canSwipeBack(): Boolean    // Returns false to keep the page where it is for the gesture that is starting.
   const val MAX_SNAPSHOT_BYTES: Long    // A picture of the launching activity larger than this (16 MB of pixels) is not taken.
-  fun start(activity: Activity, intent: Intent, enterFrom: Side = Side.END)    // Starts [intent] from [activity] as a neighbouring page that comes in from [enterFrom].
-  fun wrap(activity: Activity, page: View): View    // Wraps [page] for an activity started with [start] and returns the view to pass to `setContentView`.
-  fun finish(activity: Activity)    // Sends the page of [activity] back out the way it came in and finishes the activity when it has left the screen.
-  fun setSwipeGate(wrapped: View, gate: SwipeGate?)    // Sets the [gate] asked before each swipe on [wrapped], the view returned by [wrap].
+  fun start(activity: Activity, intent: Intent, enterFrom: Side = Side.END)    // Starts [intent] from [activity] as a neighbouring page that comes in from [enterFrom]. 
+  fun wrap(activity: Activity, page: View): View    // Wraps [page] for an activity started with [start] and returns the view to pass to `setContentView`. 
+  fun finish(activity: Activity)    // Sends the page of [activity] back out the way it came in and finishes the activity when it has left the screen. 
+  fun setSwipeGate(wrapped: View, gate: SwipeGate?)    // Sets the [gate] asked before each swipe on [wrapped], the view returned by [wrap]. 
 ```
 
 ### interaction/MalletThemeTransition.kt
 
 ```
-object MalletThemeTransition    // Changes the theme without a flash.
+object MalletThemeTransition    // Changes the theme without a flash. 
   const val EXTRA_SNAPSHOT: String    // Intent extra that carries the token of the captured appearance across recreation.
   const val MAX_SNAPSHOT_BYTES: Long    // Largest picture, in bytes of ARGB pixels, that is captured (16 MB).
-  const val DEFAULT_DELAY_MS: Long    // Default delay of [recreateAfter]:
-  fun prepare(activity: Activity): Boolean    // Captures the current appearance of [activity] for the next [play], without recreating.
+  const val DEFAULT_DELAY_MS: Long    // Default delay of [recreateAfter]: one control glide plus two frames.
+  fun prepare(activity: Activity): Boolean    // Captures the current appearance of [activity] for the next [play], without recreating. 
   fun isPrepared(activity: Activity): Boolean    // Whether [activity] carries a captured appearance that [play] would fade out.
-  fun discard(activity: Activity)    // Forgets the appearance captured for [activity], if any, and frees its picture.
-  fun recreate(activity: Activity)    // Captures the current appearance of [activity] and recreates it.
-  fun recreateAfter(view: View, delayMs: Long = DEFAULT_DELAY_MS): Boolean    // Recreates the activity that hosts [view] after [delayMs], so that the control which triggered the change finishes settling in the old theme first.
-  fun cancelRecreate(view: View): Boolean    // Withdraws a recreation requested with [recreateAfter] for the activity that hosts [view].
-  fun play(activity: Activity): Boolean    // Lays the appearance captured before the recreation over the content of [activity] and fades it out over [MalletMotion.THEME_FADE_MS].
+  fun discard(activity: Activity)    // Forgets the appearance captured for [activity], if any, and frees its picture. 
+  fun recreate(activity: Activity)    // Captures the current appearance of [activity] and recreates it. 
+  fun recreateAfter(view: View, delayMs: Long = DEFAULT_DELAY_MS): Boolean    // Recreates the activity that hosts [view] after [delayMs], so that the control which triggered the change finishes settling in the old theme first. 
+  fun cancelRecreate(view: View): Boolean    // Withdraws a recreation requested with [recreateAfter] for the activity that hosts [view]. 
+  fun play(activity: Activity): Boolean    // Lays the appearance captured before the recreation over the content of [activity] and fades it out over [MalletMotion.THEME_FADE_MS]. 
 ```
 
 ## overlay
@@ -982,21 +982,21 @@ object MalletThemeTransition    // Changes the theme without a flash.
 ### overlay/MalletBottomSheet.kt
 
 ```
-class MalletBottomSheet private constructor(private val context: Context, private val builder: Builder)    // A sheet that rises from the bottom edge of the window and follows the finger back down.
+class MalletBottomSheet private constructor(private val context: Context, private val builder: Builder)    // A sheet that rises from the bottom edge of the window and follows the finger back down. 
   fun interface OnDismissListener    // Told when a sheet has left the screen, whatever made it leave.
     fun onDismiss(sheet: MalletBottomSheet)
   val isShowing: Boolean    // Whether the sheet is on screen, including while it glides in or out.
   var isCancelable: Boolean    // Whether scrim taps, the back key and drags may dismiss the sheet.
   fun setOnDismissListener(listener: OnDismissListener?)    // Replaces the listener that is told when the sheet has left the screen.
-  fun show(): MalletBottomSheet    // Shows the sheet and lets it glide up.
-  fun dismiss()    // Lets the sheet glide down and then removes it.
-  class Builder(private val context: Context)    // Collects the parts of a sheet.
+  fun show(): MalletBottomSheet    // Shows the sheet and lets it glide up. 
+  fun dismiss()    // Lets the sheet glide down and then removes it. 
+  class Builder(private val context: Context)    // Collects the parts of a sheet. 
     fun title(title: CharSequence?): Builder = apply { this.title = title }    // Centred title above the content; it is also announced as the name of the sheet.
     fun message(message: CharSequence?): Builder = apply { this.message = message }    // Centred, muted explanation below the title.
-    fun view(view: View?): Builder = apply { this.view = view }    // Any content.
+    fun view(view: View?): Builder = apply { this.view = view }    // Any content. 
     fun action(label: CharSequence, tone: MalletTextTone = MalletTextTone.INK, icon: MalletIcon? = null, enabled: Boolean = true, onClick: Runnable? = null): Builder = apply { actions.add(Action(label, tone, icon, enabled, onClick)) }    // Adds an action row.
-    fun action(label: CharSequence, onClick: Runnable): Builder =    // Adds a plain action row:
-    fun cancel(label: CharSequence? = null): Builder = apply    // Adds the cancel action below a full-bleed divider.
+    fun action(label: CharSequence, onClick: Runnable): Builder =    // Adds a plain action row: 
+    fun cancel(label: CharSequence? = null): Builder = apply    // Adds the cancel action below a full-bleed divider. 
     fun cancelable(cancelable: Boolean): Builder = apply { this.cancelable = cancelable }    // Whether scrim taps, the back key and drags may dismiss the sheet (default true).
     fun onDismiss(listener: OnDismissListener?): Builder = apply { dismissListener = listener }    // Listener told when the sheet has left the screen.
     fun build(): MalletBottomSheet = MalletBottomSheet(context, this)    // Builds the sheet without showing it.
@@ -1006,13 +1006,13 @@ class MalletBottomSheet private constructor(private val context: Context, privat
 ### overlay/MalletDialog.kt
 
 ```
-class MalletDialog private constructor(private val context: Context, builder: Builder)    // A modal question on a card:
+class MalletDialog private constructor(private val context: Context, builder: Builder)    // A modal question on a card: a centred title, a muted message, optional content and one to three text actions under a rim-to-rim divider. 
   fun interface OnActionListener    // Called when the user chooses an action.
     fun onAction(dialog: MalletDialog): Boolean    // Returns `true` to close [dialog], `false` to keep it open.
   fun interface OnInputListener    // Called with the text of an input dialog when its positive action is chosen.
     fun onInput(dialog: MalletDialog, text: String): Boolean    // Returns `true` to accept [text] and close, `false` to keep [dialog] open.
   fun interface OnDismissListener    // Called once when the dialog has left the screen.
-    fun onDismiss(dialog: MalletDialog, positive: Boolean)    // @param positive `true` only when the positive action closed the dialog; `false` for every other way out (another action, back, outside touch, [dismiss]).
+    fun onDismiss(dialog: MalletDialog, positive: Boolean)    // @param positive `true` only when the positive action closed the dialog; `false` for every other way out (another action, back, outside touch, [dismiss]). 
   var isClosing: Boolean    // `true` from the moment the dialog starts to close; actions and back are ignored then.
   val isShowing: Boolean    // Whether the dialog window is on screen (it still is while the exit motion runs).
   val contentView: View    // The card, for tests and for code that needs to look something up in the content.
@@ -1021,23 +1021,23 @@ class MalletDialog private constructor(private val context: Context, builder: Bu
   val inputText: String    // The current text of an input dialog; empty for any other dialog.
   val error: CharSequence?    // The message in the validation slot, or `null` while no error is shown.
   val isStacked: Boolean    // Whether the actions are stacked as full-width rows (valid after the card was measured).
-  fun show()    // Shows the dialog and plays the enter motion.
-  fun dismiss()    // Closes the dialog with the exit motion.
-  fun showError(message: CharSequence)    // Fills the validation slot above the actions with a danger capsule and gives a reject haptic.
+  fun show()    // Shows the dialog and plays the enter motion. 
+  fun dismiss()    // Closes the dialog with the exit motion. 
+  fun showError(message: CharSequence)    // Fills the validation slot above the actions with a danger capsule and gives a reject haptic. 
   fun clearError()    // Empties and hides the validation slot.
-  fun setActionEnabled(which: Int, enabled: Boolean)    // Enables or disables one action, for example the positive one until a form is complete.
+  fun setActionEnabled(which: Int, enabled: Boolean)    // Enables or disables one action, for example the positive one until a form is complete. 
   fun actionView(which: Int): View? = actionViews.getOrNull(which)    // The view of an action, or `null` when the dialog has no such action.
-  class Builder(private val context: Context)    // Collects the parts of a dialog.
+  class Builder(private val context: Context)    // Collects the parts of a dialog. 
     fun title(title: CharSequence?): Builder = apply { this.title = title }    // Centred headline; it is also announced as the name of the dialog.
-    fun message(message: CharSequence?): Builder = apply { this.message = message }    // Centred, muted explanation below the title.
-    fun view(view: View?): Builder = apply { this.view = view }    // Custom content (a form, a few rows) between the message and the actions.
-    fun positive(label: CharSequence? = null, tone: MalletTextTone = MalletTextTone.ACCENT, listener: OnActionListener? = null): Builder = apply    // The confirming action, at the end of the row.
-    fun positive(label: CharSequence?, listener: OnActionListener): Builder =    // The confirming action in the accent tone with its [listener], for callers that cannot skip the tone (Java):
-    fun negative(label: CharSequence? = null, listener: OnActionListener? = null): Builder = apply    // The dismissive action in the muted tone, at the start of the row.
-    fun neutral(label: CharSequence, listener: OnActionListener? = null): Builder = apply    // A third, alternative action in the ink tone.
-    fun input(initial: CharSequence? = null, hint: CharSequence? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, multiline: Boolean = false, listener: OnInputListener? = null): Builder = apply    // Turns the dialog into an input dialog:
-    fun cancelable(cancelable: Boolean): Builder = apply { this.cancelable = cancelable }    // Whether back closes the dialog.
-    fun canceledOnTouchOutside(cancel: Boolean): Builder = apply { canceledOnTouchOutside = cancel }    // Whether a touch outside the card closes a cancelable dialog.
+    fun message(message: CharSequence?): Builder = apply { this.message = message }    // Centred, muted explanation below the title. 
+    fun view(view: View?): Builder = apply { this.view = view }    // Custom content (a form, a few rows) between the message and the actions. 
+    fun positive(label: CharSequence? = null, tone: MalletTextTone = MalletTextTone.ACCENT, listener: OnActionListener? = null): Builder = apply    // The confirming action, at the end of the row. @param label defaults to the library's "OK" ("Save" for an inpu
+    fun positive(label: CharSequence?, listener: OnActionListener): Builder =    // The confirming action in the accent tone with its [listener], for callers that cannot skip the tone (Java): 
+    fun negative(label: CharSequence? = null, listener: OnActionListener? = null): Builder = apply    // The dismissive action in the muted tone, at the start of the row. 
+    fun neutral(label: CharSequence, listener: OnActionListener? = null): Builder = apply    // A third, alternative action in the ink tone. 
+    fun input(initial: CharSequence? = null, hint: CharSequence? = null, inputType: Int = InputType.TYPE_CLASS_TEXT, multiline: Boolean = false, listener: OnInputListener? = null): Builder = apply    // Turns the dialog into an input dialog: a text field below
+    fun cancelable(cancelable: Boolean): Builder = apply { this.cancelable = cancelable }    // Whether back closes the dialog. 
+    fun canceledOnTouchOutside(cancel: Boolean): Builder = apply { canceledOnTouchOutside = cancel }    // Whether a touch outside the card closes a cancelable dialog. 
     fun onDismiss(listener: OnDismissListener?): Builder = apply { dismissListener = listener }    // Called once when the dialog has gone, with a flag for "the positive action closed it".
     fun build(): MalletDialog = MalletDialog(context, this)    // Builds the dialog without showing it.
     fun show(): MalletDialog = build().also { it.show() }    // Builds the dialog and shows it.
@@ -1046,51 +1046,51 @@ class MalletDialog private constructor(private val context: Context, builder: Bu
     const val ACTION_NEUTRAL: Int    // The optional third action.
     const val ACTION_NEGATIVE: Int    // The dismissive action.
     fun confirm(context: Context, title: CharSequence?, message: CharSequence? = null, positiveLabel: CharSequence? = null, danger: Boolean = false, onConfirm: Runnable? = null): MalletDialog = Builder(context)    // Asks for a confirmation with "Cancel" and o
-    fun confirm(context: Context, title: CharSequence?, onConfirm: Runnable): MalletDialog =    // Asks for a confirmation of [title] alone, with "Cancel" and "OK", and shows it.
+    fun confirm(context: Context, title: CharSequence?, onConfirm: Runnable): MalletDialog =    // Asks for a confirmation of [title] alone, with "Cancel" and "OK", and shows it. 
     fun message(context: Context, title: CharSequence?, message: CharSequence? = null): MalletDialog =    // Shows a notice with a single "OK" action.
 ```
 
 ### overlay/MalletFloatingPanel.kt
 
 ```
-open class MalletFloatingPanel (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr), MalletHorizontalDragOwner    // A small panel that floats above a screen and is moved with the finger:
+open class MalletFloatingPanel (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr), MalletHorizontalDragOwner    // A small panel that floats above a screen and is moved with the finger: a status r
   var isDragging: Boolean    // True while the finger is moving the panel.
-  var snapToEdge: Boolean    // Whether the panel glides to the nearer side of its parent when a drag ends.
+  var snapToEdge: Boolean    // Whether the panel glides to the nearer side of its parent when a drag ends. 
   fun interface OnPositionChangeListener    // Called when the user has moved the panel.
     fun onPositionChanged(panel: MalletFloatingPanel, x: Float, y: Float)    // The user moved [panel]; [x] and [y] are its new [positionX] and [positionY].
-  fun setOnPositionChangeListener(listener: OnPositionChangeListener?)    // Listener for moves made by the user:
-  var positionX: Float    // Horizontal position as a fraction of the free travel:
-  var positionY: Float    // Vertical position as a fraction of the free travel:
+  fun setOnPositionChangeListener(listener: OnPositionChangeListener?)    // Listener for moves made by the user: the end of a drag, an arrow key, an accessibility action. 
+  var positionX: Float    // Horizontal position as a fraction of the free travel: 0 rests on the start edge of the parent's padded bounds, 1 on the end edge. 
+  var positionY: Float    // Vertical position as a fraction of the free travel: 0 is the top, 1 the bottom.
   val isBoundToWindow: Boolean get()    // True once [bindToWindow] has made this panel a window of its own.
-  fun setPosition(x: Float, y: Float, animate: Boolean = false)    // Moves the panel to the given fractions (clamped to 0..1).
-  fun bindToWindow(windowManager: WindowManager, params: WindowManager.LayoutParams)    // Makes the panel a window of its own:
-  fun remove()    // Takes the panel off the screen:
+  fun setPosition(x: Float, y: Float, animate: Boolean = false)    // Moves the panel to the given fractions (clamped to 0..1). 
+  fun bindToWindow(windowManager: WindowManager, params: WindowManager.LayoutParams)    // Makes the panel a window of its own: from now on a drag updates the position of [params] through [windowManager] instead of translating the view, and the fractions refer
+  fun remove()    // Takes the panel off the screen: out of its parent, or out of the window manager when it was bound with [bindToWindow]. 
   companion object
     const val CONTENT_PADDING_HORIZONTAL_DP: Float    // Space between the sides of the body and the content, in dp.
     const val CONTENT_PADDING_VERTICAL_DP: Float    // Space between the top and bottom of the body and the content, in dp.
-    fun attach(activity: Activity, content: View): MalletFloatingPanel    // Adds a floating panel holding [content] to the content view of [activity] and returns it.
+    fun attach(activity: Activity, content: View): MalletFloatingPanel    // Adds a floating panel holding [content] to the content view of [activity] and returns it. 
     fun overlayLayoutParams(type: Int = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY): WindowManager.LayoutParams = WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, type, WindowManager.Layout
 ```
 
 ### overlay/MalletMenu.kt
 
 ```
-class MalletMenu(context: Context)    // A small panel of actions that grows out of the control that opened it.
+class MalletMenu(context: Context)    // A small panel of actions that grows out of the control that opened it. 
   val itemCount: Int get()    // Number of items; dividers do not count.
   val isShowing: Boolean get()    // Whether the menu is on screen (it still is while it glides away).
-  fun add(label: CharSequence, icon: MalletIcon? = null, onClick: Runnable? = null): MalletMenu    // Adds an action with an optional leading [icon].
-  fun add(label: CharSequence, onClick: Runnable): MalletMenu = add(label, null, onClick)    // Adds an action without an icon.
-  fun addDanger(label: CharSequence, icon: MalletIcon? = null, onClick: Runnable? = null): MalletMenu    // Adds a destructive action:
-  fun addDanger(label: CharSequence, onClick: Runnable): MalletMenu = addDanger(label, null, onClick)    // Adds a destructive action without an icon.
-  fun addDivider(): MalletMenu    // Starts a new group:
-  fun setChecked(index: Int, checked: Boolean = true): MalletMenu    // Marks the item at [index] as the selected one (a trailing check mark) or, with [checked] false, clears its mark.
+  fun add(label: CharSequence, icon: MalletIcon? = null, onClick: Runnable? = null): MalletMenu    // Adds an action with an optional leading [icon]. 
+  fun add(label: CharSequence, onClick: Runnable): MalletMenu = add(label, null, onClick)    // Adds an action without an icon. 
+  fun addDanger(label: CharSequence, icon: MalletIcon? = null, onClick: Runnable? = null): MalletMenu    // Adds a destructive action: label and icon are drawn in the danger colour.
+  fun addDanger(label: CharSequence, onClick: Runnable): MalletMenu = addDanger(label, null, onClick)    // Adds a destructive action without an icon. 
+  fun addDivider(): MalletMenu    // Starts a new group: a hairline from rim to rim after the items added so far. 
+  fun setChecked(index: Int, checked: Boolean = true): MalletMenu    // Marks the item at [index] as the selected one (a trailing check mark) or, with [checked] false, clears its mark. 
   fun isChecked(index: Int): Boolean = item(index)?.checked == true    // Whether the item at [index] carries the check mark.
-  fun setEnabled(index: Int, enabled: Boolean): MalletMenu    // Enables or disables the item at [index].
+  fun setEnabled(index: Int, enabled: Boolean): MalletMenu    // Enables or disables the item at [index]. 
   fun isEnabled(index: Int): Boolean = item(index)?.enabled == true    // Whether the item at [index] can be picked.
-  fun clear(): MalletMenu    // Removes every item and divider.
+  fun clear(): MalletMenu    // Removes every item and divider. 
   fun setOnDismissListener(listener: Runnable?): MalletMenu    // Called whenever the menu has closed, whatever closed it.
-  fun show(anchor: View)    // Opens the menu next to [anchor], which must be attached to a window.
-  fun dismiss()    // Closes the menu; it shrinks back into the anchor corner first.
+  fun show(anchor: View)    // Opens the menu next to [anchor], which must be attached to a window. 
+  fun dismiss()    // Closes the menu; it shrinks back into the anchor corner first. 
   companion object
     const val MIN_WIDTH_DP: Float    // Narrowest panel body, in dp.
     const val MAX_WIDTH_DP: Float    // Widest panel body, in dp; longer labels are ellipsised.
@@ -1103,20 +1103,20 @@ class MalletMenu(context: Context)    // A small panel of actions that grows out
 ```
 class MalletToast private constructor(private val host: FrameLayout?, /** The pill on screen. Exposed for tests and for hosts that want to style it further. */ public val view: MalletToastView, private val durationMs: Long, private val onAction: Runnable?, pri
   fun interface OnDismissListener    // Told when a toast has left the screen.
-    fun onDismiss(toast: MalletToast, actionTaken: Boolean)    // [toast] has left the screen for any reason:
+    fun onDismiss(toast: MalletToast, actionTaken: Boolean)    // [toast] has left the screen for any reason: its time ran out, [MalletToast.dismiss], a newer toast, or its action, in which case [actionTaken] is `true`.
   enum class Tone    // What the colour of the pill says.
   val isShowing: Boolean    // `true` from [show] until the pill has been removed; still `true` while it sinks away.
   val duration: Long    // The time this toast stays before it leaves by itself; 0 means until [dismiss].
-  fun show(): MalletToast    // Puts the pill into the activity and lets it rise.
-  fun dismiss()    // Lets the pill sink away and removes it.
-  class Builder(private val activity: Activity)    // Assembles a toast with more than a message and a tone.
-    fun message(message: CharSequence): Builder = apply { this.message = message }    // The one thing the toast says.
+  fun show(): MalletToast    // Puts the pill into the activity and lets it rise. 
+  fun dismiss()    // Lets the pill sink away and removes it. 
+  class Builder(private val activity: Activity)    // Assembles a toast with more than a message and a tone. 
+    fun message(message: CharSequence): Builder = apply { this.message = message }    // The one thing the toast says. 
     fun message(@StringRes message: Int): Builder = apply { this.message = activity.getText(message) }    // The message as a string resource.
     fun tone(tone: Tone): Builder = apply { this.tone = tone }    // The colour of the pill; [Tone.NEUTRAL] when not set.
-    fun action(label: CharSequence, onClick: Runnable): Builder = apply    // One text action at the end of the pill, for example "Undo".
+    fun action(label: CharSequence, onClick: Runnable): Builder = apply    // One text action at the end of the pill, for example "Undo". 
     fun action(@StringRes label: Int, onClick: Runnable): Builder =    // The action label as a string resource.
-    fun duration(durationMs: Long): Builder = apply { this.durationMs = max(0L, durationMs) }    // How long the toast stays, in milliseconds; 0 keeps it until [MalletToast.dismiss].
-    fun onDismiss(listener: OnDismissListener?): Builder = apply { dismissListener = listener }    // Listener told once when the pill has left the screen, whatever made it leave.
+    fun duration(durationMs: Long): Builder = apply { this.durationMs = max(0L, durationMs) }    // How long the toast stays, in milliseconds; 0 keeps it until [MalletToast.dismiss]. 
+    fun onDismiss(listener: OnDismissListener?): Builder = apply { dismissListener = listener }    // Listener told once when the pill has left the screen, whatever made it leave. 
     fun build(): MalletToast    // Creates the toast without showing it.
     fun show(): MalletToast = build().show()    // Creates the toast and shows it.
   companion object
@@ -1127,12 +1127,12 @@ class MalletToast private constructor(private val host: FrameLayout?, /** The pi
     const val SIDE_MARGIN_DP: Float    // Free space kept on each side of the pill, in dp.
     const val BOTTOM_MARGIN_DP: Float    // Distance between the pill and the bottom of the content (above bars and keyboard), in dp.
     fun show(activity: Activity, message: CharSequence, tone: Tone = Tone.NEUTRAL): MalletToast =    // Shows [message] in a pill of the given [tone] and returns the toast.
-    fun error(activity: Activity, message: CharSequence): MalletToast =    // Shows [message] as an error:
+    fun error(activity: Activity, message: CharSequence): MalletToast =    // Shows [message] as an error: a pill in the danger colour.
     fun cancel(activity: Activity)    // Removes the toast on screen in [activity], if there is one, without its exit glide.
-class MalletToastView (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // The pill of a [MalletToast]:
+class MalletToastView (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : LinearLayout(context, attrs, defStyleAttr)    // The pill of a [MalletToast]: a capsule with one centred message and, optionally, one text action at the end behind a
   var message: CharSequence    // The one thing the pill says.
   var tone: MalletToast.Tone    // The colour of the pill and of what is written on it.
   var actionLabel: CharSequence?    // Label of the text action at the end of the pill; `null` or empty for a pill without one.
   val hasAction: Boolean    // `true` when the pill carries an action.
-  fun bodyBounds(out: RectF)    // The rectangle of the visible capsule inside the view, without the shadow gutter, in pixels.
+  fun bodyBounds(out: RectF)    // The rectangle of the visible capsule inside the view, without the shadow gutter, in pixels. 
 ```

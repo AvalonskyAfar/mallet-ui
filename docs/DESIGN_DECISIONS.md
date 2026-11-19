@@ -339,8 +339,8 @@ Home. A deeper page is opened from a row of a first-level page, or lies further 
 **Rule.** A place carries no signpost. Home shows nothing that points at its neighbours: no
 arrows, no page names at the edges. It names the pages around it once, in a row of entries
 at its bottom (an outline icon above a short label, one entry for each first-level page). An
-entry can be tapped; the page it names is also reached by dragging Home towards the side on
-which that page lies. A first-level page shows no way back: no back row, no arrow, no bar.
+entry can be tapped; the page it names is also reached by dragging Home towards the side
+where that page lies. A first-level page shows no way back: no back row, no arrow, no bar.
 It is left the way it was reached, by dragging back towards Home, or with the system's Back.
 
 **Why.** A page without a button to tap is how the drag becomes a habit. This is the

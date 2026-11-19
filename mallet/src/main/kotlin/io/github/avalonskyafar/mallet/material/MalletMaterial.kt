@@ -601,7 +601,12 @@ public class MalletMaterial @JvmOverloads constructor(
         bottomRadius: Float = 0f,
     ) {
         if (bounds.width() <= 0f || bounds.height() <= 0f) return
-        val reach = dp(REVEAL_SHADE_DP)
+        // A narrow strip is all shade: the fade never reaches past the uncovered bed.
+        val reach = min(
+            dp(REVEAL_SHADE_DP),
+            if (bedOnLeft) edgeX - bounds.left else bounds.right - edgeX,
+        ).coerceAtLeast(0f)
+        if (reach <= 0.1f) return
         val far = if (bedOnLeft) max(bounds.left, edgeX - reach) else min(bounds.right, edgeX + reach)
         if (far == edgeX) return
         cell(path, bounds, topRadius, bottomRadius)

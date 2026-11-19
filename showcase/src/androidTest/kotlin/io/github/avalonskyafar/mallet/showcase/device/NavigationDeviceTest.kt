@@ -70,11 +70,16 @@ class NavigationDeviceTest : DeviceTest() {
     fun anEntryAtTheBottomOfHomeOpensThePageItNames() {
         Device.launch()
         // Start side, below, above, end side: one entry for each page around Home.
-        val around = listOf("foundations", "components", "appearance", "interactions")
-        for ((index, page) in around.withIndex()) {
+        val order = listOf("foundations", "components", "appearance", "interactions")
+        val around = Device.onMain { Pages.graph.keys.filter { Pages.graph.parentOf(it) == Pages.HOME } }
+        assertEquals(4, Device.onMain { Device.all<MalletNavBar>().single().items.size })
+        assertEquals(4, around.size)
+        assertTrue(around.isNotEmpty())
+        assertEquals(order.toSet(), around.toSet())
+        for ((index, page) in order.withIndex()) {
             val row = Device.all<MalletNavBar>().single()
             val labels = Device.onMain { row.items.map { it.label.toString() } }
-            assertEquals(around.map { Device.string(Pages.titleOf(it)) }, labels)
+            assertEquals(order.map { Device.string(Pages.titleOf(it)) }, labels)
             Device.tap(row, fx = (index + 0.5f) / around.size, fy = 0.4f)
             Device.waitForPage(page)
             Device.ui.pressBack()

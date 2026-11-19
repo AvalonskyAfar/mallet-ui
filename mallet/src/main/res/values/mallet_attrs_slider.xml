@@ -8,7 +8,8 @@
         <attr name="malletHue" />
         <!--
             How the stretch behind the bead is coloured. "single" fills it with the hue named by
-            malletHue. "scale" blends through bronze, ochre, cobalt and jade as the value rises,
+            malletHue. "scale" takes the hue nearest to the bead from bronze, ochre, cobalt and
+            jade, one hue per quarter of the track, and switches at the quarter's half-way point,
             for values that read as a strength.
         -->
         <attr name="malletSliderHueMode" format="enum">

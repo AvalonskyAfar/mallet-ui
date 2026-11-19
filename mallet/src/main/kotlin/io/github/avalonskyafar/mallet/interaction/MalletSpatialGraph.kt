@@ -3,9 +3,10 @@ package io.github.avalonskyafar.mallet.interaction
 /**
  * Where the pages of an app lie in relation to one another.
  *
- * In Mallet, pages are places rather than a stack. A page is reached by dragging towards it,
- * and a chevron on a row points to where its page lies. The graph records those places; a
- * [MalletSpatialHost] moves between them.
+ * In Mallet, pages are places rather than a stack. A page is reached by dragging the current
+ * page towards the side where it lies; it slides in from that side, and a chevron on a row
+ * points to where its page lies. The graph records those places; a [MalletSpatialHost] moves
+ * between them.
  *
  * ```kotlin
  * val graph = MalletSpatialGraph.Builder(root = "main")

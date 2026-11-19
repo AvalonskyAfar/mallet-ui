@@ -9,8 +9,9 @@ import io.github.avalonskyafar.mallet.widget.MalletEntryRow
 import io.github.avalonskyafar.mallet.widget.MalletSurface
 
 /*
- * The three directory pages around Home. Each is a title and one card of entry rows; the
- * chevron of a row points to the side on which its page lies.
+ * The three directory pages around Home (the fourth first-level page, Appearance, is a page of
+ * settings). Each is a title and one card of entry rows; the chevron of a row points to the
+ * side on which its page lies.
  */
 
 /** Lies at the start side of Home; its pages lie further towards the start. */

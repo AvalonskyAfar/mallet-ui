@@ -14,12 +14,15 @@ widgets, is fully interactive, and shows the code that produced what the reader 
   `Mode.LAUNCHER` with one entry (an outline icon above a short label) for each first-level
   page, the start side first, the end side last, the pages below and above between them. An
   entry can be tapped; the page it names is also reached by dragging Home towards the side
-  on which that page lies. A new first-level page needs its place in `Pages.graph` and its
+  where that page lies. A new first-level page needs its place in `Pages.graph` and its
   entry in `HomePage`.
 - A first-level page shows no way back: no back row, no arrow, no bar. It is left the way it
   was reached, by dragging back towards Home, or with the system's Back. For a keyboard, a
   switch or a screen reader the system's Back is the way back there; nothing on screen
   offers it.
+- A first-level page is left by dragging back or with the system's Back; Appearance, which
+  lies above Home, is no exception, and its content is a page of settings rather than a
+  directory.
 - A page is a Kotlin `object` extending `DemoPage(key, title, summary)` (the title and the
   summary are string resources) in
   `showcase/src/main/kotlin/io/github/avalonskyafar/mallet/showcase/pages/`. It implements

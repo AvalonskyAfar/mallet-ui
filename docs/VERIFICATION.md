@@ -16,14 +16,14 @@ Contents: [Summary](#summary) · [Environment](#environment) · [Tests on the JV
 
 | Check | Result |
 |---|---|
-| Unit tests of the library (JVM, Robolectric) | 1,030 tests, 0 failures |
-| Unit tests of the showcase (JVM, Robolectric) | 20 tests, 0 failures; 8 more (films) pass when asked for |
+| Unit tests of the library (JVM, Robolectric) | 1,045 tests, 0 failures |
+| Unit tests of the showcase (JVM, Robolectric) | 35 tests, 0 failures; 8 more (films) pass when asked for |
 | Android Lint, warnings as errors | no issues in `:mallet`, no issues in `:showcase` |
-| Device tests, Android 16 (API 36) emulator | 36 tests, 0 failures |
-| Device tests, Android 6.0 (API 23) emulator | 35 tests, 0 failures |
+| Device tests, Android 16 (API 36) emulator | 38 tests, 0 failures |
+| Device tests, Android 6.0 (API 23) emulator | 37 tests, 0 failures |
 | Shrunk release APK, every page opened on both emulators | 27 of 27 pages on each, no crash |
 | Library used as a binary by a separate Java project | builds shrunk, runs on both emulators |
-| The source archive, unpacked elsewhere, builds and passes its tests | 1,030 + 20 tests, lint without issues, both release builds |
+| The source archive, unpacked elsewhere, builds and passes its tests | 1,038 + 35 tests, lint without issues, both release builds |
 
 Nothing was published: no push, no release, no upload.
 
@@ -52,7 +52,7 @@ Both devices are emulators. No physical device was used.
 ./gradlew :mallet:testDebugUnitTest :showcase:testDebugUnitTest
 ```
 
-**Library: 1,030 tests in 50 classes, 0 failures, 0 skipped.** One class per component, plus
+**Library: 1,045 tests in 50 classes, 0 failures, 0 skipped.** One class per component, plus
 the foundation, the drag gate, the press helper and the rules below. They assert behaviour:
 the state after taps, drags and keys; that listeners are called for user input only; the
 order of listener and haptic; saved and restored state; right-to-left placement;
@@ -116,17 +116,17 @@ the window, the view tree. State is read from the views afterwards.
 
 | Class | Tests | What it drives |
 |---|---|---|
-| `NavigationDeviceTest` | 7 | the power switch by tap and drag; dragging to the four pages around Home and Back from each; a short slow drag that glides back; a row that opens a page; a page attached later keeps clear of the status bar; a second activity that arrives like a page and is swiped back; rotation |
+| `NavigationDeviceTest` | 9 | the power switch by tap and drag; dragging to the four pages around Home and Back from each; an entry at the bottom of Home opens its page; a page around Home carries no way back and is left by dragging back; a short slow drag that glides back; a row that opens a page; a page attached later keeps clear of the status bar; a second activity that arrives like a page and is swiped back; rotation |
 | `ControlsDeviceTest` | 9 | a track by tap and by drag; a vertical drag that starts on a track and scrolls the page; a change the listener refuses; a switch; a stepper tapped and held; a slider; checkboxes and radios; typing into a field; focus walking into a page with the arrow keys |
 | `GesturesDeviceTest` | 7 | a detail page dragged back to its parent; a row slid aside and its action; a short drag that glides shut; a switch inside a sliding row; a section; linked pagers; a pager at its first page handing the drag to the page |
 | `OverlaysDeviceTest` | 8 | dialogs confirmed, cancelled with Back, with three actions, with input that is refused and then accepted; a sheet dragged down; a sheet action; a menu; a toast that leaves by itself |
 | `AppearanceDeviceTest` | 2 | switching to dark and back, and to larger text, while the app runs |
 | `PagesDeviceTest` | 3 | every page opened and scrolled from top to bottom in light and in dark with hardware rendering; every page opens at its top; the window is not blank |
 
-**Device A, Android 16: 36 tests, 0 failures**, in 331 s
+**Device A, Android 16: 38 tests, 0 failures**, in 331 s
 ([report](verification/device-tests-android-16.txt)).
 
-**Device B, Android 6.0: 35 tests, 0 failures**, in 229 s
+**Device B, Android 6.0: 37 tests, 0 failures**, in 229 s
 ([report](verification/device-tests-android-6.txt)). The one test that does not run there needs an
 API from Android 8.0 to read the window's pixels. Every page was also photographed on this
 device in both themes, and the overlays in both themes, and the pictures were looked at.
@@ -228,7 +228,7 @@ evaluation; it must not be published to a store as it is.
 - **From the source archive.** `mallet-ui-0.1.0-source.zip` was unpacked into an empty
   directory outside the working tree. There
   `./gradlew :mallet:testDebugUnitTest :showcase:testDebugUnitTest :mallet:lintDebug :showcase:lintDebug :mallet:assembleRelease :showcase:assembleRelease --no-build-cache`
-  succeeded: the same 1,030 and 20 tests, no lint issue, both release builds.
+  succeeded: the same 1,045 and 35 tests, no lint issue, both release builds.
 - **Shrunk.** `python tools/device.py smoke` installed the release APK from `dist/` on each
   emulator, opened all 27 pages and scrolled each: none crashed. The check itself was
   checked: a crash forced with `am crash` is seen by it. The page that is inflated from a

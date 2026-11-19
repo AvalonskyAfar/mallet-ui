@@ -1,4 +1,4 @@
-Sancai showcase: device tests
+Mallet showcase: device tests
 device: Google sdk_gphone64_x86_64, Android 16 (API 36), x86_64, Physical size: 1080x2400, Physical density: 420
 date:   2026-11-18 02:16 +0800
 

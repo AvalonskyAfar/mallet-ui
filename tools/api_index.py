@@ -20,8 +20,8 @@ def first_sentence(doc_lines):
     text = re.sub(r"\s+", " ", text).strip()
     if not text:
         return ""
-    cut = re.search(r"(?<=[.:])\s", text)
-    sentence = text[: cut.start()] if cut else text
+    cut = re.search(r"(?<=[.:])\s+(?=[A-Z\[`(])", text)
+    sentence = text[: cut.start() + 1] if cut else text
     return sentence[:200]
 
 

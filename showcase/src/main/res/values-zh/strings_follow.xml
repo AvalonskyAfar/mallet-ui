@@ -12,7 +12,7 @@
     <string name="follow_drag_note">手指按住滑块慢慢移动。停在半路松手，它会落到较近的一侧。</string>
 
     <string name="follow_colour_title">颜色随位置流动</string>
-    <string name="follow_colour_detail">圆珠身后的那一段，取离数值最近的底色；滑过两种底色的中点，一种便融入另一种。</string>
+    <string name="follow_colour_detail">圆珠身后的那一段，取离数值最近的底色；走到两种底色的中点时换成新的一种，以短暂的过渡完成。</string>
     <string name="follow_colour_label">强度</string>
     <string name="follow_colour_value">%1$d%% · %2$s</string>
     <string name="follow_colour_percent">%1$d%%</string>

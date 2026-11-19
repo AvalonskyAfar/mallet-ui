@@ -24,7 +24,8 @@ Marks: **Extracted** from the original app, **Extended** from an idea in it, **N
    a page, a sheet, a row. On release it glides to rest along one curve
    (`MalletMotion.glide()`); how long depends on how far it still has to go.
 2. **Colour moves with position.** The bed of a track blends between hues as the thumb
-   travels, not after it lands.
+   travels, not after it lands. A slider's stretch instead holds the nearest hue and switches
+   over a short fade at the half-way point between two hues.
 3. **Decide late, commit clearly.** Nothing is decided inside the touch slop. A drag commits
    when it has gone 28 % of the way or is flicked; otherwise it returns. A cancelled gesture
    always returns.

@@ -33,8 +33,8 @@ import kotlin.math.roundToInt
  * The bead follows the finger anywhere on the track; a tap makes it glide to the touched
  * place. The hue behind the bead is the value: either one hue ([hue], cobalt by default)
  * or a scale set with [setHueScale], for example bronze, ochre, cobalt, jade: the
- * stretch then wears the hue nearest to the bead, and the next one blends in as the bead
- * passes. The rest of the track stays a neutral groove.
+ * stretch then wears the hue nearest to the bead; at the half-way point to the next hue it
+ * switches to that one, over a short fade. The rest of the track stays a neutral groove.
  *
  * With a [stepSize] above zero the bead snaps to the step grid and every crossed step gives a
  * detent haptic; with `0` the slider is continuous.

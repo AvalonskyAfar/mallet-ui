@@ -164,7 +164,7 @@ you give it a content description.
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:malletIcon` | one of 51 names (see below) | An icon of the built-in set. Values follow the order of the MalletIcon enum. |
+| `app:malletIcon` | one of 50 names, or `none` (see below) | An icon of the built-in set. Values follow the order of the MalletIcon enum. |
 | `app:malletTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | Colour role of text or of an icon. |
 | `app:malletIconStroke` | dimension | Stroke width at the drawn size. Defaults to 2dp. |
 
@@ -215,7 +215,7 @@ Pictures: see [MalletSurface](#malletsurface).
 | `android:clickable` | boolean | Whether the button answers taps and keys. True unless the layout says otherwise. |
 | `app:malletButtonVariant` | `neutral` / `primary` / `danger` / `text` | The body of the button: a neutral capsule, a coloured capsule, or the label alone. |
 | `app:malletTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | Text colour of the text variant. Defaults to accent. |
-| `app:malletIcon` | one of 51 names (see below) | Icon drawn before the label. |
+| `app:malletIcon` | one of 50 names, or `none` (see below) | Icon drawn before the label. |
 | `app:malletLoading` | boolean | Replaces the label with a spinner and ignores clicks. |
 
 | Member | What it does |
@@ -268,7 +268,7 @@ never for `setChecked`, and it is called before the haptic tick. Put several chi
 | `app:malletChipKind` | `action` / `filter` | What the chip does: an action is pressed, a filter is checked and unchecked. |
 | `app:malletChecked` | boolean | Whether a filter chip starts checked. |
 | `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | Hue of a checked filter chip. Cobalt by default. |
-| `app:malletIcon` | one of 51 names (see below) | Icon drawn before the label. |
+| `app:malletIcon` | one of 50 names, or `none` (see below) | Icon drawn before the label. |
 
 | Member | What it does |
 |---|---|
@@ -400,8 +400,6 @@ no number. A content description or an `importantForAccessibility` other than `a
 you set yourself, in XML or from code, is kept: the badge then leaves that property alone.
 Set the description back to `null`, or the importance back to `auto`, and the badge takes
 it over again with its next change.
-
-<img src="images/components/navbar_light.png" width="320" alt="MalletBadge, light theme"> <img src="images/components/navbar_dark.png" width="320" alt="MalletBadge, dark theme">
 
 ```xml
 <io.github.avalonskyafar.mallet.widget.MalletBadge
@@ -788,8 +786,8 @@ A slim recessed track with a coloured stretch that runs from the start to a neut
 The bead follows the finger anywhere on the track; a tap makes it glide to the touched
 place. The hue behind the bead is the value: either one hue (`hue`, cobalt by default)
 or a scale set with `setHueScale`, for example bronze, ochre, cobalt, jade: the
-stretch then wears the hue nearest to the bead, and the next one blends in as the bead
-passes. The rest of the track stays a neutral groove.
+stretch then wears the hue nearest to the bead; at the half-way point to the next hue it
+switches to that one, over a short fade. The rest of the track stays a neutral groove.
 
 With a `stepSize` above zero the bead snaps to the step grid and every crossed step gives a
 detent haptic; with `0` the slider is continuous.
@@ -817,7 +815,7 @@ inset by half a bead on both sides, so the bead and its shadow never leave the v
 | `app:malletStepSize` | float | The step a numeric control moves in. |
 | `app:malletValue` | float | The value a numeric control starts with. |
 | `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | One of the five hues of the theme. |
-| `app:malletSliderHueMode` | `single` / `scale` | How the stretch behind the bead is coloured. "single" fills it with the hue named by malletHue. "scale" blends through bronze, ochre, cobalt and jade as the value rises, for values that read as a strength. |
+| `app:malletSliderHueMode` | `single` / `scale` | How the stretch behind the bead is coloured. "single" fills it with the hue named by malletHue. "scale" takes the hue nearest to the bead from bronze, ochre, cobalt and jade, one hue per quarter of the track, and switches at the quarter's half-way point, for values that read as a strength. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
 | Member | What it does |
@@ -957,7 +955,7 @@ and the one that was being typed in takes focus again, provided each field has a
 | `android:maxLength` | integer | Hard limit of characters. |
 | `android:minLines` | integer | Lines the field is at least high for. |
 | `android:maxLines` | integer | Lines after which the text scrolls. |
-| `app:malletIcon` | one of 51 names (see below) | An icon of the built-in set. Values follow the order of the MalletIcon enum. |
+| `app:malletIcon` | one of 50 names, or `none` (see below) | An icon of the built-in set. Values follow the order of the MalletIcon enum. |
 | `app:malletFieldLabel` | string | Label written above the well. |
 | `app:malletFieldHelper` | string | Helper text written below the well. |
 | `app:malletFieldError` | string | Error written below the well in place of the helper; also colours the rim. |
@@ -1144,7 +1142,7 @@ is set explicitly. It keeps no state of its own, so there is nothing to save or 
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 | `app:malletTitle` | string | Main line of a row, heading or state view. |
 | `app:malletDetail` | string | Supporting line under the title. |
-| `app:malletIcon` | one of 51 names (see below) | Icon at the start of the row. |
+| `app:malletIcon` | one of 50 names, or `none` (see below) | Icon at the start of the row. |
 | `app:malletEntryArrow` | `none` / `end` / `start` | Chevron at the edge of the row. |
 | `app:malletEntryAlignment` | `center` / `start` | Whether the text is centred in the row or aligned to its start. |
 | `app:malletEntryValue` | string | Short value shown at the end of the row, before the end chevron. |
@@ -1520,11 +1518,13 @@ does not fit is cut with an ellipsis.
 With a keyboard, the arrow keys move a cursor from item to item and Space or Enter activates
 the item under it; the selection does not follow the cursor on its own.
 
-The row is 72 dp tall and grows by the navigation-bar inset, so it can sit at the very bottom
+The row is 72 dp tall at the plain label size; a label enlarged by the reader's settings,
+once its descender no longer clears the baseline, grows it further. It also grows by the
+navigation-bar inset, so it can sit at the very bottom
 of an edge-to-edge window; switch that off with `fitNavigationBar` when the page around it is
 already padded for the system bars. Set `elevated` when content scrolls underneath it.
 
-Pictures: see [MalletBadge](#malletbadge).
+<img src="images/components/navbar_light.png" width="320" alt="MalletNavBar, light theme"> <img src="images/components/navbar_dark.png" width="320" alt="MalletNavBar, dark theme">
 
 ```xml
 <io.github.avalonskyafar.mallet.widget.MalletNavBar
@@ -1607,7 +1607,7 @@ mirrored in right-to-left layouts.
 ```
 
 ```kotlin
-topBar.setNavigation { finish() }
+topBar.setNavigation(onClick = View.OnClickListener { finish() })
 topBar.addAction(MalletIcon.SEARCH, getString(R.string.search)) { openSearch() }
 topBar.bindTo(scrollView)
 ```
@@ -1615,7 +1615,7 @@ topBar.bindTo(scrollView)
 | XML attribute | Value | Meaning |
 |---|---|---|
 | `app:malletTitle` | string | The centred title. |
-| `app:malletIcon` | one of 51 names (see below) | Icon of the navigation button at the start; without it the bar has none. |
+| `app:malletIcon` | one of 50 names, or `none` (see below) | Icon of the navigation button at the start; without it the bar has none. |
 | `app:malletTopBarSubtitle` | string | A quiet second line under the title. |
 | `app:malletTopBarNavigationDescription` | string | What the navigation button says to a screen reader (default: "Back"). |
 | `app:malletTopBarLifted` | boolean | Whether the hairline along the bottom edge is shown from the start. |
@@ -1629,7 +1629,7 @@ topBar.bindTo(scrollView)
 | `var fitStatusBar: Boolean` | Whether the bar pads itself for the status bar and display cutout (default true). |
 | `val navigationButton: View? get()` | The navigation button, or `null` when the bar has none. |
 | `val actionCount: Int get()` | Number of action icons at the end of the bar (0 to 2). |
-| `fun setNavigation(icon: MalletIcon = MalletIcon.CHEVRON_LEFT, description: CharSequence? = null, onClick: OnClickListener?)` | Shows the navigation button at the start of the bar, drawn in ink. right-to-left layouts, as every directional icon is this function again. |
+| `fun setNavigation(icon: MalletIcon = MalletIcon.CHEVRON_LEFT, description: CharSequence? = null, onClick: OnClickListener?)` | Shows the navigation button at the start of the bar, drawn in ink. |
 | `fun clearNavigation()` | Removes the navigation button. |
 | `fun addAction(icon: MalletIcon, description: CharSequence, onClick: OnClickListener?): View` | Adds an action icon at the end of the bar, drawn muted, and returns its view (to disable it, or to anchor a menu to it). |
 | `fun getActionAt(index: Int): View` | The view of the action at `index`, in the order the actions were added. |
@@ -1828,9 +1828,10 @@ dots.attachTo(pager)
 
 Where the pages of an app lie in relation to one another.
 
-In Mallet, pages are places rather than a stack. A page is reached by dragging towards it,
-and a chevron on a row points to where its page lies. The graph records those places; a
-`MalletSpatialHost` moves between them.
+In Mallet, pages are places rather than a stack. A page is reached by dragging the current
+page towards the side where it lies; it slides in from that side, and a chevron on a row
+points to where its page lies. The graph records those places; a `MalletSpatialHost` moves
+between them.
 
 Pages are identified by string keys. The graph is immutable.
 
@@ -2388,7 +2389,7 @@ Disabling the view pales the message and disables the action.
 |---|---|---|
 | `app:malletTitle` | string | The title, one short phrase. |
 | `app:malletDetail` | string | The supporting sentence under the title. |
-| `app:malletIcon` | one of 51 names (see below) | Overrides the icon of the kind; "none" removes the icon. |
+| `app:malletIcon` | one of 50 names, or `none` (see below) | Overrides the icon of the kind; "none" removes the icon. |
 | `app:malletStateViewKind` | `empty` / `error` / `offline` / `success` / `info` | The preset of icon and icon colour. Default empty. |
 | `app:malletStateViewAction` | string | Label of the action button; without it there is no button. |
 | `app:malletStateViewCompact` | boolean | The small form for a card row: 28dp icon and tighter gaps. |
@@ -2573,7 +2574,7 @@ are ordinary focus stops for the keyboard.
 |---|---|---|
 | `app:malletTitle` | string | Main line of a row, heading or state view. |
 | `app:malletDetail` | string | Supporting line under the title. |
-| `app:malletIcon` | one of 51 names (see below) | Replaces the icon the tone brings. |
+| `app:malletIcon` | one of 50 names, or `none` (see below) | Replaces the icon the tone brings. |
 | `app:malletBannerTone` | `info` / `warning` / `danger` / `success` | What kind of condition the banner reports. |
 | `app:malletBannerAction` | string | Label of the main text action, at the very end. |
 | `app:malletBannerSecondaryAction` | string | Label of the second text action, before the main one. |

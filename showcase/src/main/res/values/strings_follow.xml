@@ -12,7 +12,7 @@
     <string name="follow_drag_note">Put a finger on the thumb and move slowly. Let go half-way and it settles on the nearer side.</string>
 
     <string name="follow_colour_title">Colour moves with position</string>
-    <string name="follow_colour_detail">The stretch behind the bead wears the hue nearest to the value. Half-way between two hues, one blends into the other.</string>
+    <string name="follow_colour_detail">The stretch behind the bead wears the hue nearest to the value. At the half-way point to the next hue it switches to that one, over a short fade.</string>
     <string name="follow_colour_label">Strength</string>
     <string name="follow_colour_value">%1$d%% · %2$s</string>
     <string name="follow_colour_percent">%1$d%%</string>

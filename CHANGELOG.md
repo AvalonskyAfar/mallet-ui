@@ -71,8 +71,8 @@ screen readers; mirrors in right-to-left layouts; and keeps its state across rot
   and Simplified Chinese.
 - Home and the four first-level pages around it carry no navigation marks, as in the
   original app (D-23). Home names its neighbours once, in a row of entries at its bottom;
-  an entry can be tapped, and its page is also reached by dragging Home towards the side on
-  which that page lies. A first-level page shows no way back: it is left by dragging back
+  an entry can be tapped, and its page is also reached by dragging Home towards the side
+  where that page lies. A first-level page shows no way back: it is left by dragging back
   towards Home, or with the system's Back. Deeper pages keep a quiet way-back row that
   names their parent; that row is the showcase's own, the original has none.
 
@@ -87,6 +87,6 @@ screen readers; mirrors in right-to-left layouts; and keeps its state across rot
 
 ### Verified
 
-- 1,030 library tests and 20 showcase tests on the JVM; Android Lint without issues in
-  both modules; 36 device tests on an Android 16 emulator and 35 on Android 6.0. What was
+- 1,045 library tests and 35 showcase tests on the JVM; Android Lint without issues in
+  both modules; 38 device tests on an Android 16 emulator and 37 on Android 6.0. What was
   run, and what was not, is in [docs/VERIFICATION.md](docs/VERIFICATION.md).

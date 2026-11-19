@@ -36,8 +36,8 @@ ships as one AAR without a single image or font file.
 |---|---|
 | **55 components** | tracks, switches, steppers, sliders, buttons, chips, fields, rows, bars, tabs, dialogs, sheets, menus, toasts, loading, empty and error states |
 | **An interaction system** | press that sinks, thumbs and pages that follow the finger, pages laid out as places, rows that slide aside, sections that open, one curve for everything that glides |
-| **A design system** | colour roles, five hues, an eleven-step type scale, spacing, shape, three materials, motion tokens, 50 icons drawn in code; light, dark and high contrast |
-| **Proof** | 1,050 tests on the JVM, 36 tests with real touches on an Android 16 emulator and 35 on Android 6.0, a demo app built on the library alone, without another UI kit |
+| **A design system** | colour roles, five hues, an eleven-step type scale, spacing, shape, four materials, motion tokens, 50 icons drawn in code; light, dark and high contrast |
+| **Proof** | 1,080 tests on the JVM, 38 tests with real touches on an Android 16 emulator and 37 on Android 6.0, a demo app built on the library alone, without another UI kit |
 
 ## See it move
 
@@ -47,7 +47,7 @@ driven by real touch events; the dot that marks the finger is drawn by the recor
 | Pages are places | Colour is state | It follows the finger |
 |:---:|:---:|:---:|
 | <img src="docs/images/motion/places.gif" width="250" alt="Dragging from Home to the page beside it and back, then to the page below, and opening a page from a row"> | <img src="docs/images/motion/tracks.gif" width="250" alt="A thumb dragged along a four-option track; the hue under it changes from bronze to jade"> | <img src="docs/images/motion/switches.gif" width="250" alt="A switch tapped and one dragged; a power switch dragged off, a short drag that returns, and dragged on"> |
-| A page lies beside, above or below another one. Drag towards it; Back follows the map. | Off is bronze, on is cobalt, four levels run bronze, ochre, cobalt, jade. The thumb stays neutral. | Thumbs move at finger speed and glide the rest of the way on one curve. Nothing bounces. |
+| A page lies beside, above or below another one. Drag the page towards where the next one lies; Back follows the map. | Off is bronze, on is cobalt, four levels run bronze, ochre, cobalt, jade. The thumb stays neutral. | Thumbs move at finger speed and glide the rest of the way on one curve. Nothing bounces. |
 
 | Slide aside, open in place | Dialogs, sheets, menus, toasts | A theme that changes in place |
 |:---:|:---:|:---:|
@@ -57,7 +57,7 @@ driven by real touch events; the dot that marks the finger is drawn by the recor
 ## The language in eight rules
 
 1. **Colour is state, and it lives in the bed.** The part you touch is always the same neutral bead.
-2. **Three materials, nothing else.** Surface (raised), track (recessed, carries the hue), thumb (raised, inside a track); plus a well for text and pictures. No tinted buttons, no ripples, no elevation overlays.
+2. **Four materials, nothing else.** Surface (raised), track (recessed, carries the hue), thumb (raised, inside a track) and the recessed well for text and pictures. No tinted buttons, no ripples, no elevation overlays.
 3. **Text is centred; arrows are not part of the text.** A chevron stands on its own at the edge and points to where the next page lies.
 4. **Dividers run from rim to rim.** Rows read as sections of one body, not as boxes in a box.
 5. **Pressing sinks; it does not tint.** 1.5 dp down, straight back.
@@ -245,8 +245,8 @@ names the pages around it once, in a row of four entries at its bottom: an outli
 a short label, one entry for each first-level page. The page at the start side comes first and
 the page at the end side last, with the pages below and above between them: Foundations,
 Components, Appearance, Interactions. An entry can be tapped; the page it names is also reached
-by dragging towards it. The row is the library's navigation row, `MalletNavBar`, in launcher
-mode.
+by dragging Home towards the side where it lies. The row is the library's navigation row,
+`MalletNavBar`, in launcher mode.
 
 A first-level page shows no way back: no back row, no arrow, no bar. It is left the way it was
 reached, by dragging back towards Home, or with the system's Back. A page without a button to
@@ -303,8 +303,8 @@ library contains none of the original app's business logic, models or artwork.
 
 | | |
 |---|---|
-| Unit tests | 1,030 for the library and 20 for the showcase, on the JVM with Robolectric and Android's native graphics, none failing; every view is also run through a whole life on API 23, 28 and 32 |
-| Device tests | 36 tests drive the installed showcase with real touch events on an Android 16 emulator, and 35 of them on Android 6.0, the oldest version supported; all pass |
+| Unit tests | 1,045 for the library and 35 for the showcase, on the JVM with Robolectric and Android's native graphics, none failing (8 more are film tests, run when asked for); every view is also run through a whole life on API 23, 28 and 32 |
+| Device tests | 38 tests drive the installed showcase with real touch events on an Android 16 emulator, and 37 of them on Android 6.0, the oldest version supported; all pass |
 | Static checks | Android Lint with warnings as errors, both modules; a source-rule test that forbids ripples, elevation and text sizes outside the scale |
 | Shrinking | the release demo APK is built with R8 and resource shrinking; the library needs no keep rules |
 | Integration | `samples/minimal`, a separate Java project, resolves the library from the release's Maven repository, builds shrunk and runs; the source archive, unpacked elsewhere, builds and passes its tests |
