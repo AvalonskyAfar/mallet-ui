@@ -18,7 +18,7 @@
 
     <string name="type_reading_title">Reading</string>
     <string name="type_reading_detail">The same passage in the two body roles. Both get extra leading; the compact one is for dense copy, as in cards and callouts.</string>
-    <string name="type_reading_copy">A hue is thin where the clay shows through and deep where the colour pools. Type on a screen works the same way: the letters matter, and so does the space left between the lines. Body text is given a little more leading than a label, so that the eye finds the start of the next line without looking for it.</string>
+    <string name="type_reading_copy">Type on a screen depends on two things: the letters, and the space left between the lines. A title or a label is short, so its lines can be set close together. Body text runs on for many lines and is given a little more leading, so that the eye finds the start of the next line without looking for it.</string>
 
     <string name="type_large_title">Larger text</string>
     <string name="type_large_detail">The same heading and row at two text scales. The switches move together.</string>

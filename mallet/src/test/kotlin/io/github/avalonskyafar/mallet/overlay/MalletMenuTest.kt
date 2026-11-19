@@ -60,7 +60,7 @@ class MalletMenuTest {
         return hits
     }
 
-    /** Pixels dark enough to be part of an ink stroke on the light porcelain. */
+    /** Pixels dark enough to be part of an ink stroke on the light surface. */
     private fun dark(bitmap: Bitmap, area: Rect): Int {
         var hits = 0
         for (y in area.top until area.bottom) for (x in area.left until area.right) {

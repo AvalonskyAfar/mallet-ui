@@ -15,6 +15,7 @@ import io.github.avalonskyafar.mallet.widget.MalletButton
 import io.github.avalonskyafar.mallet.widget.MalletControlRow
 import io.github.avalonskyafar.mallet.widget.MalletPageIndicator
 import io.github.avalonskyafar.mallet.widget.MalletSwitch
+import io.github.avalonskyafar.mallet.widget.MalletText
 import kotlin.math.roundToInt
 
 /** Pager: a short flow with a linked heading and dots, moved by hand and from code. */
@@ -23,6 +24,18 @@ object PagerPage : DemoPage("i_pager", R.string.page_i_pager_title, R.string.pag
     private const val PAGES = 4
     private const val CONTENT_DP = 220
     private const val HEADING_DP = 58
+
+    /**
+     * Where text stands inside the two cards: at the 14 dp at which a start-aligned
+     * [MalletControlRow] puts its own text, so that the status line and the switch row share an edge.
+     */
+    private const val TEXT_EDGE_DP = 14
+
+    /** Space above and below the divider of the second card. */
+    private const val DIVIDER_GAP_DP = 3f
+
+    /** Air the switch row keeps above and below its text when the text outgrows the row. */
+    private const val ROW_AIR_DP = 8
 
     private val titles = intArrayOf(
         R.string.pager_page1_title, R.string.pager_page2_title,
@@ -76,7 +89,7 @@ object PagerPage : DemoPage("i_pager", R.string.page_i_pager_title, R.string.pag
             """,
         )
 
-        val status = page.text("", MalletTextRole.BODY_COMPACT, MalletTextTone.MUTED)
+        val status = startText(page, "", MalletTextRole.BODY_COMPACT, MalletTextTone.MUTED)
         val previous = MalletButton(context).apply {
             text = page.str(R.string.pager_previous)
             icon = MalletIcon.CHEVRON_LEFT
@@ -120,13 +133,16 @@ object PagerPage : DemoPage("i_pager", R.string.page_i_pager_title, R.string.pag
         first.setOnClickListener { move(0, animate = false) }
 
         page.section(R.string.pager_code_title, R.string.pager_code_detail) {
-            addView(status, below(page, 6).apply { marginStart = page.dp(8); marginEnd = page.dp(8) })
+            val edge = page.dp(TEXT_EDGE_DP)
+            addView(status, below(page, 6).apply { marginStart = edge; marginEnd = edge })
             val row = LinearLayout(context).apply { orientation = LinearLayout.HORIZONTAL }
             row.addView(previous, LinearLayout.LayoutParams(0, PageScope.WRAP, 1f))
             row.addView(next, LinearLayout.LayoutParams(0, PageScope.WRAP, 1f).apply { marginStart = page.dp(8) })
             addView(row, below(page, 12))
-            addView(first, below(page, 6))
-            addDivider(6f)
+            // The text button and the row keep air around their text themselves, so the divider
+            // needs little of its own to stand evenly between the two.
+            addView(first, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))
+            addDivider(DIVIDER_GAP_DP)
             val swipe = MalletSwitch(context).apply {
                 setChecked(true, animate = false)
                 setOnCheckedChangeListener { _, checked ->
@@ -138,6 +154,10 @@ object PagerPage : DemoPage("i_pager", R.string.page_i_pager_title, R.string.pag
             val swipeRow = MalletControlRow(context).apply {
                 title = page.str(R.string.pager_swipe_title)
                 detail = page.str(R.string.pager_swipe_detail)
+                alignment = MalletControlRow.Alignment.START
+                // Enlarged text makes the row taller than its minimum height, and then it has
+                // no air of its own above and below its text.
+                setPadding(0, page.dp(ROW_AIR_DP), 0, page.dp(ROW_AIR_DP))
                 setControl(swipe)
             }
             addView(swipeRow, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))
@@ -161,14 +181,25 @@ object PagerPage : DemoPage("i_pager", R.string.page_i_pager_title, R.string.pag
     private fun below(page: PageScope, topDp: Int): LinearLayout.LayoutParams =
         LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP).apply { topMargin = page.dp(topDp) }
 
+    /**
+     * Text of a card that keeps to the start edge whatever language it is written in, so that
+     * it mirrors with the rest of the page in a right-to-left layout.
+     */
+    private fun startText(
+        page: PageScope,
+        value: CharSequence,
+        role: MalletTextRole,
+        tone: MalletTextTone = MalletTextTone.INK,
+    ): MalletText = page.text(value, role, tone).apply { textAlignment = View.TEXT_ALIGNMENT_VIEW_START }
+
     private fun headingPage(page: PageScope, index: Int): View =
         LinearLayout(page.context).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_VERTICAL
-            setPadding(page.dp(8), 0, page.dp(8), 0)
+            setPadding(page.dp(TEXT_EDGE_DP), 0, page.dp(TEXT_EDGE_DP), 0)
             val step = page.context.getString(R.string.pager_step, index + 1, PAGES)
-            addView(page.text(step, MalletTextRole.CAPTION, MalletTextTone.MUTED))
-            addView(page.text(page.str(titles[index]), MalletTextRole.HEADLINE), below(page, 3))
+            addView(startText(page, step, MalletTextRole.CAPTION, MalletTextTone.MUTED))
+            addView(startText(page, page.str(titles[index]), MalletTextRole.HEADLINE), below(page, 3))
         }
 
     private fun contentPage(page: PageScope, index: Int): View =

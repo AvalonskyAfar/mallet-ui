@@ -1,17 +1,23 @@
 # Mallet design system
 
-Mallet (Mallet) is a design language for Android Views. It takes its name from the three-colour
-glazed pottery of the Tang dynasty: a calm porcelain body on which colour appears only where
-hue was poured.
+Mallet is a design language for Android Views. The name is the craftsman's hammer, and a
+salute to Smartisan (锤子科技, "Hammer Technology"; the name Smartisan is *smart* +
+*artisan*), the phone maker that treated every interface detail as a piece of craft. A
+mallet shapes a sheet in two ways only: it raises some parts and sinks others. That is all a
+Mallet interface is made of: raised surfaces, recessed tracks, and a press that sinks.
 
-That is the whole idea. Pages, cards and text are neutral. Colour is reserved for **state**,
+The salute is a sentence, nothing more: the project is not affiliated with Smartisan or its
+owners and uses none of its marks ([LICENSE_AUDIT.md](LICENSE_AUDIT.md#4-the-name)).
+
+Colour has one job. Pages, cards and text are neutral. Colour is reserved for **state**,
 and it sits in the recessed bed of a control, never on the part you touch.
 
 This document defines the tokens and rules. Every value is implemented in
 `io.github.avalonskyafar.mallet.theme` and `...material`; nothing here exists only on paper.
 
 Each rule carries one of three marks. They say where the rule comes from; the evidence for
-each is in [DESIGN_DECISIONS.md](DESIGN_DECISIONS.md).
+each is in [DESIGN_DECISIONS.md](DESIGN_DECISIONS.md), and a number such as D-24 names a
+decision recorded there.
 
 | Mark | Meaning |
 |---|---|
@@ -31,23 +37,35 @@ Contents: [Principles](#1-principles) · [Colour](#2-colour) · [Hues](#3-hues) 
 1. **Colour is state, and it lives in the bed.** A switch that is off is bronze; on, it is
    cobalt. A four-level control runs bronze, ochre, cobalt, jade. The thumb that
    travels over the bed is always the same neutral bead. *(Extracted)*
-2. **Three materials, nothing else.** Porcelain (raised, neutral), glazed track (recessed,
-   coloured), thumb (raised, neutral, inside a track). A fourth, the well, is a recessed
+2. **Three materials, nothing else.** Surface (raised, neutral), track (recessed, carries
+   the hue), thumb (raised, neutral, inside a track). A fourth, the well, is a recessed
    neutral field for text and pictures. There are no flat tinted buttons, no ripples, no
    elevation overlays. *(Extracted)*
 3. **Text is centred; arrows are not part of the text.** In rows, title and detail are
    centred on the row. A chevron is placed on its own at the edge and never pushes the text
    aside. It points to where the next page lies. *(Extracted)*
 4. **Dividers run from rim to rim.** A hairline inside a card touches both edges of the card.
-   Rows read as sections of one body, not as boxes in a box. *(Extracted)*
+   Rows read as sections of one body, not as boxes in a box. A row that slides aside runs
+   from rim to rim as well: the coloured bed under it starts at the rim of the card, not at
+   the edge of the card's content (section 7.5). *(Extracted; the row that slides aside is
+   Extended and departs from the original on purpose, D-24)*
 5. **Pressing sinks; it does not tint.** What you touch moves down 1.5 dp and comes straight
    back. Tracks and thumbs tighten their shadow. Nothing changes colour. *(Extracted)*
-6. **Everything follows the finger, or glides.** Thumbs, pages, sheets and reveal rows move
-   with the finger at finger speed. When released they settle along one easing curve.
-   Nothing bounces, nothing fades in. *(Extracted)*
+6. **Everything follows the finger, or glides.** Thumbs, pages, sheets and rows that slide
+   aside move with the finger at finger speed. When released they settle along one easing
+   curve. Nothing bounces, nothing fades in. *(Extracted)*
 7. **Pages are places.** A page lies beside, above or below another one and is reached by
-   dragging towards it. Navigation is movement through a map, not a stack of cards.
-   *(Extracted)*
+   dragging towards it. Navigation is movement through a map, not a stack of cards. A place
+   carries no signpost. Home, the root page of the map, shows nothing that points at its
+   neighbours: no arrows, no page names at the edges. It names the pages around it once, in
+   a row of entries at its bottom, one entry for each first-level page (a page that lies
+   directly beside, above or below Home). A first-level page shows no way back: no back
+   row, no arrow, no bar. It is left the way it was reached, by dragging back towards Home,
+   or with the system's Back. A page without a button to tap is how the drag becomes a
+   habit. *(Extracted, in part Extended: D-23)* The deeper pages of the showcase, those
+   opened from a row, keep a quiet way-back row that names their parent; that row is New,
+   the original has no back control at any depth. The rule in full is in the
+   [interaction guide](INTERACTION_GUIDE.md#54-marks-and-their-absence).
 8. **Depth is painted, short and downward.** One hairline rim, one short soft shadow below,
    a trace of inner shading. Shadows never spread sideways into a glow. *(Extracted)*
 
@@ -57,7 +75,7 @@ Contents: [Principles](#1-principles) · [Colour](#2-colour) · [Hues](#3-hues) 
 
 ### 2.1 Neutral and semantic roles
 
-`MalletColors` holds the roles. The light theme is white porcelain: canvas, surface and
+`MalletColors` holds the roles. The light theme is white on white: canvas, surface and
 raised are the same white, and separation comes from rims and shadows alone. The dark theme
 is a blue-black slate with three real steps.
 
@@ -80,12 +98,12 @@ is a blue-black slate with three real steps.
 
 One role departs from the original. Its light `yellow` was `#E0B33A`, a colour the app
 declared but never drew; as text on white it reaches only 2.0 : 1. Mallet's `warning` is a
-role for text and marks, so it is a deep ochre, `#9A6A14` (4.7 : 1), in the hue of the ochre
-hue.
+role for text and marks, so it is a deep ochre, `#9A6A14` (4.7 : 1), of the same colour
+family as the ochre hue.
 
 ### 2.2 High contrast
 
-`MalletTheme.highContrast` strengthens the weakest roles and the labels on hue
+`MalletTheme.highContrast` strengthens the weakest roles and the labels on a hue
 (section 3.4), until every text role reaches at least 4.5 : 1 on the canvas and on a card.
 When the theme does not set it, it follows the system's high-contrast text setting
 (Android 16 and later). *(`muted`, `hairline`, `divider`: Extracted. The rest: New)*
@@ -100,14 +118,15 @@ When the theme does not set it, it follows the system's high-contrast text setti
 | `warning` | `#9A6A14` | unchanged | `#9D804B` | `#A58B5C` |
 | `success` | `#2E9168` | `#2C835F` | `#598569` | `#6F957E` |
 
-In high contrast the label of a glazed capsule (primary, destructive) is whichever of white
+In high contrast the label of a coloured capsule (primary, destructive) is whichever of white
 and the theme's darkest neutral reads better on the tint (`theme.labelOnTint`).
 
 ### 2.3 Rules
 
 - Neutral roles never carry state. A card is never tinted to say "selected" or "error".
-- `accent`, `danger`, `warning` and `success` are for **text and marks**, and for the two
-  glazed capsule buttons (primary and destructive). They are not track colours.
+- `accent`, `danger`, `warning` and `success` are for **text and marks**, for the two
+  coloured capsule buttons (primary and destructive), and for the bed under a row that
+  slides aside (section 7.5). They are not track colours.
 - Shadows in the light theme are tinted with `ink`, not black, so they stay cool and soft.
   In the dark theme they are pure black.
 
@@ -115,8 +134,8 @@ and the theme's darkest neutral reads better on the tint (`theme.labelOnTint`).
 
 ## 3. Hues
 
-A hue is the colour poured into a recessed track. It is always a triple
-(`MalletHue`): the **bed**, a darker **edge** of the same hue for the one-dp rim, and the
+A hue is the colour that fills the bed of a recessed track. It is always a triple
+(`MalletHue`): the **bed**, a darker **edge** of the same colour for the one-dp rim, and the
 **on-bed** colour for labels and marks resting on it.
 
 ### 3.1 The five hues
@@ -133,10 +152,14 @@ These are screen colours, tuned on a device for how they look under the track's 
 shading. They are deliberately softer than the semantic text colours of section 2 and must
 not be swapped for them.
 
+The original names these colours by level, not by colour: `TRACK_OFF`, `TRACK_LIGHT`,
+`TRACK_STANDARD`, `TRACK_STRICT` and `TRACK_THEME_LIGHT`, in the order of the table. The
+five names are Mallet's. *(New, D-26)*
+
 ### 3.2 The scale
 
 Options of an ordinal control take their hue from position
-(`MalletHues.scale(count)`): *(Extracted)*
+(`theme.hues.scale(count)`; `theme.hues` is a `MalletHues`): *(Extracted)*
 
 | Options | Hues |
 |---|---|
@@ -149,9 +172,9 @@ While a thumb travels, the bed blends continuously between the hues of the two o
 is between. The control therefore answers "which option" by position and "how strong" by
 colour at once.
 
-For options that are not levels (a theme picker, a platform picker) pour one hue under all
-of them: `MalletHues.uniform(count, hue)`. Mist is the quiet choice for that; pass it
-explicitly, because `hue` defaults to cobalt.
+For options that are not levels (a theme picker, a platform picker) use one hue under all
+of them: `theme.hues.uniform(count, theme.hues.mist)`. Mist is the quiet choice for that;
+pass it explicitly, because the second argument, `hue`, defaults to cobalt.
 *(Extended: the original special-cased one theme picker.)*
 
 ### 3.3 Hue at night
@@ -175,17 +198,17 @@ dark edge = blend(blend(ink, canvas, 0.93), hue.edge, nightHue)
 | Jade | `#384C47` | `#374C46` |
 | Mist | `#555C64` | `#525C67` |
 
-`MalletTheme.nightHue = 0f` (XML: `malletNightHue`) restores the original neutral groove.
+A theme with `nightHue = 0f` (XML: `malletNightHue`) restores the original neutral groove.
 Always paint through `theme.bedColor(hue)` and `theme.bedEdgeColor(hue)`.
 
-### 3.4 Labels on hue
+### 3.4 Labels on a hue
 
 `theme.labelOnBed(active, own, optionCount)` decides the colour of text and marks resting on
 a bed.
 
-- **Light.** Every resting label takes the on-bed colour of the hue currently poured
-  (white on bronze, cobalt and jade; deep brown on ochre; slate on mist). The label
-  under the thumb is `ink` on the white bead. *(Extracted)*
+- **Light.** Every resting label takes the on-bed colour of the hue that fills the bed at
+  that moment (white on bronze, cobalt and jade; deep brown on ochre; slate on mist). The
+  label under the thumb is `ink` on the white bead. *(Extracted)*
 - **Light, high contrast.** Resting labels switch to a deep tone of the hue:
   `blend(edge, ink, 0.82)`. *(New)*
 - **Dark.** Each label keeps a pale tint of its *own* option's hue,
@@ -214,12 +237,12 @@ into them. *(Extended)*
 | `DISPLAY` | 20.5 | medium | ×1.16 | onboarding and hero titles |
 | `TITLE` | 20 | medium | ×1.16 | page title |
 | `HEADLINE` | 18 | medium | ×1.16 | dialog title, article group title |
-| `HEADING` | 17 | medium | ×1.16 | section heading above a card |
+| `HEADING` | 17 | medium | ×1.16 | section heading, above a card or a control on the canvas |
 | `SUBHEAD` | 15.5 | medium | ×1.16 | row title, article sub-heading |
 | `BODY` | 15.5 | regular | ×1.24 + 3 dp, tracking 0.01 | long-form copy |
 | `BODY_COMPACT` | 14.5 | regular | ×1.28 + 3 dp, tracking 0.01 | dense article copy |
 | `LABEL` | 14.5 | medium | ×1.16 | buttons and actions |
-| `FOOTNOTE` | 13.5 | regular | ×1.16 | facts, step details, the label of a revealed action |
+| `FOOTNOTE` | 13.5 | regular | ×1.16 | facts, step details, the label of the action a row uncovers |
 | `CAPTION` | 12.5 | regular | ×1.16 | supporting line under a title |
 | `MICRO` | 11.5 | regular | ×1.16 | detail line inside a row |
 
@@ -233,13 +256,13 @@ switch (medium 14 sp). *(Extracted)*
 
 - **No font padding.** Text views switch `includeFontPadding` off, so a line is as tall as
   its glyphs and vertical centring is optical, not approximate. *(Extracted)*
-- **Titles and labels are medium, never bold.** Bold is kept for the small labels on hue,
+- **Titles and labels are medium, never bold.** Bold is kept for the small labels on a hue,
   where it has to hold against colour. *(Extracted)*
 - **Only body text opens its leading.** Titles stay tight. *(Extracted)*
 - **Paragraphs fill their lines.** Long copy uses the simple line breaker without
   hyphenation, and CJK closing punctuation (`，。！？；：、）】》”’`) is tied to the
   preceding character so it never starts a line. *(Extracted)*
-- **Row and card text is centred**; headings above cards and article text are start-aligned.
+- **Row and card text is centred**; headings and article text are start-aligned.
   *(Extracted)*
 - **Text scale.** Every size is multiplied by the system font scale and by
   `MalletTheme.textScale`. The original offered one extra step, 1.13
@@ -273,15 +296,39 @@ not slide under the clock. *(New)*
 | `PAGE_BOTTOM` | 34 | below the last element |
 | `TEXT_INSET` | 10 | extra inset of headings and loose text, aligning them with card content |
 | `TITLE_GAP` | 16 | page title to first heading |
-| `HEADING_GAP` | 10 | heading to its card |
-| `SECTION_GAP` | 22 | card to next heading |
+| `HEADING_GAP` | 10 | heading to what stands under it: a card, or a control on the canvas |
+| `SECTION_GAP` | 22 | that card or control to the next heading |
 | `CARD_PADDING` | 9 | content padding of a card |
 | `DIVIDER_GAP` | 5 | above and below a divider between row groups |
 | `BUTTON_SIDE` | 30 | side margin of a full-width capsule on a page |
 
-A page is a single scrolling column on the canvas: title, then heading and card, heading and
-card. Cards span the page width; the one or two actions that apply to the whole page are
-capsule buttons below the last card.
+A page is a single scrolling column on the canvas: a title, then section after section. A
+section is a heading and what stands under it: a card, or a control on the canvas. Cards
+span the column; the one or two actions that apply to the whole page are capsule buttons
+below the last section.
+
+**A card is a group.** A card groups at least two rows or blocks that belong together. A
+lone control never gets a card of its own: it joins the card of its relatives, or it stands
+on the canvas under its heading, as a hero switch or a capsule button does. A caption or
+status line under a control does not make a group. A card around one composite block (a
+list, a state view, a pager with its dots, a paragraph, a picture, a stage with the knob
+that drives it) may stay. *(The grouping is Extracted; the rule about lone controls is New
+and departs from the original, D-25)*
+
+A raised surface says "these belong together". Around a single switch it says nothing and
+only adds a frame, so the page reads as a stack of little boxes. The original gives every
+headed section one card whatever its size, and so has two cards with one lone control row.
+The rule goes beyond the original, and it does so with the original's own means:
+
+- **In the card of its relatives.** Controls that belong together are the rows or labelled
+  blocks of one card. A full-bleed divider, and where it helps a short label inside the
+  card, separates one sub-group from the next. A switch, a checkbox or a short track
+  beside its title is a control row (`MalletControlRow`, section 5.2).
+- **On the canvas.** The original stands its power switch and its capsule buttons there.
+  Under its heading, a control without a card keeps the place a card would have:
+  `HEADING_GAP` below the heading, the full width of the column, `SECTION_GAP` below it
+  (`MalletPage.addSection` takes a control as it takes a card). A full-width capsule button
+  keeps its side margin, `BUTTON_SIDE`.
 
 ### 5.2 Rows
 
@@ -293,6 +340,7 @@ capsule buttons below the last card.
 | Control row, title and detail | 72 | Extracted |
 | Key-value row | 52 | Extracted |
 | Link row | 64 | Extracted |
+| Navigation row (the row of entries at the bottom of Home) | 72 | Extracted |
 | Dialog and sheet action | 54 / 56 | Extracted / New |
 | Menu item | 48 | New |
 
@@ -335,6 +383,7 @@ anything you operate.
 | Floating panel, menu | 10 dp | Extracted / New |
 | Dialog; top corners of a sheet | 16 dp | Extracted / New |
 | Checkbox bed | 7 dp | New |
+| Bed under a row that slides aside | follows its card: at the corners it shares with the card, the card's radius less the rim (7.1 dp in an 8 dp card); square everywhere else | Extended (D-24) |
 | Buttons, tracks, thumbs, toasts, chips, tags | capsule (half the height) | Extracted |
 
 Rims are 0.85 to 1 dp. Dividers are 1 dp. Nothing in the system has a thicker line except
@@ -345,12 +394,13 @@ keyboard focus (2 dp, section 8).
 ## 7. Materials and depth
 
 Android's elevation shadows are not used. Every rim, shadow and recess is painted by
-`MalletMaterial`, so the three materials look the same on every device and API level, and
-your own views can use them.
+`MalletMaterial`, so the four materials (surface, track, thumb, well) look the same on every
+device and API level, and your own views can use them.
 
-### 7.1 Porcelain — `drawSurface`, `MalletSurfaceDrawable`
+### 7.1 Surface — `drawSurface`, `MalletSurfaceDrawable`
 
-Cards, capsule buttons, dialogs, toasts, menus. Layers, bottom to top: *(Extracted)*
+The raised, neutral material: cards, capsule buttons, dialogs, toasts, menus. What a card
+may hold is in section 5.1. Layers, bottom to top: *(Extracted)*
 
 Shadow figures in this section are the nominal parameters (offset / blur, tint and opacity)
 that the painter approximates with stacked translucent shapes inside the gutter; the result
@@ -363,21 +413,22 @@ on screen is a little lighter than a free blur of the same numbers.
 | Inner depth | top shade 1.6 dp at 4 % ink, bottom shade at 5 % ink | none |
 | Rim | 0.85 dp `hairline` | 0.85 dp gradient: white 26 %, canvas +8.2 % ink, shadow 31 % |
 
-A **glazed body** (primary or destructive capsule) uses the dark recipe in both themes: a
+A **coloured body** (primary or destructive capsule) uses the dark recipe in both themes: a
 three-stop gradient of the tint (+10 % white, tint, +5.5 % black in light) and a gradient
 rim. *(Extracted for danger; primary New)*
 
-Pressed porcelain tightens its lift to 0 / 1.8 dp / blur 4.6 dp at 8 %. *(Extracted values,
+A pressed surface tightens its lift to 0 / 1.8 dp / blur 4.6 dp at 8 %. *(Extracted values,
 first used by Mallet's button)*
 
-### 7.2 Glazed track — `drawTrack`
+### 7.2 Track — `drawTrack`
 
-Segmented tracks, switches, steppers, sliders, progress. *(Extracted)*
+The recessed material that carries the hue: segmented tracks, switches, steppers, sliders,
+progress. *(Extracted)*
 
 | Layer | Value |
 |---|---|
 | Outer lift | shadow 0 / 6.08 dp / blur 12.8 dp, `ink` at 12 %; pressed 0 / 2.5 / 5.3 at 11 % |
-| Bed | the hue colour, painted as is; depth is laid over it, never mixed into it |
+| Bed | the bed colour of the hue, painted as is; depth is laid over it, never mixed into it |
 | Top inner shade | black 16 % (dark theme 27 %), fading over 3.2 dp + 2 × 5.12 dp |
 | Bottom inner light | white 34 % (dark theme 15 %), fading over 2.4 dp + 2 × 4 dp |
 | Rim | 1 dp in the hue's edge colour |
@@ -406,27 +457,58 @@ hairline tone). Replacing the rim with a solid
 colour is how a field shows focus (`ink`) or an error (`danger`). *(Extracted; solid rims
 New)*
 
-### 7.5 Gutters
+### 7.5 The bed under a row — `drawRevealBed`, `drawRevealShade`
+
+A row that slides aside uncovers a coloured bed, and on it one action. This is not a fifth
+material: it is a recess, as the bed of a track is, but it lies under the card and has no
+rim and no lift of its own. Its colour is that of the action, `danger` by default; the
+label of the action, and the icon above it where there is one, are white in both themes.
+*(The paint of the bed and the white label are Extracted; the optional icon is New. The
+place of the bed and its corners are Extended, and the shade of the row was added with
+them: D-24)*
+
+| Layer | Light | Dark |
+|---|---|---|
+| Bed | vertical gradient: the colour +9 % `ink` at the top, the colour itself at 54 % of the height, +12 % white at the bottom | the colour is first moved 26 % towards `canvas`; then +13 % `ink`, itself, +3.5 % white |
+| Upper edge | a dark line of 1.2 dp, black at 16 % | the same line, black at 20 % |
+| Lower edge | a light line of 1.1 dp, white at 20 % | the same line, white at 10 % |
+| Shade of the row | 5 dp of the bed along the edge of the row, from black at 15 % to nothing | the same, from black at 24 % |
+
+The bed starts at the rim of the card, not at the edge of the card's content, and it
+follows its card: where the row is the first or the last child of the card, the bed takes
+the card's corners (section 6). It lies inside the hairline rim, `MalletMaterial.RIM_DP`
+(0.9 dp) from the edge of the card's body, so the rim stays whole around it. The bed shows
+exactly as far as the row has moved, and a closed row shows no colour. Outside a card the
+bed is flush with the edges of the layout. The cell a card gives such a row, and how the
+row moves, are in section 9.1 of the
+[interaction guide](INTERACTION_GUIDE.md#9-reveal-expand-page).
+
+The original draws the bed as a square box inside the card's 9 dp padding. Mallet departs
+from it on purpose: a coloured box inside the padding is a box in a box, which principle 4
+speaks against.
+
+### 7.6 Gutters
 
 A view draws its own shadow **inside its own bounds**. The visible body is therefore inset
 from the view by a gutter, and a view is a little larger than what the eye sees: *(Extracted)*
 
 | Body | Sides | Top | Bottom |
 |---|---|---|---|
-| Porcelain | 1.4 dp | 1 dp | 4.8 dp |
+| Surface | 1.4 dp | 1 dp | 4.8 dp |
 | Track (60 dp view, 52 dp capsule) | 1.5 dp | 1.5 dp | 6.5 dp |
 | Hero switch (92 dp view, 80 dp capsule) | 2.5 dp | 2 dp | 10 dp |
 
 Shadows measure the room the canvas clip leaves them and fade to zero inside it, so they are
 never cut off, whatever clips the parent.
 
-### 7.6 What depth means
+### 7.7 What depth means
 
 | Depth | Meaning |
 |---|---|
-| Raised (porcelain, thumb) | something that holds content or can be moved |
-| Recessed and glazed (track) | a state; its colour is the value |
+| Raised (surface, thumb) | something that holds content or can be moved |
+| Recessed and coloured (track) | a state; its colour is the value |
 | Recessed and neutral (well) | a place to put text or a picture |
+| Recessed and coloured, under a row | one action, uncovered when the row is slid aside |
 | Flat on the canvas | text, icons, navigation |
 
 ---
@@ -440,7 +522,7 @@ never cut off, whatever clips the parent.
 | Disabled | the whole control is drawn at 42 % alpha; shape and layout do not change | New |
 | Selected | position of the thumb plus the hue of the bed; in lists, `ink` instead of `muted` | Extracted / New |
 | Error | danger-coloured rim on a well, a danger line below it, or a danger capsule inside a dialog | Extracted / Extended |
-| Loading | an open ring turning (the ring of the power glyph), or a glazed fill travelling in a groove; content waits in place, nothing covers the page | New, after the original's habit |
+| Loading | an open ring turning (the ring of the power glyph), or a coloured fill travelling in a groove; content waits in place, nothing covers the page | New, after the original's habit |
 | Empty | nothing is drawn in place of the missing content except one centred action; no empty card | Extracted |
 
 ---
@@ -454,9 +536,9 @@ never cut off, whatever clips the parent.
 | `glide()` | cubic-bezier(0.22, 0.78, 0.18, 1) | the one easing curve | Extracted |
 | `CONTROL_MS` | 260 | thumb and hue settle | Extracted |
 | `PAGE_MS` | 420 | full-distance page move | Extracted |
-| `settleDuration(f)` | 210 + 210 × f, at least 220, at most 420 | landing after a drag; f = remaining share | Extracted |
+| `settleDuration(f, reduceMotion)` | 210 + 210 × f, at least 220, at most 420; `REDUCED_MS` when motion is reduced | landing after a drag; f = remaining share | Extracted |
 | `DIALOG_MS` | 320 | dialog and sheet enter and exit | Extracted |
-| `FEEDBACK_MS` | 220 | toast, reveal row, expander, banner | Extracted |
+| `FEEDBACK_MS` | 220 | toast, row that slides aside, expander, banner | Extracted |
 | `PRESS_MS` | 55 | press sink | Extracted |
 | `THEME_FADE_MS` | 300, cubic-bezier(0.2, 0, 0, 1) | old palette fading over the new one | Extracted |
 | `COMMIT_FRACTION` | 0.28 | a drag past this share of the travel commits | Extracted |
@@ -491,15 +573,20 @@ vector file is shipped, so an icon takes any colour and any size.
 | Grid | 24 × 24, ink kept inside 2..22 | Extracted |
 | Stroke | one weight per icon, round caps and joins; 2 dp at 24 dp | Extracted |
 | Fills | none, except small dots | Extracted |
-| Default colour | `muted`; `ink` for an arrow that leads back | Extracted |
+| Default colour | `muted`; `ink` for the chevron at the start of an entry row, whose page lies on that side | Extracted |
 | Mirroring | chevrons and arrows left/right mirror in right-to-left layouts | New |
 
 The original drew six glyphs (two chevrons, an arrow, the power ring, and the book, sliders
-and "more" marks of its navigation row). They are kept with their proportions; the other
-forty-four were drawn for Mallet in the same hand. The three navigation marks were drawn
-24 dp wide, a third larger than the rest, so on the common grid they are scaled to three
-quarters and are as large as every other icon. The navigation row draws its icons in a 32 dp
-box, which gives them their original size, with a lighter 1.7 dp stroke, 2 dp when selected.
+and "more" icons of the row of entries on its main page). They are kept with their
+proportions; the other forty-four were drawn for Mallet in the same hand. Those three icons
+were drawn 24 dp wide, a third larger than the rest, so on the common grid they are scaled
+to three quarters and are as large as every other icon. The navigation row (`MalletNavBar`)
+draws its icons in a 32 dp box, which gives them their original size, with a lighter 1.7 dp
+stroke, 2 dp when selected.
+
+The ink chevron of an entry row is not a way back: the page it points at lies on that side,
+and the original has no back control on any page (principle 7). The navigation button of a
+top bar (`MalletTopBar`) is drawn in `ink` as well. *(New)*
 
 The power glyph's open ring (a 276° arc) doubles as the loading spinner.
 
@@ -570,8 +657,8 @@ activity, and use `MalletThemeTransition` to fade the old appearance over the ne
 - Keep canvas, surface and raised calm. In a light theme they may all be the same colour.
 - A hue needs all three values. Pick the edge 10 to 15 % darker than the bed, and an on-bed
   colour that reads on it; test the pair in the dark theme, where only 30 % of it remains.
-- Do not reuse a text colour (`accent`, `danger`) as a bed. Beds sit under inner shading and
-  need softer, lighter colours.
+- Do not reuse a text colour (`accent`, `danger`) as the bed of a hue. The bed of a track
+  sits under inner shading and needs a softer, lighter colour.
 - Keep the order of the scale: the first hue must read as "least" and the last as "most".
 
 ---
@@ -595,7 +682,7 @@ Measured with the WCAG 2 formula on the default palettes.
 | white on `accent` capsule | 6.9 : 1 | 4.2 : 1 |
 | white on `danger` capsule | 4.2 : 1 | 5.4 : 1 |
 
-Resting labels on a glazed bed:
+Resting labels on the bed of a track, by hue:
 
 | Hue | Light | Light, high contrast | Dark | Dark, high contrast |
 |---|---|---|---|---|
@@ -626,13 +713,19 @@ If your audience needs AA by default, set it in your theme.
   action answer Space and Enter. A key that can do nothing is passed on, so focus is never
   trapped. Focus is visible (section 8).
 - **Gestures have alternatives.** Whatever a swipe does can also be done by a tap, a key or
-  an accessibility action: a reveal row offers its action directly, a page host answers
-  Back, a sheet has a dismiss action.
+  an accessibility action: a row that slides aside offers its action as an accessibility
+  action and from the keyboard, and a sheet has a dismiss action. A page is reached without
+  a drag by a tap on what names it: an entry of Home's row, or a row that leads to a deeper
+  page; Home's entries are focusable and operable with keys. The way back without a drag is
+  the system's Back, which leads to the parent of the page (`MalletBack`). On a first-level
+  page nothing on screen offers a way back, so for a keyboard, a switch or a screen reader
+  the system's Back is the way (principle 7).
 - **Touch targets** are at least 44 dp (section 5.4).
 - **Text scale.** The unit tests draw every page of the showcase at the system font scale
   1.3 together with `textScale` 1.13; those pictures are judged by eye, not by assertion.
-- **Right to left.** Start and end are respected everywhere, including the direction pages
-  lie in, the side a row reveals from, and directional icons.
+- **Right to left.** Start and end are respected everywhere, including the side on which a
+  page lies, the order of Home's entries, the edge at which a row uncovers its action, and
+  directional icons.
 - **Motion.** Reduced motion is honoured (section 9). Nothing flashes, and nothing loops
   except the loading indicators.
 - **Haptics** confirm committed changes only, and can be switched off in the theme.

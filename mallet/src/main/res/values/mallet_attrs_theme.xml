@@ -20,7 +20,7 @@
         </attr>
         <!-- Whether confirmed state changes tick. -->
         <attr name="malletHaptics" format="boolean" />
-        <!-- How much hue colour stays visible in the recessed tracks of a dark theme (0..1). -->
+        <!-- How much of each hue stays visible in the recessed tracks of a dark theme (0..1). -->
         <attr name="malletNightHue" format="float" />
 
         <attr name="malletColorCanvas" format="color" />

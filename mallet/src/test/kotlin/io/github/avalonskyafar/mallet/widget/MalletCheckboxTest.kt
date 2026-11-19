@@ -34,7 +34,7 @@ class MalletCheckboxTest {
         text: String = "",
         theme: MalletTheme = light,
         checked: Boolean = false,
-        widthDp: Int = if (text.isEmpty()) BARE_DP else WIDTH_DP,
+        widthDp: Int = if (text.isEmpty()) UNLABELLED_DP else WIDTH_DP,
     ): MalletCheckbox = MalletCheckbox(Snapshots.context(theme)).apply {
         id = View.generateViewId()
         this.text = text
@@ -54,7 +54,7 @@ class MalletCheckboxTest {
 
     /**
      * Pixel at ([dxDp], [dyDp]) from the top-left corner of the box. [boxLeftDp] is where the
-     * box starts; by default it is centred, as in a bare checkbox.
+     * box starts; by default it is centred, as in a checkbox without a label.
      */
     private fun MalletCheckbox.boxPixel(dxDp: Float, dyDp: Float, widthDp: Int, boxLeftDp: Float? = null): Int {
         val bitmap = Snapshots.render(this, widthDp)
@@ -64,20 +64,20 @@ class MalletCheckboxTest {
     }
 
     /** A spot of the bed that the check mark never crosses. */
-    private fun MalletCheckbox.bedPixel(widthDp: Int = BARE_DP, boxLeftDp: Float? = null): Int =
+    private fun MalletCheckbox.bedPixel(widthDp: Int = UNLABELLED_DP, boxLeftDp: Float? = null): Int =
         boxPixel(4f, 13f, widthDp, boxLeftDp)
 
     /** The elbow of the check mark. */
-    private fun MalletCheckbox.checkPixel(widthDp: Int = BARE_DP): Int = boxPixel(11.1f, 17.1f, widthDp)
+    private fun MalletCheckbox.checkPixel(widthDp: Int = UNLABELLED_DP): Int = boxPixel(11.1f, 17.1f, widthDp)
 
     private fun MalletCheckbox.tapCentre() = Touch.tap(this, width / 2f, height / 2f)
 
     @Test
-    fun `a bare box is a 44dp touch target and a label keeps that height`() {
-        val bare = MalletCheckbox(Snapshots.context())
-        bare.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        assertThat(bare.measuredWidth / bare.density).isWithin(0.5f).of(44f)
-        assertThat(bare.measuredHeight / bare.density).isWithin(0.5f).of(44f)
+    fun `a box without a label is a 44dp touch target and a label keeps that height`() {
+        val unlabelled = MalletCheckbox(Snapshots.context())
+        unlabelled.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        assertThat(unlabelled.measuredWidth / unlabelled.density).isWithin(0.5f).of(44f)
+        assertThat(unlabelled.measuredHeight / unlabelled.density).isWithin(0.5f).of(44f)
 
         val labelled = checkbox("Remember me")
         assertThat(labelled.height / labelled.density).isWithin(0.5f).of(44f)
@@ -190,7 +190,7 @@ class MalletCheckboxTest {
     }
 
     @Test
-    fun `dark theme pours the night hue`() {
+    fun `dark theme fills the box with the night hue`() {
         val dark = MalletTheme.dark()
         val view = checkbox(theme = dark, checked = true)
         assertThat(view.bedPixel()).isEqualTo(dark.bedColor(dark.hues.cobalt))
@@ -202,11 +202,11 @@ class MalletCheckboxTest {
         val view = checkbox(checked = true)
         val onBed = light.labelOnBed(light.hues.cobalt)
         // Just below the elbow: bed at rest, check while the finger is down.
-        assertThat(view.boxPixel(11.1f, 18.5f, BARE_DP)).isNotEqualTo(onBed)
+        assertThat(view.boxPixel(11.1f, 18.5f, UNLABELLED_DP)).isNotEqualTo(onBed)
         Touch.dispatch(view, MotionEvent.ACTION_DOWN, view.width / 2f, view.height / 2f)
-        assertThat(view.boxPixel(11.1f, 18.5f, BARE_DP)).isEqualTo(onBed)
+        assertThat(view.boxPixel(11.1f, 18.5f, UNLABELLED_DP)).isEqualTo(onBed)
         Touch.dispatch(view, MotionEvent.ACTION_CANCEL, view.width / 2f, view.height / 2f)
-        assertThat(view.boxPixel(11.1f, 18.5f, BARE_DP)).isNotEqualTo(onBed)
+        assertThat(view.boxPixel(11.1f, 18.5f, UNLABELLED_DP)).isNotEqualTo(onBed)
         assertThat(view.isChecked).isTrue()
     }
 
@@ -331,7 +331,7 @@ class MalletCheckboxTest {
     }
 
     @Test
-    fun `empty text is a bare box and clearing a label shrinks the view`() {
+    fun `empty text is a box without a label and clearing a label shrinks the view`() {
         val view = MalletCheckbox(Snapshots.context()).apply { text = "Remember me" }
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         assertThat(view.measuredWidth / view.density).isGreaterThan(80f)
@@ -339,7 +339,7 @@ class MalletCheckboxTest {
         view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         assertThat(view.measuredWidth / view.density).isWithin(0.5f).of(44f)
         assertThat(view.createAccessibilityNodeInfo().text).isNull()
-        Snapshots.layout(view, BARE_DP)
+        Snapshots.layout(view, UNLABELLED_DP)
         view.tapCentre()
         assertThat(view.isChecked).isTrue()
     }
@@ -388,11 +388,11 @@ class MalletCheckboxTest {
         view.setOnCheckedChangeListener(recorder)
         val onBed = light.labelOnBed(light.hues.cobalt)
         Touch.dispatch(view, MotionEvent.ACTION_DOWN, view.width / 2f, view.height / 2f)
-        assertThat(view.boxPixel(11.1f, 18.5f, BARE_DP)).isEqualTo(onBed)
+        assertThat(view.boxPixel(11.1f, 18.5f, UNLABELLED_DP)).isEqualTo(onBed)
         view.isEnabled = false
         view.isEnabled = true
         // Enabled again while the finger is still down: the check is back at rest.
-        assertThat(view.boxPixel(11.1f, 18.5f, BARE_DP)).isNotEqualTo(onBed)
+        assertThat(view.boxPixel(11.1f, 18.5f, UNLABELLED_DP)).isNotEqualTo(onBed)
         Touch.dispatch(view, MotionEvent.ACTION_UP, view.width / 2f, view.height / 2f)
         assertThat(view.isChecked).isTrue()
         assertThat(recorder.calls).isEmpty()
@@ -456,7 +456,7 @@ class MalletCheckboxTest {
 
     private companion object {
         const val BOX_DP = 26f
-        const val BARE_DP = 44
+        const val UNLABELLED_DP = 44
         const val WIDTH_DP = 300
         const val ATTACHED_DP = 200
     }

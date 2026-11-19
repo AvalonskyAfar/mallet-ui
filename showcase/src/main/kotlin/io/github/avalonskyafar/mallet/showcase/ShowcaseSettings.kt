@@ -101,7 +101,7 @@ class ShowcaseSettings(context: Context) {
 
         /**
          * A second hue set, to show that the scale is a token and not a fixed palette: the
-         * same four steps from "least" to "most", poured in rose, sand, plum and teal.
+         * same four steps from "least" to "most", in rose, sand, plum and teal.
          */
         fun plumHues(): MalletHues = MalletHues(
             bronze = MalletHue(rgb(0xD9, 0x8E, 0x9A), rgb(0xC2, 0x70, 0x7E), rgb(0xFF, 0xFF, 0xFF)),

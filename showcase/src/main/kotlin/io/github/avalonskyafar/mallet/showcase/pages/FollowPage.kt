@@ -1,6 +1,6 @@
 package io.github.avalonskyafar.mallet.showcase.pages
 
-import android.view.Gravity
+import android.view.View
 import android.widget.LinearLayout
 import io.github.avalonskyafar.mallet.showcase.DemoPage
 import io.github.avalonskyafar.mallet.showcase.PageScope
@@ -72,36 +72,38 @@ object FollowPage : DemoPage("i_follow", R.string.page_i_follow_title, R.string.
 
     private fun colour(page: PageScope) {
         val levels = levelNames(page)
-        page.section(R.string.follow_colour_title, R.string.follow_colour_detail) {
-            val value = page.text("", MalletTextRole.LABEL)
-            fun describe(percent: Float) {
-                val whole = percent.roundToInt()
-                // The scale has one hue per level; the nearest one names the value.
-                val level = (percent / 100f * (levels.size - 1)).roundToInt()
-                value.text = page.context.getString(R.string.follow_colour_value, whole, levels[level])
-            }
-            val slider = MalletSlider(context).apply {
-                valueFrom = 0f
-                valueTo = 100f
-                stepSize = 1f
-                setHueScale(page.theme.hues.scale(4))
-                valueFormatter = { page.context.getString(R.string.follow_colour_percent, it.roundToInt()) }
-                setValue(40f, false)
-                setOnValueChangeListener { _, percent -> describe(percent) }
-            }
-            describe(slider.value)
-            val header = LinearLayout(context).apply {
-                orientation = LinearLayout.HORIZONTAL
-                gravity = Gravity.CENTER_VERTICAL
-                addView(
-                    page.text(page.str(R.string.follow_colour_label), MalletTextRole.LABEL, MalletTextTone.MUTED),
-                    LinearLayout.LayoutParams(0, PageScope.WRAP, 1f),
-                )
-                addView(value, LinearLayout.LayoutParams(PageScope.WRAP, PageScope.WRAP))
-            }
-            addView(header, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))
-            addView(slider, below(page, 6))
+        // The value stands on its own line under the slider: a full line of the page takes any
+        // language's digits without a narrow box to cut them.
+        val value = page.text("", MalletTextRole.CAPTION, MalletTextTone.MUTED).apply {
+            textAlignment = View.TEXT_ALIGNMENT_VIEW_START
         }
+        fun describe(percent: Float) {
+            val whole = percent.roundToInt()
+            // The scale has one hue per level; the nearest one names the value.
+            val level = (percent / 100f * (levels.size - 1)).roundToInt()
+            value.text = page.context.getString(R.string.follow_colour_value, whole, levels[level])
+        }
+        val slider = MalletSlider(page.context).apply {
+            valueFrom = 0f
+            valueTo = 100f
+            stepSize = 1f
+            setHueScale(page.theme.hues.scale(4))
+            valueFormatter = { page.context.getString(R.string.follow_colour_percent, it.roundToInt()) }
+            setValue(40f, false)
+            setOnValueChangeListener { _, percent -> describe(percent) }
+        }
+        describe(slider.value)
+        val name = page.text(page.str(R.string.follow_colour_label), MalletTextRole.LABEL, MalletTextTone.MUTED)
+        name.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+        // No row names this slider, so it takes the name of the line above it for a screen reader.
+        slider.contentDescription = name.text
+        // A lone slider gets no card: it stands on the canvas under its heading, as wide as the
+        // cards. Name, slider and value in one column, at the same inset as the text around
+        // them, where a finger on the bead hides none of the three.
+        page.heading(R.string.follow_colour_title, R.string.follow_colour_detail)
+        page.loose(name, topDp = LABEL_GAP, sideDp = PageScope.TEXT_INSET)
+        page.loose(slider, sideDp = PageScope.TEXT_INSET)
+        page.loose(value, topDp = LOOSE_STATUS_GAP, sideDp = PageScope.TEXT_INSET)
         page.code("""
             val slider = MalletSlider(context)
             slider.valueFrom = 0f
@@ -120,29 +122,32 @@ object FollowPage : DemoPage("i_follow", R.string.page_i_follow_title, R.string.
             page.str(R.string.follow_speed_normal),
             page.str(R.string.follow_speed_fast),
         )
-        page.section(R.string.follow_vertical_title, R.string.follow_vertical_detail) {
-            val status = status(page)
-            val track = MalletSegmentedTrack(context).apply {
-                options = speeds
-                setHues(page.theme.hues.uniform(speeds.size))
-                select(1, animate = false)
-                setOnSelectionChangeListener { _, index ->
-                    status.text = page.context.getString(R.string.follow_vertical_status, speeds[index])
-                }
+        val status = status(page)
+        val track = MalletSegmentedTrack(page.context).apply {
+            options = speeds
+            setHues(page.theme.hues.uniform(speeds.size))
+            select(1, animate = false)
+            setOnSelectionChangeListener { _, index ->
+                status.text = page.context.getString(R.string.follow_vertical_status, speeds[index])
             }
-            status.text = page.context.getString(R.string.follow_vertical_status, speeds[1])
-            addView(track, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))
-            addView(status, below(page, 10))
         }
-        page.caption(page.str(R.string.follow_vertical_note))
-        page.code("""
+        status.text = page.context.getString(R.string.follow_vertical_status, speeds[1])
+        // A lone track gets no card either. What to try is said above it, in the line under the
+        // heading, so that the status line is the last thing between the track and its code.
+        page.heading(R.string.follow_vertical_title, R.string.follow_vertical_detail)
+        page.loose(track, topDp = PageScope.HEADING_GAP)
+        page.loose(status, topDp = LOOSE_STATUS_GAP, sideDp = PageScope.TEXT_INSET)
+        page.code(
+            """
             // Nothing to set up. Inside a ScrollView a track
             // claims a gesture only once it runs sideways.
             // Up or down, the page keeps it.
             val track = MalletSegmentedTrack(context)
             track.setOptions("Slow", "Normal", "Fast")
             column.addView(track)
-        """)
+            """,
+            topDp = SAMPLE_GAP,
+        )
     }
 
     private fun fromCode(page: PageScope) {
@@ -167,8 +172,10 @@ object FollowPage : DemoPage("i_follow", R.string.page_i_follow_title, R.string.
 
             val row = LinearLayout(context).apply { orientation = LinearLayout.HORIZONTAL }
             names.forEachIndexed { index, name ->
+                val side = page.dp(ROW_BUTTON_SIDE)
                 val button = MalletButton(context).apply {
                     text = name
+                    setPadding(side, paddingTop, side, paddingBottom)
                     setOnClickListener {
                         track.select(index)
                         status.text = page.context.getString(R.string.follow_code_glided, index, name)
@@ -209,10 +216,37 @@ object FollowPage : DemoPage("i_follow", R.string.page_i_follow_title, R.string.
         page.str(R.string.follow_level_strict),
     )
 
-    /** The line under a control that says what it did. */
+    /**
+     * The line under a control that says what it did. It stands at the start edge whatever
+     * language it is written in, as the headings do.
+     */
     private fun status(page: PageScope): MalletText =
-        page.text("", MalletTextRole.CAPTION, MalletTextTone.MUTED)
+        page.text("", MalletTextRole.CAPTION, MalletTextTone.MUTED).apply {
+            textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+        }
 
     private fun below(page: PageScope, topDp: Int): LinearLayout.LayoutParams =
         LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP).apply { topMargin = page.dp(topDp) }
+
+    /**
+     * Space above the line that names the slider, in dp. More than under a heading elsewhere, and
+     * none between the line and the slider (which keeps 8 dp of its own above the bead), so that
+     * the line reads as the name of the slider and not as one more line of the text above it.
+     */
+    private const val LABEL_GAP = 16
+
+    /**
+     * Space above the status line of a track on the canvas, in dp. No card holds the two
+     * together here, so the line stands close under its track and further from the sample below.
+     */
+    private const val LOOSE_STATUS_GAP = 2
+
+    /** Space above the sample that follows such a status line, in dp. */
+    private const val SAMPLE_GAP = 14
+
+    /**
+     * Side padding of the four buttons that share one row, in dp: narrower than a button's own,
+     * so that a label stays on one line in large text.
+     */
+    private const val ROW_BUTTON_SIDE = 10
 }

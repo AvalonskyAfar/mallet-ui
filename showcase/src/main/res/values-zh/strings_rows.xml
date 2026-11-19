@@ -11,7 +11,8 @@
     <string name="rows_entries_detail">通往别处的一行。无论两端放了什么，文字始终落在中线上。</string>
     <string name="rows_entry_end">存储</string>
     <string name="rows_entry_end_detail">箭头在末端：点开会进入下一层</string>
-    <string name="rows_entry_start">返回概览</string>
+    <string name="rows_entry_start">允许的账户</string>
+    <string name="rows_entry_start_detail">箭头在起始端：要去的页面在这一侧</string>
     <string name="rows_entry_icon">通知</string>
     <string name="rows_entry_value">语言</string>
     <string name="rows_entry_value_detail">点一下切换取值</string>
@@ -24,13 +25,13 @@
         <item>中文</item>
         <item>Français</item>
     </string-array>
-    <string name="rows_say_end">“存储”会从末端一侧打开</string>
-    <string name="rows_say_start">概览在起始端一侧</string>
+    <string name="rows_say_end">“存储”会从末端侧打开</string>
+    <string name="rows_say_start">“允许的账户”会从起始侧打开</string>
     <string name="rows_say_icon">这里会打开“通知”</string>
     <string name="rows_say_aligned">这里会打开“隐私”</string>
 
-    <string name="rows_controls_title">控件行</string>
-    <string name="rows_controls_detail">一项设置和它的控件同在一行。页面末尾的信息列表会跟着这里变化。</string>
+    <string name="rows_controls_title">控制行</string>
+    <string name="rows_controls_detail">一项设置和它的控件同在一行。页面末尾的键值列表随之变化。</string>
     <string name="rows_sync">同步</string>
     <string name="rows_sync_detail">两个选项</string>
     <string name="rows_density">密度</string>
@@ -62,13 +63,13 @@
     </string-array>
 
     <string name="rows_links_title">链接行</string>
-    <string name="rows_links_detail">画布上一条不显眼的链接。箭头可以贴在边缘，也可以紧挨着文字。</string>
+    <string name="rows_links_detail">页面背景上一条不显眼的链接。箭头贴在边缘，或紧挨着文字。</string>
     <string name="rows_link_edge">之前的设置</string>
     <string name="rows_link_adjacent">更多设置</string>
-    <string name="rows_say_edge">之前的设置在起始端一侧</string>
-    <string name="rows_say_adjacent">更多设置在末端一侧</string>
+    <string name="rows_say_edge">之前的设置在起始侧</string>
+    <string name="rows_say_adjacent">更多设置在末端侧</string>
 
-    <string name="rows_facts_title">信息列表</string>
-    <string name="rows_facts_detail">只读的列表，显示上面各控件行当前的取值；色调用来标出要紧的项。</string>
-    <string name="rows_note">这五种组件都取自原应用。Mallet 新增的是：页面级标题，入口行的图标、取值和起始端对齐，控件行可以放任意控件，以及链接和信息项的色调。</string>
+    <string name="rows_facts_title">键值列表</string>
+    <string name="rows_facts_detail">只读的列表，显示上面各控制行的取值；色调标出要紧的项。</string>
+    <string name="rows_note">这五种组件都取自原应用；箭头贴在边缘的链接行，原应用的代码里有，但没有页面用到。Mallet 新增：入口行的图标、取值和起始端对齐，控制行可以放任意控件，链接和列表项的色调可自行指定。</string>
 </resources>

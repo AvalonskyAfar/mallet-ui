@@ -38,7 +38,7 @@ import kotlin.math.roundToInt
  * lasts (offline, a permission is missing, a backup is overdue); a passing *event* belongs in
  * a toast.
  *
- * The body is flat porcelain (a rim, no shadow) with a thin bar in the tone colour at the
+ * The body is a flat surface (a rim, no shadow) with a thin bar in the tone colour at the
  * start, an icon in the same colour, a title over a muted detail, up to two text actions at
  * the end of the text column and an optional close icon. Text stays neutral: the tone lives in
  * the bar and the icon only.

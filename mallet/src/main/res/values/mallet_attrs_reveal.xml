@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--
+        MalletRevealLayout: a row that slides aside and uncovers one action on the coloured bed
+        under it. The bed starts at the edge of the row's cell. As a direct child of a vertical
+        MalletSurface the layout is stretched over that cell: from rim to rim of the card, up to
+        the divider above the row and down to the divider below it, or to the rim of the card
+        where it is the first or the last child, whose corners it then follows. So in a card the
+        action is uncovered from the rim of the card, not from a box inside the card's padding;
+        the row keeps the place the padding gave it. With any other parent, or in a horizontal
+        surface, the layout is its own cell: the bed is flush with the edges of the layout.
+    -->
     <declare-styleable name="MalletRevealLayout">
-        <!-- The edge at which the action strip is uncovered. Mirrored in RTL. -->
+        <!--
+            The side from which the action is uncovered: the start or the end edge of the row's
+            cell. As a direct child of a vertical MalletSurface the layout is stretched over
+            that cell, from rim to rim of the card, so the action comes out from the rim of the
+            card; anywhere else the layout is its own cell. Mirrored in RTL.
+        -->
         <attr name="malletRevealEdge" format="enum">
             <enum name="start" value="0" />
             <enum name="end" value="1" />
         </attr>
-        <!-- The label of the action behind the row. Without it the row does not move. -->
+        <!--
+            The label of the action under the row. With the icon, when one is set, it comes out
+            from the edge together with the row. Without a label the row does not move.
+        -->
         <attr name="malletRevealActionLabel" format="string" />
-        <!-- The tone that colours the bed. Default: danger. -->
+        <!--
+            The tone that colours the bed under the row. The bed shows exactly as far as the row
+            has moved; a closed row shows no colour. Default: danger.
+        -->
         <attr name="malletRevealActionTone" format="enum">
             <enum name="ink" value="0" />
             <enum name="muted" value="1" />

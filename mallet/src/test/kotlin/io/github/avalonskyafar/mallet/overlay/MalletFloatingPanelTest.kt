@@ -304,11 +304,11 @@ class MalletFloatingPanelTest {
     }
 
     @Test
-    fun `the body is porcelain and the shadow tightens while dragged`() {
+    fun `the body is a raised surface and the shadow tightens while dragged`() {
         val dark = MalletTheme.dark()
         val s = scene(Snapshots.context(dark))
         val rest = draw(s.panel)
-        // Left of the text, half way down: the porcelain body. The corner is outside the rounding.
+        // Left of the text, half way down: the body. The corner is outside the rounding.
         assertNear(rest.getPixel(dp(6f), s.panel.height / 2), dark.colors.surface)
         assertThat(rest.getPixel(0, 0)).isEqualTo(dark.colors.canvas)
 
@@ -323,7 +323,7 @@ class MalletFloatingPanelTest {
         assertThat(s.moves).isEmpty()
     }
 
-    /** The porcelain body carries a faint inner shading: within two steps per channel. */
+    /** The body carries a faint inner shading: within two steps per channel. */
     private fun assertNear(actual: Int, expected: Int) {
         for (shift in intArrayOf(24, 16, 8, 0)) {
             assertThat((actual ushr shift) and 0xFF).isIn(

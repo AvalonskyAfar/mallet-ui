@@ -6,10 +6,10 @@
     <string name="spatial_map_place">%1$s。%2$s</string>
     <string name="spatial_route_home">地图的中心，返回最终都回到这里。四周各有一个页面：底部那一排入口每页一个，除此之外没有箭头指向它们。</string>
     <string name="spatial_route_appearance">在首页上方。把首页向下拖，就能露出它。</string>
-    <string name="spatial_route_foundations">在首页的起始侧。把首页向结束侧拖，就能露出它。</string>
+    <string name="spatial_route_foundations">在首页的起始侧。把首页向末端侧拖，就能露出它。</string>
     <string name="spatial_route_components">在首页下方。把首页向上拖，就能露出它。</string>
-    <string name="spatial_route_interactions">在首页的结束侧。把首页向起始侧拖，就能露出它。</string>
-    <string name="spatial_route_here">你在这里，在“交互”的更外侧。本页由列表行打开，向结束侧拖动即可返回。</string>
+    <string name="spatial_route_interactions">在首页的末端侧。把首页向起始侧拖，就能露出它。</string>
+    <string name="spatial_route_here">你在这里，在“交互”的更外侧。本页由列表行打开，向末端侧拖动即可返回。</string>
 
     <string name="spatial_try_title">试一试</string>
     <string name="spatial_try_detail">回到首页，用一根手指移动页面。</string>
@@ -24,12 +24,12 @@
 
     <string name="spatial_neighbour_title">把另一个 Activity 当作邻页</string>
     <string name="spatial_neighbour_detail">第二个 Activity 也可以像地图上的页面一样进出。</string>
-    <string name="spatial_neighbour_body">这个按钮会启动一个独立的 Activity。它从结束侧滑入，当前画面的快照同时向另一侧滑出；可以拖回去，也可以用系统返回离开。</string>
+    <string name="spatial_neighbour_body">这个按钮会启动一个独立的 Activity。它从末端侧滑入，当前画面的快照同时向另一侧滑出；可以拖回去，也可以用系统返回离开。</string>
     <string name="spatial_neighbour_open">打开邻页</string>
 
     <string name="spatial_back_title">系统返回</string>
     <string name="spatial_back_body">在 Android 14 及以上版本，返回手势会预览这次移动：本页跟着手势，向来时的页面移动一段。完成手势就落在那里，取消则滑回原位。</string>
     <string name="spatial_back_go">返回“%1$s”</string>
 
-    <string name="spatial_origin" formatted="false">提取自原应用：两个页面一起移动、28 % 与轻扫的判定规则、表现得像邻页的 Activity，以及不设路标的页面——首页没有箭头，首页四周的页面没有返回入口，为的是让人习惯用拖动来移动。Mallet 新增：可描述任意应用的页面图、监听器、从右到左布局，以及更外层页面上指向上一级的那一行。</string>
+    <string name="spatial_origin" formatted="false">取自原应用：两个页面一起移动、28 % 与轻扫的判定规则、表现得像邻页的 Activity，以及不设路标的页面——首页没有箭头，首页四周的页面没有返回入口，为的是让人习惯用拖动来移动。Mallet 新增：可描述任意应用的页面图、监听器、从右到左布局，以及更外层页面上指向上一级的那一行。</string>
 </resources>

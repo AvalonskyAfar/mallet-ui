@@ -212,9 +212,9 @@ class MalletEntryRowTest {
         assertThat(valueOf(row).currentTextColor).isEqualTo(MalletTheme.light().colors.muted)
 
         // Without a chevron the value keeps the text padding from the edge.
-        val bare = row { value = "English" }
-        Snapshots.layout(bare, 300)
-        assertThat(bare.width - valueOf(bare).right).isEqualTo(px(14f))
+        val valueOnly = row { value = "English" }
+        Snapshots.layout(valueOnly, 300)
+        assertThat(valueOnly.width - valueOf(valueOnly).right).isEqualTo(px(14f))
 
         // Icon after a start chevron.
         val both = row { leadingIcon = MalletIcon.INFO; arrow = MalletEntryRow.Arrow.START }
@@ -498,7 +498,7 @@ class MalletEntryRowTest {
                     detail = "Last saved yesterday"
                     arrow = MalletEntryRow.Arrow.END
                 },
-                entry("Back to overview") { arrow = MalletEntryRow.Arrow.START },
+                entry("Allowed accounts") { arrow = MalletEntryRow.Arrow.START },
                 entry("About"),
                 entry("Unavailable") { detail = "Sign in to use this"; arrow = MalletEntryRow.Arrow.END; isEnabled = false },
             )
@@ -506,7 +506,7 @@ class MalletEntryRowTest {
             card(
                 entry("Notification sound") {
                     alignment = MalletEntryRow.Alignment.START
-                    value = "Porcelain"
+                    value = "Soft bell"
                     arrow = MalletEntryRow.Arrow.END
                 },
                 entry("Storage") {

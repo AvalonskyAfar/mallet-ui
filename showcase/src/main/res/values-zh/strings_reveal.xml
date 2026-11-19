@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="reveal_swipe_title">把一行拨到一边</string>
-    <string name="reveal_swipe_detail" formatted="false">从起始侧把行拖开。露出超过操作区的 42 %，松手后保持打开；轻点这一行即可合上。开关仍由自己响应拖动。</string>
+    <string name="reveal_swipe_detail" formatted="false">从起始侧把行拖开。行下的槽底从卡片边缘开始，行移多远就露出多远；操作连同图标和文字从边缘滑出。拖过操作区的 42 %，松手后保持打开；轻点这一行即可合上。开关仍由自己响应拖动。</string>
     <string name="reveal_rule_ads">拦截广告</string>
     <string name="reveal_rule_trackers">拦截跟踪器</string>
     <string name="reveal_rule_popups">拦截弹窗</string>
@@ -14,7 +14,7 @@
     <string name="reveal_empty">已经没有行了，可在下方恢复。</string>
 
     <string name="reveal_end_title">操作在末端侧</string>
-    <string name="reveal_end_detail">同样的行，设置 revealEdge = END，并换用强调色的操作。第二行由代码打开。</string>
+    <string name="reveal_end_detail">同样的行，设置 revealEdge = END，并换用强调色的操作。第二行由代码打开：槽底紧贴卡片边缘，顺着卡片圆角，止于分隔线。</string>
     <string name="reveal_site_news">晨间新闻</string>
     <string name="reveal_site_video">视频网站</string>
     <string name="reveal_pin">置顶</string>
@@ -31,5 +31,5 @@
     <string name="reveal_topic_keys">不用触摸</string>
     <string name="reveal_topic_keys_body">焦点落在标题行时，按回车或空格即可展开或收起。读屏会读出当前是展开还是收起。</string>
 
-    <string name="reveal_note">滑开一行露出“删除”取自原应用。末端侧的操作、操作的色调与图标，以及可展开的小节为 Mallet 新增。</string>
+    <string name="reveal_note">滑开一行露出“删除”取自原应用。从卡片边缘开始的槽底、末端侧带强调色操作与图标、可展开的小节，为 Mallet 新增。</string>
 </resources>

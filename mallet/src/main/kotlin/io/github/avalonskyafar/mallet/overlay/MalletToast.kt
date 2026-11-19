@@ -79,13 +79,13 @@ public class MalletToast private constructor(
 
     /** What the colour of the pill says. */
     public enum class Tone {
-        /** Neutral porcelain with ink text: the ordinary message. */
+        /** A neutral pill with ink text: the ordinary message. */
         NEUTRAL,
 
-        /** Glazed in the danger colour with white text: something failed. */
+        /** A pill in the danger colour with white text: something failed. */
         DANGER,
 
-        /** Glazed in the success colour with white text: something was completed. */
+        /** A pill in the success colour with white text: something was completed. */
         SUCCESS,
     }
 
@@ -335,7 +335,7 @@ public class MalletToast private constructor(
         public fun show(activity: Activity, message: CharSequence, tone: Tone = Tone.NEUTRAL): MalletToast =
             Builder(activity).message(message).tone(tone).show()
 
-        /** Shows [message] as an error: a pill glazed in the danger colour. */
+        /** Shows [message] as an error: a pill in the danger colour. */
         @JvmStatic
         public fun error(activity: Activity, message: CharSequence): MalletToast =
             show(activity, message, Tone.DANGER)
@@ -387,7 +387,7 @@ public class MalletToast private constructor(
 }
 
 /**
- * The pill of a [MalletToast]: a porcelain capsule with one centred message and, optionally,
+ * The pill of a [MalletToast]: a capsule with one centred message and, optionally,
  * one text action at the end behind a vertical hairline that runs from rim to rim.
  *
  * [MalletToast] creates, shows and removes it; use the view directly only to place a pill of
@@ -402,9 +402,9 @@ public class MalletToast private constructor(
  *     app:malletToastActionLabel="@string/undo" />
  * ```
  *
- * The view is a little larger than the capsule the eye sees: it keeps the shadow gutter of
- * porcelain inside its own bounds. The message wraps to at most three lines; the action never
- * wraps and never shrinks. The pill holds no user-changeable state, so it saves none.
+ * The view is a little larger than the capsule the eye sees: it keeps the shadow gutter of a
+ * raised surface inside its own bounds. The message wraps to at most three lines; the action
+ * never wraps and never shrinks. The pill holds no user-changeable state, so it saves none.
  * Disabled, the whole pill pales and the action cannot be pressed.
  */
 public class MalletToastView @JvmOverloads constructor(

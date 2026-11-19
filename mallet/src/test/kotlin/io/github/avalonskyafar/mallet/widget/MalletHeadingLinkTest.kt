@@ -630,15 +630,19 @@ class MalletHeadingLinkTest {
         )
         add(MalletHeading(themed).also { it.title = "Settings"; it.level = MalletHeading.Level.PAGE })
         add(MalletHeading(themed).also { it.title = "Protection"; it.detail = "How firmly the app holds on" }, 22)
+        // Two stand-ins for entry rows: a card is a group, and a divider parts the rows of a list.
         val card = MalletSurface(themed)
-        card.addView(MalletText.create(themed, "Card content", io.github.avalonskyafar.mallet.theme.MalletTextRole.SUBHEAD).also {
+        fun row(text: String) = MalletText.create(themed, text, io.github.avalonskyafar.mallet.theme.MalletTextRole.SUBHEAD).also {
             it.gravity = android.view.Gravity.CENTER
             it.minHeight = px(62)
-        })
+        }
+        card.addView(row("On weekdays"))
+        card.addDivider()
+        card.addView(row("At weekends"))
         add(card, 10)
         add(MalletHeading(themed).also { it.title = "About" }, 18)
         add(MalletLinkRow(themed).also { it.label = "More settings" }, 4)
-        add(MalletLinkRow(themed).also { it.label = "Back to overview"; it.arrowDirection = ArrowDirection.START })
+        add(MalletLinkRow(themed).also { it.label = "Allowed accounts"; it.arrowDirection = ArrowDirection.START })
         add(MalletLinkRow(themed).also { it.label = "Advanced"; it.arrowPlacement = ArrowPlacement.ADJACENT })
         add(MalletLinkRow(themed).also {
             it.label = "Developer"; it.arrowPlacement = ArrowPlacement.ADJACENT; it.arrowDirection = ArrowDirection.START

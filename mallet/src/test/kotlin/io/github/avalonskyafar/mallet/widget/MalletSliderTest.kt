@@ -165,7 +165,7 @@ class MalletSliderTest {
         assertThat(view.value).isEqualTo(90f)
         assertThat(view.press(KeyEvent.KEYCODE_DPAD_RIGHT)).isTrue()
         assertThat(view.value).isEqualTo(80f)
-        // The glazed stretch now lies to the right of the bead.
+        // The coloured stretch now lies to the right of the bead.
         view.value = 50f
         assertColour(view.trackPixel(0.8f), Color.rgb(134, 172, 247))
         assertColour(view.trackPixel(0.2f), Color.rgb(226, 237, 247))
@@ -228,7 +228,7 @@ class MalletSliderTest {
     }
 
     @Test
-    fun `stretch before the bead is tinted and the rest stays a neutral groove`() {
+    fun `stretch before the bead is coloured and the rest stays a neutral groove`() {
         val light = slider(value = 50f)
         assertColour(light.trackPixel(0.2f), Color.rgb(134, 172, 247))
         assertColour(light.trackPixel(0.8f), Color.rgb(226, 237, 247))
@@ -247,10 +247,10 @@ class MalletSliderTest {
         assertColour(view.trackPixel(0.3f), Color.rgb(128, 184, 151))
         view.value = 50f
         assertColour(view.trackPixel(0.3f), Color.rgb(134, 172, 247))
-        // Just short of half-way to cobalt the stretch is still plain bronze...
+        // Just short of half-way to cobalt the stretch is still pure bronze...
         view.value = 24f
         assertColour(view.trackPixel(0.1f), Color.rgb(206, 131, 83))
-        // ...and from half-way on it is plain cobalt.
+        // ...and from half-way on it is pure cobalt.
         view.value = 25f
         assertColour(view.trackPixel(0.1f), Color.rgb(134, 172, 247))
         view.value = 74f

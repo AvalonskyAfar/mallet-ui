@@ -8,10 +8,9 @@
     <string name="arbitrate_level_strict">严格</string>
     <string name="arbitrate_track_line">横向：滑块跟着手指走，页面不动。上下：轨道放手，页面滚动。</string>
     <string name="arbitrate_row_title">每周报告</string>
-    <string name="arbitrate_row_detail">向末端侧拖动</string>
+    <string name="arbitrate_row_detail">向末端侧滑动露出操作，上下拖动时保持合上。</string>
     <string name="arbitrate_row_action">删除</string>
     <string name="arbitrate_row_said">操作已执行。这一行留着，方便再试。</string>
-    <string name="arbitrate_reveal_line">横向：这一行滑开，露出后面的操作。上下：行保持合上，页面滚动。</string>
     <string name="arbitrate_page_name">第 %1$d 页，共 %2$d 页</string>
     <string name="arbitrate_page_first">这一页前面没有页了。向末端侧拖，拖动会交给外面的页面。</string>
     <string name="arbitrate_page_middle">在这一页，两个方向都归翻页器。</string>
@@ -43,5 +42,5 @@
     <string name="arbitrate_land_edge">距屏幕边缘 24 dp 以内</string>
     <string name="arbitrate_owner_edge">系统返回手势</string>
     <string name="arbitrate_edge_note">页面宿主从不在屏幕两侧 24 dp 的边缘区里开始横向拖动。这两条区域留给系统，所以返回手势在每一页都一样。</string>
-    <string name="arbitrate_origin">留住横向拖动、把上下拖动还给页面的轨道，可滑开的行，以及跟随手指的页面，取自原应用。翻页器取自原应用的首次启动流程。任何视图都能通过 MalletHorizontalDragOwner 加入的同一条规则，是 Mallet 新增。</string>
+    <string name="arbitrate_origin">留住横向拖动、把上下拖动还给页面的轨道，可滑开的行，以及跟随手指的页面，取自原应用。翻页器取自原应用的首次启动流程。操作藏在行下、从卡片边缘露出的做法，以及任何视图都能通过 MalletHorizontalDragOwner 加入的同一条规则，是 Mallet 新增。</string>
 </resources>

@@ -4,7 +4,7 @@
     <declare-styleable name="MalletToastView">
         <!-- The one thing the pill says. -->
         <attr name="malletToastMessage" format="string" />
-        <!-- Colour of the pill: porcelain, or glazed in the danger or success colour. -->
+        <!-- Colour of the pill: neutral, or the danger or success colour. -->
         <attr name="malletToastTone" format="enum">
             <enum name="neutral" value="0" />
             <enum name="danger" value="1" />

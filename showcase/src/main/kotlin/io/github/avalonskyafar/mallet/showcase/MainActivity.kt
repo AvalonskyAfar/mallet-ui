@@ -47,7 +47,7 @@ class MainActivity : Activity(), ShowcaseHost {
         host = MalletSpatialHost(this).apply {
             id = R.id.showcase_host
             setGraph(Pages.graph) { key -> Pages.create(key, this@MainActivity) }
-            // The four pages around Home stay alive; detail pages are rebuilt on each visit.
+            // The four pages around Home stay alive; deeper pages are rebuilt on each visit.
             setKeepAlive(setOf(Pages.HOME, "foundations", "components", "interactions", "appearance"))
             prewarmNeighbours = true
         }
@@ -89,7 +89,7 @@ class MainActivity : Activity(), ShowcaseHost {
     }
 
     /**
-     * A minimal message pill built from the porcelain material. (The library's own toast is
+     * A minimal message pill built from the surface material. (The library's own toast is
      * shown on the Dialogs and sheets page.)
      */
     override fun say(message: CharSequence) {

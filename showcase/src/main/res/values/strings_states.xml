@@ -23,7 +23,7 @@
     <string name="states_said_action">Pressed “%1$s”</string>
     <string name="states_compact_heading">Sync</string>
     <string name="states_compact_title">Sync is paused</string>
-    <string name="states_compact_detail">The compact form has a smaller icon and tighter gaps.</string>
+    <string name="states_compact_detail">The compact form: smaller icon, tighter gaps.</string>
     <string name="states_compact_action">Try again</string>
     <string name="states_compact_done_title">Synced</string>
     <string name="states_compact_done_detail">The same view, now with the success preset.</string>

@@ -310,7 +310,7 @@ class MalletNavBarTest {
     }
 
     @Test
-    fun `badge is tinted in the exact danger colour with white digits`() {
+    fun `badge is a capsule in the exact danger colour with white digits`() {
         val badge = MalletBadge(Snapshots.context()).apply { count = 120 }
         val unspecified = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         badge.measure(unspecified, unspecified)
@@ -318,7 +318,7 @@ class MalletNavBarTest {
         val bitmap = Bitmap.createBitmap(badge.width, badge.height, Bitmap.Config.ARGB_8888)
         badge.draw(android.graphics.Canvas(bitmap))
         val danger = MalletTheme.light().colors.danger
-        // Just inside the top of the capsule there is hue and no text.
+        // Just inside the top of the capsule there is the danger colour and no text.
         assertThat(bitmap.getPixel(badge.width / 2, 2)).isEqualTo(danger)
         val row = (0 until badge.width).map { bitmap.getPixel(it, badge.height / 2) }
         assertThat(row).contains(0xFFFFFFFF.toInt())
@@ -510,16 +510,16 @@ class MalletNavBarTest {
     @Test
     fun `row grows by the navigation bar inset`() {
         val view = bar()
-        val bare = view.height
+        val base = view.height
         val insets = androidx.core.view.WindowInsetsCompat.Builder()
             .setInsets(androidx.core.view.WindowInsetsCompat.Type.navigationBars(), androidx.core.graphics.Insets.of(0, 0, 0, 40))
             .build()
         view.onApplyWindowInsets(insets.toWindowInsets()!!)
         Snapshots.layout(view, WIDTH_DP)
-        assertThat(view.height).isEqualTo(bare + 40)
+        assertThat(view.height).isEqualTo(base + 40)
         view.fitNavigationBar = false
         Snapshots.layout(view, WIDTH_DP)
-        assertThat(view.height).isEqualTo(bare)
+        assertThat(view.height).isEqualTo(base)
     }
 
     @Test

@@ -28,12 +28,12 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
- * A slim recessed track with a glazed stretch that runs from the start to a neutral bead.
+ * A slim recessed track with a coloured stretch that runs from the start to a neutral bead.
  *
  * The bead follows the finger anywhere on the track; a tap makes it glide to the touched
  * place. The hue behind the bead is the value: either one hue ([hue], cobalt by default)
  * or a scale set with [setHueScale], for example bronze, ochre, cobalt, jade: the
- * stretch then wears the hue nearest to the bead, and the next one is poured in as the bead
+ * stretch then wears the hue nearest to the bead, and the next one blends in as the bead
  * passes. The rest of the track stays a neutral groove.
  *
  * With a [stepSize] above zero the bead snaps to the step grid and every crossed step gives a
@@ -89,13 +89,13 @@ public class MalletSlider @JvmOverloads constructor(
     private val gate = HorizontalDragGate(touchSlop)
     private var animator: ValueAnimator? = null
 
-    // With a scale: the hue that is poured right now, and the pour that is replacing the
+    // With a scale: the hue that is shown right now, and the blend that is replacing the
     // colour before it (1 = finished).
-    private var pouredIndex = 0
-    private var pour = 1f
-    private var pourFromBed = 0
-    private var pourFromEdge = 0
-    private var pourAnimator: ValueAnimator? = null
+    private var shownIndex = 0
+    private var blend = 1f
+    private var blendFromBed = 0
+    private var blendFromEdge = 0
+    private var blendAnimator: ValueAnimator? = null
     private val trackBounds = RectF()
     private val beadBounds = RectF()
     private val trackClip = Path()
@@ -164,7 +164,7 @@ public class MalletSlider @JvmOverloads constructor(
         set(value) {
             singleHue = value
             scale = null
-            syncPour(animate = false)
+            syncHue(animate = false)
             invalidate()
         }
 
@@ -197,20 +197,20 @@ public class MalletSlider @JvmOverloads constructor(
      */
     public fun setValue(value: Float, animate: Boolean) {
         current = snap(value)
-        if (animate) glideTo(fractionOf(current)) else jumpTo(fractionOf(current), pour = false)
+        if (animate) glideTo(fractionOf(current)) else jumpTo(fractionOf(current), blend = false)
         announceState()
     }
 
     /**
-     * Hues the stretch with a scale instead of one hue. The hues of [hues] stand at
+     * Colours the stretch with a scale of hues instead of one hue. The hues of [hues] stand at
      * even distances along the track, the first at [valueFrom] and the last at [valueTo], and
      * the stretch wears the one nearest to the bead. When the bead passes the half-way point
-     * between two of them, the next hue is poured in over the old one; the stretch never
+     * between two of them, the next hue blends in and replaces the old one; the stretch never
      * rests on a mixture of two. `null` or an empty list returns to the single [hue].
      */
     public fun setHueScale(hues: List<MalletHue>?) {
         scale = hues?.takeIf { it.isNotEmpty() }?.toList()
-        syncPour(animate = false)
+        syncHue(animate = false)
         invalidate()
     }
 
@@ -221,7 +221,7 @@ public class MalletSlider @JvmOverloads constructor(
         animator?.cancel()
         current = snap(current)
         position = fractionOf(current)
-        syncPour(animate = false)
+        syncHue(animate = false)
         announceState()
         invalidate()
     }
@@ -271,7 +271,7 @@ public class MalletSlider @JvmOverloads constructor(
         val centreX = travelLeft + (travelRight - travelLeft) * toVisual(position)
 
         material.drawTrack(canvas, trackBounds, grooveColor(edge = false), grooveColor(edge = true))
-        // The glazed stretch is the same capsule poured again, cut off under the bead's centre.
+        // The coloured stretch is the same capsule drawn again, cut off under the bead's centre.
         val save = canvas.save()
         if (isRtl) {
             canvas.clipRect(centreX, trackBounds.top, trackBounds.right, trackBounds.bottom)
@@ -289,40 +289,40 @@ public class MalletSlider @JvmOverloads constructor(
         if (showsFocus) material.drawFocusRim(canvas, beadBounds, radius)
     }
 
-    /** The unglazed recess: mist in light themes, the plain groove in dark ones. */
+    /** The plain recess: mist in light themes, the plain groove in dark ones. */
     private fun grooveColor(edge: Boolean): Int = if (edge) theme.neutralBedEdge else theme.neutralBed
 
-    /** Bed or rim colour of the stretch right now: the poured hue, or a pour on its way in. */
+    /** Bed or rim colour of the stretch right now: the shown hue, or a blend on its way to it. */
     private fun stretchColor(edge: Boolean): Int {
         val hues = scale
-        val hue = if (hues == null) singleHue else hues[pouredIndex.coerceIn(0, hues.lastIndex)]
+        val hue = if (hues == null) singleHue else hues[shownIndex.coerceIn(0, hues.lastIndex)]
         val target = if (edge) theme.bedEdgeColor(hue) else theme.bedColor(hue)
-        if (pour >= 1f) return target
-        return MalletColors.blend(if (edge) pourFromEdge else pourFromBed, target, pour)
+        if (blend >= 1f) return target
+        return MalletColors.blend(if (edge) blendFromEdge else blendFromBed, target, blend)
     }
 
     /**
      * Makes the stretch wear the hue of the scale that is nearest to the bead. With
-     * [animate] a change of hue is poured in over the colour that is showing; without, it
+     * [animate] a new hue blends in over the colour that is showing; without, it
      * is there at once.
      */
-    private fun syncPour(animate: Boolean) {
+    private fun syncHue(animate: Boolean) {
         val hues = scale
         val nearest = if (hues == null) 0 else (position.coerceIn(0f, 1f) * hues.lastIndex).roundToInt()
         if (!animate) {
-            pourAnimator?.cancel()
-            pourAnimator = null
-            pouredIndex = nearest
-            pour = 1f
+            blendAnimator?.cancel()
+            blendAnimator = null
+            shownIndex = nearest
+            blend = 1f
             return
         }
-        if (nearest == pouredIndex) return
-        pourFromBed = stretchColor(edge = false)
-        pourFromEdge = stretchColor(edge = true)
-        pouredIndex = nearest
-        pourAnimator?.cancel()
-        pour = 0f
-        pourAnimator = settle(0f, 1f) { pour = it }
+        if (nearest == shownIndex) return
+        blendFromBed = stretchColor(edge = false)
+        blendFromEdge = stretchColor(edge = true)
+        shownIndex = nearest
+        blendAnimator?.cancel()
+        blend = 0f
+        blendAnimator = settle(0f, 1f) { blend = it }
     }
 
     // ---------------------------------------------------------------------------------------
@@ -411,7 +411,7 @@ public class MalletSlider @JvmOverloads constructor(
         if (next == current) return false
         val crossed = if (step > 0f) abs(Math.round((next - current) / step)) else 0
         current = next
-        if (glide) glideTo(fractionOf(next)) else jumpTo(fractionOf(next), pour = true)
+        if (glide) glideTo(fractionOf(next)) else jumpTo(fractionOf(next), blend = true)
         announceState()
         valueChangeListener?.onValueChanged(this, next)
         if (tap) MalletHaptics.tick(this) else repeat(crossed.coerceAtMost(MAX_DETENTS)) { MalletHaptics.detent(this) }
@@ -423,16 +423,16 @@ public class MalletSlider @JvmOverloads constructor(
         val start = position
         animator = settle(0f, 1f) { progress ->
             position = start + (target - start) * progress
-            syncPour(animate = true)
+            syncHue(animate = true)
         }
     }
 
-    /** Puts the bead at [target] at once; [pour] says whether a new hue is poured in or just there. */
-    private fun jumpTo(target: Float, pour: Boolean) {
+    /** Puts the bead at [target] at once; [blend] says whether a new hue blends in or is just there. */
+    private fun jumpTo(target: Float, blend: Boolean) {
         animator?.cancel()
         animator = null
         position = target
-        syncPour(animate = pour)
+        syncHue(animate = blend)
         invalidate()
     }
 
@@ -440,7 +440,7 @@ public class MalletSlider @JvmOverloads constructor(
         animator?.cancel()
         animator = null
         position = fractionOf(current)
-        syncPour(animate = false)
+        syncHue(animate = false)
         super.onDetachedFromWindow()
     }
 

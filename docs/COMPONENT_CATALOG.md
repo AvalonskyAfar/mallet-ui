@@ -41,15 +41,23 @@ What everything else stands on: the card, the divider, text in the type scale an
 
 **Extracted** · `io.github.avalonskyafar.mallet.widget.MalletSurface` · Showcase: Foundations › Materials and depth
 
-The Mallet card: a porcelain body that groups rows and controls.
+The Mallet card: a raised surface that groups rows and controls.
 
-It is a `LinearLayout` (vertical unless told otherwise) with the porcelain material as its
-background. Three things differ from a plain layout:
+A card is a group: it holds at least two rows or blocks that belong together. A lone control
+never gets a card of its own: it joins the card of its relatives, or it stands on the canvas
+under its heading, without a card. One composite block, such as a list, a state view, a
+paragraph or a picture, may have a card to itself.
+
+It is a `LinearLayout` (vertical unless told otherwise) with the surface material as its
+background. Four things differ from a plain layout:
 
 - The view is slightly larger than the card the eye sees, because the shadow is drawn inside
   the view: 1.4 dp on each side, 1 dp above and 4.8 dp below. Content padding (9 dp by
   default) is measured from the view bounds.
 - `MalletDivider` children marked full-bleed are stretched from rim to rim.
+- A `MalletRevealLayout` child of a vertical surface is stretched over the cell of its row,
+  from rim to rim and from divider to divider, so that the action it uncovers comes out from
+  the edge of the card. The row inside it keeps its place.
 - Children are not clipped to their bounds, so that the tracks and capsules inside a card
   can let their shadows fade out into the room around them. A child that scrolls (a
   `ScrollView`, a list, a `RecyclerView`, anything marked as a scroll container) is the
@@ -182,9 +190,9 @@ The Mallet capsule button.
 
 | Variant | Body | Use |
 |---|---|---|
-| `Variant.NEUTRAL` | white porcelain capsule | ordinary actions |
-| `Variant.PRIMARY` | capsule glazed in the accent colour | the one main action of a screen |
-| `Variant.DANGER` | capsule glazed in the danger colour | destructive actions |
+| `Variant.NEUTRAL` | neutral capsule | ordinary actions |
+| `Variant.PRIMARY` | capsule in the accent colour | the one main action of a screen |
+| `Variant.DANGER` | capsule in the danger colour | destructive actions |
 | `Variant.TEXT` | none, coloured label only | dialog actions and inline links |
 
 Pressing sinks the capsule by 1.5 dp and tightens its shadow; nothing changes colour.
@@ -205,7 +213,7 @@ Pictures: see [MalletSurface](#malletsurface).
 |---|---|---|
 | `android:focusable` | boolean | Whether the button takes keyboard focus. True unless the layout says otherwise. |
 | `android:clickable` | boolean | Whether the button answers taps and keys. True unless the layout says otherwise. |
-| `app:malletButtonVariant` | `neutral` / `primary` / `danger` / `text` | The body of the button: a porcelain capsule, a glazed capsule, or the label alone. |
+| `app:malletButtonVariant` | `neutral` / `primary` / `danger` / `text` | The body of the button: a neutral capsule, a coloured capsule, or the label alone. |
 | `app:malletTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | Text colour of the text variant. Defaults to accent. |
 | `app:malletIcon` | one of 51 names (see below) | Icon drawn before the label. |
 | `app:malletLoading` | boolean | Replaces the label with a spinner and ignores clicks. |
@@ -222,15 +230,15 @@ Pictures: see [MalletSurface](#malletsurface).
 
 **New** · `io.github.avalonskyafar.mallet.widget.MalletChip` · Showcase: Components › Buttons and chips
 
-A small porcelain capsule for filters, suggestions and short actions.
+A small neutral capsule for filters, suggestions and short actions.
 
 | Kind | Behaviour |
 |---|---|
 | `Kind.ACTION` | a small neutral button: a tap ticks and calls the click listener |
 | `Kind.FILTER` | checkable: a tap flips `isChecked` and calls `setOnCheckedChangeListener` |
 
-An unchecked chip is raised white porcelain with an ink label. Checking a filter chip pours
-a hue into it: the body becomes a recessed glazed capsule (`hue`, cobalt by default), a
+An unchecked chip is a raised white surface with an ink label. Checking a filter chip fills
+it with its hue: the body becomes a recessed coloured capsule (`hue`, cobalt by default), a
 small check mark is drawn before the label and the chip glides to its wider size. The colour
 is the state; nothing else about the chip changes.
 
@@ -270,7 +278,7 @@ never for `setChecked`, and it is called before the haptic tick. Put several chi
 | `fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)` | Listener for user-driven changes of `isChecked`. |
 | `var text: CharSequence` | The label. |
 | `var kind: Kind` | Whether the chip is pressed like a button or checked like a filter. |
-| `var hue: MalletHue` | Hue poured into a checked filter chip. |
+| `var hue: MalletHue` | Hue that fills a checked filter chip. |
 | `var icon: MalletIcon?` | Icon drawn before the label, or `null`. |
 | `var isChecked: Boolean` | Whether a filter chip is checked. |
 | `fun setChecked(checked: Boolean, animate: Boolean)` | Checks or unchecks a filter chip from code, gliding when `animate` is set. |
@@ -337,7 +345,7 @@ Pictures: see [MalletChip](#malletchip).
 
 **New** · `io.github.avalonskyafar.mallet.widget.MalletTag` · Showcase: Components › Buttons and chips
 
-A status tag: a miniature recessed glazed capsule with a short bold label.
+A status tag: a miniature recessed coloured capsule with a short bold label.
 
 The tag says what state something is in ("Active", "Expired", "Draft") and nothing else. It
 is 22 dp high, has no outer shadow, cannot be pressed and takes no focus. Its colour is the
@@ -378,7 +386,7 @@ Pictures: see [MalletChip](#malletchip).
 
 **New** · `io.github.avalonskyafar.mallet.widget.MalletBadge` · Showcase: Components › Buttons and chips
 
-A count badge: a small capsule glazed in the danger colour with a white number on it.
+A count badge: a small capsule in the danger colour with a white number on it.
 
 A `count` of zero hides the badge, unless `showDot` is set, in which case it shrinks to an
 8 dp dot that says "something is new" without saying how much. Counts beyond `maxCount` are
@@ -421,14 +429,14 @@ Controls whose state is a colour in a recessed bed. The thumb or bead that moves
 
 **Extracted** · `io.github.avalonskyafar.mallet.widget.MalletSegmentedTrack` · Showcase: Components › Tracks and switches
 
-The signature Mallet control: a recessed glazed track with two or more options and a neutral
+The signature Mallet control: a recessed coloured track with two or more options and a neutral
 thumb that follows the finger.
 
 The colour of the bed is the state. As the thumb travels, the hue of the option it leaves
 blends into the hue of the option it approaches, so the control answers "which option" by
 position and "how strong" by colour at the same time.
 
-By default the options are read as an ordinal scale and glazed bronze, ochre, cobalt and
+By default the options are read as an ordinal scale and coloured bronze, ochre, cobalt and
 jade in that order (see `io.github.avalonskyafar.mallet.theme.MalletHues.scale`). Use
 `setHues` for a plain choice or a custom scale.
 
@@ -448,7 +456,7 @@ The view is 60 dp tall by default: a 52 dp track plus the gutter its shadow need
 |---|---|---|
 | `app:malletOptions` | reference | Options of a multi-option control, as a string array. |
 | `app:malletSelectedIndex` | integer | Index of the option selected at start. |
-| `app:malletHueMode` | `scale` / `uniform` | How options are glazed. "scale" reads the options as an ordinal scale (off, gentle, standard, strict). "uniform" pours the single hue named by malletHue under every option, for plain choices. |
+| `app:malletHueMode` | `scale` / `uniform` | How options are coloured. "scale" reads the options as an ordinal scale (off, gentle, standard, strict). "uniform" uses the single hue named by malletHue under every option, for plain choices. |
 | `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | One of the five hues of the theme. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
@@ -460,7 +468,7 @@ The view is 60 dp tall by default: a 52 dp track plus the gutter its shadow need
 | `var options: List<CharSequence>` | The option labels. |
 | `val selectedIndex: Int get()` | Index of the selected option. |
 | `fun setOptions(vararg labels: CharSequence)` | Replaces the option labels. |
-| `fun setHues(hues: List<MalletHue>?)` | Sets the hue poured under each option, or `null` to return to the default ordinal scale. |
+| `fun setHues(hues: List<MalletHue>?)` | Sets the hue under each option, or `null` to return to the default ordinal scale. |
 | `fun select(index: Int, animate: Boolean = true)` | Moves the selection to `index` from code. |
 | ↳ `const val HEIGHT_DP: Float` | Default height of the view in dp: a 52 dp track plus its shadow gutter. |
 | ↳ `const val GUTTER_SIDE_DP: Float` | Room at each side of the capsule, inside the view, in dp. |
@@ -471,7 +479,7 @@ The view is 60 dp tall by default: a 52 dp track plus the gutter its shadow need
 
 **Extracted** · `io.github.avalonskyafar.mallet.widget.MalletSwitch` · Showcase: Components › Tracks and switches
 
-The compact two-state switch: a small recessed glazed track with a neutral round thumb.
+The compact two-state switch: a small recessed coloured track with a neutral round thumb.
 
 The colour of the bed is the state: bronze while off, cobalt while on, and a blend of
 the two while the thumb travels. The thumb itself never changes colour. A tap toggles; a
@@ -520,7 +528,7 @@ for `setChecked` or `toggle`, so a change can be rolled back from inside the lis
 
 **Extracted** · `io.github.avalonskyafar.mallet.widget.MalletPowerSwitch` · Showcase: Components › Tracks and switches
 
-The hero switch of a screen: a large glazed capsule whose wide neutral thumb carries a power
+The hero switch of a screen: a large coloured capsule whose wide neutral thumb carries a power
 glyph and the current state, while the free half of the bed names the action a tap performs.
 
 The colour of the bed is the state: bronze while off, cobalt while on, blended by the
@@ -571,9 +579,9 @@ The view is 92 dp tall by default: an 80 dp capsule plus the gutter its deep sha
 
 **New** · `io.github.avalonskyafar.mallet.widget.MalletCheckbox` · Showcase: Components › Checkboxes and radios
 
-A small recessed bed that fills with hue when it is checked.
+A small recessed bed that fills with its hue when it is checked.
 
-Unchecked, the box is a neutral well. Checked, it becomes a glazed bed (cobalt unless
+Unchecked, the box is a neutral well. Checked, it becomes a coloured bed (cobalt unless
 `hue` says otherwise) carrying a check mark. Between the two the hue fades in and the
 check is drawn along its path; with reduced motion the box jumps.
 
@@ -599,25 +607,25 @@ never for `setChecked` or `toggle`, so a listener may roll the box back safely.
 | `android:text` | string | Label at the end of the box. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 | `app:malletChecked` | boolean | Whether the box starts checked. |
-| `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | Hue poured into the checked box. Cobalt when absent. |
+| `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | Hue that fills the checked box. Cobalt when absent. |
 
 | Member | What it does |
 |---|---|
 | `fun interface OnCheckedChangeListener` | Called when the user checks or unchecks the box. |
 | ↳ `fun onCheckedChanged(checkbox: MalletCheckbox, isChecked: Boolean)` | The user checked or unchecked `checkbox`; `isChecked` is its new state. |
 | `fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)` | Listener for user-driven changes. |
-| `var hue: MalletHue` | The hue poured into the box when it is checked. |
-| `var text: CharSequence` | The label at the end of the box, or empty for a bare box. |
+| `var hue: MalletHue` | The hue that fills the box when it is checked. |
+| `var text: CharSequence` | The label at the end of the box, or empty for a box without a label. |
 | `fun setChecked(checked: Boolean, animate: Boolean)` | Checks or unchecks the box from code. |
 
 ### MalletRadioButton
 
 **New** · `io.github.avalonskyafar.mallet.widget.MalletRadioButton` · Showcase: Components › Checkboxes and radios
 
-One choice out of several: a small round recessed bed that fills with hue and grows a
+One choice out of several: a small round recessed bed that fills with its hue and grows a
 neutral bead in its centre when it is checked.
 
-Unchecked the bed is a plain well; checked it is a glazed track (`hue`, cobalt by default)
+Unchecked the bed is a plain well; checked it is a coloured track (`hue`, cobalt by default)
 and the bead scales up from nothing while the hue fades in. An optional label (`text`) sits
 to the end of the bed, and the whole view is the touch target.
 
@@ -640,7 +648,7 @@ The view is at least 44 dp tall; the bed itself is 26 dp across.
 | XML attribute | Value | Meaning |
 |---|---|---|
 | `app:malletChecked` | boolean | Whether the radio starts checked. Inside a MalletRadioGroup the last checked child wins. |
-| `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | Hue poured into the bed when the radio is checked. Cobalt by default. |
+| `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | Hue that fills the bed when the radio is checked. Cobalt by default. |
 | `android:text` | string | Label drawn to the end of the bed. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
@@ -649,8 +657,8 @@ The view is at least 44 dp tall; the bed itself is 26 dp across.
 | `fun interface OnCheckedChangeListener` | Called when the user changes the checked state of a radio. |
 | ↳ `fun onCheckedChanged(radio: MalletRadioButton, isChecked: Boolean)` | The user changed `radio`; `isChecked` is its new state. |
 | `fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)` | Listener for user-driven changes: a tap, a key or an accessibility action on this radio, or the user choosing a sibling in the same `MalletRadioGroup` (which reports `false` here). |
-| `var hue: MalletHue` | Hue poured into the bed while the radio is checked. |
-| `var text: CharSequence?` | Label drawn to the end of the bed, or `null` for a bare radio. |
+| `var hue: MalletHue` | Hue that fills the bed while the radio is checked. |
+| `var text: CharSequence?` | Label drawn to the end of the bed, or `null` for a radio without a label. |
 | `fun setChecked(checked: Boolean, animate: Boolean)` | Sets the state from code; with `animate` the hue and the bead glide in or out. |
 | ↳ `const val BED_DP: Float` | Diameter of the round bed in dp. |
 | ↳ `const val BEAD_DP: Float` | Diameter of the neutral bead of a checked radio in dp. |
@@ -716,7 +724,7 @@ An exact number, an approximate amount, and the two ways of saying that somethin
 
 **Extended** · `io.github.avalonskyafar.mallet.widget.MalletStepper` · Showcase: Components › Numbers and progress
 
-A precise number control: a recessed glazed track with a minus zone, a plus zone and a
+A precise number control: a recessed coloured track with a minus zone, a plus zone and a
 neutral thumb in the centre that carries the value and never moves.
 
 Tapping minus or plus changes the value by one `stepSize`; holding either repeats, slowly at
@@ -767,7 +775,7 @@ always on the left and plus on the right, also in right-to-left layouts, like a 
 | `var decimals: Int` | Number of digits written after the decimal separator (0 to 6). |
 | `var unit: CharSequence?` | Suffix written directly after the number, for example `" ms"` or `"%"`. |
 | `var valueFormatter: ((Float) -> CharSequence)?` | Turns a value into the text written on the thumb and read by accessibility services. |
-| `var hue: MalletHue` | The hue poured into the track. |
+| `var hue: MalletHue` | The hue of the track. |
 | `val formattedValue: CharSequence` | The value as it is written on the thumb and announced by accessibility services. |
 | `fun setRange(valueFrom: Float, valueTo: Float)` | Sets both bounds at once; `valueTo` must not be below `valueFrom`. |
 
@@ -775,12 +783,12 @@ always on the left and plus on the right, also in right-to-left layouts, like a 
 
 **New** · `io.github.avalonskyafar.mallet.widget.MalletSlider` · Showcase: Components › Numbers and progress
 
-A slim recessed track with a glazed stretch that runs from the start to a neutral bead.
+A slim recessed track with a coloured stretch that runs from the start to a neutral bead.
 
 The bead follows the finger anywhere on the track; a tap makes it glide to the touched
 place. The hue behind the bead is the value: either one hue (`hue`, cobalt by default)
 or a scale set with `setHueScale`, for example bronze, ochre, cobalt, jade: the
-stretch then wears the hue nearest to the bead, and the next one is poured in as the bead
+stretch then wears the hue nearest to the bead, and the next one blends in as the bead
 passes. The rest of the track stays a neutral groove.
 
 With a `stepSize` above zero the bead snaps to the step grid and every crossed step gives a
@@ -809,7 +817,7 @@ inset by half a bead on both sides, so the bead and its shadow never leave the v
 | `app:malletStepSize` | float | The step a numeric control moves in. |
 | `app:malletValue` | float | The value a numeric control starts with. |
 | `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | One of the five hues of the theme. |
-| `app:malletSliderHueMode` | `single` / `scale` | How the stretch behind the bead is glazed. "single" pours the hue named by malletHue. "scale" blends through bronze, ochre, cobalt and jade as the value rises, for values that read as a strength. |
+| `app:malletSliderHueMode` | `single` / `scale` | How the stretch behind the bead is coloured. "single" fills it with the hue named by malletHue. "scale" blends through bronze, ochre, cobalt and jade as the value rises, for values that read as a strength. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
 | Member | What it does |
@@ -827,17 +835,17 @@ inset by half a bead on both sides, so the bead and its shadow never leave the v
 | `var stepSize: Float` | Distance between two stops, counted from `valueFrom`; `0` makes the slider continuous, and so does a negative, NaN or infinite step. |
 | `var hue: MalletHue` | The hue of the stretch behind the bead. |
 | `fun setValue(value: Float, animate: Boolean)` | Sets the value from code, optionally gliding the bead there. |
-| `fun setHueScale(hues: List<MalletHue>?)` | Hues the stretch with a scale instead of one hue. |
+| `fun setHueScale(hues: List<MalletHue>?)` | Colours the stretch with a scale of hues instead of one hue. |
 
 ### MalletProgressBar
 
 **New** · `io.github.avalonskyafar.mallet.widget.MalletProgressBar` · Showcase: Components › Numbers and progress
 
-A slim recessed groove that fills with hue as work completes.
+A slim recessed groove that fills with its hue as work completes.
 
-The groove is the neutral, unglazed recess; the fill is poured from the start edge (the
+The groove is the neutral, plain recess; the fill grows from the start edge (the
 right edge in right-to-left layouts) and takes the colour of `hue`. `setProgress` glides
-to the new amount. When the amount of work is unknown set `isIndeterminate`: a glazed
+to the new amount. When the amount of work is unknown set `isIndeterminate`: a coloured
 segment then travels through the groove and re-enters at the start. With reduced motion the
 indeterminate bar shows a still, pale, full-width fill instead of moving.
 
@@ -859,7 +867,7 @@ attached and visible.
 |---|---|---|
 | `app:malletHue` | `bronze` / `ochre` / `cobalt` / `jade` / `mist` | The hue of the fill. Default cobalt. |
 | `app:malletProgressValue` | float | Initial progress, from 0 to 1. |
-| `app:malletProgressIndeterminate` | boolean | True when the amount of work is unknown: a glazed segment travels through the groove. |
+| `app:malletProgressIndeterminate` | boolean | True when the amount of work is unknown: a coloured segment travels through the groove. |
 | `android:enabled` | boolean | Whether the component can be operated. Disabled, it pales as a whole. |
 
 | Member | What it does |
@@ -1496,18 +1504,25 @@ Bars and tabs for apps with a few sections, and the spatial host for apps whose 
 The bottom navigation row: quiet outline icons with labels, standing on the bare canvas.
 
 There is no bar, no background and no indicator. In `Mode.LAUNCHER` every item is a shortcut
-and nothing is ever selected. In `Mode.TABS` one item is selected, and the only thing that
+and nothing is ever selected: this is the row at the bottom of a root page, with one entry for
+each page that lies around it. In `Mode.TABS` one item is selected, and the only thing that
 says so is ink: the selected icon and label turn from muted to ink and the icon stroke grows
 a little heavier.
 
 `malletNavBarIcons` is an integer array of `malletIcon` values, one per label; a label without
 an icon gets the "more" circle. From code use `addItem` or `setItems`.
 
+The items share the width equally and all labels are drawn in one size. When a label is too
+wide for its item, all of them shrink together, to no less than 84 % of their size; where the
+reader's settings have enlarged the text, they may shrink back to the plain size. What still
+does not fit is cut with an ellipsis.
+
 With a keyboard, the arrow keys move a cursor from item to item and Space or Enter activates
 the item under it; the selection does not follow the cursor on its own.
 
 The row is 72 dp tall and grows by the navigation-bar inset, so it can sit at the very bottom
-of an edge-to-edge window. Set `elevated` when content scrolls underneath it.
+of an edge-to-edge window; switch that off with `fitNavigationBar` when the page around it is
+already padded for the system bars. Set `elevated` when content scrolls underneath it.
 
 Pictures: see [MalletBadge](#malletbadge).
 
@@ -1632,11 +1647,11 @@ topBar.bindTo(scrollView)
 Text tabs for switching between sibling views.
 
 Tabs are a different idea from `MalletSegmentedTrack` on purpose. The track selects a *value*
-and shows it with hue; tabs select a *view* and stay quiet: muted labels on the bare canvas,
-the selected one in ink, and under it a small accent capsule exactly as wide as the label. The
-capsule glides to the new label when the selection changes and can follow a continuous
-position (`setScrollPosition`), so it tracks the finger while a `MalletPager` is dragged. A
-hairline runs along the bottom edge from one side of the view to the other.
+and shows it with a hue; tabs select a *view* and stay quiet: muted labels directly on the
+canvas, the selected one in ink, and under it a small accent capsule exactly as wide as the
+label. The capsule glides to the new label when the selection changes and can follow a
+continuous position (`setScrollPosition`), so it tracks the finger while a `MalletPager` is
+dragged. A hairline runs along the bottom edge from one side of the view to the other.
 
 With `Layout.FILL` every tab gets the same width. With `Layout.SCROLL` every tab is as wide as
 its label plus 16 dp on either side; when the tabs do not fit, the row scrolls with the finger
@@ -2003,7 +2018,7 @@ What appears above a page: a question, a set of actions, a small menu, a passing
 
 **Extracted** · `io.github.avalonskyafar.mallet.overlay.MalletDialog` · Showcase: Components › Dialogs and sheets
 
-A modal question on a porcelain card: a centred title, a muted message, optional content
+A modal question on a card: a centred title, a muted message, optional content
 and one to three text actions under a rim-to-rim divider.
 
 Behaviour worth knowing:
@@ -2079,8 +2094,7 @@ MalletDialog.Builder(context)
 
 **New** · `io.github.avalonskyafar.mallet.overlay.MalletBottomSheet` · Showcase: Components › Dialogs and sheets
 
-A porcelain sheet that rises from the bottom edge of the window and follows the finger
-back down.
+A sheet that rises from the bottom edge of the window and follows the finger back down.
 
 The sheet lives in a full-window dialog of its own, so it traps focus while it is open. It
 shows a grabber, an optional centred title and message, and then either any view or a list
@@ -2139,7 +2153,7 @@ MalletBottomSheet.Builder(activity)
 
 **New** · `io.github.avalonskyafar.mallet.overlay.MalletMenu` · Showcase: Components › Dialogs and sheets
 
-A small porcelain panel of actions that grows out of the control that opened it.
+A small panel of actions that grows out of the control that opened it.
 
 The menu is built in code and shown in its own popup window:
 
@@ -2244,17 +2258,17 @@ MalletToast.Builder(activity)
 | ↳ `const val SIDE_MARGIN_DP: Float` | Free space kept on each side of the pill, in dp. |
 | ↳ `const val BOTTOM_MARGIN_DP: Float` | Distance between the pill and the bottom of the content (above bars and keyboard), in dp. |
 | ↳ `fun show(activity: Activity, message: CharSequence, tone: Tone` | Shows `message` in a pill of the given `tone` and returns the toast. |
-| ↳ `fun error(activity: Activity, message: CharSequence): MalletToast =` | Shows `message` as an error: a pill glazed in the danger colour. |
+| ↳ `fun error(activity: Activity, message: CharSequence): MalletToast =` | Shows `message` as an error: a pill in the danger colour. |
 | ↳ `fun cancel(activity: Activity)` | Removes the toast on screen in `activity`, if there is one, without its exit glide. |
 
 ### MalletFloatingPanel
 
 **Extracted** · `io.github.avalonskyafar.mallet.overlay.MalletFloatingPanel` · Showcase: Components › Dialogs and sheets
 
-A small porcelain panel that floats above a screen and is moved with the finger: a status
+A small panel that floats above a screen and is moved with the finger: a status
 read-out, a mini player, a debug badge.
 
-It is a `FrameLayout` that holds any content, 12 dp from the sides of the porcelain body and
+It is a `FrameLayout` that holds any content, 12 dp from the sides of the body and
 8 dp from its top and bottom. The view is slightly larger than the body the eye sees, because
 the shadow is drawn inside the view (1.4 dp on each side, 1 dp above, 4.8 dp below).
 
@@ -2330,8 +2344,8 @@ panel.remove()
 | `fun setPosition(x: Float, y: Float, animate: Boolean = false)` | Moves the panel to the given fractions (clamped to 0..1). |
 | `fun bindToWindow(windowManager: WindowManager, params: WindowManager.LayoutParams)` | Makes the panel a window of its own: from now on a drag updates the position of `params` through `windowManager` instead of translating the view, and the fractions refer to the screen. |
 | `fun remove()` | Takes the panel off the screen: out of its parent, or out of the window manager when it was bound with `bindToWindow`. |
-| ↳ `const val CONTENT_PADDING_HORIZONTAL_DP: Float` | Space between the sides of the porcelain body and the content, in dp. |
-| ↳ `const val CONTENT_PADDING_VERTICAL_DP: Float` | Space between the top and bottom of the porcelain body and the content, in dp. |
+| ↳ `const val CONTENT_PADDING_HORIZONTAL_DP: Float` | Space between the sides of the body and the content, in dp. |
+| ↳ `const val CONTENT_PADDING_VERTICAL_DP: Float` | Space between the top and bottom of the body and the content, in dp. |
 | ↳ `fun attach(activity: Activity, content: View): MalletFloatingPanel` | Adds a floating panel holding `content` to the content view of `activity` and returns it. |
 | ↳ `fun overlayLayoutParams(type: Int` | Layout params for hosting a panel in a `WindowManager` overlay: wrap-content, anchored top-left (the panel itself puts the start edge on the right in a right-to-left layout), translucent, not focusable (the app below keeps the keyboard) but touchable so the panel can be dragged. |
 
@@ -2526,7 +2540,7 @@ A persistent inline message at the top of a page or a card. It reports a *condit
 lasts (offline, a permission is missing, a backup is overdue); a passing *event* belongs in
 a toast.
 
-The body is flat porcelain (a rim, no shadow) with a thin bar in the tone colour at the
+The body is a flat surface (a rim, no shadow) with a thin bar in the tone colour at the
 start, an icon in the same colour, a title over a muted detail, up to two text actions at
 the end of the text column and an optional close icon. Text stays neutral: the tone lives in
 the bar and the icon only.
@@ -2642,19 +2656,26 @@ silent below Android 8.1.
 
 ### MalletRevealLayout
 
-**Extracted** · `io.github.avalonskyafar.mallet.interaction.MalletRevealLayout` · Showcase: Interactions › Reveal and expand
+**Extended** · `io.github.avalonskyafar.mallet.interaction.MalletRevealLayout` · Showcase: Interactions › Reveal and expand
 
-A row inside a card that slides aside to uncover one action, typically "Delete".
+A row that slides aside to uncover one action, typically "Delete".
 
-The layout takes exactly one child, the foreground row. Behind it lies a recessed coloured
-bed with the action in a strip `STRIP_WIDTH_DP` wide at the `revealEdge`. Dragging the row
-away from that edge follows the finger for at most the strip width; on release the row
+The layout takes exactly one child, the row. Under it lies a recessed coloured bed that
+starts at the `revealEdge` of the layout. Dragging the row away from that edge follows the
+finger for at most `STRIP_WIDTH_DP`; the bed shows as far as the row has moved, and the
+action (an icon above a label) comes out from the edge with the row. On release the row
 opens when at least `OPEN_FRACTION` of the strip is uncovered and closes otherwise. A tap on
 the open row closes it, and opening one row closes the other open rows of the same parent
 (see `closeSiblings`).
 
-The foreground gets a flat row fill when it has no background of its own, so the bed stays
-hidden while the row is closed. The row adds no rim or shadow: it lives in its card.
+**The bed is flush with the edge of the layout.** Padding of the layout and margins of the
+row inset the row, never the bed. As a direct child of a vertical
+`io.github.avalonskyafar.mallet.widget.MalletSurface` the layout is stretched to the cell of
+its row: from rim to rim of the card, up to the divider above and down to the divider below,
+or to the rim of the card for the first and the last row, whose corners it then follows. The
+row itself stays where the card's padding puts it. So the action comes out from the edge of
+the card, not from a box inside it. A closed row shows nothing of the bed, and the layout
+gives the row no background of its own.
 
 Gestures that start on a `MalletHorizontalDragOwner` inside the row (a switch, a track) are
 left to that view, and mostly-vertical movement is handed back to the scrolling parent.
@@ -2668,21 +2689,25 @@ In code: `row.setAction(getString(R.string.mallet_action_delete)) { delete(item)
 <img src="images/components/reveal_light.png" width="320" alt="MalletRevealLayout, light theme"> <img src="images/components/reveal_dark.png" width="320" alt="MalletRevealLayout, dark theme">
 
 ```xml
-<io.github.avalonskyafar.mallet.interaction.MalletRevealLayout
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    app:malletRevealActionLabel="@string/mallet_action_delete"
-    app:malletRevealActionTone="danger"
-    app:malletRevealEdge="start">
-    <LinearLayout ... />
-</io.github.avalonskyafar.mallet.interaction.MalletRevealLayout>
+<io.github.avalonskyafar.mallet.widget.MalletSurface ...>
+    <io.github.avalonskyafar.mallet.interaction.MalletRevealLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:malletRevealActionLabel="@string/mallet_action_delete"
+        app:malletRevealActionTone="danger"
+        app:malletRevealEdge="start">
+        <io.github.avalonskyafar.mallet.widget.MalletControlRow ... />
+    </io.github.avalonskyafar.mallet.interaction.MalletRevealLayout>
+    <io.github.avalonskyafar.mallet.widget.MalletDivider ... />
+    <!-- the next row -->
+</io.github.avalonskyafar.mallet.widget.MalletSurface>
 ```
 
 | XML attribute | Value | Meaning |
 |---|---|---|
-| `app:malletRevealEdge` | `start` / `end` | The edge at which the action strip is uncovered. Mirrored in RTL. |
-| `app:malletRevealActionLabel` | string | The label of the action behind the row. Without it the row does not move. |
-| `app:malletRevealActionTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | The tone that colours the bed. Default: danger. |
+| `app:malletRevealEdge` | `start` / `end` | The side from which the action is uncovered: the start or the end edge of the row's cell. As a direct child of a vertical MalletSurface the layout is stretched over that cell, from rim to rim of the card, so the action comes out from the rim of the card; anywhere else the layout is its own cell. Mirrored in RTL. |
+| `app:malletRevealActionLabel` | string | The label of the action under the row. With the icon, when one is set, it comes out from the edge together with the row. Without a label the row does not move. |
+| `app:malletRevealActionTone` | `ink` / `muted` / `accent` / `danger` / `warning` / `success` | The tone that colours the bed under the row. The bed shows exactly as far as the row has moved; a closed row shows no colour. Default: danger. |
 | `app:malletRevealActionIcon` | integer | Ordinal of the MalletIcon drawn above the label; -1 (default) for none. |
 | `app:malletRevealCloseSiblings` | boolean | Whether opening this row closes the other open rows of the same parent. Default: true. |
 
@@ -2862,7 +2887,7 @@ Conventions every control built on this class follows:
 
 | Member | What it does |
 |---|---|
-| `const val DISABLED_ALPHA: Int` | Alpha (0..255) of a disabled control: the hue pales, the shape stays. |
+| `const val DISABLED_ALPHA: Int` | Alpha (0..255) of a disabled control: the colour pales, the shape stays. |
 
 ---
 

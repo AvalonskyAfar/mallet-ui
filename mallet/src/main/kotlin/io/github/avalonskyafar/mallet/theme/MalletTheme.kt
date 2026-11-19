@@ -26,7 +26,7 @@ import io.github.avalonskyafar.mallet.R
  * @property highContrast stronger hairlines, dividers, secondary text and on-hue labels
  * @property reduceMotion shortens every animation to a brief settle
  * @property haptics whether confirmed state changes tick
- * @property nightHue share of hue colour kept in the recessed tracks of a dark theme;
+ * @property nightHue share of the hue kept in the recessed tracks of a dark theme;
  * `0` reproduces the neutral dark groove of the original app
  */
 public data class MalletTheme @JvmOverloads constructor(
@@ -40,13 +40,13 @@ public data class MalletTheme @JvmOverloads constructor(
 ) {
     val isDark: Boolean get() = colors.isDark
 
-    /** The unglazed recess of a dark theme. */
+    /** The plain recess of a dark theme. */
     @get:ColorInt
     val groove: Int get() = MalletColors.blend(colors.canvas, colors.surface, 0.14f)
 
     /**
      * Fill of a recess that carries no state: the empty part of a slider or progress groove.
-     * Mist in light themes, the bare groove in dark ones.
+     * Mist in light themes, the plain groove in dark ones.
      */
     @get:ColorInt
     val neutralBed: Int get() = if (isDark) groove else hues.mist.bed
@@ -56,12 +56,12 @@ public data class MalletTheme @JvmOverloads constructor(
     val neutralBedEdge: Int
         get() = if (isDark) MalletColors.blend(colors.ink, colors.canvas, 0.93f) else hues.mist.edge
 
-    /** Fill of a recessed track glazed with [hue] in this theme. */
+    /** Fill of a recessed track coloured with [hue] in this theme. */
     @ColorInt
     public fun bedColor(hue: MalletHue): Int =
         if (!isDark) hue.bed else MalletColors.blend(groove, hue.bed, nightHue)
 
-    /** Rim of a recessed track glazed with [hue] in this theme. */
+    /** Rim of a recessed track coloured with [hue] in this theme. */
     @ColorInt
     public fun bedEdgeColor(hue: MalletHue): Int {
         if (!isDark) return hue.edge
@@ -70,12 +70,12 @@ public data class MalletTheme @JvmOverloads constructor(
     }
 
     /**
-     * Colour of a label resting directly on a glazed bed.
+     * Colour of a label resting directly on a coloured bed.
      *
-     * In light themes every resting label takes the tone that suits the hue currently poured
-     * ([active]). In dark themes each label keeps a pale tint of its own option's hue
-     * ([own]), so the scale stays readable inside the groove. High contrast swaps the light
-     * tone for a deep one.
+     * In light themes every resting label takes the tone that suits the hue that currently
+     * fills the bed ([active]). In dark themes each label keeps a pale tint of its own
+     * option's hue ([own]), so the scale stays readable inside the groove. High contrast
+     * swaps the light tone for a deep one.
      */
     @ColorInt
     @JvmOverloads
@@ -88,7 +88,7 @@ public data class MalletTheme @JvmOverloads constructor(
     }
 
     /**
-     * Colour of a label on a body glazed with [tint], such as a primary or destructive
+     * Colour of a label on a body coloured with [tint], such as a primary or destructive
      * capsule. It is white, as in the original design; with high contrast it becomes the
      * darkest neutral of the theme whenever that reads better on the tint.
      */
@@ -108,7 +108,7 @@ public data class MalletTheme @JvmOverloads constructor(
         /** Scale used by the original "larger text" preference. */
         public const val LARGE_TEXT_SCALE: Float = 1.13f
 
-        /** Default share of hue colour kept in dark tracks. */
+        /** Default share of the hue kept in dark tracks. */
         public const val DEFAULT_NIGHT_HUE: Float = 0.30f
 
         /**

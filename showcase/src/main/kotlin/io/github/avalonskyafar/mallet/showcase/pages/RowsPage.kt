@@ -5,7 +5,6 @@ import io.github.avalonskyafar.mallet.icon.MalletIcon
 import io.github.avalonskyafar.mallet.showcase.DemoPage
 import io.github.avalonskyafar.mallet.showcase.PageScope
 import io.github.avalonskyafar.mallet.showcase.R
-import io.github.avalonskyafar.mallet.theme.MalletTextRole
 import io.github.avalonskyafar.mallet.theme.MalletTextTone
 import io.github.avalonskyafar.mallet.widget.MalletControlRow
 import io.github.avalonskyafar.mallet.widget.MalletEntryRow
@@ -30,20 +29,16 @@ object RowsPage : DemoPage("c_rows", R.string.page_c_rows_title, R.string.page_c
         val facts = MalletKeyValueList(page.context)
         controls(page, facts)
         links(page)
-        page.loose(
-            page.text(page.str(R.string.rows_facts_title), MalletTextRole.HEADING),
-            topDp = PageScope.SECTION_GAP, sideDp = PageScope.TEXT_INSET,
-        )
-        page.caption(page.str(R.string.rows_facts_detail), topDp = 4)
+        page.heading(R.string.rows_facts_title, R.string.rows_facts_detail)
         page.loose(facts, topDp = PageScope.HEADING_GAP)
         page.code("""
             val facts = MalletKeyValueList(context)
-            facts.addItem("Density", "Regular")
             facts.addItem(
                 "Sync", "Paused",
                 MalletTextTone.WARNING)
+            facts.addItem("Density", "Regular")
             facts.addItem(
-                "Brightness", "60%",
+                "Managed", "Set by policy",
                 MalletTextTone.MUTED)
         """)
         page.caption(page.str(R.string.rows_note), topDp = 22)
@@ -51,16 +46,18 @@ object RowsPage : DemoPage("c_rows", R.string.page_c_rows_title, R.string.page_c
 
     private fun headings(page: PageScope) {
         page.section(R.string.rows_headings_title, R.string.rows_headings_detail) {
-            row(MalletHeading(context).apply {
+            // The card pads 9 dp, part of it room for its shadow: these margins give both
+            // specimens the same air towards the rim as towards the divider between them.
+            addView(MalletHeading(context).apply {
                 level = MalletHeading.Level.PAGE
                 title = page.str(R.string.rows_heading_page)
                 detail = page.str(R.string.rows_heading_page_detail)
-            })
+            }, specimen(page, topDp = 4))
             addDivider(12f)
             addView(MalletHeading(context).apply {
                 title = page.str(R.string.rows_heading_section)
                 detail = page.str(R.string.rows_heading_section_detail)
-            }, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))
+            }, specimen(page, bottomDp = 8))
         }
         page.code("""
             val heading = MalletHeading(context)
@@ -82,6 +79,7 @@ object RowsPage : DemoPage("c_rows", R.string.page_c_rows_title, R.string.page_c
             })
             row(MalletEntryRow(context).apply {
                 title = page.str(R.string.rows_entry_start)
+                detail = page.str(R.string.rows_entry_start_detail)
                 arrow = MalletEntryRow.Arrow.START
                 setOnClickListener { page.host.say(page.str(R.string.rows_say_start)) }
             })
@@ -122,9 +120,12 @@ object RowsPage : DemoPage("c_rows", R.string.page_c_rows_title, R.string.page_c
             row.value = "English"
             row.leadingIcon = MalletIcon.BELL
             row.arrow = MalletEntryRow.Arrow.END
-            row.alignment =
-                MalletEntryRow.Alignment.START
+            row.alignment = MalletEntryRow.Alignment.START
             row.setOnClickListener { row.value = "中文" }
+
+            val accounts = MalletEntryRow(context)
+            accounts.title = "Allowed accounts"
+            accounts.arrow = MalletEntryRow.Arrow.START
         """)
     }
 
@@ -249,11 +250,7 @@ object RowsPage : DemoPage("c_rows", R.string.page_c_rows_title, R.string.page_c
             tone = MalletTextTone.ACCENT
             setOnClickListener { page.host.say(page.str(R.string.rows_say_adjacent)) }
         }
-        page.loose(
-            page.text(page.str(R.string.rows_links_title), MalletTextRole.HEADING),
-            topDp = PageScope.SECTION_GAP, sideDp = PageScope.TEXT_INSET,
-        )
-        page.caption(page.str(R.string.rows_links_detail), topDp = 4)
+        page.heading(R.string.rows_links_title, R.string.rows_links_detail)
         page.loose(edge, topDp = 6)
         page.loose(adjacent)
         page.code("""
@@ -264,9 +261,18 @@ object RowsPage : DemoPage("c_rows", R.string.page_c_rows_title, R.string.page_c
             link.arrowDirection =
                 MalletLinkRow.ArrowDirection.START
             link.tone = MalletTextTone.ACCENT
-            link.setOnClickListener { finish() }
+            link.setOnClickListener {
+                host.navigate("earlier")
+            }
         """)
     }
+
+    /** Where a heading shown as a specimen stands in its card. */
+    private fun specimen(page: PageScope, topDp: Int = 0, bottomDp: Int = 0): LinearLayout.LayoutParams =
+        LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP).apply {
+            topMargin = page.dp(topDp)
+            bottomMargin = page.dp(bottomDp)
+        }
 
     private fun MalletSurface.row(view: android.view.View) {
         if (childCount > 0) addDivider()

@@ -33,13 +33,13 @@
         <attr name="android:focusable" />
         <!-- Whether the button answers taps and keys. True unless the layout says otherwise. -->
         <attr name="android:clickable" />
-        <!-- The body of the button: a porcelain capsule, a glazed capsule, or the label alone. -->
+        <!-- The body of the button: a neutral capsule, a coloured capsule, or the label alone. -->
         <attr name="malletButtonVariant" format="enum">
-            <!-- Neutral porcelain capsule. -->
+            <!-- Neutral capsule. -->
             <enum name="neutral" value="0" />
-            <!-- Capsule glazed in the accent colour: the one main action of a screen. -->
+            <!-- Capsule in the accent colour: the one main action of a screen. -->
             <enum name="primary" value="1" />
-            <!-- Capsule glazed in the danger colour: destructive actions. -->
+            <!-- Capsule in the danger colour: destructive actions. -->
             <enum name="danger" value="2" />
             <!-- No body, coloured text only: dialog actions and inline links. -->
             <enum name="text" value="3" />

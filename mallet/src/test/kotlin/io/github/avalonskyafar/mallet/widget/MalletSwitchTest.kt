@@ -197,7 +197,7 @@ class MalletSwitchTest {
         Touch.dispatch(view, MotionEvent.ACTION_UP, view.width * 0.38f, y)
         assertThat(view.isChecked).isFalse()
         assertThat(calls[0]).isEqualTo(0)
-        // The thumb glides home and the bed is plain bronze again.
+        // The thumb glides home and the bed is fully bronze again.
         org.robolectric.shadows.ShadowLooper.idleMainLooper(400, java.util.concurrent.TimeUnit.MILLISECONDS)
         assertThat(view.bedPixel(OFF_PROBE)).isEqualTo(Color.rgb(206, 131, 83))
     }

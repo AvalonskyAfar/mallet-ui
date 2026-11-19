@@ -17,11 +17,11 @@
     <string name="buttons_chips_title">筛选片</string>
     <string name="buttons_chips_detail">用来筛选、单选或触发操作的小胶囊。</string>
     <string name="buttons_filter_label">筛选，可多选</string>
-    <string name="buttons_filter_bowls">碗</string>
-    <string name="buttons_filter_vases">瓶</string>
-    <string name="buttons_filter_figures">俑</string>
-    <string name="buttons_filter_tiles">砖</string>
-    <string name="buttons_filter_jars">罐</string>
+    <string name="buttons_filter_bowls">笔记</string>
+    <string name="buttons_filter_vases">照片</string>
+    <string name="buttons_filter_figures">链接</string>
+    <string name="buttons_filter_tiles">文件</string>
+    <string name="buttons_filter_jars">任务</string>
     <string name="buttons_filter_status">正在显示：%1$s</string>
     <string name="buttons_filter_none">正在显示全部。</string>
     <string name="buttons_single_label">单选，始终保留一项</string>

@@ -2,6 +2,9 @@
 <resources>
     <string name="tracks_segmented_title">Segmented track</string>
     <string name="tracks_segmented_detail">One choice out of two or more. Tap an option or drag the thumb. Up to four positions each have their own hue.</string>
+    <string name="tracks_two">Two options</string>
+    <string name="tracks_three">Three options</string>
+    <string name="tracks_four">Four options</string>
     <string name="tracks_off">Off</string>
     <string name="tracks_on">On</string>
     <string name="tracks_day">Day</string>
@@ -15,7 +18,7 @@
     <string name="tracks_status_level">Level: %1$s</string>
 
     <string name="tracks_plain_title">Plain choice</string>
-    <string name="tracks_plain_detail">When the options are equals and none is stronger than another, pour one hue under all of them.</string>
+    <string name="tracks_plain_detail">When the options are equals and none is stronger than another, use one hue under all of them.</string>
     <string name="tracks_list">List</string>
     <string name="tracks_grid">Grid</string>
     <string name="tracks_newest">Newest</string>
@@ -38,6 +41,7 @@
 
     <string name="tracks_power_title">Power switch</string>
     <string name="tracks_power_detail">The one switch a screen is about. The thumb names the state, the bed names the action.</string>
+    <string name="tracks_power_own">Your own labels</string>
     <string name="tracks_power_on">Protected</string>
     <string name="tracks_power_off">Paused</string>
     <string name="tracks_power_turn_on">Resume</string>

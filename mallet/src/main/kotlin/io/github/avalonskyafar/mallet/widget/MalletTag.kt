@@ -20,7 +20,7 @@ import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 /**
- * A status tag: a miniature recessed glazed capsule with a short bold label.
+ * A status tag: a miniature recessed coloured capsule with a short bold label.
  *
  * The tag says what state something is in ("Active", "Expired", "Draft") and nothing else. It
  * is 22 dp high, has no outer shadow, cannot be pressed and takes no focus. Its colour is the

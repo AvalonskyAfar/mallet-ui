@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="reveal_swipe_title">Swipe a row aside</string>
-    <string name="reveal_swipe_detail" formatted="false">Drag a row away from the start side. Past 42 % of the strip it stays open; a tap on the row closes it. The switches keep their own drag.</string>
+    <string name="reveal_swipe_detail" formatted="false">Drag a row away from the start side. The bed under it starts at the rim of the card and shows as far as the row has moved; the action, icon above label, comes out from the edge with it. Past 42 % of the strip the row stays open; tap it to close. A switch keeps its own drag.</string>
     <string name="reveal_rule_ads">Block ads</string>
     <string name="reveal_rule_trackers">Block trackers</string>
     <string name="reveal_rule_popups">Block pop-ups</string>
@@ -14,7 +14,7 @@
     <string name="reveal_empty">No rows left. Restore them below.</string>
 
     <string name="reveal_end_title">Action at the end side</string>
-    <string name="reveal_end_detail">The same row with revealEdge = END and an accent action. The second row was opened from code.</string>
+    <string name="reveal_end_detail">The same row with revealEdge = END and an accent action. The second row was opened from code: its bed is flush with the rim of the card, follows the corner, ends at the divider.</string>
     <string name="reveal_site_news">Morning news</string>
     <string name="reveal_site_video">Video site</string>
     <string name="reveal_pin">Pin</string>
@@ -31,5 +31,5 @@
     <string name="reveal_topic_keys">Without touch</string>
     <string name="reveal_topic_keys_body">With the header focused, Enter or Space toggles the section. A screen reader hears whether it is expanded or collapsed.</string>
 
-    <string name="reveal_note">The row that slides aside for Delete is extracted from the original app. The end edge, the tones and icons of the action and the expandable section are new in Mallet.</string>
+    <string name="reveal_note">The row that slides aside for Delete is extracted from the original app. The bed that starts at the rim, the end edge with its accent action and icon, and the expandable section are new in Mallet.</string>
 </resources>

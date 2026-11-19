@@ -32,10 +32,10 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
- * One choice out of several: a small round recessed bed that fills with hue and grows a
+ * One choice out of several: a small round recessed bed that fills with its hue and grows a
  * neutral bead in its centre when it is checked.
  *
- * Unchecked the bed is a plain well; checked it is a glazed track ([hue], cobalt by default)
+ * Unchecked the bed is a plain well; checked it is a coloured track ([hue], cobalt by default)
  * and the bead scales up from nothing while the hue fades in. An optional label ([text]) sits
  * to the end of the bed, and the whole view is the touch target.
  *
@@ -94,14 +94,14 @@ public class MalletRadioButton @JvmOverloads constructor(
         checkedChangeListener = listener
     }
 
-    /** Hue poured into the bed while the radio is checked. */
+    /** Hue that fills the bed while the radio is checked. */
     public var hue: MalletHue = theme.hues.cobalt
         set(value) {
             field = value
             invalidate()
         }
 
-    /** Label drawn to the end of the bed, or `null` for a bare radio. It wraps when it must. */
+    /** Label drawn to the end of the bed, or `null` for a radio without a label. It wraps when it must. */
     public var text: CharSequence?
         get() = label
         set(value) {
@@ -247,7 +247,7 @@ public class MalletRadioButton @JvmOverloads constructor(
             )
             .build()
 
-    /** Places the 26 dp bed: at the start beside a label, in the middle of a bare radio. */
+    /** Places the 26 dp bed: at the start beside a label, in the middle of a radio without a label. */
     private fun placeBed() {
         val layout = labelLayout
         val size = dp(BED_DP)
@@ -312,8 +312,8 @@ public class MalletRadioButton @JvmOverloads constructor(
                 bedClip.addCircle(bedBounds.centerX(), bedBounds.centerY(), radius, Path.Direction.CW)
                 canvas.clipPath(bedClip)
                 if (theme.isDark) {
-                    // A dark thumb would read as a hole in the hue: the bead takes the pale
-                    // tone that labels have on this bed.
+                    // A dark thumb would read as a hole in the coloured bed: the bead takes the
+                    // pale tone that labels have on this bed.
                     textPaint.style = Paint.Style.FILL
                     textPaint.color = theme.labelOnBed(hue)
                     canvas.drawCircle(beadBounds.centerX(), beadBounds.centerY(), bead / 2f, textPaint)

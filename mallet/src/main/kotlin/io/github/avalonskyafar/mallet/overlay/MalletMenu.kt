@@ -36,7 +36,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
- * A small porcelain panel of actions that grows out of the control that opened it.
+ * A small panel of actions that grows out of the control that opened it.
  *
  * The menu is built in code and shown in its own popup window:
  *
@@ -377,7 +377,7 @@ private class MenuPopup(
 }
 
 /**
- * The content view of the popup: the porcelain body with its shadow gutter, the items and the
+ * The content view of the popup: the panel body with its shadow gutter, the items and the
  * group dividers.
  */
 @SuppressLint("ViewConstructor")

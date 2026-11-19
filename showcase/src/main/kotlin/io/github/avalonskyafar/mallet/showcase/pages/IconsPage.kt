@@ -1,7 +1,10 @@
 package io.github.avalonskyafar.mallet.showcase.pages
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import io.github.avalonskyafar.mallet.icon.MalletIcon
@@ -14,14 +17,21 @@ import io.github.avalonskyafar.mallet.theme.MalletTextRole
 import io.github.avalonskyafar.mallet.theme.MalletTextTone
 import io.github.avalonskyafar.mallet.widget.MalletSegmentedTrack
 import io.github.avalonskyafar.mallet.widget.MalletSlider
+import io.github.avalonskyafar.mallet.widget.MalletText
 import java.util.Locale
+import kotlin.math.ceil
+import kotlin.math.max
 import kotlin.math.roundToInt
 
 /** The icon set: every glyph, its size and weight, its tones and its mirroring. */
 object IconsPage : DemoPage("f_icons", R.string.page_f_icons_title, R.string.page_f_icons_summary) {
     private const val COLUMNS = 5
     private const val STAGE_DP = 72
+    private const val LABEL_GAP_DP = 12
     private val STROKES = floatArrayOf(1.5f, 2f, 2.5f)
+
+    /** A zero-width space: a place where a name may break without showing a hyphen. */
+    private const val BREAK = "\u200B"
 
     override fun build(page: PageScope) {
         page.title()
@@ -32,16 +42,15 @@ object IconsPage : DemoPage("f_icons", R.string.page_f_icons_title, R.string.pag
         page.caption(page.str(R.string.icons_origin), topDp = 22)
     }
 
-    /** All icons, five to a row. A cell sinks under the finger and names its constant. */
+    /**
+     * All icons, five to a row, or fewer where large text needs wider cells. A cell sinks under
+     * the finger and names its constant.
+     */
     private fun grid(page: PageScope) {
         page.section(R.string.icons_all_title, R.string.icons_all_detail) {
-            MalletIcon.values().toList().chunked(COLUMNS).forEach { icons ->
-                val row = LinearLayout(context).apply { orientation = LinearLayout.HORIZONTAL }
-                icons.forEach { icon ->
-                    row.addView(page.cell(icon), LinearLayout.LayoutParams(0, PageScope.MATCH, 1f))
-                }
-                addView(row, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))
-            }
+            val cells = CellRows(context, COLUMNS)
+            MalletIcon.values().forEach { icon -> cells.addView(page.cell(icon)) }
+            addView(cells, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))
         }
         page.code("""
             val search = MalletIconView(this)
@@ -61,18 +70,23 @@ object IconsPage : DemoPage("f_icons", R.string.page_f_icons_title, R.string.pag
             tone = MalletTextTone.INK
         }
         // A zero-width space after each underscore lets a long name break there.
-        val label = text(name.replace("_", "_​"), MalletTextRole.MICRO, MalletTextTone.MUTED)
+        val label = text(name.replace("_", "_$BREAK"), MalletTextRole.MICRO, MalletTextTone.MUTED)
         label.gravity = Gravity.CENTER_HORIZONTAL
         return LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
             gravity = Gravity.CENTER_HORIZONTAL
             setPadding(dp(2), dp(10), dp(2), dp(8))
+            // The room the longest word of the name needs: CellRows keeps to it.
+            minimumWidth = label.longestWord() + dp(4)
             contentDescription = name.replace('_', ' ')
             addView(glyph, LinearLayout.LayoutParams(dp(24), dp(24)))
             addView(label, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP).apply { topMargin = dp(6) })
             MalletPress.attach(this, this) { host.say(message) }
         }
     }
+
+    /** Width in px of the longest stretch of this label that has to stay on one line. */
+    private fun MalletText.longestWord(): Int = text.split(BREAK).maxOf { ceil(paint.measureText(it)).toInt() }
 
     /** One icon on a stage; the slider sets the side of its box, the track its stroke. */
     private fun sizeAndWeight(page: PageScope) {
@@ -102,17 +116,21 @@ object IconsPage : DemoPage("f_icons", R.string.page_f_icons_title, R.string.pag
             val side = slider.value.roundToInt()
             glyph.layoutParams = FrameLayout.LayoutParams(page.dp(side), page.dp(side), Gravity.CENTER)
             glyph.strokeDp = STROKES[track.selectedIndex]
-            status.text = context.getString(R.string.icons_size_status, side, track.options[track.selectedIndex])
+            // Both numbers go in as text, so the line shows the digits of the slider and the
+            // track under it in every locale, not two digit systems side by side.
+            val stroke = track.options[track.selectedIndex]
+            status.text = context.getString(R.string.icons_size_status, side.toString(), stroke)
         }
         slider.setOnValueChangeListener { _, _ -> show() }
         track.setOnSelectionChangeListener { _, _ -> show() }
         show()
+        val column = page.labelColumn(R.string.icons_size_label, R.string.icons_stroke_label)
         page.section(R.string.icons_size_title, R.string.icons_size_detail) {
             addView(stage, LinearLayout.LayoutParams(PageScope.MATCH, page.dp(STAGE_DP + 16)))
             addView(status, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))
             addDivider(10f)
-            addView(page.labelled(R.string.icons_size_label, slider))
-            addView(page.labelled(R.string.icons_stroke_label, track), spaced(page.dp(6)))
+            addView(page.labelled(R.string.icons_size_label, column, slider))
+            addView(page.labelled(R.string.icons_stroke_label, column, track), spaced(page.dp(6)))
         }
         page.code("""
             val bell = MalletIconView(this)
@@ -126,12 +144,21 @@ object IconsPage : DemoPage("f_icons", R.string.page_f_icons_title, R.string.pag
         """)
     }
 
-    /** A label at the start and [control] filling the rest of the line. */
-    private fun PageScope.labelled(label: Int, control: View): View = LinearLayout(context).apply {
+    /** The width the [labels] of a card share: 64 dp, or more where large text needs it. */
+    private fun PageScope.labelColumn(vararg labels: Int): Int {
+        val paint = text("", MalletTextRole.LABEL).paint
+        val widest = labels.maxOf { paint.measureText(str(it)) }
+        return max(dp(64), ceil(widest).toInt() + dp(LABEL_GAP_DP))
+    }
+
+    /** A label in a column of [column] px at the start, and [control] filling the rest of the line. */
+    private fun PageScope.labelled(label: Int, column: Int, control: View): View = LinearLayout(context).apply {
         orientation = LinearLayout.HORIZONTAL
         gravity = Gravity.CENTER_VERTICAL
         val name = text(str(label), MalletTextRole.LABEL)
-        addView(name, LinearLayout.LayoutParams(dp(64), PageScope.WRAP).apply { marginStart = dp(6) })
+        // At the start edge of the line whatever script the label is written in.
+        name.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+        addView(name, LinearLayout.LayoutParams(column, PageScope.WRAP).apply { marginStart = dp(6) })
         addView(control, LinearLayout.LayoutParams(0, PageScope.WRAP, 1f))
     }
 
@@ -146,7 +173,8 @@ object IconsPage : DemoPage("f_icons", R.string.page_f_icons_title, R.string.pag
             status.text = context.getString(R.string.icons_tone_status, tone.name)
         }
         show(MalletTextTone.MUTED)
-        val row = LinearLayout(context).apply { orientation = LinearLayout.HORIZONTAL }
+        // All six in one row, or three and three where large text needs wider cells.
+        val row = CellRows(context, MalletTextTone.values().size)
         MalletTextTone.values().forEach { tone ->
             val name = tone.name.lowercase(Locale.ROOT)
             val glyph = MalletIconView(context).apply {
@@ -159,12 +187,14 @@ object IconsPage : DemoPage("f_icons", R.string.page_f_icons_title, R.string.pag
                 orientation = LinearLayout.VERTICAL
                 gravity = Gravity.CENTER_HORIZONTAL
                 setPadding(0, page.dp(10), 0, page.dp(8))
+                // The name on one line, with a little air between it and its neighbours.
+                minimumWidth = label.longestWord() + page.dp(6)
                 contentDescription = name
                 addView(glyph, LinearLayout.LayoutParams(page.dp(24), page.dp(24)))
                 addView(label, spaced(page.dp(6)))
             }
             MalletPress.attach(cell, cell) { show(tone) }
-            row.addView(cell, LinearLayout.LayoutParams(0, PageScope.WRAP, 1f))
+            row.addView(cell)
         }
         page.section(R.string.icons_tones_title, R.string.icons_tones_detail) {
             val box = LinearLayout.LayoutParams(page.dp(40), page.dp(40))
@@ -195,7 +225,9 @@ object IconsPage : DemoPage("f_icons", R.string.page_f_icons_title, R.string.pag
                 addView(page.cell(icon, message), LinearLayout.LayoutParams(0, PageScope.MATCH, 1f))
             }
         }
+        // A caption stands at the start edge of the card whatever script it is written in.
         fun heading(label: Int): View = page.text(page.str(label), MalletTextRole.CAPTION, MalletTextTone.MUTED)
+            .apply { textAlignment = View.TEXT_ALIGNMENT_VIEW_START }
         val inset = LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP).apply {
             topMargin = page.dp(6)
             marginStart = page.dp(6)
@@ -225,4 +257,62 @@ object IconsPage : DemoPage("f_icons", R.string.page_f_icons_title, R.string.pag
 
     private fun spaced(top: Int): LinearLayout.LayoutParams =
         LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP).apply { topMargin = top }
+}
+
+/**
+ * Equal cells in rows: [most] to a row, or fewer where the width cannot give every cell its
+ * minimum width. A cell asks for the room its longest word needs, so large text gets wider
+ * cells and more rows instead of a name broken inside a word. The rows are balanced: six
+ * cells that do not fit one row become three and three, not five and one.
+ */
+@SuppressLint("ViewConstructor") // built in code only
+private class CellRows(context: Context, private val most: Int) : ViewGroup(context) {
+    private var perRow = most
+
+    /** Nothing scrolls here, so a press on a cell shows at once. */
+    override fun shouldDelayChildPressedState(): Boolean = false
+
+    /**
+     * Where cell [index] of a row [width] px wide begins. Pixels left over go to the last
+     * cells, one each, as a row of equal weights in a `LinearLayout` shares them.
+     */
+    private fun edge(index: Int, width: Int): Int =
+        index * (width / perRow) + max(0, index - (perRow - width % perRow))
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val cells = (0 until childCount).map { getChildAt(it) }
+        val need = max(1, cells.maxOfOrNull { it.minimumWidth } ?: 1)
+        val unbounded = MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.UNSPECIFIED
+        val width = if (unbounded) need * most else MeasureSpec.getSize(widthMeasureSpec)
+        val fit = (width / need).coerceIn(1, most)
+        val rows = (cells.size + fit - 1) / fit
+        perRow = if (rows == 0) most else (cells.size + rows - 1) / rows
+        var height = 0
+        cells.chunked(perRow).forEach { row ->
+            fun measure(heightSpec: Int) = row.forEachIndexed { column, cell ->
+                val wide = edge(column + 1, width) - edge(column, width)
+                cell.measure(MeasureSpec.makeMeasureSpec(wide, MeasureSpec.EXACTLY), heightSpec)
+            }
+            measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED))
+            // Every cell is as tall as the tallest of its row: all of it sinks under the finger.
+            val tallest = row.maxOf { it.measuredHeight }
+            measure(MeasureSpec.makeMeasureSpec(tallest, MeasureSpec.EXACTLY))
+            height += tallest
+        }
+        setMeasuredDimension(width, resolveSize(height, heightMeasureSpec))
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        val width = right - left
+        val mirrored = layoutDirection == LAYOUT_DIRECTION_RTL
+        var y = 0
+        for (index in 0 until childCount) {
+            val cell = getChildAt(index)
+            val column = index % perRow
+            // Right to left the first cell of a row stands at the right edge.
+            val x = if (mirrored) width - edge(column + 1, width) else edge(column, width)
+            cell.layout(x, y, x + cell.measuredWidth, y + cell.measuredHeight)
+            if (column == perRow - 1) y += cell.measuredHeight
+        }
+    }
 }

@@ -49,7 +49,9 @@ a demo page is built. `docs/dev/API.md` is a generated index of the public API.
 5. **Public API has KDoc**, and user-visible strings are resources in English and Simplified
    Chinese.
 6. **The documents follow.** Regenerate the catalog (`python tools/catalog.py`) when KDoc,
-   attributes or provenance change; add a line to `CHANGELOG.md`.
+   attributes or provenance change. When a drawing changes, run `python tools/pictures.py`
+   after the tests (it needs Pillow), so that the pictures of the catalog show it. Add a
+   line to `CHANGELOG.md`.
 
 Changes to how something moves under the finger should also be tried on a device:
 
@@ -65,18 +67,22 @@ Mallet is a small language, and it stays recognisable only if additions are made
 same parts. Before proposing a component or a variant, answer these, in the issue or in the
 pull request:
 
-- **Which material is it?** Porcelain, glazed track, thumb or well. If it needs a fifth, the
+- **Which material is it?** Surface, track, thumb or well. If it needs a fifth, the
   proposal is about the language, not about a component: open an issue first.
 - **Where does its colour live, and what state does the colour mean?** Colour that decorates
   is not Mallet.
+- **Where does it stand: in a card, or on the canvas?** A card is a group of at least two
+  rows or blocks that belong together; a lone control never gets a card of its own
+  (decision D-25 in `docs/DESIGN_DECISIONS.md`).
 - **What does it do under the finger?** It sinks, it follows, or it glides on the one curve.
 - **What are its disabled, focused and pressed states**, and how does it read to a screen
   reader, mirror in right-to-left, and behave with reduced motion?
 
 Every part of the library carries a mark in `docs/DESIGN_DECISIONS.md`: **Extracted** from
 the original app (with file and lines), **Extended**, or **New**. A new component gets a
-`New` row and a decision entry (`D-nn`) that states the reasoning. Please do not present new
-design as extracted.
+`New` row and a decision entry (`D-nn`) that states the reasoning. A change that departs
+from the original on purpose gets a decision entry too, as D-24 and D-25 do. Please do not
+present new design as extracted.
 
 ## Commits and pull requests
 

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="tracks_segmented_title">分段轨道</string>
-    <string name="tracks_segmented_detail">在两个或更多选项里选一个。点选项，或者拖动滑块。前四个位置各有自己的釉色。</string>
+    <string name="tracks_segmented_detail">在两个或更多选项里选一个。点选项，或者拖动滑块。前四个位置各有自己的底色。</string>
+    <string name="tracks_two">两个选项</string>
+    <string name="tracks_three">三个选项</string>
+    <string name="tracks_four">四个选项</string>
     <string name="tracks_off">关闭</string>
     <string name="tracks_on">开启</string>
     <string name="tracks_day">日</string>
@@ -15,7 +18,7 @@
     <string name="tracks_status_level">级别：%1$s</string>
 
     <string name="tracks_plain_title">平等的选项</string>
-    <string name="tracks_plain_detail">选项之间没有强弱之分时，整条轨道只上一种釉色。</string>
+    <string name="tracks_plain_detail">选项之间没有强弱之分时，整条轨道只用一种底色。</string>
     <string name="tracks_list">列表</string>
     <string name="tracks_grid">网格</string>
     <string name="tracks_newest">最新</string>
@@ -38,6 +41,7 @@
 
     <string name="tracks_power_title">总开关</string>
     <string name="tracks_power_detail">一个页面只为它而设的那个开关。滑块上写状态，轨道上写动作。</string>
+    <string name="tracks_power_own">自定文字</string>
     <string name="tracks_power_on">保护中</string>
     <string name="tracks_power_off">已暂停</string>
     <string name="tracks_power_turn_on">恢复</string>
@@ -46,5 +50,5 @@
     <string name="tracks_power_status_off">保护已暂停，不再过滤任何内容。</string>
     <string name="tracks_power_disabled">不可用状态，使用默认文字</string>
 
-    <string name="tracks_origin">分段轨道、开关、总开关和按强弱排列的釉色都取自原应用，撤回改动的做法也是。单一釉色、可自选釉色的开关和可自定文字的总开关是为 Mallet 新设计的。</string>
+    <string name="tracks_origin">分段轨道、开关、总开关和按强弱排列的底色都取自原应用，撤回改动的做法也是。单一底色、可自选底色的开关和可自定文字的总开关是为 Mallet 新设计的。</string>
 </resources>

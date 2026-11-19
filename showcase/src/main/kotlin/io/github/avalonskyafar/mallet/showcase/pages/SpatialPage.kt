@@ -29,6 +29,7 @@ import io.github.avalonskyafar.mallet.theme.MalletTextRole
 import io.github.avalonskyafar.mallet.theme.MalletTextTone
 import io.github.avalonskyafar.mallet.theme.MalletTheme
 import io.github.avalonskyafar.mallet.widget.MalletButton
+import java.text.BreakIterator
 import kotlin.math.roundToInt
 
 /** Pages as places: the map of this app, how to move through it, and an activity as a neighbour. */
@@ -75,7 +76,9 @@ object SpatialPage : DemoPage("i_spatial", R.string.page_i_spatial_title, R.stri
                 .connect("home", Side.ABOVE, "appearance")
                 .child("interactions", Side.END, "i_spatial")
                 .build()
-            host.setGraph(graph) { key -> createPageView(key) }
+            host.setGraph(graph) { key ->
+                createPageView(key)
+            }
         """)
     }
 
@@ -134,7 +137,8 @@ object SpatialPage : DemoPage("i_spatial", R.string.page_i_spatial_title, R.stri
                     val commit = MalletMotion.COMMIT_FRACTION
                     val lands = fraction >= commit
                     status.text =
-                        if (lands) "lands" else "glides back"
+                        if (lands) "lands"
+                        else "glides back"
                 }
             }
             host.addListener(watch)
@@ -189,8 +193,9 @@ object SpatialPage : DemoPage("i_spatial", R.string.page_i_spatial_title, R.stri
 
             // Below Android 13, or without enableOnBackInvokedCallback
             override fun onBackPressed() {
-                if (back.onBackPressed()) return
-                super.onBackPressed()
+                if (!back.onBackPressed()) {
+                    super.onBackPressed()
+                }
             }
         """)
     }
@@ -238,6 +243,9 @@ private class SpatialMapView(
     private val fill = Paint(Paint.ANTI_ALIAS_FLAG)
     private val line = Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.STROKE }
     private val label = TextPaint(Paint.ANTI_ALIAS_FLAG)
+
+    /** The size of the names while each fits its tile: the role's, with the reader's enlargement. */
+    private val labelSize: Float
     private val tiles = List(places.size) { RectF() }
     private var labels: List<StaticLayout> = emptyList()
     private val dash = DashPathEffect(floatArrayOf(dp(4f), dp(4f)), 0f)
@@ -250,6 +258,7 @@ private class SpatialMapView(
         isClickable = true
         isFocusable = true
         MalletTextRole.MICRO.applyTo(label, theme, density * resources.configuration.fontScale)
+        labelSize = label.textSize
     }
 
     private fun dp(value: Float): Float = value * density
@@ -296,18 +305,46 @@ private class SpatialMapView(
         return true
     }
 
+    /** The names laid out at the present size of the label paint, each [room] pixels across. */
+    private fun layOut(room: Int): List<StaticLayout> = names.map { name ->
+        StaticLayout.Builder.obtain(name, 0, name.length, label, room)
+            .setAlignment(Layout.Alignment.ALIGN_CENTER)
+            .setMaxLines(2)
+            .setEllipsize(TextUtils.TruncateAt.END)
+            .setIncludePad(false)
+            .build()
+    }
+
+    /** Whether [layout] ends a line of [name] where no line may end: inside a word. */
+    private fun splitsAWord(name: String, layout: StaticLayout): Boolean {
+        val lineEnds = BreakIterator.getLineInstance().apply { setText(name) }
+        return (0 until layout.lineCount - 1).any { !lineEnds.isBoundary(layout.getLineEnd(it)) }
+    }
+
+    /**
+     * The names in the one size they are all drawn in when each has [room] pixels across.
+     * Where a word is too wide for its tile, the names shrink together until it is whole
+     * again, the way the labels of a `MalletNavBar` do: to no less than [MIN_LABEL_SCALE] of
+     * their size, and text that the reader's settings have enlarged may give all of that
+     * enlargement back. A word is split only where even that was not enough.
+     */
+    private fun fitLabels(room: Int): List<StaticLayout> {
+        val plain = MalletTextRole.MICRO.sizeSp * density
+        val floor = minOf(labelSize * MIN_LABEL_SCALE, plain)
+        label.textSize = labelSize
+        var fitted = layOut(room)
+        while (label.textSize > floor && names.indices.any { splitsAWord(names[it], fitted[it]) }) {
+            label.textSize = maxOf(floor, label.textSize - dp(0.5f))
+            fitted = layOut(room)
+        }
+        return fitted
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val width = getDefaultSize(dp(320f).roundToInt(), widthMeasureSpec)
         val tileWidth = (width - 2 * dp(SIDE_DP) - (COLUMNS - 1) * dp(GAP_DP)) / COLUMNS
         val textWidth = (tileWidth - 2 * dp(TILE_PAD_DP)).roundToInt().coerceAtLeast(1)
-        labels = names.map { name ->
-            StaticLayout.Builder.obtain(name, 0, name.length, label, textWidth)
-                .setAlignment(Layout.Alignment.ALIGN_CENTER)
-                .setMaxLines(2)
-                .setEllipsize(TextUtils.TruncateAt.END)
-                .setIncludePad(false)
-                .build()
-        }
+        labels = fitLabels(textWidth)
         val tileHeight = maxOf(dp(44f), (labels.maxOfOrNull { it.height } ?: 0) + dp(14f))
         val top = dp(TOP_DP)
         val rtl = layoutDirection == LAYOUT_DIRECTION_RTL
@@ -373,5 +410,8 @@ private class SpatialMapView(
         const val GAP_DP = 12f
         const val ROW_GAP_DP = 14f
         const val TILE_PAD_DP = 4f
+
+        /** How far the names may shrink to keep a word whole; the floor of `MalletNavBar`. */
+        const val MIN_LABEL_SCALE = 0.84f
     }
 }

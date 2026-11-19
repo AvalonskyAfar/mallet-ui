@@ -7,10 +7,10 @@
     <string name="icons_size_detail">图标会填满给它的方框。线宽与大小分开设置，所以大图标也可以保持纤细。</string>
     <string name="icons_size_label">大小</string>
     <string name="icons_stroke_label">线宽</string>
-    <string name="icons_size_status">%1$d dp，线宽 %2$s dp</string>
+    <string name="icons_size_status">%1$s dp，线宽 %2$s dp</string>
 
     <string name="icons_tones_title">色调</string>
-    <string name="icons_tones_detail">图标使用与文字相同的颜色角色，默认是次要色。点任意一个色调，上方的大图标随之变色。</string>
+    <string name="icons_tones_detail">图标使用与文字相同的颜色角色，默认是淡色。点任意一个色调，上方的大图标随之变色。</string>
     <string name="icons_tone_status">tone = MalletTextTone.%1$s</string>
 
     <string name="icons_direction_title">方向</string>

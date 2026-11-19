@@ -26,8 +26,10 @@ import io.github.avalonskyafar.mallet.theme.MalletMotion
 import io.github.avalonskyafar.mallet.theme.MalletTextRole
 import io.github.avalonskyafar.mallet.theme.MalletTextTone
 import io.github.avalonskyafar.mallet.theme.MalletTheme
+import io.github.avalonskyafar.mallet.widget.MalletControlRow
 import io.github.avalonskyafar.mallet.widget.MalletSegmentedTrack
 import io.github.avalonskyafar.mallet.widget.MalletSurface
+import io.github.avalonskyafar.mallet.widget.MalletSwitch
 import io.github.avalonskyafar.mallet.widget.MalletText
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -229,9 +231,13 @@ class MalletSpatialTransitionTest {
         Snapshots.attach(host, 360)
         advance()
         val width = host.width.toFloat()
-        val card = page.track.parent as View
-        val trackY = card.top + page.track.top + page.track.height / 2f
-        Touch.drag(host, width * 0.3f, trackY, width * 0.8f, trackY, release = false)
+        // The track shares its row with a title, so the finger is put down on the track
+        // itself: a quarter of the way along it, wherever the row has placed it.
+        val onTrack = android.graphics.Rect(0, 0, page.track.width, page.track.height)
+        host.offsetDescendantRectToMyCoords(page.track, onTrack)
+        val trackX = onTrack.left + onTrack.width() * 0.25f
+        val trackY = onTrack.exactCenterY()
+        Touch.drag(host, trackX, trackY, width * 0.8f, trackY, release = false)
         assertThat(host.pageOffset).isEqualTo(0f)
         Touch.dispatch(host, MotionEvent.ACTION_UP, width * 0.8f, trackY)
 
@@ -742,9 +748,9 @@ class MalletSpatialTransitionTest {
         override fun canSwipeBack(): Boolean = !busy
     }
 
-    /** A small settings-like page: centred title, a card with a track, a text field. */
+    /** A small settings-like page: centred title, a card of two rows (a track, a switch), a text field. */
     private class Page(context: Context, title: String) : LinearLayout(context) {
-        val track = MalletSegmentedTrack(context)
+        val track: MalletSegmentedTrack
         val field = EditText(context)
 
         init {
@@ -759,12 +765,14 @@ class MalletSpatialTransitionTest {
             heading.gravity = Gravity.CENTER
             addView(heading, LayoutParams(LayoutParams.MATCH_PARENT, (56 * density).toInt()))
             val card = MalletSurface(context)
-            val label = MalletText.create(context, "Protection", MalletTextRole.SUBHEAD, MalletTextTone.INK)
-            label.gravity = Gravity.CENTER
-            card.addView(label, LayoutParams(LayoutParams.MATCH_PARENT, (40 * density).toInt()))
-            track.options = listOf("Off", "Gentle", "Standard")
-            track.select(2, animate = false)
-            card.addView(track, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
+            val protection = MalletControlRow(context)
+            protection.title = "Protection"
+            track = protection.setSegmented(listOf("Off", "Gentle", "Standard"), 2, null)
+            card.addView(protection, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
+            val boot = MalletControlRow(context)
+            boot.title = "Start on boot"
+            boot.setControl(MalletSwitch(context).also { it.setChecked(true, animate = false) })
+            card.addView(boot, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
             addView(card, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
             val note = MalletText.create(
                 context, "Swipe anywhere to go back", MalletTextRole.CAPTION, MalletTextTone.MUTED,
@@ -816,7 +824,7 @@ class MalletSpatialTransitionTest {
     private companion object {
         /** Colour of the stand-in picture of the activity below. */
         val BACKDROP: Int = Color.rgb(200, 60, 40)
-        const val PAGE_HEIGHT_DP = 320
+        const val PAGE_HEIGHT_DP = 360
         const val DOWN_TIME = 10_000L
     }
 }

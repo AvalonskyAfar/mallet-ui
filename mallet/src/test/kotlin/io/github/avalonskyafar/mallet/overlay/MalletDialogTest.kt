@@ -204,7 +204,7 @@ class MalletDialogTest {
     }
 
     @Test
-    fun `error capsule is tinted in the danger colour and as wide as the content`() {
+    fun `error capsule is in the danger colour and as wide as the content`() {
         val dialog = builder().positive().negative().build()
         dialog.showError("Name is taken")
         val card = dialog.contentView
@@ -295,11 +295,11 @@ class MalletDialogTest {
         assertThat(dialog.error.toString()).isEqualTo("Enter a name")
         assertThat(accepted).isEmpty()
 
-        editor.setText("Kiln")
+        editor.setText("Notes")
         editor.onEditorAction(EditorInfo.IME_ACTION_DONE)
         assertThat(dialog.error).isNull()
         settle()
-        assertThat(accepted).containsExactly("Kiln")
+        assertThat(accepted).containsExactly("Notes")
         assertThat(dialog.isShowing).isFalse()
     }
 

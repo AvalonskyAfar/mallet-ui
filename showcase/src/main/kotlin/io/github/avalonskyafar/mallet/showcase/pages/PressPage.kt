@@ -6,6 +6,7 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import io.github.avalonskyafar.mallet.interaction.MalletHaptics
 import io.github.avalonskyafar.mallet.interaction.MalletPress
+import io.github.avalonskyafar.mallet.material.MalletGutters
 import io.github.avalonskyafar.mallet.material.MalletWellDrawable
 import io.github.avalonskyafar.mallet.showcase.DemoPage
 import io.github.avalonskyafar.mallet.showcase.PageScope
@@ -13,10 +14,12 @@ import io.github.avalonskyafar.mallet.showcase.R
 import io.github.avalonskyafar.mallet.theme.MalletTextRole
 import io.github.avalonskyafar.mallet.theme.MalletTextTone
 import io.github.avalonskyafar.mallet.widget.MalletButton
+import io.github.avalonskyafar.mallet.widget.MalletControlRow
 import io.github.avalonskyafar.mallet.widget.MalletEntryRow
 import io.github.avalonskyafar.mallet.widget.MalletSurface
 import io.github.avalonskyafar.mallet.widget.MalletSwitch
 import io.github.avalonskyafar.mallet.widget.MalletText
+import kotlin.math.roundToInt
 
 /** The press that sinks, the five haptic effects, and which of listener and tick comes first. */
 object PressPage : DemoPage("i_press", R.string.page_i_press_title, R.string.page_i_press_summary) {
@@ -70,11 +73,15 @@ object PressPage : DemoPage("i_press", R.string.page_i_press_title, R.string.pag
         var presses = 0
         fun counted() = page.context.resources.getQuantityString(R.plurals.press_sink_own_count, presses, presses)
         val count = page.muted(counted())
+        // In the role of an entry row's title, so that the three rows of the card read as one list.
+        val title = page.text(page.str(R.string.press_sink_own), MalletTextRole.SUBHEAD).apply {
+            textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+        }
         val content = LinearLayout(page.context).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
             setPaddingRelative(page.dp(OWN_ROW_START), page.dp(10), page.dp(OWN_ROW_END), page.dp(10))
-            addView(page.text(page.str(R.string.press_sink_own), MalletTextRole.BODY), LinearLayout.LayoutParams(0, PageScope.WRAP, 1f))
+            addView(title, LinearLayout.LayoutParams(0, PageScope.WRAP, 1f))
             addView(count, LinearLayout.LayoutParams(PageScope.WRAP, PageScope.WRAP).apply { marginStart = page.dp(12) })
         }
         val row = FrameLayout(page.context).apply {
@@ -92,6 +99,10 @@ object PressPage : DemoPage("i_press", R.string.page_i_press_title, R.string.pag
     /** One button per effect with its meaning beside it. */
     private fun haptics(page: PageScope) {
         val status = page.muted(page.str(R.string.press_haptics_idle))
+        val buttons = ArrayList<MalletButton>()
+        // A capsule leaves more room for its shadow below than above, so it sits above the middle
+        // of its view. The text beside it follows the capsule.
+        val lift = page.px(MalletGutters.SURFACE_BOTTOM_DP - MalletGutters.SURFACE_TOP_DP)
         fun effect(name: String, meaning: Int, play: (View) -> Unit): View {
             val button = MalletButton(page.context).apply {
                 text = name
@@ -101,13 +112,14 @@ object PressPage : DemoPage("i_press", R.string.page_i_press_title, R.string.pag
                     status.text = page.context.getString(line, name)
                 }
             }
+            buttons += button
             return LinearLayout(page.context).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
                 setPaddingRelative(page.dp(3), page.dp(4), page.dp(7), page.dp(4))
-                addView(button, LinearLayout.LayoutParams(page.dp(EFFECT_BUTTON_WIDTH), PageScope.WRAP))
+                addView(button, LinearLayout.LayoutParams(PageScope.WRAP, PageScope.WRAP))
                 addView(
-                    page.muted(page.str(meaning)),
+                    page.muted(page.str(meaning)).apply { setPadding(0, 0, 0, lift) },
                     LinearLayout.LayoutParams(0, PageScope.WRAP, 1f).apply { marginStart = page.dp(12) },
                 )
             }
@@ -119,8 +131,16 @@ object PressPage : DemoPage("i_press", R.string.page_i_press_title, R.string.pag
             addFull(effect("reject", R.string.press_haptics_reject) { MalletHaptics.reject(it) })
             addFull(effect("longPress", R.string.press_haptics_long_press) { MalletHaptics.longPress(it) })
         }
+        // The five buttons form one column: as wide as the longest name needs at the text size
+        // in use, so that large text never breaks a name in two.
+        val free = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        val widest = buttons.maxOf { button ->
+            button.measure(free, free)
+            button.measuredWidth
+        }
+        buttons.forEach { it.minimumWidth = maxOf(widest, page.dp(EFFECT_BUTTON_MIN_WIDTH)) }
         page.loose(status, topDp = 8, sideDp = PageScope.TEXT_INSET)
-        page.caption(page.str(R.string.press_haptics_note), topDp = 6)
+        page.caption(page.str(R.string.press_haptics_note), topDp = 12)
         page.code(HAPTICS_CODE)
     }
 
@@ -131,6 +151,7 @@ object PressPage : DemoPage("i_press", R.string.page_i_press_title, R.string.pag
         val log = page.text(page.str(R.string.press_order_empty), MalletTextRole.CAPTION, MalletTextTone.MUTED).apply {
             background = MalletWellDrawable(page.context)
             minLines = LOG_LINES
+            textAlignment = View.TEXT_ALIGNMENT_VIEW_START
             setPadding(page.dp(13), page.dp(11), page.dp(13), page.dp(11))
         }
         fun append(line: Int) {
@@ -149,13 +170,11 @@ object PressPage : DemoPage("i_press", R.string.page_i_press_title, R.string.pag
             text = page.str(R.string.press_order_button)
             setOnClickListener { append(R.string.press_order_button_line) }
         }
-        val switchRow = LinearLayout(page.context).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            minimumHeight = page.dp(56)
-            setPaddingRelative(page.dp(7), page.dp(6), page.dp(3), page.dp(6))
-            addView(page.text(page.str(R.string.press_order_switch), MalletTextRole.BODY), LinearLayout.LayoutParams(0, PageScope.WRAP, 1f))
-            addView(switch, LinearLayout.LayoutParams(PageScope.WRAP, PageScope.WRAP).apply { marginStart = page.dp(12) })
+        // The row names the switch for screen readers.
+        val switchRow = MalletControlRow(page.context).apply {
+            title = page.str(R.string.press_order_switch)
+            alignment = MalletControlRow.Alignment.START
+            setControl(switch)
         }
         page.section(R.string.press_order_title, R.string.press_order_detail) {
             addFull(switchRow)
@@ -172,7 +191,7 @@ object PressPage : DemoPage("i_press", R.string.page_i_press_title, R.string.pag
 
 private const val OWN_ROW_START = 14
 private const val OWN_ROW_END = 16
-private const val EFFECT_BUTTON_WIDTH = 124
+private const val EFFECT_BUTTON_MIN_WIDTH = 124
 private const val LOG_LINES = 4
 
 private const val SINK_CODE = """
@@ -212,7 +231,12 @@ private const val ORDER_CODE = """
     }
 """
 
-private fun PageScope.muted(value: CharSequence): MalletText = text(value, MalletTextRole.CAPTION, MalletTextTone.MUTED)
+/** A muted line that starts at the start edge whatever language it is written in. */
+private fun PageScope.muted(value: CharSequence): MalletText =
+    text(value, MalletTextRole.CAPTION, MalletTextTone.MUTED).apply { textAlignment = View.TEXT_ALIGNMENT_VIEW_START }
+
+/** [dp] in whole pixels, for measures of the library that are not whole dp. */
+private fun PageScope.px(dp: Float): Int = (dp * context.resources.displayMetrics.density).roundToInt()
 
 private fun MalletSurface.addFull(view: View) {
     addView(view, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))

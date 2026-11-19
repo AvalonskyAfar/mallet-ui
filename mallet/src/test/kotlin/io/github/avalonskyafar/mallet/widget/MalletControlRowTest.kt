@@ -431,10 +431,10 @@ class MalletControlRowTest {
         row.setControl(box)
         assertThat(box.contentDescription).isNull()
         assertThat(copyOf(row).importantForAccessibility).isEqualTo(View.IMPORTANT_FOR_ACCESSIBILITY_YES)
-        // A bare box has no name, so it takes the text of the row.
-        val bare = MalletCheckbox(context)
-        row.setControl(bare)
-        assertThat(bare.contentDescription.toString()).isEqualTo("Sync")
+        // A box without a label has no name, so it takes the text of the row.
+        val unlabelled = MalletCheckbox(context)
+        row.setControl(unlabelled)
+        assertThat(unlabelled.contentDescription.toString()).isEqualTo("Sync")
     }
 
     @Test
@@ -473,12 +473,12 @@ class MalletControlRowTest {
 
     @Test
     fun `empty and extreme content does not break the row`() {
-        val bare = MalletControlRow(context)
-        Snapshots.layout(bare, 340)
-        assertThat(bare.height).isEqualTo(px(64f))
-        assertThat(bare.title.toString()).isEmpty()
-        assertThat(bare.detail).isNull()
-        assertThat(copyOf(bare).contentDescription).isNull()
+        val empty = MalletControlRow(context)
+        Snapshots.layout(empty, 340)
+        assertThat(empty.height).isEqualTo(px(64f))
+        assertThat(empty.title.toString()).isEmpty()
+        assertThat(empty.detail).isNull()
+        assertThat(copyOf(empty).contentDescription).isNull()
 
         val none = MalletControlRow(context)
         none.title = "Nothing to choose"
@@ -622,7 +622,7 @@ class MalletControlRowTest {
             assertThat(bitmap.getPixel(list.width / 2, y)).isEqualTo(colour)
             assertThat(bitmap.getPixel(divider.right - px(3f), y)).isEqualTo(colour)
         }
-        // The rows themselves paint nothing: above the first divider is plain porcelain.
+        // The rows themselves paint nothing: above the first divider there is only the surface of the card.
         val above = bitmap.getPixel(list.width / 2, dividers[0].top - px(2f))
         assertThat(above).isNotEqualTo(colour)
     }

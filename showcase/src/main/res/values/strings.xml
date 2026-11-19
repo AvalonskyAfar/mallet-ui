@@ -27,13 +27,13 @@
     <string name="page_f_type_title">Typography</string>
     <string name="page_f_type_summary">Eleven roles, three weights, the system typeface</string>
     <string name="page_f_material_title">Materials and depth</string>
-    <string name="page_f_material_summary">Porcelain, glazed track, thumb and well</string>
+    <string name="page_f_material_summary">Surface, track, thumb and well</string>
     <string name="page_f_icons_title">Icons</string>
     <string name="page_f_icons_summary">Fifty line icons, drawn in code</string>
     <string name="page_c_tracks_title">Tracks and switches</string>
     <string name="page_c_tracks_summary">Segmented track, switch and power switch</string>
     <string name="page_c_choice_title">Checkboxes and radios</string>
-    <string name="page_c_choice_summary">Choices that fill with hue</string>
+    <string name="page_c_choice_summary">Choices that fill with the hue you give them</string>
     <string name="page_c_numbers_title">Numbers and progress</string>
     <string name="page_c_numbers_summary">Stepper, slider, progress bar and spinner</string>
     <string name="page_c_buttons_title">Buttons and chips</string>
@@ -55,7 +55,7 @@
     <string name="page_i_press_title">Press and haptics</string>
     <string name="page_i_press_summary">Content sinks; nothing changes colour</string>
     <string name="page_i_follow_title">Follow the finger</string>
-    <string name="page_i_follow_summary">Thumbs travel with the finger and the hue blends</string>
+    <string name="page_i_follow_summary">Thumbs travel with the finger; the hue follows</string>
     <string name="page_i_spatial_title">Pages as places</string>
     <string name="page_i_spatial_summary">A map of this app, and how to move through it</string>
     <string name="page_i_reveal_title">Reveal and expand</string>

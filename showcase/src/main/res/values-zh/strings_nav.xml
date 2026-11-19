@@ -36,8 +36,10 @@
     <string name="nav_top_p3">无论两侧有哪些按钮，标题始终居中。左右留出的空间相同，所以单独一个返回按钮不会把标题挤偏。</string>
     <string name="nav_top_p4">滚回顶部，或点按返回按钮，细线随即消失。</string>
 
-    <string name="nav_tabs_title">标签与翻页</string>
-    <string name="nav_tabs_detail">等分布局：每个标签一样宽。点按标签、滑动页面或点按圆点，三者始终同步。</string>
+    <string name="nav_tabs_title">标签页</string>
+    <string name="nav_tabs_detail">点按标签、滑动页面或点按圆点，三者始终同步。标签一行放不下时，整行可以横向滚动。</string>
+    <string name="nav_tabs_fill">等分布局：每个标签一样宽</string>
+    <string name="nav_tabs_scroll">滚动布局：标签宽度随文字而定</string>
     <string name="nav_tab_all">全部</string>
     <string name="nav_tab_calls">来电</string>
     <string name="nav_tab_messages">短信</string>
@@ -46,9 +48,6 @@
     <string name="nav_tab_messages_body">没有进入收件箱的短信。</string>
     <string name="nav_tabs_idle">正在显示“全部”</string>
     <string name="nav_tabs_showing">正在显示“%1$s”</string>
-
-    <string name="nav_scroll_title">可滚动的标签</string>
-    <string name="nav_scroll_detail">滚动布局：标签宽度随文字而定，放不下时整行可以横向滚动。</string>
     <string-array name="nav_scroll_tabs">
         <item>今天</item>
         <item>本周</item>
@@ -60,5 +59,5 @@
     <string name="nav_scroll_idle">横向拖动这一行，再点按一个标签。</string>
     <string name="nav_scroll_chosen">%1$s，第 %2$d 个，共 %3$d 个</string>
 
-    <string name="nav_origin">取自原应用：入口模式的导航行，图标在上、文字在下，背后没有底栏；以及翻页和页码圆点。Mallet 新增：导航行的标签模式和角标，以及顶栏和标签。</string>
+    <string name="nav_origin">取自原应用：入口模式的导航行，图标在上、文字在下，背后没有底栏，本应用首页的入口用的就是它；以及分页和分页圆点。Mallet 新增：导航行的标签模式和角标、标签页，以及顶栏；原应用没有顶栏，也没有返回按钮。</string>
 </resources>

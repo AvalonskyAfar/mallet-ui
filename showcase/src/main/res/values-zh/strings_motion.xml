@@ -14,7 +14,7 @@
     <string name="motion_durations_detail">控件共用的几个时长，以及各自的用处。</string>
     <string name="motion_durations_hint">点一行，圆珠就按这个时长走一遍。</string>
     <string name="motion_durations_playing">%1$s，%2$d 毫秒</string>
-    <string name="motion_use_control">点按或松手后，滑块与釉色归位</string>
+    <string name="motion_use_control">点按或松手后，滑块与底色归位</string>
     <string name="motion_use_page">页面走完全程</string>
     <string name="motion_use_dialog">对话框与底部面板的进出</string>
     <string name="motion_use_feedback">轻提示、滑出行等小反馈</string>

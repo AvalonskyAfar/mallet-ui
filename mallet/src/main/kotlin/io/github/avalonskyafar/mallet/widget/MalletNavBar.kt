@@ -36,7 +36,8 @@ import kotlin.math.roundToInt
  * The bottom navigation row: quiet outline icons with labels, standing on the bare canvas.
  *
  * There is no bar, no background and no indicator. In [Mode.LAUNCHER] every item is a shortcut
- * and nothing is ever selected. In [Mode.TABS] one item is selected, and the only thing that
+ * and nothing is ever selected: this is the row at the bottom of a root page, with one entry for
+ * each page that lies around it. In [Mode.TABS] one item is selected, and the only thing that
  * says so is ink: the selected icon and label turn from muted to ink and the icon stroke grows
  * a little heavier.
  *
@@ -53,11 +54,17 @@ import kotlin.math.roundToInt
  * `malletNavBarIcons` is an integer array of `malletIcon` values, one per label; a label without
  * an icon gets the "more" circle. From code use [addItem] or [setItems].
  *
+ * The items share the width equally and all labels are drawn in one size. When a label is too
+ * wide for its item, all of them shrink together, to no less than 84 % of their size; where the
+ * reader's settings have enlarged the text, they may shrink back to the plain size. What still
+ * does not fit is cut with an ellipsis.
+ *
  * With a keyboard, the arrow keys move a cursor from item to item and Space or Enter activates
  * the item under it; the selection does not follow the cursor on its own.
  *
  * The row is 72 dp tall and grows by the navigation-bar inset, so it can sit at the very bottom
- * of an edge-to-edge window. Set [elevated] when content scrolls underneath it.
+ * of an edge-to-edge window; switch that off with [fitNavigationBar] when the page around it is
+ * already padded for the system bars. Set [elevated] when content scrolls underneath it.
  */
 public class MalletNavBar @JvmOverloads constructor(
     context: Context,

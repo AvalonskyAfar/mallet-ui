@@ -24,5 +24,5 @@
     <string name="pager_swipe_title">Swipe by hand</string>
     <string name="pager_swipe_detail">Off disables the pager: drags, keys and dots no longer move it, code still does.</string>
 
-    <string name="pager_note">Extracted from the original app: the first-launch flow with its page dots and its heading that moves in step with the content. New in Mallet: dots that blend, moving it from code, and the link as a public call.</string>
+    <string name="pager_note">Extracted from the original app: the first-launch flow with its page dots, its heading that moves in step with the content, and its button that turns the page. New in Mallet: dots that blend, a jump without a glide, a disabled state, and the link as a public call.</string>
 </resources>

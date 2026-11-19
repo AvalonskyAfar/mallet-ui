@@ -29,14 +29,14 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
- * The signature Mallet control: a recessed glazed track with two or more options and a neutral
+ * The signature Mallet control: a recessed coloured track with two or more options and a neutral
  * thumb that follows the finger.
  *
  * The colour of the bed is the state. As the thumb travels, the hue of the option it leaves
  * blends into the hue of the option it approaches, so the control answers "which option" by
  * position and "how strong" by colour at the same time.
  *
- * By default the options are read as an ordinal scale and glazed bronze, ochre, cobalt and
+ * By default the options are read as an ordinal scale and coloured bronze, ochre, cobalt and
  * jade in that order (see [io.github.avalonskyafar.mallet.theme.MalletHues.scale]). Use
  * [setHues] for a plain choice or a custom scale.
  *
@@ -130,7 +130,7 @@ public class MalletSegmentedTrack @JvmOverloads constructor(
     }
 
     /**
-     * Sets the hue poured under each option, or `null` to return to the default ordinal
+     * Sets the hue under each option, or `null` to return to the default ordinal
      * scale. When the list is shorter than the options its last hue is repeated.
      */
     public fun setHues(hues: List<MalletHue>?) {

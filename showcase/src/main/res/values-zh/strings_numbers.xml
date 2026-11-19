@@ -14,7 +14,7 @@
     <string name="numbers_slider_detail">拖动圆珠或点一下轨道，定一个大概的量。</string>
     <string name="numbers_slider_level">连续</string>
     <string name="numbers_slider_volume">分档，0 到 10</string>
-    <string name="numbers_slider_strictness">沿釉色阶变化</string>
+    <string name="numbers_slider_strictness">底色沿色阶变化</string>
     <string-array name="numbers_slider_strictness_names">
         <item>关闭</item>
         <item>轻度</item>
@@ -23,14 +23,14 @@
     </string-array>
 
     <string name="numbers_progress_title">进度</string>
-    <string name="numbers_progress_detail">一道凹槽，事情做了多少，釉色就填到哪里。</string>
+    <string name="numbers_progress_detail">一道凹槽，事情做了多少，底色就填到哪里。</string>
     <string name="numbers_progress_follow">跟随上面的连续滑杆</string>
     <string name="numbers_progress_task">一项任务</string>
     <string name="numbers_progress_run">开始</string>
     <string name="numbers_progress_again">再来一次</string>
     <string name="numbers_progress_done">完成</string>
     <string name="numbers_progress_unknown">总量未知</string>
-    <string name="numbers_progress_hues">其他釉色，同一个滑杆</string>
+    <string name="numbers_progress_hues">其他底色，同一个滑杆</string>
 
     <string name="numbers_spinner_title">加载环</string>
     <string name="numbers_spinner_detail">等待很短、又无从计量的时候用。</string>

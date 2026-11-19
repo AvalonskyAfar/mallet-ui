@@ -29,15 +29,15 @@ import io.github.avalonskyafar.mallet.theme.MalletWeight
 import kotlin.math.ceil
 
 /**
- * A small porcelain capsule for filters, suggestions and short actions.
+ * A small neutral capsule for filters, suggestions and short actions.
  *
  * | Kind | Behaviour |
  * |---|---|
  * | [Kind.ACTION] | a small neutral button: a tap ticks and calls the click listener |
  * | [Kind.FILTER] | checkable: a tap flips [isChecked] and calls [setOnCheckedChangeListener] |
  *
- * An unchecked chip is raised white porcelain with an ink label. Checking a filter chip pours
- * a hue into it: the body becomes a recessed glazed capsule ([hue], cobalt by default), a
+ * An unchecked chip is a raised white surface with an ink label. Checking a filter chip fills
+ * it with its hue: the body becomes a recessed coloured capsule ([hue], cobalt by default), a
  * small check mark is drawn before the label and the chip glides to its wider size. The colour
  * is the state; nothing else about the chip changes.
  *
@@ -89,7 +89,7 @@ public class MalletChip @JvmOverloads constructor(
     private var down = false
     private var animator: ValueAnimator? = null
 
-    /** 0 = porcelain, 1 = glazed and as wide as the check mark needs. */
+    /** 0 = raised surface, 1 = coloured and as wide as the check mark needs. */
     private var progress = 0f
 
     private var checkedChangeListener: OnCheckedChangeListener? = null
@@ -118,7 +118,7 @@ public class MalletChip @JvmOverloads constructor(
             invalidate()
         }
 
-    /** Hue poured into a checked filter chip. Cobalt by default. */
+    /** Hue that fills a checked filter chip. Cobalt by default. */
     public var hue: MalletHue = theme.hues.cobalt
         set(value) {
             field = value
@@ -289,7 +289,7 @@ public class MalletChip @JvmOverloads constructor(
         val fade = (progress / HUE_SHARE).coerceIn(0f, 1f)
         if (fade < 1f) material.drawSurface(canvas, body, radius, pressed = down)
         if (fade > 0f) {
-            // The hue is poured in as one body, shadow and rim included.
+            // The coloured bed fades in as one body, shadow and rim included.
             val save = if (fade < 1f) {
                 canvas.saveLayerAlpha(0f, 0f, width.toFloat(), height.toFloat(), (fade * 255f + 0.5f).toInt())
             } else {

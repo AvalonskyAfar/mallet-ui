@@ -3,10 +3,10 @@
     <string name="fields_parts_title">Parts of a field</string>
     <string name="fields_parts_detail">A label above, a well for the text, a support line below. Type in any of them.</string>
     <string name="fields_name_label">Display name</string>
-    <string name="fields_name_hint">For example, Kiln Keeper</string>
+    <string name="fields_name_hint">For example, Paper Crane</string>
     <string name="fields_name_helper">Shown at the top of your page.</string>
     <string name="fields_motto_label">Motto</string>
-    <string name="fields_motto_text">Fired three times</string>
+    <string name="fields_motto_text">Do one thing well</string>
     <string name="fields_password_label">Password</string>
     <string name="fields_search_hint">Search hues</string>
     <string name="fields_search_text">jade</string>
@@ -28,10 +28,10 @@
     <string name="fields_forms_title">Other forms</string>
     <string name="fields_forms_detail">Several lines, monospace for configuration, and a field that is switched off.</string>
     <string name="fields_note_label">Note</string>
-    <string name="fields_note_text">Open the kiln only when it has cooled.\nThe hue cracks if it meets cold air.</string>
+    <string name="fields_note_text">Restart the unit only when it is idle.\nA backup stops if the power is cut.</string>
     <string name="fields_config_label">Configuration</string>
     <string name="fields_locked_label">Device name</string>
-    <string name="fields_locked_text">Kiln 3</string>
+    <string name="fields_locked_text">Unit 3</string>
     <string name="fields_locked_helper">Set by your administrator.</string>
     <string name="fields_locked_enable">Enable the field</string>
     <string name="fields_locked_disable">Disable the field</string>

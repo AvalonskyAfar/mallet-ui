@@ -1,7 +1,8 @@
 # Licence audit
 
-Date: 2026-11-17. Scope: everything Mallet UI takes from the original application
-repository (`Gravekeeper-master`), and everything Mallet UI depends on or ships.
+Date: 2026-11-17; the name (section 4) was checked on 2026-11-18. Scope: everything Mallet UI
+takes from the original application repository (`Gravekeeper-master`), everything Mallet UI
+depends on or ships, and the name of the project.
 
 This document records what was checked, what was found and what was decided. It is an
 engineering record, not legal advice.
@@ -53,16 +54,36 @@ engineering record, not legal advice.
 - The dependency list in `THIRD_PARTY_NOTICES.md` matches
   `./gradlew :showcase:dependencies --configuration debugRuntimeClasspath`.
 
-## 4. Open points for the maintainer
+## 4. The name
+
+The toolkit is called **Mallet** and the project **Mallet UI**. A mallet is the craftsman's
+hammer, and the name is a salute to Smartisan (锤子科技, "Hammer Technology"), the phone maker
+that treated every interface detail as a piece of craft.
+
+- **What was searched.** A web search was made on 2026-11-18. No trademark register was
+  searched.
+- **An unrelated library has the same name.** MALLET, the "MAchine Learning for LanguagE
+  Toolkit", is a text-mining package for the JVM (github.com/mimno/Mallet), published on
+  Maven Central as `cc.mallet:mallet`. The library of Mallet UI has the coordinates
+  `io.github.avalonskyafar:mallet` and the package `io.github.avalonskyafar.mallet`: the
+  group and every class name differ, the artifact id is the same word.
+- **"Smartisan" is a trademark of its owner**; a US application for the word mark is
+  recorded for Bytedance Ltd. Mallet UI is not affiliated with Smartisan or its owners and
+  uses none of its marks, logos, artwork, sounds, fonts or code. The salute is a sentence in
+  the documents, nothing more.
+- **The launcher icon** of the Showcase app is the toolkit's own track mark, a recessed
+  track in three hues with a neutral bead on it, drawn for this project.
+
+## 5. Open points for the maintainer
 
 These need a human decision before the project is published; none blocks local use.
 
 - Confirm the copyright holder name and year in `LICENSE`.
 - Confirm the Maven group id `io.github.avalonskyafar` (taken from the GitHub account named
-  in the original README) and the artifact id `mallet`.
-- The name "Mallet" (Mallet) is a generic term for Tang-dynasty three-colour glazed pottery. A
-  brief web search on 2026-11-17 found no Android UI library of that name; this is not a
-  trademark search.
+  in the original README).
+- Decide whether to publish under the artifact id `mallet`, as the build has it now, or
+  under another one (for example `mallet-ui`): `cc.mallet:mallet` uses the same word
+  (section 4).
 - If illustrations from the original app are wanted in the project later, state their
   licence explicitly first.
 - The demo APK of a release is signed with the Android debug key unless a release key is

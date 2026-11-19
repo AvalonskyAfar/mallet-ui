@@ -30,9 +30,9 @@ import kotlin.math.roundToInt
  *
  * | Variant | Body | Use |
  * |---|---|---|
- * | [Variant.NEUTRAL] | white porcelain capsule | ordinary actions |
- * | [Variant.PRIMARY] | capsule glazed in the accent colour | the one main action of a screen |
- * | [Variant.DANGER] | capsule glazed in the danger colour | destructive actions |
+ * | [Variant.NEUTRAL] | neutral capsule | ordinary actions |
+ * | [Variant.PRIMARY] | capsule in the accent colour | the one main action of a screen |
+ * | [Variant.DANGER] | capsule in the danger colour | destructive actions |
  * | [Variant.TEXT] | none, coloured label only | dialog actions and inline links |
  *
  * Pressing sinks the capsule by 1.5 dp and tightens its shadow; nothing changes colour.

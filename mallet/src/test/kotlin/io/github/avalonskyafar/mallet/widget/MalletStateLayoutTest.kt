@@ -549,7 +549,7 @@ class MalletStateLayoutTest {
 
         layout.setState(State.EMPTY, animate = false)
         val asEmpty = Snapshots.render(layout, 300)
-        // No card and no backdrop: the message sits on the bare canvas.
+        // No card and no backdrop: the message stands directly on the canvas.
         assertThat(asEmpty.getPixel(4, 4)).isEqualTo(canvas)
         assertThat(asEmpty.getPixel(asEmpty.width - 5, asEmpty.height - 5)).isEqualTo(canvas)
 
@@ -670,9 +670,16 @@ class MalletStateLayoutTest {
             page.addView(body, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
         }
 
+        // The content is a list: three accounts, one row each, parted by dividers.
         fun card(): MalletSurface = MalletSurface(ctx).also {
-            it.addView(MalletText.create(ctx, "Whitelisted accounts", MalletTextRole.SUBHEAD))
-            it.addView(MalletText.create(ctx, "Three accounts are exempt from the rules.", MalletTextRole.CAPTION, MalletTextTone.MUTED))
+            for ((index, account) in listOf("City library", "Morning radio", "Garden notes").withIndex()) {
+                if (index > 0) it.addDivider()
+                val row = MalletText.create(ctx, account, MalletTextRole.SUBHEAD)
+                row.gravity = Gravity.CENTER_VERTICAL
+                row.minHeight = px(46f)
+                row.setPaddingRelative(px(14f), 0, px(14f), 0)
+                it.addView(row)
+            }
         }
 
         fun layout(state: State, content: View = card()): MalletStateLayout = MalletStateLayout(ctx).also {

@@ -144,7 +144,7 @@ class MalletChipTest {
     }
 
     @Test
-    fun `checked chip is tinted in the bed colour of its hue`() {
+    fun `checked chip is filled with the bed colour of its hue`() {
         for (theme in listOf(light, dark)) {
             val view = chip(theme = theme, checked = true)
             assertThat(view.bodyPixel()).isEqualTo(theme.bedColor(theme.hues.cobalt))
@@ -156,7 +156,7 @@ class MalletChipTest {
     }
 
     @Test
-    fun `unchecked light chip is white porcelain`() {
+    fun `unchecked light chip is a white surface`() {
         assertNear(chip().bodyPixel(), light.colors.surface, tolerance = 4)
     }
 
@@ -264,9 +264,9 @@ class MalletChipTest {
 
     @Test
     fun `chip without a label or with an over-long one keeps its shape`() {
-        val bare = chip(text = "")
-        assertThat(bare.bodyBounds().width()).isWithin(1f).of(32f * bare.density)
-        draw(bare)
+        val unlabelled = chip(text = "")
+        assertThat(unlabelled.bodyBounds().width()).isWithin(1f).of(32f * unlabelled.density)
+        draw(unlabelled)
         val iconOnly = chip(text = "").apply {
             icon = MalletIcon.PLUS
             wrap(this)
@@ -599,10 +599,10 @@ class MalletChipTest {
         assertThat(view.height).isEqualTo(view.px(22f))
         assertThat(view.isClickable).isFalse()
         assertThat(view.isFocusable).isFalse()
-        val bare = tag("", MalletTag.Tone.NEUTRAL)
-        assertThat(view.width - bare.width).isGreaterThan(0)
+        val empty = tag("", MalletTag.Tone.NEUTRAL)
+        assertThat(view.width - empty.width).isGreaterThan(0)
         // 9 dp of padding on each side of the label; an empty tag is a 22 dp circle.
-        assertThat(bare.width).isEqualTo(view.px(22f))
+        assertThat(empty.width).isEqualTo(view.px(22f))
         val info = AccessibilityNodeInfo.obtain()
         view.onInitializeAccessibilityNodeInfo(info)
         assertThat(info.text.toString()).isEqualTo("Active")

@@ -4,7 +4,7 @@ import android.graphics.Color
 import androidx.annotation.ColorInt
 
 /**
- * One hue: the colour poured into a recessed track.
+ * One hue: the colour that fills a recessed track.
  *
  * In Mallet the bed of a control carries its state while the thumb stays neutral, so a hue
  * is always a triple.

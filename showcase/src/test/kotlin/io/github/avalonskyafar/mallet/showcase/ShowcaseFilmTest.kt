@@ -191,7 +191,7 @@ class ShowcaseFilmTest {
     }
 
     @Test
-    fun `sliders pour their hue and steppers step`() {
+    fun `sliders are coloured along a scale and steppers step`() {
         val activity = start("c_numbers")
         val sliders = Film.all<MalletSlider>(page(activity))
         val steppers = Film.all<MalletStepper>(page(activity))

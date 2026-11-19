@@ -25,17 +25,20 @@ import io.github.avalonskyafar.mallet.widget.MalletText
 import io.github.avalonskyafar.mallet.widget.MalletTopBar
 
 /**
- * Navigation: the bottom row in both modes, the top bar over a scrolling area, and tabs alone
- * and coupled with a pager. The page scrolls, so every bar sits in a card instead of being
- * docked to the window, with its system-bar padding switched off.
+ * Navigation: the navigation row in both modes, the top bar over a scrolling area, and tabs in
+ * both layouts, one strip coupled with a pager and one on its own. The page scrolls, so every
+ * bar sits in a card instead of being docked to the window, with its system-bar padding
+ * switched off.
+ *
+ * The row and the tabs each show their two variants in one card: two labelled blocks with a
+ * full-bleed divider between them.
  */
 object NavPage : DemoPage("c_nav", R.string.page_c_nav_title, R.string.page_c_nav_summary) {
     override fun build(page: PageScope) {
         page.title()
         page.navRow()
         page.topBar()
-        page.pagerTabs()
-        page.scrollTabs()
+        page.tabs()
         page.caption(page.str(R.string.nav_origin), topDp = 20)
     }
 }
@@ -51,9 +54,13 @@ private fun PageScope.status(card: MalletSurface, initial: Int, topDp: Int = 4):
     return line
 }
 
-/** A quiet label above a bar inside a card. */
+/**
+ * A quiet label above a bar inside a card. It keeps to the start edge in every language, as
+ * the headings of the page do, so that it stands over the first item of its bar.
+ */
 private fun PageScope.label(card: MalletSurface, res: Int) {
     val line = text(str(res), MalletTextRole.CAPTION, MalletTextTone.MUTED)
+    line.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
     line.setPadding(dp(9), dp(6), dp(9), dp(2))
     card.addView(line, matchWrap())
 }
@@ -208,37 +215,11 @@ private const val TOP_AREA_DP = 200
 
 // ---- 3. Tabs ----
 
-private fun PageScope.pagerTabs() {
+private fun PageScope.tabs() {
     section(R.string.nav_tabs_title, R.string.nav_tabs_detail) {
-        val card = this
-        val names = listOf(R.string.nav_tab_all, R.string.nav_tab_calls, R.string.nav_tab_messages)
-        val bodies = listOf(R.string.nav_tab_all_body, R.string.nav_tab_calls_body, R.string.nav_tab_messages_body)
-        val pager = MalletPager(context)
-        pager.setPages(names.size) { index, _ ->
-            text(str(bodies[index]), MalletTextRole.BODY_COMPACT, MalletTextTone.MUTED).apply {
-                gravity = Gravity.CENTER
-                setPadding(dp(16), 0, dp(16), 0)
-            }
-        }
-        val tabs = MalletTabs(context).apply {
-            layout = MalletTabs.Layout.FILL
-            setTabs(names.map { str(it) })
-            attachTo(pager)
-        }
-        val dots = MalletPageIndicator(context).apply { attachTo(pager) }
-
-        addView(tabs, matchWrap())
-        addView(pager, LinearLayout.LayoutParams(PageScope.MATCH, dp(PAGER_DP)))
-        val dotsParams = LinearLayout.LayoutParams(PageScope.WRAP, PageScope.WRAP)
-        dotsParams.gravity = Gravity.CENTER_HORIZONTAL
-        addView(dots, dotsParams)
-
-        val line = status(card, R.string.nav_tabs_idle)
-        fun report(index: Int) {
-            line.text = context.getString(R.string.nav_tabs_showing, str(names[index]))
-        }
-        tabs.setOnTabSelectedListener { _, index -> report(index) }
-        dots.setOnSelectionChangeListener { _, index -> report(index) }
+        pagerTabs(this)
+        addDivider(4f)
+        scrollTabs(this)
     }
     code("""
         pager.setPages(3) { index, parent -> createPage(index, parent) }
@@ -247,28 +228,59 @@ private fun PageScope.pagerTabs() {
         tabs.attachTo(pager)
         dots.attachTo(pager)
         tabs.setOnTabSelectedListener { _, index -> load(index) }
+
+        ranges.layout = MalletTabs.Layout.SCROLL
+        ranges.setTabs("Today", "This week", "This month", "This year")
+        ranges.setOnTabSelectedListener { _, index -> show(index) }
     """)
 }
 
-private fun PageScope.scrollTabs() {
-    section(R.string.nav_scroll_title, R.string.nav_scroll_detail) {
-        val card = this
-        val names = context.resources.getStringArray(R.array.nav_scroll_tabs)
-        val tabs = MalletTabs(context).apply {
-            layout = MalletTabs.Layout.SCROLL
-            setTabs(names.toList())
-        }
-        addView(tabs, matchWrap())
-        val line = status(card, R.string.nav_scroll_idle, topDp = 10)
-        tabs.setOnTabSelectedListener { _, index ->
-            line.text = context.getString(R.string.nav_scroll_chosen, names[index], index + 1, names.size)
+/** The fill layout: a strip, the pager it is attached to and the page dots, all three coupled. */
+private fun PageScope.pagerTabs(card: MalletSurface) {
+    label(card, R.string.nav_tabs_fill)
+    val names = listOf(R.string.nav_tab_all, R.string.nav_tab_calls, R.string.nav_tab_messages)
+    val bodies = listOf(R.string.nav_tab_all_body, R.string.nav_tab_calls_body, R.string.nav_tab_messages_body)
+    val pager = MalletPager(context)
+    pager.setPages(names.size) { index, _ ->
+        text(str(bodies[index]), MalletTextRole.BODY_COMPACT, MalletTextTone.MUTED).apply {
+            gravity = Gravity.CENTER
+            setPadding(dp(16), 0, dp(16), 0)
         }
     }
-    code("""
-        tabs.layout = MalletTabs.Layout.SCROLL
-        tabs.setTabs("Today", "This week", "This month", "This year")
-        tabs.setOnTabSelectedListener { _, index -> show(index) }
-    """)
+    val tabs = MalletTabs(context).apply {
+        layout = MalletTabs.Layout.FILL
+        setTabs(names.map { str(it) })
+        attachTo(pager)
+    }
+    val dots = MalletPageIndicator(context).apply { attachTo(pager) }
+
+    card.addView(tabs, matchWrap())
+    card.addView(pager, LinearLayout.LayoutParams(PageScope.MATCH, dp(PAGER_DP)))
+    val dotsParams = LinearLayout.LayoutParams(PageScope.WRAP, PageScope.WRAP)
+    dotsParams.gravity = Gravity.CENTER_HORIZONTAL
+    card.addView(dots, dotsParams)
+
+    val line = status(card, R.string.nav_tabs_idle)
+    fun report(index: Int) {
+        line.text = context.getString(R.string.nav_tabs_showing, str(names[index]))
+    }
+    tabs.setOnTabSelectedListener { _, index -> report(index) }
+    dots.setOnSelectionChangeListener { _, index -> report(index) }
+}
+
+/** The scroll layout: a strip with more tabs than fit its width, on its own. */
+private fun PageScope.scrollTabs(card: MalletSurface) {
+    label(card, R.string.nav_tabs_scroll)
+    val names = context.resources.getStringArray(R.array.nav_scroll_tabs)
+    val tabs = MalletTabs(context).apply {
+        layout = MalletTabs.Layout.SCROLL
+        setTabs(names.toList())
+    }
+    card.addView(tabs, matchWrap())
+    val line = status(card, R.string.nav_scroll_idle, topDp = 10)
+    tabs.setOnTabSelectedListener { _, index ->
+        line.text = context.getString(R.string.nav_scroll_chosen, names[index], index + 1, names.size)
+    }
 }
 
 private const val PAGER_DP = 120

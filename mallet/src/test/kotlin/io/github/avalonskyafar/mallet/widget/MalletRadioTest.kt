@@ -68,13 +68,13 @@ class MalletRadioTest {
     private fun key(view: View, code: Int): Boolean = view.onKeyDown(code, KeyEvent(KeyEvent.ACTION_DOWN, code))
 
     @Test
-    fun `a radio is at least 44dp tall and a bare radio is a 44dp square`() {
+    fun `a radio is at least 44dp tall and a radio without a label is a 44dp square`() {
         val labelled = radio()
         assertThat(labelled.height / labelled.density).isWithin(0.5f).of(44f)
-        val bare = MalletRadioButton(Snapshots.context())
-        bare.measure(0, 0)
-        assertThat(bare.measuredWidth / bare.density).isWithin(0.5f).of(44f)
-        assertThat(bare.measuredHeight / bare.density).isWithin(0.5f).of(44f)
+        val unlabelled = MalletRadioButton(Snapshots.context())
+        unlabelled.measure(0, 0)
+        assertThat(unlabelled.measuredWidth / unlabelled.density).isWithin(0.5f).of(44f)
+        assertThat(unlabelled.measuredHeight / unlabelled.density).isWithin(0.5f).of(44f)
     }
 
     @Test
@@ -381,8 +381,8 @@ class MalletRadioTest {
     @Test
     fun `an empty label behaves like no label`() {
         val view = radio(label = "")
-        val bare = radio(label = null)
-        assertThat(view.height).isEqualTo(bare.height)
+        val unlabelled = radio(label = null)
+        assertThat(view.height).isEqualTo(unlabelled.height)
         // Both are laid out 300 dp wide: the bed sits in the middle, not at the start.
         val cobalt = MalletTheme.light().let { it.bedColor(it.hues.cobalt) }
         view.isChecked = true
@@ -427,7 +427,7 @@ class MalletRadioTest {
     }
 
     @Test
-    fun `reduced motion jumps straight to the tinted bed`() {
+    fun `reduced motion jumps straight to the coloured bed`() {
         val theme = MalletTheme.light().copy(reduceMotion = true)
         val view = radio(theme = theme)
         Snapshots.attach(view, WIDTH_DP)
@@ -667,10 +667,10 @@ class MalletRadioTest {
                 },
                 LinearLayout.LayoutParams(match, wrap),
             )
-            val bare = LinearLayout(context).apply { orientation = LinearLayout.HORIZONTAL }
-            bare.addView(MalletRadioButton(context), LinearLayout.LayoutParams(wrap, wrap))
+            val unlabelled = LinearLayout(context).apply { orientation = LinearLayout.HORIZONTAL }
+            unlabelled.addView(MalletRadioButton(context), LinearLayout.LayoutParams(wrap, wrap))
             for (hue in listOf(hues.bronze, hues.ochre, hues.cobalt, hues.jade, hues.mist)) {
-                bare.addView(
+                unlabelled.addView(
                     MalletRadioButton(context).apply {
                         this.hue = hue
                         isChecked = true
@@ -678,7 +678,7 @@ class MalletRadioTest {
                     LinearLayout.LayoutParams(wrap, wrap),
                 )
             }
-            column.addView(bare, LinearLayout.LayoutParams(match, wrap))
+            column.addView(unlabelled, LinearLayout.LayoutParams(match, wrap))
             val bitmap = Snapshots.capture(column, "radio_${theme.first}", 360)
             assertThat(bitmap.height).isGreaterThan(0)
         }

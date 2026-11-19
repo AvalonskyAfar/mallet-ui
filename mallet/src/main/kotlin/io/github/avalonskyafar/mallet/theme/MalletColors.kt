@@ -8,7 +8,7 @@ import kotlin.math.roundToInt
 /**
  * Neutral and semantic colour roles of a Mallet theme.
  *
- * The light values are the white porcelain canvas of the original app: canvas, surface and
+ * The light values are the white canvas of the original app: canvas, surface and
  * raised are all pure white, and depth comes from hairlines and short shadows instead of grey
  * tints. The dark values are a blue-black slate with three real elevation steps.
  *

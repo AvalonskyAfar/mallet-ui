@@ -17,7 +17,7 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
- * A count badge: a small capsule glazed in the danger colour with a white number on it.
+ * A count badge: a small capsule in the danger colour with a white number on it.
  *
  * A [count] of zero hides the badge, unless [showDot] is set, in which case it shrinks to an
  * 8 dp dot that says "something is new" without saying how much. Counts beyond [maxCount] are

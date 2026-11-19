@@ -226,7 +226,7 @@ class MalletToastTest {
         assertThat(undone).isEqualTo(1)
     }
 
-    /** Colour of the hue where the body gradient passes through the plain fill, clear of text. */
+    /** Colour of the body where its gradient passes through the plain fill, clear of text. */
     private fun bodyPixel(pill: MalletToastView): Int {
         val frame = wrap(pill)
         val bitmap = Snapshots.render(frame, 300)
@@ -246,7 +246,7 @@ class MalletToastTest {
     }
 
     @Test
-    fun `tones hue the pill and turn the text white`() {
+    fun `tones colour the pill and turn the text white`() {
         for (theme in listOf(MalletTheme.light(), MalletTheme.dark())) {
             val themed = Snapshots.context(theme)
             val colors = theme.colors
@@ -379,8 +379,8 @@ class MalletToastTest {
         assertThat(gone).isEqualTo(0)
 
         // An action alone is still something to show.
-        val bare = MalletToast.Builder(activity).action("Undo") { }.show()
-        assertThat(bare.isShowing).isTrue()
+        val actionOnly = MalletToast.Builder(activity).action("Undo") { }.show()
+        assertThat(actionOnly.isShowing).isTrue()
         assertThat(current.isShowing).isFalse()
     }
 

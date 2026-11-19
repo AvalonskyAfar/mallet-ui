@@ -44,7 +44,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
- * A modal question on a porcelain card: a centred title, a muted message, optional content
+ * A modal question on a card: a centred title, a muted message, optional content
  * and one to three text actions under a rim-to-rim divider.
  *
  * ```kotlin
@@ -668,7 +668,7 @@ private class CardDialog(context: Context, private val owner: MalletDialog) : Di
 }
 
 /**
- * The porcelain card. The shadow gutter is part of the view, so the visible card is 1.4 dp
+ * The card of the dialog. The shadow gutter is part of the view, so the visible card is 1.4 dp
  * narrower on each side than the window. Never taller than 80 % of the screen.
  */
 private class DialogCard(context: Context) : LinearLayout(context) {

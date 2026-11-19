@@ -18,7 +18,8 @@ import io.github.avalonskyafar.mallet.widget.MalletButton
  * [MalletSpatialTransition.finish].
  *
  * The screen itself is declared in `res/layout/activity_neighbour.xml`: a `MalletPage` with a
- * heading, a paragraph, a card and a button. Nothing of it is built in code.
+ * page heading, a paragraph, a segmented track on the canvas under a heading of its own, and a
+ * button. Nothing of it is built in code.
  */
 class NeighbourActivity : Activity() {
 

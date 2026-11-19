@@ -93,7 +93,7 @@ publishing {
             afterEvaluate { from(components["release"]) }
             pom {
                 name.set("Mallet UI")
-                description.set("A glazed-ceramic design system and interaction toolkit for Android Views.")
+                description.set("A tactile design system and interaction toolkit for Android Views.")
                 licenses {
                     license {
                         name.set("MIT License")

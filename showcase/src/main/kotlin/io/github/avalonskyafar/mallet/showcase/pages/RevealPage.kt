@@ -69,7 +69,9 @@ private fun PageScope.swipeSection() {
         status.text = context.getString(R.string.reveal_status, rows.size, rows.count { it.isSwitchedOn })
     }
 
-    // Lays the remaining rows into the card again, with a divider between two rows.
+    // Lays the remaining rows into the card again, with a divider between two rows. Each row is a
+    // direct child of the card, which stretches it over its cell: the bed under the row starts
+    // at the rim of the card and ends at these dividers.
     fun relay() {
         card.removeAllViews()
         rows.forEachIndexed { index, row ->
@@ -122,7 +124,10 @@ private fun PageScope.swipeSection() {
     """)
 }
 
-/** A short card whose action waits at the end side; the second row starts open. */
+/**
+ * A short card whose action waits at the end side. The second row starts open, so the page shows
+ * the bed without a touch: flush with the rim, following the corner of the card, up to the divider.
+ */
 private fun PageScope.endEdgeSection() {
     val names = listOf(R.string.reveal_site_news, R.string.reveal_site_video)
     section(R.string.reveal_end_title, R.string.reveal_end_detail) {

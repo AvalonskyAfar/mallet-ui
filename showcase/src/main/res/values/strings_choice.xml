@@ -25,8 +25,8 @@
     <string name="choice_ochre">Ochre hue</string>
     <string name="choice_locked">Required, cannot be changed</string>
 
-    <string name="choice_radios_title">Radio group</string>
-    <string name="choice_radios_detail">One answer at a time. A choice can be moved but not removed.</string>
+    <string name="choice_radios_title">Radio groups</string>
+    <string name="choice_radios_detail">One answer per group. A choice can be moved but not removed.</string>
     <string name="choice_daily">Every day</string>
     <string name="choice_weekly">Every week</string>
     <string name="choice_manual">Only when I ask</string>
@@ -36,13 +36,11 @@
     <string name="choice_manual_status">Backs up only when you start it.</string>
 
     <string name="choice_hues_title">Five hues</string>
-    <string name="choice_hues_detail">The same group laid out as a row, one radio per hue.</string>
     <string name="choice_bronze">Bronze</string>
     <string name="choice_ochre_name">Ochre</string>
     <string name="choice_cobalt">Cobalt</string>
     <string name="choice_jade">Jade</string>
     <string name="choice_mist">Mist</string>
-    <string name="choice_hues_status">Checked: %1$s</string>
 
-    <string name="choice_origin">The five hues, the recessed bed and the neutral bead are extracted from the original app. The checkbox, the radio and the radio group were designed for Mallet.</string>
+    <string name="choice_origin">The five hues, the recessed bed and the neutral thumb, here the bead of a radio, are extracted from the original app. The checkbox, the radio and the radio group were designed for Mallet.</string>
 </resources>

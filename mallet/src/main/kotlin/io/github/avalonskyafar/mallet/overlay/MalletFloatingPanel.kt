@@ -35,10 +35,10 @@ import kotlin.math.hypot
 import kotlin.math.roundToInt
 
 /**
- * A small porcelain panel that floats above a screen and is moved with the finger: a status
+ * A small panel that floats above a screen and is moved with the finger: a status
  * read-out, a mini player, a debug badge.
  *
- * It is a [FrameLayout] that holds any content, 12 dp from the sides of the porcelain body and
+ * It is a [FrameLayout] that holds any content, 12 dp from the sides of the body and
  * 8 dp from its top and bottom. The view is slightly larger than the body the eye sees, because
  * the shadow is drawn inside the view (1.4 dp on each side, 1 dp above, 4.8 dp below).
  *
@@ -636,10 +636,10 @@ public open class MalletFloatingPanel @JvmOverloads constructor(
     }
 
     public companion object {
-        /** Space between the sides of the porcelain body and the content, in dp. */
+        /** Space between the sides of the body and the content, in dp. */
         public const val CONTENT_PADDING_HORIZONTAL_DP: Float = 12f
 
-        /** Space between the top and bottom of the porcelain body and the content, in dp. */
+        /** Space between the top and bottom of the body and the content, in dp. */
         public const val CONTENT_PADDING_VERTICAL_DP: Float = 8f
 
         private const val KEY_STEP_DP = 16f

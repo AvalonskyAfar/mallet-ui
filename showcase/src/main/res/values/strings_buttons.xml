@@ -17,11 +17,11 @@
     <string name="buttons_chips_title">Chips</string>
     <string name="buttons_chips_detail">Small capsules that filter, choose or act.</string>
     <string name="buttons_filter_label">Filter, any number</string>
-    <string name="buttons_filter_bowls">Bowls</string>
-    <string name="buttons_filter_vases">Vases</string>
-    <string name="buttons_filter_figures">Figures</string>
-    <string name="buttons_filter_tiles">Tiles</string>
-    <string name="buttons_filter_jars">Jars</string>
+    <string name="buttons_filter_bowls">Notes</string>
+    <string name="buttons_filter_vases">Photos</string>
+    <string name="buttons_filter_figures">Links</string>
+    <string name="buttons_filter_tiles">Files</string>
+    <string name="buttons_filter_jars">Tasks</string>
     <string name="buttons_filter_status">Showing: %1$s</string>
     <string name="buttons_filter_none">Showing everything.</string>
     <string name="buttons_single_label">Single selection, one is always kept</string>

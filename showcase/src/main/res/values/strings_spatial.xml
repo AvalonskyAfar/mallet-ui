@@ -2,14 +2,14 @@
 <resources>
     <string name="spatial_map_title">The map</string>
     <string name="spatial_map_detail">Every page has a fixed place. Tap a place to see how it is reached.</string>
-    <string name="spatial_map_legend">A solid line is a drag in both directions. A dashed line is a page opened from a row; it can only be dragged back.</string>
+    <string name="spatial_map_legend">A solid line is a drag in both directions. A dashed line is a page opened from a row of its parent; it can only be dragged back.</string>
     <string name="spatial_map_place">%1$s. %2$s</string>
     <string name="spatial_route_home">The middle of the map. Back always ends here. Four pages lie around it: the row at its bottom has one entry for each, and no arrow points at any of them.</string>
     <string name="spatial_route_appearance">Above Home. Drag Home downwards to uncover it.</string>
     <string name="spatial_route_foundations">At the start side of Home. Drag Home towards the end side to uncover it.</string>
     <string name="spatial_route_components">Below Home. Drag Home upwards to uncover it.</string>
     <string name="spatial_route_interactions">At the end side of Home. Drag Home towards the start side to uncover it.</string>
-    <string name="spatial_route_here">You are here, beyond Interactions. A row opened this page; drag it towards the end side to go back.</string>
+    <string name="spatial_route_here">You are here, beyond Interactions. A row there opened this page; drag it towards the end side to go back.</string>
 
     <string name="spatial_try_title">Try it</string>
     <string name="spatial_try_detail">Go back to Home and move the pages with one finger.</string>

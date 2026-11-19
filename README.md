@@ -1,7 +1,7 @@
-<h1 align="center">Mallet UI · Mallet</h1>
+<h1 align="center">Mallet UI</h1>
 
 <p align="center">
-  A glazed-ceramic design system and interaction toolkit for Android Views.
+  A tactile design system and interaction toolkit for Android Views.
 </p>
 
 <p align="center">
@@ -19,14 +19,18 @@
   <img src="docs/images/hero.png" alt="Five screens of the Mallet showcase app, in the light and in the dark theme" width="920">
 </p>
 
-Mallet (Mallet, “three colours”) is named after the Tang-dynasty pottery whose calm clay body
-carries colour only where hue was poured. The toolkit works the same way. Pages, cards and
-text stay neutral. **Colour means state**, and it lies in the recessed bed of a control, under
-a neutral thumb that follows your finger.
+**Mallet** is the craftsman's hammer, and a salute to Smartisan (锤子科技, “Hammer Technology”),
+the phone maker that treated every interface detail as a piece of craft; the project is not
+affiliated with Smartisan or its owners. A mallet shapes a sheet in two ways only: it raises
+some parts and sinks others. That is all a Mallet interface is made of: raised surfaces,
+recessed tracks, and a press that sinks.
 
-It is a complete library for the classic Android View system: layouts in XML, or views built
-in Kotlin or Java. It needs no Compose, no AppCompat and no Material Components, and ships as
-one AAR without a single image or font file.
+Pages, cards and text stay neutral. **Colour means state**, and it lies in the recessed bed
+of a control, under a neutral thumb that follows your finger.
+
+Mallet is a complete library for the classic Android View system: layouts in XML, or views
+built in Kotlin or Java. It needs no Compose, no AppCompat and no Material Components, and
+ships as one AAR without a single image or font file.
 
 |  |  |
 |---|---|
@@ -47,18 +51,18 @@ driven by real touch events; the dot that marks the finger is drawn by the recor
 
 | Slide aside, open in place | Dialogs, sheets, menus, toasts | A theme that changes in place |
 |:---:|:---:|:---:|
-| <img src="docs/images/motion/reveal.gif" width="250" alt="A row slides aside and shows Delete; opening another row closes it; Delete removes the row; sections open and close"> | <img src="docs/images/motion/overlays.gif" width="250" alt="A dialog rises, a bottom sheet is dragged down, a menu opens, a toast with an action appears"> | <img src="docs/images/motion/appearance.gif" width="250" alt="Switching to the dark theme, to another set of hues and back to light; the old look fades over the new one"> |
+| <img src="docs/images/motion/reveal.gif" width="250" alt="A row slides aside and uncovers Delete from the rim of its card; opening another row closes it; Delete removes the row; sections open and close"> | <img src="docs/images/motion/overlays.gif" width="250" alt="A dialog rises, a bottom sheet is dragged down, a menu opens, a toast with an action appears"> | <img src="docs/images/motion/appearance.gif" width="250" alt="Switching to the dark theme, to another set of hues and back to light; the old look fades over the new one"> |
 | `MalletRevealLayout`, `MalletExpandableLayout` | `MalletDialog`, `MalletBottomSheet`, `MalletMenu`, `MalletToast` | `MalletTheme`, `MalletThemeTransition` |
 
 ## The language in eight rules
 
 1. **Colour is state, and it lives in the bed.** The part you touch is always the same neutral bead.
-2. **Three materials, nothing else.** Porcelain (raised), glazed track (recessed, coloured), thumb (raised, inside a track); plus a well for text and pictures. No tinted buttons, no ripples, no elevation overlays.
+2. **Three materials, nothing else.** Surface (raised), track (recessed, carries the hue), thumb (raised, inside a track); plus a well for text and pictures. No tinted buttons, no ripples, no elevation overlays.
 3. **Text is centred; arrows are not part of the text.** A chevron stands on its own at the edge and points to where the next page lies.
 4. **Dividers run from rim to rim.** Rows read as sections of one body, not as boxes in a box.
 5. **Pressing sinks; it does not tint.** 1.5 dp down, straight back.
 6. **Everything follows the finger, or glides.** One easing curve; nothing bounces, nothing fades in.
-7. **Pages are places.** Navigation is movement through a map, not a stack of cards.
+7. **Pages are places.** Navigation is movement through a map, not a stack of cards, and a place carries no signpost.
 8. **Depth is painted, short and downward.** One hairline rim, one short soft shadow below.
 
 The full specification, with every token and its value, is the
@@ -138,23 +142,43 @@ required.
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
 
-        <io.github.avalonskyafar.mallet.widget.MalletSegmentedTrack
+        <io.github.avalonskyafar.mallet.widget.MalletControlRow
             android:id="@+id/strength"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:malletTitle="Strength"
             app:malletOptions="@array/strength_levels"
             app:malletSelectedIndex="2" />
+
+        <io.github.avalonskyafar.mallet.widget.MalletControlRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:malletTitle="Only on Wi-Fi">
+
+            <io.github.avalonskyafar.mallet.widget.MalletSwitch
+                android:id="@+id/wifi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:malletChecked="true" />
+        </io.github.avalonskyafar.mallet.widget.MalletControlRow>
     </io.github.avalonskyafar.mallet.widget.MalletSurface>
 </io.github.avalonskyafar.mallet.widget.MalletPage>
 ```
 
+A card is a group: this one holds two rows that belong together. A lone control never gets a
+card of its own: it joins the card of its relatives, or stands on the canvas under its heading
+(see the [Design system](docs/DESIGN_SYSTEM.md)). The first row makes its segmented track from
+`malletOptions`; code reaches it through `track`:
+
 ```kotlin
-val strength = findViewById<MalletSegmentedTrack>(R.id.strength)
-strength.setOnSelectionChangeListener { _, index -> prefs.strength = index }
+val strength = findViewById<MalletControlRow>(R.id.strength)
+strength.track?.setOnSelectionChangeListener { _, index -> prefs.strength = index }
 
 MalletDialog.confirm(this, "Restore all defaults?", "Every setting returns to its original value.",
     positiveLabel = "Restore", danger = true) { prefs.reset() }
 ```
+
+A view can also be built in code, from Kotlin or, as here, from Java:
 
 ```java
 MalletSegmentedTrack track = new MalletSegmentedTrack(context);
@@ -163,8 +187,8 @@ track.select(1, false);
 track.setOnSelectionChangeListener((view, index) -> prefs.setEnabled(index == 1));
 ```
 
-Other ways to add the library (a bare AAR, a source module, JitPack), theming, windows and
-system bars, living next to AppCompat or Material, testing and shrinking are covered in the
+Other ways to add the library (the AAR file alone, a source module, JitPack), theming, windows
+and system bars, living next to AppCompat or Material, testing and shrinking are covered in the
 [Integration guide](docs/INTEGRATION_GUIDE.md). `samples/minimal/` is a one-screen app written
 in Java and XML only, built against the released binary.
 
@@ -204,8 +228,9 @@ MalletBack.attach(this, host)                    // system Back follows the map
 ## The showcase app
 
 `showcase/` is a demo app built on the library alone, without another UI kit: 27 pages,
-every component live, each with the code that makes it. Its own navigation is the spatial host: Foundations,
-Components, Interactions and Appearance lie around Home.
+every component live, each with the code that makes it. Its own navigation is the spatial
+host: Foundations, Components, Interactions and Appearance, the four first-level pages, lie
+around Home.
 
 ```
                     Appearance
@@ -214,6 +239,22 @@ Components, Interactions and Appearance lie around Home.
                         |
                    Components
 ```
+
+Home shows nothing that points at its neighbours: no arrows, no page names at the edges. It
+names the pages around it once, in a row of four entries at its bottom: an outline icon above
+a short label, one entry for each first-level page. The page at the start side comes first and
+the page at the end side last, with the pages below and above between them: Foundations,
+Components, Appearance, Interactions. An entry can be tapped; the page it names is also reached
+by dragging towards it. The row is the library's navigation row, `MalletNavBar`, in launcher
+mode.
+
+A first-level page shows no way back: no back row, no arrow, no bar. It is left the way it was
+reached, by dragging back towards Home, or with the system's Back. A page without a button to
+tap is how the drag becomes a habit. This is the original app's own design, and it is
+deliberate (**Extracted**; four entries instead of the original's three, and a page above Home,
+are **Extended**). Deeper pages, opened from a row, keep a quiet way-back row that names their
+parent. The original has no back control at any depth, so that row is **New**, and it exists
+only in the showcase.
 
 Install the APK of a release, or build it:
 
@@ -251,7 +292,7 @@ components, and fills the gaps in the same language. Every part is marked:
 | Mark | Meaning | Examples |
 |---|---|---|
 | **Extracted** | design and numbers taken from the original | segmented track, switches, card, rows, dialog, spatial navigation, press |
-| **Extended** | an original idea generalised or completed | button variants, stepper, text field, navigation bar, icons, theme |
+| **Extended** | an original idea generalised or completed | button variants, stepper, text field, navigation row, icons, theme |
 | **New** | designed for Mallet from its materials and rules | checkbox, radio, slider, progress, chips, tabs, top bar, menu, bottom sheet, states, skeleton, banner |
 
 The evidence, with file and line of the original for every extracted part, and the reasons

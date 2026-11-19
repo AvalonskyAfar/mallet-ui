@@ -69,10 +69,12 @@ object StatesPage : DemoPage("c_states", R.string.page_c_states_title, R.string.
             track.setHues(page.theme.hues.uniform(5, page.theme.hues.mist))
             track.setOnSelectionChangeListener { _, index -> show(index) }
             addView(track, match())
-            // A fixed height keeps the card still while the message changes length.
+            // The stage is at least this tall, which keeps the card still while the message
+            // changes length; a message that needs more room, in enlarged text, gets it.
             val frame = FrameLayout(context)
+            frame.minimumHeight = page.dp(STAGE_HEIGHT)
             frame.addView(state, FrameLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP, Gravity.CENTER))
-            addView(frame, LinearLayout.LayoutParams(PageScope.MATCH, page.dp(220)).apply { topMargin = page.dp(6) })
+            addView(frame, match().apply { topMargin = page.dp(6) })
         }
         page.code(
             """
@@ -86,8 +88,11 @@ object StatesPage : DemoPage("c_states", R.string.page_c_states_title, R.string.
 
         // The compact form: a smaller icon and tighter gaps, for an area inside a card.
         val card = MalletSurface(page.context)
+        // The title labels what is under it, so it keeps to the start edge in any language.
+        val heading = page.text(page.str(R.string.states_compact_heading), MalletTextRole.SUBHEAD)
+        heading.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
         card.addView(
-            page.text(page.str(R.string.states_compact_heading), MalletTextRole.SUBHEAD),
+            heading,
             match().apply { marginStart = page.dp(INSET); marginEnd = page.dp(INSET); topMargin = page.dp(10) },
         )
         card.addDivider(10f)
@@ -125,9 +130,10 @@ object StatesPage : DemoPage("c_states", R.string.page_c_states_title, R.string.
                 page.str(R.string.states_layout_empty), page.str(R.string.states_layout_error),
             )
             track.setHues(page.theme.hues.uniform(4, page.theme.hues.mist))
+            val list = backupList(page)
             val layout = MalletStateLayout(context)
             layout.minimumLoadingMs = 400L
-            layout.addView(backupList(page))
+            layout.addView(list)
 
             // Loads again: loading now, content a moment later. Moving the track meanwhile, or
             // leaving the page, cancels the second step.
@@ -170,8 +176,11 @@ object StatesPage : DemoPage("c_states", R.string.page_c_states_title, R.string.
                 }
             })
             addView(track, match())
-            // A fixed height: the card does not jump when the state changes.
-            addView(layout, LinearLayout.LayoutParams(PageScope.MATCH, page.dp(LAYOUT_HEIGHT)).apply { topMargin = page.dp(10) })
+            // At least as tall as its three rows, so the card keeps its height from state to
+            // state. A message that needs more room than that, in enlarged text, makes the card
+            // grow rather than being cut.
+            layout.minimumHeight = list.childCount * page.dp(MalletEntryRow.MIN_HEIGHT_DETAIL_DP.toInt())
+            addView(layout, match().apply { topMargin = page.dp(10) })
         }
         page.code(
             """
@@ -185,7 +194,7 @@ object StatesPage : DemoPage("c_states", R.string.page_c_states_title, R.string.
     }
 
     /** The content of the state layout: three plain rows of a list. */
-    private fun backupList(page: PageScope): View {
+    private fun backupList(page: PageScope): LinearLayout {
         val list = LinearLayout(page.context)
         list.orientation = LinearLayout.VERTICAL
         val titles = intArrayOf(R.string.states_row_1_title, R.string.states_row_2_title, R.string.states_row_3_title)
@@ -317,7 +326,8 @@ object StatesPage : DemoPage("c_states", R.string.page_c_states_title, R.string.
         )
     }
 
-    private const val LAYOUT_HEIGHT = 220
+    /** The smallest height of the stage under the first track, in dp. */
+    private const val STAGE_HEIGHT = 220
     private const val INSET = 10
     private const val RELOAD_MS = 1400L
 }

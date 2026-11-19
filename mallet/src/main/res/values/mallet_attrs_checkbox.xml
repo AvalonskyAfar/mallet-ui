@@ -6,7 +6,7 @@
         <attr name="android:enabled" />
         <!-- Whether the box starts checked. -->
         <attr name="malletChecked" />
-        <!-- Hue poured into the checked box. Cobalt when absent. -->
+        <!-- Hue that fills the checked box. Cobalt when absent. -->
         <attr name="malletHue" />
     </declare-styleable>
 </resources>

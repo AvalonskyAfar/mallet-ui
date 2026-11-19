@@ -7,23 +7,22 @@
     <string name="follow_level_standard">标准</string>
     <string name="follow_level_strict">严格</string>
     <string name="follow_drag_track_status">过滤：%1$s</string>
-    <string name="follow_power_on">开关已打开。</string>
+    <string name="follow_power_on">开关已开启。</string>
     <string name="follow_power_off">开关已关闭。</string>
     <string name="follow_drag_note">手指按住滑块慢慢移动。停在半路松手，它会落到较近的一侧。</string>
 
     <string name="follow_colour_title">颜色随位置流动</string>
-    <string name="follow_colour_detail">珠子身后的那一段，取离当前数值最近的釉色；滑过两种釉色的中点，下一种釉色随即倾注进来。</string>
+    <string name="follow_colour_detail">圆珠身后的那一段，取离数值最近的底色；滑过两种底色的中点，一种便融入另一种。</string>
     <string name="follow_colour_label">强度</string>
     <string name="follow_colour_value">%1$d%% · %2$s</string>
     <string name="follow_colour_percent">%1$d%%</string>
 
     <string name="follow_vertical_title">竖向移动，把手势还给页面</string>
-    <string name="follow_vertical_detail">轨道只接管横向的手势。</string>
+    <string name="follow_vertical_detail">轨道只接管横向的手势。按住轨道向上或向下移动：页面跟着滚动，数值不变。</string>
     <string name="follow_speed_slow">慢</string>
     <string name="follow_speed_normal">正常</string>
     <string name="follow_speed_fast">快</string>
     <string name="follow_vertical_status">速度：%1$s</string>
-    <string name="follow_vertical_note">在轨道上按下，再向上或向下移动。页面跟着滚动，数值不变。</string>
 
     <string name="follow_code_title">用代码移动</string>
     <string name="follow_code_detail">同样的移动，不需要手指。</string>
@@ -36,5 +35,5 @@
     <string name="follow_code_jumped">select(0, animate = false)：滑块直接跳到了“%1$s”。</string>
     <string name="follow_code_dragged">手动移到了“%1$s”。</string>
 
-    <string name="follow_origin">跟手的滑块、松手后的归位、随滑块流动的颜色，以及把竖向移动交还给页面的做法，都取自原应用的轨道和总开关。滑杆及其釉色阶是为 Mallet 新设计的。</string>
+    <string name="follow_origin">跟手的滑块、松手后的归位、随滑块流动的颜色、把竖向移动交还给页面的做法，以及用代码移动滑块，都取自原应用的轨道和总开关。滑杆和它沿色阶逐级换底色的方式，是为 Mallet 新设计的。</string>
 </resources>

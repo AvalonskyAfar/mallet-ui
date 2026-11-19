@@ -6,10 +6,11 @@ All notable changes to Mallet UI are recorded here. The format follows
 
 ## 0.1.0 — 2026-11-18
 
-The first release: the design language of the Gravekeeper app, restated as an independent
-library, completed, documented and demonstrated. What was taken from the original, what was
-extended and what is new is recorded part by part in
-[docs/DESIGN_DECISIONS.md](docs/DESIGN_DECISIONS.md).
+The first release of Mallet UI: the design language of the Gravekeeper app, restated as an
+independent library, completed, documented and demonstrated. What was taken from the
+original, what was extended and what is new is recorded part by part in
+[docs/DESIGN_DECISIONS.md](docs/DESIGN_DECISIONS.md); the numbers `D-nn` below point to
+its decisions.
 
 ### Design system
 
@@ -17,8 +18,8 @@ extended and what is new is recorded part by part in
   (bronze, ochre, cobalt, jade, mist) with their scale for two, three and four
   options and their night form.
 - A type scale of eleven roles, tones for text, a spacing scale, corner radii.
-- Three painted materials (porcelain, glazed track, thumb) and the well, with pressed,
-  focused and disabled forms; shadows are drawn inside each view's own bounds.
+- Four materials (surface, track, thumb, well), with pressed, focused and disabled
+  forms; shadows are drawn inside each view's own bounds.
 - Motion tokens: one easing curve, five durations, the commit and flick rules.
 - Fifty icons drawn in code, mirrored in right-to-left layouts where they point.
 - `MalletTheme`: from XML theme attributes, from code, from an app's own settings
@@ -26,7 +27,9 @@ extended and what is new is recorded part by part in
 
 ### Components
 
-- Surfaces and text: `MalletSurface`, `MalletDivider`, `MalletText`, `MalletIconView`.
+- Surfaces and text: `MalletSurface` (the card: it groups at least two rows or blocks that
+  belong together; a lone control joins its relatives or stands on the canvas, D-25),
+  `MalletDivider`, `MalletText`, `MalletIconView`.
 - Actions: `MalletButton` (neutral, primary, destructive, text; icon, loading), `MalletChip`,
   `MalletChipGroup`, `MalletTag`, `MalletBadge`.
 - Choice: `MalletSegmentedTrack`, `MalletSwitch`, `MalletPowerSwitch`, `MalletCheckbox`,
@@ -55,17 +58,23 @@ screen readers; mirrors in right-to-left layouts; and keeps its state across rot
 - `MalletSpatialGraph`, `MalletSpatialHost`: pages laid out as places and dragged at finger
   speed; `MalletBack`: system Back along the map, with the predictive preview on Android 14
   and later; `MalletSpatialTransition`: a second activity that arrives and leaves like a page.
-- `MalletRevealLayout`: a row that slides aside for one action; `MalletExpandableLayout`: a
-  section that opens in place.
+- `MalletRevealLayout`: a row that slides aside and uncovers one action from the rim of
+  its card (D-24); `MalletExpandableLayout`: a section that opens in place.
 - `MalletThemeTransition`: the old look fades over the new one when the theme changes.
 - One rule for who owns a gesture: the deepest control that can use a drag takes it, and
   hands it on when it cannot (`MalletHorizontalDragOwner`).
 
 ### Showcase app
 
-- A demo app built from the library alone: Foundations, Components, Interactions and
-  Appearance around Home, every component live with the code that makes it, in English and
-  Simplified Chinese.
+- A demo app built from the library alone: Foundations, Components, Appearance and
+  Interactions around Home, every component live with the code that makes it, in English
+  and Simplified Chinese.
+- Home and the four first-level pages around it carry no navigation marks, as in the
+  original app (D-23). Home names its neighbours once, in a row of entries at its bottom;
+  an entry can be tapped, and its page is also reached by dragging Home towards the side on
+  which that page lies. A first-level page shows no way back: it is left by dragging back
+  towards Home, or with the system's Back. Deeper pages keep a quiet way-back row that
+  names their parent; that row is the showcase's own, the original has none.
 
 ### Documentation and tools
 

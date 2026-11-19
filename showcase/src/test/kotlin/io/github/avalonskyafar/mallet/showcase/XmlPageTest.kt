@@ -132,6 +132,8 @@ class XmlPageTest {
         assertThat(page).isNotNull()
         assertThat(page.content.childCount).isEqualTo(5)
         val track = activity.findViewById<MalletSegmentedTrack>(R.id.neighbour_track)
+        // A lone control gets no card of its own: the track stands on the canvas of the page.
+        assertThat(track.parent).isSameInstanceAs(page.content)
         assertThat(track.options).hasSize(3)
         assertThat(track.selectedIndex).isEqualTo(1)
         assertThat(activity.findViewById<MalletButton>(R.id.neighbour_back).hasOnClickListeners()).isTrue()

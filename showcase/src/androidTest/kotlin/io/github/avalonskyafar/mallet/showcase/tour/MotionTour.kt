@@ -119,7 +119,7 @@ class MotionTour : DeviceTest() {
         }
     }
 
-    /** A slider whose hue is poured along a scale, and one that moves in steps. */
+    /** A slider coloured along a scale of hues, one that moves in steps and one over a plain share. */
     @Test
     fun sliders() {
         Tour.open("c_numbers")

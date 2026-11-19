@@ -25,11 +25,11 @@ import io.github.avalonskyafar.mallet.widget.MalletSurface
 import io.github.avalonskyafar.mallet.widget.MalletText
 import kotlin.math.roundToInt
 
-/** Materials and depth: porcelain, the glazed track and its thumb, wells, and where the shadow lives. */
+/** Materials and depth: the raised surface, the track and its thumb, wells, and where the shadow lives. */
 object MaterialPage : DemoPage("f_material", R.string.page_f_material_title, R.string.page_f_material_summary) {
     override fun build(page: PageScope) {
         page.title()
-        porcelain(page)
+        surface(page)
         trackAndThumb(page)
         wells(page)
         gutter(page)
@@ -37,7 +37,7 @@ object MaterialPage : DemoPage("f_material", R.string.page_f_material_title, R.s
         page.caption(page.str(R.string.material_origin), topDp = 18)
     }
 
-    private fun porcelain(page: PageScope) {
+    private fun surface(page: PageScope) {
         page.section(R.string.material_surface_title, R.string.material_surface_detail) {
             addView(page.line(R.string.material_surface_card), cardParams())
         }
@@ -110,22 +110,24 @@ object MaterialPage : DemoPage("f_material", R.string.page_f_material_title, R.s
     private fun gutter(page: PageScope) {
         val specimen = GutterSpecimen(page.context)
         val status = page.text(page.str(R.string.material_gutter_actual_note), MalletTextRole.CAPTION, MalletTextTone.MUTED)
-        page.section(R.string.material_gutter_title, R.string.material_gutter_detail) {
-            val zoom = MalletSegmentedTrack(context).apply {
-                setOptions(page.str(R.string.material_gutter_actual), page.str(R.string.material_gutter_magnified))
-                // The options are equals, not levels: one hue under all of them.
-                setHues(page.theme.hues.uniform(2, page.theme.hues.mist))
-                setOnSelectionChangeListener { _, index ->
-                    specimen.zoom = if (index == 1) GutterSpecimen.MAGNIFIED else 1f
-                    status.text = page.str(
-                        if (index == 1) R.string.material_gutter_magnified_note else R.string.material_gutter_actual_note,
-                    )
-                }
+        // On the canvas the line starts where the heading starts, right to left too.
+        status.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+        val zoom = MalletSegmentedTrack(page.context).apply {
+            setOptions(page.str(R.string.material_gutter_actual), page.str(R.string.material_gutter_magnified))
+            // The options are equals, not levels: one hue under all of them.
+            setHues(page.theme.hues.uniform(2, page.theme.hues.mist))
+            setOnSelectionChangeListener { _, index ->
+                specimen.zoom = if (index == 1) GutterSpecimen.MAGNIFIED else 1f
+                status.text = page.str(
+                    if (index == 1) R.string.material_gutter_magnified_note else R.string.material_gutter_actual_note,
+                )
             }
-            addView(zoom, cardParams())
-            addView(status, cardParams(topDp = 2, sideDp = 6, bottomDp = 4))
         }
-        page.loose(specimen, topDp = 10)
+        // A lone control gets no card: the track stands on the canvas, above the body it magnifies.
+        page.heading(R.string.material_gutter_title, R.string.material_gutter_detail)
+        page.loose(zoom, topDp = PageScope.HEADING_GAP)
+        page.loose(specimen, topDp = 8)
+        page.loose(status, topDp = 8, sideDp = PageScope.TEXT_INSET)
         page.code(GUTTER_CODE)
     }
 
@@ -185,7 +187,7 @@ private fun View.cardParams(topDp: Int = 0, sideDp: Int = 0, bottomDp: Int = 0):
     }
 }
 
-/** A large glazed track with its thumb, painted straight from the material engine. */
+/** A large track with its thumb, painted straight from the material engine. */
 private class TrackSpecimen(context: Context) : View(context) {
     private val theme = MalletTheme.of(context)
     private val material = MalletMaterial(context, theme)
@@ -222,11 +224,11 @@ private class TrackSpecimen(context: Context) : View(context) {
     }
 }
 
-/** A porcelain body with the bounds of its own view drawn as a dashed line around it. */
+/** A raised body with the bounds of its own view drawn as a dashed line around it. */
 private class GutterSpecimen(context: Context) : View(context) {
     private val theme = MalletTheme.of(context)
     private val density = resources.displayMetrics.density
-    private val porcelain = MalletSurfaceDrawable(context)
+    private val surface = MalletSurfaceDrawable(context)
     private val outline = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         color = theme.colors.accent
@@ -257,8 +259,8 @@ private class GutterSpecimen(context: Context) : View(context) {
         // The magnified drawing is larger than the view; keep it inside.
         canvas.clipRect(0, 0, width, height)
         canvas.scale(zoom, zoom, pivotX, height.toFloat())
-        porcelain.setBounds(0, 0, width, height)
-        porcelain.draw(canvas)
+        surface.setBounds(0, 0, width, height)
+        surface.draw(canvas)
 
         val stroke = density / zoom
         outline.strokeWidth = stroke
@@ -301,10 +303,10 @@ private const val WELL_CODE = """
 """
 
 private const val GUTTER_CODE = """
-    val porcelain = MalletSurfaceDrawable(context)
+    val surface = MalletSurfaceDrawable(context)
     val body = RectF()
-    porcelain.setBounds(0, 0, width, height)        // the view
-    porcelain.bodyBounds(porcelain.bounds, body)    // the card the eye sees
+    surface.setBounds(0, 0, width, height)      // the view
+    surface.bodyBounds(surface.bounds, body)    // the card the eye sees
     // MalletGutters.SURFACE_SIDE_DP 1.4, SURFACE_TOP_DP 1, SURFACE_BOTTOM_DP 4.8
 """
 

@@ -8,10 +8,9 @@
     <string name="arbitrate_level_strict">Strict</string>
     <string name="arbitrate_track_line">Sideways: the thumb follows the finger and the page stays. Up or down: the track lets go and the page scrolls.</string>
     <string name="arbitrate_row_title">Weekly report</string>
-    <string name="arbitrate_row_detail">Drag towards the end side</string>
+    <string name="arbitrate_row_detail">Slide it aside to uncover its action.</string>
     <string name="arbitrate_row_action">Delete</string>
     <string name="arbitrate_row_said">The action ran. The row stays for the next try.</string>
-    <string name="arbitrate_reveal_line">Sideways: the row slides aside and uncovers its action. Up or down: the row stays shut and the page scrolls.</string>
     <string name="arbitrate_page_name">Page %1$d of %2$d</string>
     <string name="arbitrate_page_first">There is no page before this one. A drag towards the end side passes to the page around the pager.</string>
     <string name="arbitrate_page_middle">Both directions belong to the pager here.</string>
@@ -43,5 +42,5 @@
     <string name="arbitrate_land_edge">Within 24 dp of a screen edge</string>
     <string name="arbitrate_owner_edge">The system back gesture</string>
     <string name="arbitrate_edge_note">The page host never starts a sideways drag in the 24 dp zones at the two screen edges. They are left to the system, so the back gesture works the same on every page.</string>
-    <string name="arbitrate_origin">The track that keeps a sideways drag and hands a vertical one back to the page, the row that slides aside and the page that follows the finger were extracted from the original app. The pager was extracted from the first-launch flow of the original app. The one shared rule that any view can join through MalletHorizontalDragOwner is new in Mallet.</string>
+    <string name="arbitrate_origin">The track that keeps a sideways drag and hands a vertical one back to the page, the row that slides aside and the page that follows the finger were extracted from the original app. The pager was extracted from the first-launch flow of the original app. The rule that the action lies under the row and comes out at the rim of the card, and the one shared rule that any view can join through MalletHorizontalDragOwner, are new in Mallet.</string>
 </resources>

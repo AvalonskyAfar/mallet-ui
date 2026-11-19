@@ -8,13 +8,13 @@
     <string name="choice_updates">更新</string>
     <string name="choice_boxes_status">已选 %1$d / %2$d，监听器调用 %3$d 次。用代码改变选中状态不会调用监听器，所以点“全选”只计一次。</string>
 
-    <string name="choice_states_title">釉色与禁用</string>
-    <string name="choice_tinted">青瓷釉</string>
-    <string name="choice_ochre">赭黄釉</string>
+    <string name="choice_states_title">底色与禁用</string>
+    <string name="choice_tinted">青玉底色</string>
+    <string name="choice_ochre">赭黄底色</string>
     <string name="choice_locked">必选项，不可更改</string>
 
     <string name="choice_radios_title">单选组</string>
-    <string name="choice_radios_detail">一次只有一个答案。选择可以换，不能取消。</string>
+    <string name="choice_radios_detail">每组只有一个答案。选择可以换，不能取消。</string>
     <string name="choice_daily">每天</string>
     <string name="choice_weekly">每周</string>
     <string name="choice_manual">仅手动备份</string>
@@ -23,14 +23,12 @@
     <string name="choice_weekly_status">每周备份一次。</string>
     <string name="choice_manual_status">只在你手动开始时备份。</string>
 
-    <string name="choice_hues_title">五种釉色</string>
-    <string name="choice_hues_detail">同一个单选组横向排成一行，每种釉色一个。</string>
-    <string name="choice_bronze">陶红</string>
+    <string name="choice_hues_title">五种底色</string>
+    <string name="choice_bronze">古铜</string>
     <string name="choice_ochre_name">赭黄</string>
     <string name="choice_cobalt">钴蓝</string>
-    <string name="choice_jade">青瓷</string>
+    <string name="choice_jade">青玉</string>
     <string name="choice_mist">雾白</string>
-    <string name="choice_hues_status">当前选中：%1$s</string>
 
-    <string name="choice_origin">五种釉色、下凹的釉槽和素色圆珠取自原应用；复选框、单选按钮和单选组是为 Mallet 新设计的。</string>
+    <string name="choice_origin">五种底色、下凹的槽底和素色滑块（这里是单选框的圆珠）取自原应用；复选框、单选框和单选组是为 Mallet 新设计的。</string>
 </resources>

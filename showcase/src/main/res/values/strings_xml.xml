@@ -5,7 +5,8 @@
     <!-- Used by res/layout/page_xml.xml -->
     <string name="xml_filter_title">A settings card</string>
     <string name="xml_filter_detail">A track, a switch, a divider and an entry row.</string>
-    <string name="xml_strength">Strength</string>
+    <!-- Short on purpose: beside a track of four options the row gives its title a fifth of the width. -->
+    <string name="xml_strength">Filter</string>
     <string name="xml_level_off">Off</string>
     <string name="xml_level_gentle">Gentle</string>
     <string name="xml_level_standard">Standard</string>
@@ -51,5 +52,5 @@
     <string name="xml_screen_detail">The neighbour activity of this app is one layout file with a MalletPage at its root.</string>
     <string name="xml_screen_open">Open the XML screen</string>
 
-    <string name="xml_origin">The original app built every screen in Java and had no layout files, no custom attributes and no theme attributes. The XML attributes of every widget, the Theme.Mallet styles and the rule that a child declared inside a row becomes its control are new in Mallet.</string>
+    <string name="xml_origin">The original app built every screen in Java and had no layout files, no custom attributes and no theme attributes of its own. The XML attributes of every widget, the Theme.Mallet styles and the rule that a child declared inside a row becomes its control are new in Mallet.</string>
 </resources>

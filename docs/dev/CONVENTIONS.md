@@ -4,13 +4,18 @@ Rules every source file in `:mallet` follows. Read this before adding a widget.
 
 ## 1. The design language in one page
 
-Mallet (Mallet, "three-colour hue") has three materials, all painted by
-`material/MalletMaterial.kt`. Never hand-roll a shadow, rim or recess: call the painter.
+Mallet is the craftsman's hammer. A mallet shapes a sheet in two ways only: it raises some
+parts and sinks others. That is all a Mallet interface is made of: raised surfaces, recessed
+tracks, and a press that sinks. The name is explained at the opening of
+[the design system](../DESIGN_SYSTEM.md).
+
+The materials below are all painted by `material/MalletMaterial.kt`. Never hand-roll a
+shadow, rim or recess: call the painter.
 
 | Material | Painter | Looks like | Used for |
 |---|---|---|---|
-| Porcelain | `drawSurface` / `MalletSurfaceDrawable` | raised body, one hairline rim, one short soft shadow below, faint inner shading | cards, capsule buttons, dialogs, toasts, menus |
-| Glazed track | `drawTrack` | recessed capsule; the **bed colour is the state** | segmented track, switches, stepper, slider, progress |
+| Surface | `drawSurface` / `MalletSurfaceDrawable` | raised body, one hairline rim, one short soft shadow below, faint inner shading | cards, capsule buttons, dialogs, toasts, menus |
+| Track | `drawTrack` | recessed capsule; the **bed colour is the state** | segmented track, switches, stepper, slider, progress |
 | Thumb | `drawThumb` | neutral raised bead that rides inside a track | everything that moves inside a track |
 | Well | `drawWell` / `MalletWellDrawable` | recessed neutral field | text fields, editors, media frames |
 
@@ -23,8 +28,16 @@ Principles that make a screen recognisably Mallet:
    themes break.
 2. **Text is centred; arrows are not part of the text.** A chevron is positioned on its own
    at the edge of a row and never shifts the centred title.
-3. **Dividers run from rim to rim.** Inside a `MalletSurface` use `MalletDivider`
-   (full-bleed by default). No inset dividers.
+3. **A card is a group, divided from rim to rim.** A `MalletSurface` holds at least two rows
+   or blocks that belong together and never wraps a single control: a lone control joins
+   the card of its relatives, or it stands on the canvas under its heading. One composite
+   block (a list, a state view, a paragraph, a picture) may have a card to itself. Inside a
+   card use `MalletDivider` (full-bleed by default); no inset dividers. A
+   `MalletRevealLayout` that is a direct child of a vertical card is stretched over the cell
+   of its row in the same way, from rim to rim. Grouping rows in cards is extracted from the
+   original app. The rule about lone controls is new, and the cell that reaches the rim
+   departs from the original on purpose: see D-25 and D-24 in
+   [DESIGN_DECISIONS.md](../DESIGN_DECISIONS.md).
 4. **Pressing sinks, it does not tint.** Operated content moves down 1.5 dp
    (`MalletMotion.PRESS_SINK_DP`) in 55 ms and returns at once on release. Tracks and
    thumbs tighten their shadow (`pressed = true`). No ripples, no colour change.
@@ -40,7 +53,7 @@ Principles that make a screen recognisably Mallet:
 
 Numbers come from the theme and motion objects, never from literals scattered in widgets:
 `MalletTheme`, `MalletColors`, `MalletHues`, `MalletTextRole`, `MalletMotion`,
-`MalletMaterial.RADIUS_*_DP`.
+`MalletSpacing`, `MalletMaterial.RADIUS_*_DP` and `MalletMaterial.RIM_DP`.
 
 ## 2. Anatomy of a widget
 

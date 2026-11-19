@@ -26,7 +26,7 @@ import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
- * The compact two-state switch: a small recessed glazed track with a neutral round thumb.
+ * The compact two-state switch: a small recessed coloured track with a neutral round thumb.
  *
  * The colour of the bed is the state: bronze while off, cobalt while on, and a blend of
  * the two while the thumb travels. The thumb itself never changes colour. A tap toggles; a

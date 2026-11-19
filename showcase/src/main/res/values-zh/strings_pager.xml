@@ -24,5 +24,5 @@
     <string name="pager_swipe_title">手动滑动</string>
     <string name="pager_swipe_detail">关闭后分页被禁用：拖动、按键和圆点都不再翻页，代码仍然可以。</string>
 
-    <string name="pager_note">取自原应用：首次启动流程及其分页圆点，以及与内容同步移动的标题。Mallet 新增：圆点的渐变过渡、用代码翻页，以及公开的联动调用。</string>
+    <string name="pager_note">取自原应用：首次启动流程及其分页圆点、与内容同步移动的标题，以及翻页的按钮。Mallet 新增：圆点的渐变过渡、不经滑行的直接跳转、禁用状态，以及公开的联动调用。</string>
 </resources>

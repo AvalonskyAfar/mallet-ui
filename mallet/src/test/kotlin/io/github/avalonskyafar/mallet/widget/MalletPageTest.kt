@@ -643,6 +643,7 @@ class MalletPageTest {
             MalletSurface(themed),
         )
         status.addView(row(themed, "Keep a status notification"))
+        status.addView(row(themed, "Show it on the lock screen"))
 
         page.addButton(MalletButton(themed).also { it.text = "Restore all defaults" })
         return page

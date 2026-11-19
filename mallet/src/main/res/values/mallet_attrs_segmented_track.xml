@@ -4,9 +4,9 @@
         <attr name="malletOptions" />
         <attr name="malletSelectedIndex" />
         <!--
-            How options are glazed. "scale" reads the options as an ordinal scale (off, gentle,
-            standard, strict). "uniform" pours the single hue named by malletHue under
-            every option, for plain choices.
+            How options are coloured. "scale" reads the options as an ordinal scale (off, gentle,
+            standard, strict). "uniform" uses the single hue named by malletHue under every
+            option, for plain choices.
         -->
         <attr name="malletHueMode" format="enum">
             <enum name="scale" value="0" />

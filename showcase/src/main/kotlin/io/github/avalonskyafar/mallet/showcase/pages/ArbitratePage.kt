@@ -16,6 +16,7 @@ import io.github.avalonskyafar.mallet.widget.MalletPageIndicator
 import io.github.avalonskyafar.mallet.widget.MalletSegmentedTrack
 import io.github.avalonskyafar.mallet.widget.MalletSurface
 import io.github.avalonskyafar.mallet.widget.MalletText
+import kotlin.math.roundToInt
 
 /**
  * Who owns the gesture: a track, a reveal row and a pager stacked in one card of a page that
@@ -24,7 +25,11 @@ import io.github.avalonskyafar.mallet.widget.MalletText
 object ArbitratePage : DemoPage("i_arbitrate", R.string.page_i_arbitrate_title, R.string.page_i_arbitrate_summary) {
 
     private const val INSET = 8
-    private const val STACK_INSET = 12
+
+    /** Inset of the lines of the first card: the text of an entry row starts 14 dp in. */
+    private const val STACK_INSET = 14
+
+    /** Height of the pager in dp at the normal size of text. */
     private const val PAGER_HEIGHT = 96
     private const val PAGER_PAGES = 3
 
@@ -36,7 +41,12 @@ object ArbitratePage : DemoPage("i_arbitrate", R.string.page_i_arbitrate_title, 
         page.caption(page.str(R.string.arbitrate_origin), topDp = 18)
     }
 
-    /** The three controls, each with its line, and a status line that names the last owner. */
+    /**
+     * The three controls in one card. The row that slides aside lies between two full-bleed
+     * dividers, so its cell reaches from rim to rim and from divider to divider; what a drag
+     * does to it stands in its own detail line. The track and the pager carry a line under
+     * them, and the last line of the card names the last owner.
+     */
     private fun stack(page: PageScope) {
         val status = page.text(page.str(R.string.arbitrate_status_idle), MalletTextRole.CAPTION, MalletTextTone.ACCENT)
         page.section(R.string.arbitrate_stack_title, R.string.arbitrate_stack_detail) {
@@ -57,7 +67,6 @@ object ArbitratePage : DemoPage("i_arbitrate", R.string.page_i_arbitrate_title, 
             addDivider(6f)
 
             addView(revealRow(page, status), LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))
-            addView(line(page, R.string.arbitrate_reveal_line))
             addDivider(6f)
 
             pager(page, this, status)
@@ -67,10 +76,12 @@ object ArbitratePage : DemoPage("i_arbitrate", R.string.page_i_arbitrate_title, 
         }
         page.code("""
             card.addView(MalletSegmentedTrack(context))
+            card.addDivider(6f)
             card.addView(MalletRevealLayout(context).apply {
                 addView(row)
                 setAction("Delete") { close() }
             })
+            card.addDivider(6f)
             card.addView(MalletPager(context).apply {
                 setPages(3) { i, _ -> pageView(i) }
             })
@@ -102,7 +113,10 @@ object ArbitratePage : DemoPage("i_arbitrate", R.string.page_i_arbitrate_title, 
         }
     }
 
-    /** A flat inner surface holds the pager, so its bounds are visible; the dots sit under it. */
+    /**
+     * The pager lies in the card like a row: as wide as the content, between two dividers,
+     * with its dots under it. Its pages are text, so it grows with the size of the text.
+     */
     private fun pager(page: PageScope, card: MalletSurface, status: MalletText) {
         val pager = MalletPager(page.context)
         pager.setPages(PAGER_PAGES) { index, _ -> pagerPage(page, index) }
@@ -111,17 +125,12 @@ object ArbitratePage : DemoPage("i_arbitrate", R.string.page_i_arbitrate_title, 
                 status.text = page.context.getString(R.string.arbitrate_status_pager, index + 1, PAGER_PAGES)
             }
         })
-        val frame = MalletSurface(page.context).apply {
-            elevated = false
-            addView(pager, LinearLayout.LayoutParams(PageScope.MATCH, page.dp(PAGER_HEIGHT)))
-        }
-        val frameParams = LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP)
-        frameParams.topMargin = page.dp(4)
-        card.addView(frame, frameParams)
+        val textScale = page.theme.textScale * page.context.resources.configuration.fontScale
+        val height = (page.dp(PAGER_HEIGHT) * textScale).roundToInt()
+        card.addView(pager, LinearLayout.LayoutParams(PageScope.MATCH, height))
         val dots = MalletPageIndicator(page.context).apply { attachTo(pager) }
         val dotParams = LinearLayout.LayoutParams(PageScope.WRAP, PageScope.WRAP)
         dotParams.gravity = Gravity.CENTER_HORIZONTAL
-        dotParams.topMargin = page.dp(4)
         card.addView(dots, dotParams)
     }
 

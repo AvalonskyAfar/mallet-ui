@@ -24,6 +24,7 @@ import io.github.avalonskyafar.mallet.theme.MalletTheme
 import io.github.avalonskyafar.mallet.widget.MalletButton
 import io.github.avalonskyafar.mallet.widget.MalletEntryRow
 import io.github.avalonskyafar.mallet.widget.MalletSlider
+import io.github.avalonskyafar.mallet.widget.MalletText
 import kotlin.math.roundToInt
 
 /** Motion tokens: the one curve, the durations, and the settle after a drag. */
@@ -85,7 +86,7 @@ private fun PageScope.durationSection() {
     )
     val tinted = theme.hues.ochre
     val groove = GrooveView(context, theme.bedColor(tinted), theme.bedEdgeColor(tinted))
-    val status = text(str(R.string.motion_durations_hint), MalletTextRole.CAPTION, MalletTextTone.MUTED)
+    val status = text(str(R.string.motion_durations_hint), MalletTextRole.CAPTION, MalletTextTone.MUTED).atStart()
     var atEnd = false
     section(R.string.motion_durations_title, R.string.motion_durations_detail) {
         addView(groove, inCard(topDp = 7, sideDp = 6))
@@ -122,7 +123,7 @@ private fun PageScope.durationSection() {
 private fun PageScope.settleSection() {
     val tinted = theme.hues.cobalt
     val groove = GrooveView(context, theme.bedColor(tinted), theme.bedEdgeColor(tinted))
-    val status = text("", MalletTextRole.BODY_COMPACT)
+    val status = text("", MalletTextRole.BODY_COMPACT).atStart()
     val slider = MalletSlider(context).apply {
         valueFrom = 0f
         valueTo = 1f
@@ -146,7 +147,7 @@ private fun PageScope.settleSection() {
         }
     }
     section(R.string.motion_settle_title, R.string.motion_settle_detail) {
-        addView(text(str(R.string.motion_settle_left), MalletTextRole.LABEL), inCard(topDp = 6, sideDp = 8))
+        addView(text(str(R.string.motion_settle_left), MalletTextRole.LABEL).atStart(), inCard(topDp = 6, sideDp = 8))
         addView(slider, inCard(topDp = 4, sideDp = 2))
         addView(status, inCard(topDp = 2, sideDp = 8))
         addView(groove, inCard(topDp = 12, sideDp = 6))
@@ -173,13 +174,16 @@ private fun PageScope.inCard(topDp: Int = 0, bottomDp: Int = 0, sideDp: Int = 0)
         marginEnd = dp(sideDp)
     }
 
+/** Keeps a text of the page at the start edge whatever language it is written in, like the headings. */
+private fun MalletText.atStart(): MalletText = apply { textAlignment = View.TEXT_ALIGNMENT_VIEW_START }
+
 /** A groove with its name before it; the names share one width so the grooves line up. */
 private fun PageScope.labelled(label: String, groove: View): LinearLayout =
     LinearLayout(context).apply {
         orientation = LinearLayout.HORIZONTAL
         gravity = Gravity.CENTER_VERTICAL
         setPaddingRelative(dp(8), 0, dp(6), 0)
-        val name = text(label, MalletTextRole.CAPTION, MalletTextTone.MUTED)
+        val name = text(label, MalletTextRole.CAPTION, MalletTextTone.MUTED).atStart()
         addView(name, LinearLayout.LayoutParams((dp(LABEL_WIDTH_DP) * theme.textScale).roundToInt(), PageScope.WRAP))
         addView(groove, LinearLayout.LayoutParams(0, PageScope.WRAP, 1f))
     }

@@ -3,7 +3,8 @@
     <string name="app_name">Mallet minimal</string>
     <string name="title">Protection</string>
     <string name="summary">A whole screen in one layout file and forty lines of Java</string>
-    <string name="strength">Strength</string>
+    <!-- Short on purpose: beside a track of four options the row gives its title a fifth of the width. -->
+    <string name="strength">Filter</string>
     <string-array name="levels">
         <item>Off</item>
         <item>Gentle</item>
@@ -23,7 +24,7 @@
     <string name="restore_message">Every setting returns to its original value.</string>
     <string name="restore_action">Restore</string>
     <string name="status_idle">Nothing changed yet</string>
-    <string name="status_level">Strength: %1$s</string>
+    <string name="status_level">Filter strength: %1$s</string>
     <string name="status_wifi_on">Updates wait for Wi-Fi</string>
     <string name="status_wifi_off">Updates use any network</string>
     <string name="status_exceptions">Exceptions would open here</string>

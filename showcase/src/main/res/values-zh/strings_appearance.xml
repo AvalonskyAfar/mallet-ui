@@ -7,13 +7,13 @@
     <string name="appearance_mode_system">跟随系统</string>
     <string name="appearance_mode_light">浅色</string>
     <string name="appearance_mode_dark">深色</string>
-    <string name="appearance_hues">釉色</string>
+    <string name="appearance_hues">底色</string>
     <string name="appearance_hues_detail">同一套色阶，换一组颜色</string>
     <string name="appearance_hues_classic">经典</string>
     <string name="appearance_hues_plum">梅紫</string>
 
     <string name="appearance_preview_title">预览</string>
-    <string name="appearance_preview_detail">当前设置下的釉色阶</string>
+    <string name="appearance_preview_detail">当前设置下的色阶</string>
     <string name="appearance_level_off">关闭</string>
     <string name="appearance_level_gentle">轻度</string>
     <string name="appearance_level_standard">标准</string>
@@ -35,5 +35,5 @@
 
     <string name="appearance_off">关闭</string>
     <string name="appearance_on">开启</string>
-    <string name="appearance_provenance">其余五项设置、1 : 1.35 的行比例，以及主题切换时的淡入过渡，均取自原应用的设置页。釉色这一项及第二套釉色为新增，用来说明色阶是可替换的设计变量，而不是一组写死的颜色。</string>
+    <string name="appearance_provenance">界面主题、字体放大、增强对比度、减少动态效果、震动反馈这五项设置，1\u00A0:\u00A01.35 的行比例，以及切换主题时的淡入过渡，均取自原应用。底色这一项、第二套底色和预览是 Mallet 新增的，用来说明色阶是可替换的设计变量，而不是一组写死的颜色。</string>
 </resources>

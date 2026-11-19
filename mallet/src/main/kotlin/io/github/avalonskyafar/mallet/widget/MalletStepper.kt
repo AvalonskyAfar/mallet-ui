@@ -31,7 +31,7 @@ import kotlin.math.round
 import kotlin.math.roundToInt
 
 /**
- * A precise number control: a recessed glazed track with a minus zone, a plus zone and a
+ * A precise number control: a recessed coloured track with a minus zone, a plus zone and a
  * neutral thumb in the centre that carries the value and never moves.
  *
  * Tapping minus or plus changes the value by one [stepSize]; holding either repeats, slowly at
@@ -160,7 +160,7 @@ public class MalletStepper @JvmOverloads constructor(
             valueChanged()
         }
 
-    /** The hue poured into the track. Cobalt by default. */
+    /** The hue of the track. Cobalt by default. */
     public var hue: MalletHue = theme.hues.cobalt
         set(value) {
             field = value

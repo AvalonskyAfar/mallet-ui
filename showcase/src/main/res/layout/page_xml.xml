@@ -102,6 +102,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="10dp"
         android:text="@string/xml_status_idle"
+        android:textAlignment="viewStart"
         app:malletTextRole="caption"
         app:malletTone="muted" />
 

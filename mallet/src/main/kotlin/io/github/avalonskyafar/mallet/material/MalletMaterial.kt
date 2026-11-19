@@ -22,12 +22,13 @@ public enum class MalletCorners { ALL, TOP, BOTTOM }
 /**
  * The Mallet material engine: every shadow, rim and recess in the toolkit is painted here.
  *
- * Three materials make up the language.
+ * Four materials make up the language.
  *
- * - **Porcelain** ([drawSurface]): a calm raised body with one hairline rim, one short soft
+ * - **Raised surface** ([drawSurface]): a calm body with one hairline rim, one short soft
  *   shadow below it and a trace of inner shading. Cards, capsule buttons, dialogs and toasts.
- * - **Glazed track** ([drawTrack]): a recessed capsule whose bed colour carries the state.
+ * - **Track** ([drawTrack]): a recessed capsule whose bed colour carries the state.
  * - **Thumb** ([drawThumb]): a neutral raised bead that rides inside a track.
+ * - **Well** ([drawWell]): a recessed neutral hollow for text and pictures.
  *
  * Android clips a view's drawing to its bounds, so every outer shadow is drawn inside a small
  * gutter that the caller reserves around the material; [drawOuterShadow] measures the room it
@@ -185,14 +186,14 @@ public class MalletMaterial @JvmOverloads constructor(
     }
 
     // ---------------------------------------------------------------------------------------
-    // Glazed track and thumb
+    // Track and thumb
     // ---------------------------------------------------------------------------------------
 
     /**
      * A recessed capsule filled with [bed] and rimmed with [edge]. The bed colour is painted
      * as given; depth is layered on top of it, never mixed into it. [hero] gives the deeper
      * shadow of the large power switch. Pass `lifted = false` to repaint part of a track that
-     * already has its shadow, for example the glazed stretch of a slider.
+     * already has its shadow, for example the coloured stretch of a slider.
      */
     @JvmOverloads
     public fun drawTrack(
@@ -336,15 +337,15 @@ public class MalletMaterial @JvmOverloads constructor(
     }
 
     // ---------------------------------------------------------------------------------------
-    // Porcelain surface
+    // Surface
     // ---------------------------------------------------------------------------------------
 
     /**
-     * A raised porcelain body.
+     * A raised surface.
      *
      * @param bounds the material itself; leave a gutter around it for the shadow
      * @param radius corner radius in pixels
-     * @param tint `null` for neutral porcelain, or a colour for a glazed body such as a
+     * @param tint `null` for a neutral surface, or a colour for a coloured body such as a
      * destructive or primary capsule
      * @param shadow whether to draw the outer lift
      * @param pressed tighter shadow of a pressed body

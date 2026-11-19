@@ -1,7 +1,9 @@
 package io.github.avalonskyafar.mallet.showcase.pages
 
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.Space
+import androidx.annotation.StringRes
 import io.github.avalonskyafar.mallet.showcase.DemoPage
 import io.github.avalonskyafar.mallet.showcase.PageScope
 import io.github.avalonskyafar.mallet.showcase.R
@@ -13,7 +15,7 @@ import io.github.avalonskyafar.mallet.widget.MalletRadioGroup
 import io.github.avalonskyafar.mallet.widget.MalletSurface
 import io.github.avalonskyafar.mallet.widget.MalletText
 
-/** Checkboxes and radios: a "select all" box that follows its options, and two radio groups. */
+/** Checkboxes and radios: a "select all" box that follows its options, and two radio groups in one card. */
 object ChoicePage : DemoPage("c_choice", R.string.page_c_choice_title, R.string.page_c_choice_summary) {
     override fun build(page: PageScope) {
         page.title()
@@ -47,9 +49,7 @@ object ChoicePage : DemoPage("c_choice", R.string.page_c_choice_title, R.string.
             group.setOnCheckedChangeListener { _, id ->
                 Log.d("backup", "radio ${'$'}id")
             }
-        """)
-        hues(page)
-        page.code("""
+
             val row = MalletRadioGroup(this)
             row.orientation = LinearLayout.HORIZONTAL
             val radio = MalletRadioButton(this)
@@ -111,7 +111,7 @@ private fun states(page: PageScope) {
             hue = page.theme.hues.jade
             setChecked(true, animate = false)
         }
-        val bare = MalletCheckbox(context).apply {
+        val unchecked = MalletCheckbox(context).apply {
             text = page.str(R.string.choice_ochre)
             hue = page.theme.hues.ochre
         }
@@ -121,93 +121,119 @@ private fun states(page: PageScope) {
             isEnabled = false
         }
         addView(tinted, params())
-        addView(bare, params())
+        addView(unchecked, params())
         addDivider(5f)
         addView(locked, params())
     }
 }
 
-/** One question, three answers and one that is not on offer. */
+/**
+ * Two groups in one card: a question in a column, then five hues in a row. The line under the
+ * question reports the answer; the head of the row names the hue that is checked.
+ */
 private fun radios(page: PageScope) {
+    val backupIds = intArrayOf(R.id.choice_daily, R.id.choice_weekly, R.id.choice_manual, R.id.choice_hourly)
+    val answers = intArrayOf(
+        R.string.choice_daily_status, R.string.choice_weekly_status, R.string.choice_manual_status,
+    )
+    val hueIds = intArrayOf(
+        R.id.choice_hue_0, R.id.choice_hue_1, R.id.choice_hue_2, R.id.choice_hue_3, R.id.choice_hue_4,
+    )
+    val names = intArrayOf(
+        R.string.choice_bronze, R.string.choice_ochre_name, R.string.choice_cobalt,
+        R.string.choice_jade, R.string.choice_mist,
+    )
     page.section(R.string.choice_radios_title, R.string.choice_radios_detail) {
-        val context = page.context
-        val ids = intArrayOf(R.id.choice_daily, R.id.choice_weekly, R.id.choice_manual, R.id.choice_hourly)
-        val labels = intArrayOf(
-            R.string.choice_daily, R.string.choice_weekly, R.string.choice_manual, R.string.choice_hourly,
-        )
-        val answers = intArrayOf(
-            R.string.choice_daily_status, R.string.choice_weekly_status, R.string.choice_manual_status,
-        )
-        val group = MalletRadioGroup(context).apply { id = R.id.choice_backup_group }
-        ids.forEachIndexed { index, radioId ->
-            val radio = MalletRadioButton(context).apply {
-                id = radioId
-                text = page.str(labels[index])
-                if (index == 1) setChecked(true, animate = false)
-                if (index == 3) isEnabled = false
-            }
-            group.addView(radio, params())
-        }
-        addView(group, params())
+        val backup = backupColumn(page, backupIds)
+        addView(backup, params())
         val line = status(page)
+        addDivider(5f)
+        val checked = head(page, R.string.choice_hues_title)
+        val row = hueRow(page, hueIds, names)
+        addView(row, params())
 
-        fun report(checkedId: Int) {
-            val index = ids.indexOf(checkedId)
+        fun reportBackup(checkedId: Int) {
+            val index = backupIds.indexOf(checkedId)
             if (index in answers.indices) line.text = page.str(answers[index])
         }
-        group.setOnCheckedChangeListener { _, checkedId ->
-            report(checkedId)
+        fun reportHue(checkedId: Int) {
+            val index = hueIds.indexOf(checkedId)
+            if (index >= 0) checked.text = page.str(names[index])
         }
-        report(group.checkedId)
+        backup.setOnCheckedChangeListener { _, checkedId ->
+            reportBackup(checkedId)
+        }
+        row.setOnCheckedChangeListener { _, checkedId ->
+            reportHue(checkedId)
+        }
+        reportBackup(backup.checkedId)
+        reportHue(row.checkedId)
     }
 }
 
-/** Five bare radios in a row, one per hue. */
-private fun hues(page: PageScope) {
-    page.section(R.string.choice_hues_title, R.string.choice_hues_detail) {
-        val context = page.context
-        val all = page.theme.hues
-        val pours = listOf(all.bronze, all.ochre, all.cobalt, all.jade, all.mist)
-        val ids = intArrayOf(
-            R.id.choice_hue_0, R.id.choice_hue_1, R.id.choice_hue_2, R.id.choice_hue_3, R.id.choice_hue_4,
-        )
-        val names = intArrayOf(
-            R.string.choice_bronze, R.string.choice_ochre_name, R.string.choice_cobalt,
-            R.string.choice_jade, R.string.choice_mist,
-        )
-        val row = MalletRadioGroup(context).apply {
-            id = R.id.choice_hue_group
-            orientation = LinearLayout.HORIZONTAL
+/** One question, three answers and one that is not on offer. */
+private fun backupColumn(page: PageScope, ids: IntArray): MalletRadioGroup {
+    val labels = intArrayOf(
+        R.string.choice_daily, R.string.choice_weekly, R.string.choice_manual, R.string.choice_hourly,
+    )
+    val group = MalletRadioGroup(page.context).apply { id = R.id.choice_backup_group }
+    ids.forEachIndexed { index, radioId ->
+        val radio = MalletRadioButton(page.context).apply {
+            id = radioId
+            text = page.str(labels[index])
+            if (index == 1) setChecked(true, animate = false)
+            if (index == 3) isEnabled = false
         }
-        row.addView(Space(context), LinearLayout.LayoutParams(0, 0, 1f))
-        pours.forEachIndexed { index, pour ->
-            val radio = MalletRadioButton(context).apply {
-                id = ids[index]
-                hue = pour
-                contentDescription = page.str(names[index])
-                if (index == 0) setChecked(true, animate = false)
-            }
-            row.addView(radio, LinearLayout.LayoutParams(WRAP, WRAP))
-            row.addView(Space(context), LinearLayout.LayoutParams(0, 0, 1f))
-        }
-        addView(row, params())
-        val line = status(page)
-
-        fun report(checkedId: Int) {
-            val index = ids.indexOf(checkedId)
-            if (index >= 0) line.text = context.getString(R.string.choice_hues_status, page.str(names[index]))
-        }
-        row.setOnCheckedChangeListener { _, checkedId ->
-            report(checkedId)
-        }
-        report(row.checkedId)
+        group.addView(radio, params())
     }
+    return group
+}
+
+/** Five radios without text in a row. Each has a hue of its own and is named after it for a screen reader. */
+private fun hueRow(page: PageScope, ids: IntArray, names: IntArray): MalletRadioGroup {
+    val context = page.context
+    val hues = page.theme.hues
+    val fiveHues = listOf(hues.bronze, hues.ochre, hues.cobalt, hues.jade, hues.mist)
+    val row = MalletRadioGroup(context).apply {
+        id = R.id.choice_hue_group
+        orientation = LinearLayout.HORIZONTAL
+    }
+    // Equal spaces before, between and after the radios, whatever the width of the card.
+    row.addView(Space(context), LinearLayout.LayoutParams(0, 0, 1f))
+    fiveHues.forEachIndexed { index, bedHue ->
+        val radio = MalletRadioButton(context).apply {
+            id = ids[index]
+            hue = bedHue
+            contentDescription = page.str(names[index])
+            if (index == 0) setChecked(true, animate = false)
+        }
+        row.addView(radio, LinearLayout.LayoutParams(WRAP, WRAP))
+        row.addView(Space(context), LinearLayout.LayoutParams(0, 0, 1f))
+    }
+    return row
+}
+
+/** The head of a block inside a card: its label at the start and a value at the end, which is returned. */
+private fun MalletSurface.head(page: PageScope, @StringRes label: Int): MalletText {
+    val name = page.text(page.str(label), MalletTextRole.LABEL)
+    name.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+    val value = page.text("", MalletTextRole.BODY_COMPACT, MalletTextTone.MUTED)
+    val line = LinearLayout(context).apply {
+        orientation = LinearLayout.HORIZONTAL
+        setPadding(page.dp(8), page.dp(5), page.dp(8), 0)
+        addView(name, LinearLayout.LayoutParams(0, WRAP, 1f))
+        addView(value, LinearLayout.LayoutParams(WRAP, WRAP).apply { marginStart = page.dp(12) })
+    }
+    addView(line, params())
+    return value
 }
 
 /** A muted line inside a card that reports what the controls above it did. */
 private fun MalletSurface.status(page: PageScope): MalletText {
     addDivider(5f)
     val line = page.text("", MalletTextRole.CAPTION, MalletTextTone.MUTED)
+    // Starts at the start edge of the card in every language, as the labels of the controls do.
+    line.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
     line.setPadding(page.dp(8), page.dp(7), page.dp(8), page.dp(6))
     addView(line, LinearLayout.LayoutParams(MATCH, WRAP))
     return line

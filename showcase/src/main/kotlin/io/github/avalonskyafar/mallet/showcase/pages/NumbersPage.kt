@@ -34,22 +34,31 @@ object NumbersPage : DemoPage("c_numbers", R.string.page_c_numbers_title, R.stri
     }
 }
 
+/** The text of a block stands this far in from the edge of its control, which is as wide as the card allows. */
 private const val INSET = 7
 
-/** A labelled block inside a card: the label, a live value at its end, the control below. */
+/** The text inset of a start-aligned [MalletControlRow]: blocks that share a card with such a row take it. */
+private const val ROW_INSET = 14
+
+/**
+ * A labelled block inside a card: the label, a live value at its end, the control below.
+ * The label stands at the start edge whatever language it is written in.
+ */
 private fun MalletSurface.block(
     page: PageScope,
     @StringRes label: Int,
     control: View,
     first: Boolean = false,
     gapDp: Int = 6,
+    insetDp: Int = INSET,
 ): MalletText {
+    val name = page.text(page.str(label), MalletTextRole.LABEL).apply { textAlignment = View.TEXT_ALIGNMENT_VIEW_START }
     val value = page.text("", MalletTextRole.BODY_COMPACT, MalletTextTone.MUTED)
     val head = LinearLayout(context).apply {
         orientation = LinearLayout.HORIZONTAL
         gravity = Gravity.CENTER_VERTICAL
-        setPadding(page.dp(INSET), 0, page.dp(INSET), 0)
-        addView(page.text(page.str(label), MalletTextRole.LABEL), LinearLayout.LayoutParams(0, PageScope.WRAP, 1f))
+        setPadding(page.dp(insetDp), 0, page.dp(insetDp), 0)
+        addView(name, LinearLayout.LayoutParams(0, PageScope.WRAP, 1f))
         addView(value, LinearLayout.LayoutParams(PageScope.WRAP, PageScope.WRAP).apply { marginStart = page.dp(12) })
     }
     addView(head, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP).apply { topMargin = page.dp(if (first) 6 else 14) })
@@ -243,7 +252,7 @@ private fun spinnerRow(page: PageScope, spinners: List<Pair<MalletSpinner, Int>>
     LinearLayout(page.context).apply {
         orientation = LinearLayout.HORIZONTAL
         gravity = Gravity.CENTER_VERTICAL
-        setPadding(page.dp(INSET), page.dp(4), page.dp(INSET), page.dp(2))
+        setPadding(page.dp(ROW_INSET), page.dp(4), page.dp(ROW_INSET), page.dp(2))
         for ((spinner, sizeDp) in spinners) {
             addView(
                 spinner,
@@ -264,8 +273,9 @@ private fun spinners(page: PageScope) {
         val sizes = listOf(18, 28, 44).map { MalletSpinner(context) to it }
         val tones = listOf(MalletTextTone.INK, MalletTextTone.ACCENT, MalletTextTone.SUCCESS, MalletTextTone.DANGER)
             .map { MalletSpinner(context).apply { tone = it } to 28 }
-        block(page, R.string.numbers_spinner_sizes, spinnerRow(page, sizes), first = true)
-        block(page, R.string.numbers_spinner_tones, spinnerRow(page, tones))
+        // This card ends in a control row, so its labels and spinners stand at the inset of the row's text.
+        block(page, R.string.numbers_spinner_sizes, spinnerRow(page, sizes), first = true, insetDp = ROW_INSET)
+        block(page, R.string.numbers_spinner_tones, spinnerRow(page, tones), insetDp = ROW_INSET)
         addDivider(10f)
         val busy = MalletSwitch(context).apply { setChecked(true, animate = false) }
         busy.setOnCheckedChangeListener { _, checked ->
@@ -295,9 +305,10 @@ private fun percent(share: Float): String = NumberFormat.getPercentInstance().fo
 
 private fun whole(value: Float): String = NumberFormat.getIntegerInstance().format(value.roundToInt().toLong())
 
-/** A muted status line under a divider at the foot of a card. */
+/** A muted status line under a divider at the foot of a card, at the start edge like the labels above it. */
 private fun MalletSurface.status(page: PageScope, text: CharSequence): MalletText {
     val line = page.text(text, MalletTextRole.CAPTION, MalletTextTone.MUTED)
+    line.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
     line.setPadding(page.dp(INSET), 0, page.dp(INSET), page.dp(4))
     addDivider(10f)
     addView(line, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))

@@ -52,7 +52,7 @@ class MalletBottomSheetTest {
     private fun actionSheet(context: Context = activityContext()): MalletBottomSheet.Builder =
         MalletBottomSheet.Builder(context)
             .title("Photo")
-            .message("Taken yesterday at the kiln")
+            .message("Taken yesterday at the farm")
             .action("Share", icon = MalletIcon.ARROW_UP)
             .action("Rename", icon = MalletIcon.EDIT)
             .action("Delete", MalletTextTone.DANGER, MalletIcon.TRASH)
@@ -89,7 +89,7 @@ class MalletBottomSheetTest {
         val body = sheet.root.sheet
         assertThat(sheet.isShowing).isTrue()
         assertThat(body.titleView?.text.toString()).isEqualTo("Photo")
-        assertThat(body.messageView?.text.toString()).isEqualTo("Taken yesterday at the kiln")
+        assertThat(body.messageView?.text.toString()).isEqualTo("Taken yesterday at the farm")
         assertThat(body.actionRows.map { it.label.text.toString() })
             .containsExactly("Share", "Rename", "Delete").inOrder()
         assertThat(body.cancelRow?.label?.text.toString()).isEqualTo("Cancel")
@@ -558,7 +558,7 @@ class MalletBottomSheetTest {
     @Test
     fun `long text wraps at large text scale and the label stays centred`() {
         val theme = MalletTheme.light().copy(textScale = MalletTheme.LARGE_TEXT_SCALE)
-        val long = "Move this photograph and all of its notes to the archive of the old kiln"
+        val long = "Move this photograph and all of its notes to the archive of the old farm"
         val root = MalletBottomSheet.Builder(activityContext(theme))
             .title("$long $long")
             .message(long)
@@ -630,7 +630,7 @@ class MalletBottomSheetTest {
             assertNear(bitmap.getPixel(body.right - 3, body.top + 2), scrim)
             val grabberY = body.top + (10 * density).toInt()
             assertThat(bitmap.getPixel(root.width / 2, grabberY)).isEqualTo(theme.colors.hairline)
-            // 36 dp wide: 17 dp from the centre is pill, 20 dp is porcelain.
+            // 36 dp wide: 17 dp from the centre is pill, 20 dp is surface.
             assertThat(bitmap.getPixel(root.width / 2 + (17 * density).toInt(), grabberY))
                 .isEqualTo(theme.colors.hairline)
             assertThat(bitmap.getPixel(root.width / 2 + (20 * density).toInt(), grabberY))

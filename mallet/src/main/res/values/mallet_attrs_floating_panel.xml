@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- MalletFloatingPanel: a draggable porcelain panel. -->
+    <!-- MalletFloatingPanel: a draggable raised panel. -->
     <declare-styleable name="MalletFloatingPanel">
         <!-- Start position as a fraction of the free travel: 0 start edge, 1 end edge. -->
         <attr name="malletFloatingPanelPositionX" format="float" />

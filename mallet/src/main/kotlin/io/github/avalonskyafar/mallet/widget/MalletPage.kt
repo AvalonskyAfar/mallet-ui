@@ -334,7 +334,11 @@ public open class MalletPage @JvmOverloads constructor(
      * Adds a section: a [MalletHeading] ([title] over an optional muted [detail] line), then
      * [MalletSpacing.HEADING_GAP], then [card] across the full column, then
      * [MalletSpacing.SECTION_GAP]. A `null` or blank [title] or [detail] leaves that line out;
-     * with both missing the card is added without a heading. Returns [card].
+     * with both missing the view is added without a heading. Returns [card].
+     *
+     * The view under the heading, [card], may be a card or a single control. A [MalletSurface]
+     * is for a group of at least two rows or blocks; a lone control is passed as it is and
+     * stands on the canvas, with no card around it.
      */
     public fun <T : View> addSection(title: CharSequence?, detail: CharSequence?, card: T): T {
         val hasTitle = !title.isNullOrBlank()

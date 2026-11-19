@@ -39,7 +39,7 @@ public abstract class MalletControl @JvmOverloads constructor(
     /** The theme this control was created with. */
     protected val theme: MalletTheme = MalletTheme.of(context)
 
-    /** Painter for tracks, thumbs and porcelain in [theme]. */
+    /** Painter for surfaces, tracks and thumbs in [theme]. */
     protected val material: MalletMaterial = MalletMaterial(context, theme)
 
     /** Distance a finger must travel before a drag is recognised. */
@@ -143,7 +143,7 @@ public abstract class MalletControl @JvmOverloads constructor(
     }
 
     public companion object {
-        /** Alpha (0..255) of a disabled control: the hue pales, the shape stays. */
+        /** Alpha (0..255) of a disabled control: the colour pales, the shape stays. */
         public const val DISABLED_ALPHA: Int = 107
     }
 }

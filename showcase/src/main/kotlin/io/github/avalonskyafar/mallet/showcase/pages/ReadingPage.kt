@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
+import android.view.View
 import android.widget.LinearLayout
 import io.github.avalonskyafar.mallet.showcase.DemoPage
 import io.github.avalonskyafar.mallet.showcase.PageScope
@@ -33,7 +34,7 @@ object ReadingPage : DemoPage("c_reading", R.string.page_c_reading_title, R.stri
     private fun paragraphs(page: PageScope) {
         val context = page.context
         val chinese = MalletParagraph(context).apply { text = page.str(R.string.reading_para_cjk) }
-        val status = page.text(page.str(R.string.reading_para_status_on), MalletTextRole.CAPTION, MalletTextTone.MUTED)
+        val status = mutedLine(page, R.string.reading_para_status_on)
         val track = MalletSegmentedTrack(context).apply {
             setOptions(page.str(R.string.reading_para_option_on), page.str(R.string.reading_para_option_off))
             // The options are equals, not levels: one hue under all of them.
@@ -109,15 +110,17 @@ object ReadingPage : DemoPage("c_reading", R.string.page_c_reading_title, R.stri
     }
 
     private fun flow(page: PageScope) {
-        page.section(R.string.reading_flow_title, R.string.reading_flow_detail) {
-            val row = MalletFlowRow(context)
-            row.setSteps(
-                page.str(R.string.reading_flow_one) to page.str(R.string.reading_flow_one_detail),
-                page.str(R.string.reading_flow_two) to page.str(R.string.reading_flow_two_detail),
-                page.str(R.string.reading_flow_three) to page.str(R.string.reading_flow_three_detail),
-            )
-            addView(row, fill())
-        }
+        val row = MalletFlowRow(page.context)
+        row.setSteps(
+            page.str(R.string.reading_flow_one) to page.str(R.string.reading_flow_one_detail),
+            page.str(R.string.reading_flow_two) to page.str(R.string.reading_flow_two_detail),
+            page.str(R.string.reading_flow_three) to page.str(R.string.reading_flow_three_detail),
+        )
+        // One row alone is not a group, so it gets no card: it stands on the canvas, inset like
+        // the text around it. Text brings more leading to the gap above the row than to the one
+        // below it, so 14 dp above and 16 dp below leave the same air on both sides.
+        page.heading(R.string.reading_flow_title, R.string.reading_flow_detail)
+        page.loose(row, topDp = FLOW_TOP, sideDp = PageScope.TEXT_INSET)
         page.code(
             """
             val row = MalletFlowRow(context)
@@ -127,6 +130,7 @@ object ReadingPage : DemoPage("c_reading", R.string.page_c_reading_title, R.stri
                 "Answer" to "Shown in place",
             )
             """,
+            topDp = FLOW_BOTTOM,
         )
     }
 
@@ -168,15 +172,22 @@ object ReadingPage : DemoPage("c_reading", R.string.page_c_reading_title, R.stri
         )
     }
 
+    /** A muted line in a card. It keeps to the start edge of the card in every language. */
     private fun mutedLine(page: PageScope, text: Int) =
-        page.text(page.str(text), MalletTextRole.CAPTION, MalletTextTone.MUTED)
+        page.text(page.str(text), MalletTextRole.CAPTION, MalletTextTone.MUTED).apply {
+            textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+        }
 
     private fun fill(top: Int = 0) = LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP).apply {
         topMargin = top
     }
+
+    /** Air above the flow row and between it and its code sample, in dp. */
+    private const val FLOW_TOP = 14
+    private const val FLOW_BOTTOM = 16
 }
 
-/** Three glazed hills under a low sun, drawn from the theme colours at any size. */
+/** Three hills under a low sun, drawn from the theme colours at any size. */
 private class HillsDrawable(private val colors: MalletColors) : Drawable() {
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
     private val path = Path()

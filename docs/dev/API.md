@@ -27,7 +27,7 @@ data class MalletHues(val bronze: MalletHue, val ochre: MalletHue, val cobalt: M
   fun fromAttr(value: Int): MalletHue = when (value)    // The hue for a value of the `malletHue` XML attribute:
   fun uniform(count: Int, hue: MalletHue = cobalt): List<MalletHue> =    // The same [hue] for every option:
   companion object
-    fun default(): MalletHues = MalletHues(bronze = MalletHue(Color.rgb(206, 131, 83), Color.rgb(190, 105, 56), Color.WHITE), ochre = MalletHue(Color.rgb(222, 190, 119), Color.rgb(194, 158, 82), Color.rgb(44, 33, 4)), cobalt = MalletHue(Color.rgb
+    fun default(): MalletHues = MalletHues(bronze = MalletHue(Color.rgb(206, 131, 83), Color.rgb(190, 105, 56), Color.WHITE), ochre = MalletHue(Color.rgb(222, 190, 119), Color.rgb(194, 158, 82), Color.rgb(44, 33, 4)), cobalt = MalletHue(Color.rgb(134, 172, 247
 ```
 
 ### theme/MalletMotion.kt
@@ -73,16 +73,16 @@ object MalletSpacing    // The vertical rhythm of a Mallet page, in dp.
 ### theme/MalletTheme.kt
 
 ```
-data class MalletTheme (val colors: MalletColors, val hues: MalletHues = MalletHues.default(), val textScale: Float = 1f, val highContrast: Boolean = false, val reduceMotion: Boolean = false, val haptics: Boolean = true, val nightHue: Float = DEFAULT_N
-  fun bedColor(hue: MalletHue): Int =    // Fill of a recessed track glazed with [hue] in this theme.
-  fun bedEdgeColor(hue: MalletHue): Int    // Rim of a recessed track glazed with [hue] in this theme.
-  fun labelOnBed(active: MalletHue, own: MalletHue = active, optionCount: Int = 2): Int    // Colour of a label resting directly on a glazed bed.
-  fun labelOnTint(@ColorInt tint: Int): Int    // Colour of a label on a body glazed with [tint], such as a primary or destructive capsule.
+data class MalletTheme (val colors: MalletColors, val hues: MalletHues = MalletHues.default(), val textScale: Float = 1f, val highContrast: Boolean = false, val reduceMotion: Boolean = false, val haptics: Boolean = true, val nightHue: Float = DEFAULT_NIGHT_HUE
+  fun bedColor(hue: MalletHue): Int =    // Fill of a recessed track coloured with [hue] in this theme.
+  fun bedEdgeColor(hue: MalletHue): Int    // Rim of a recessed track coloured with [hue] in this theme.
+  fun labelOnBed(active: MalletHue, own: MalletHue = active, optionCount: Int = 2): Int    // Colour of a label resting directly on a coloured bed.
+  fun labelOnTint(@ColorInt tint: Int): Int    // Colour of a label on a body coloured with [tint], such as a primary or destructive capsule.
   fun interface Resolver    // Supplies a theme for a context, or `null` to fall through to the Android theme.
     fun resolve(context: Context): MalletTheme?
   companion object
     const val LARGE_TEXT_SCALE: Float    // Scale used by the original "larger text" preference.
-    const val DEFAULT_NIGHT_HUE: Float    // Default share of hue colour kept in dark tracks.
+    const val DEFAULT_NIGHT_HUE: Float    // Default share of the hue kept in dark tracks.
     var resolver: Resolver?    // Optional process-wide theme source, for apps that keep appearance settings in their own preferences.
     fun light(highContrast: Boolean = false): MalletTheme =
     fun dark(highContrast: Boolean = false): MalletTheme =
@@ -119,13 +119,13 @@ object MalletWindow    // Window-level helpers:
 ### material/MalletDrawables.kt
 
 ```
-object MalletGutters    // Room, in dp, that a raised porcelain body leaves around itself for its shadow.
+object MalletGutters    // Room, in dp, that a raised body leaves around itself for its shadow.
   const val SURFACE_SIDE_DP: Float
   const val SURFACE_TOP_DP: Float
   const val SURFACE_BOTTOM_DP: Float
   const val FLAT_DP: Float    // Gutter of a flat body that carries no shadow.
 class MalletSurfaceDrawable (private val material: MalletMaterial, private val radiusDp: Float = MalletMaterial.RADIUS_CARD_DP, private val pill: Boolean = false, @ColorInt tint: Int? = null, private val shadow: Boolean = true, private val corners: MalletCorne
-  var tint: Int?    // Colour of a glazed body, or `null` for neutral porcelain.
+  var tint: Int?    // Colour of a coloured body, or `null` for a neutral surface.
   var pressed: Boolean    // Draws the tighter shadow of a pressed body and lets it sink by [sinkPx].
   var sinkPx: Float    // Distance the body sinks while [pressed], in pixels.
   fun bodyBounds(bounds: Rect, out: RectF)    // The rectangle of the visible body inside [bounds], without the shadow gutter.
@@ -144,17 +144,20 @@ class MalletMaterial (context: Context, public val theme: MalletTheme = MalletTh
   fun drawLift(canvas: Canvas, bounds: RectF, radius: Float, pressed: Boolean, compact: Boolean)    // The standard lift of a raised or recessed element.
   fun drawTrack(canvas: Canvas, bounds: RectF, @ColorInt bed: Int, @ColorInt edge: Int, pressed: Boolean = false, hero: Boolean = false, radius: Float = bounds.height() / 2f, lifted: Boolean = true)    // A recessed capsule filled with [bed] and rimmed with [e
   fun drawThumb(canvas: Canvas, bounds: RectF, pressed: Boolean = false, radius: Float = bounds.height() / 2f, lifted: Boolean = true)    // The neutral raised bead that rides inside a track.
-  fun drawSurface(canvas: Canvas, bounds: RectF, radius: Float, @ColorInt tint: Int? = null, shadow: Boolean = true, pressed: Boolean = false, corners: MalletCorners = MalletCorners.ALL)    // A raised porcelain body.
+  fun drawSurface(canvas: Canvas, bounds: RectF, radius: Float, @ColorInt tint: Int? = null, shadow: Boolean = true, pressed: Boolean = false, corners: MalletCorners = MalletCorners.ALL)    // A raised surface.
   fun drawWell(canvas: Canvas, bounds: RectF, radius: Float, @ColorInt rim: Int? = null, pressed: Boolean = false)    // A recessed well:
   fun drawRowFill(canvas: Canvas, bounds: RectF)    // The flat fill of a row that lives inside a card and must not add its own rim or shadow.
-  fun drawRevealBed(canvas: Canvas, bounds: RectF, @ColorInt tint: Int = colors.danger)    // The recessed coloured bed revealed behind a row that is swiped aside.
+  fun drawRevealBed(canvas: Canvas, bounds: RectF, @ColorInt tint: Int = colors.danger, topRadius: Float = 0f, bottomRadius: Float = 0f)    // The recessed coloured bed uncovered behind a row that is slid aside.
+  fun drawRevealShade(canvas: Canvas, bounds: RectF, edgeX: Float, bedOnLeft: Boolean, topRadius: Float = 0f, bottomRadius: Float = 0f)    // The short shade that the raised edge of a row casts on the bed it uncovers.
   fun drawFocusRim(canvas: Canvas, bounds: RectF, radius: Float)    // Keyboard focus:
+  fun drawFocusRim(canvas: Canvas, bounds: RectF, topRadius: Float, bottomRadius: Float)    // The focus rim of a body whose upper and lower corners are rounded differently.
   companion object
     const val RADIUS_CARD_DP: Float    // Corner radius of cards, in dp.
     const val RADIUS_DIALOG_DP: Float    // Corner radius of dialogs and sheets, in dp.
     const val RADIUS_PANEL_DP: Float    // Corner radius of floating panels and menus, in dp.
     const val RADIUS_WELL_DP: Float    // Corner radius of text wells, in dp.
     const val RADIUS_MEDIA_DP: Float    // Corner radius of media wells, in dp.
+    const val RIM_DP: Float    // How far the hairline rim of a raised surface reaches into its body, in dp.
 ```
 
 ## icon
@@ -266,26 +269,26 @@ class MalletCallout (context: Context, attrs: AttributeSet? = null, defStyleAttr
 ### widget/MalletCheckbox.kt
 
 ```
-class MalletCheckbox (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), Checkable    // A small recessed bed that fills with hue when it is checked.
+class MalletCheckbox (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), Checkable    // A small recessed bed that fills with its hue when it is checked.
   fun interface OnCheckedChangeListener    // Called when the user checks or unchecks the box.
     fun onCheckedChanged(checkbox: MalletCheckbox, isChecked: Boolean)    // The user checked or unchecked [checkbox]; [isChecked] is its new state.
   fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes.
-  var hue: MalletHue    // The hue poured into the box when it is checked.
-  var text: CharSequence    // The label at the end of the box, or empty for a bare box.
+  var hue: MalletHue    // The hue that fills the box when it is checked.
+  var text: CharSequence    // The label at the end of the box, or empty for a box without a label.
   fun setChecked(checked: Boolean, animate: Boolean)    // Checks or unchecks the box from code.
 ```
 
 ### widget/MalletChip.kt
 
 ```
-class MalletChip (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A small porcelain capsule for filters, suggestions and short actions.
+class MalletChip (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A small neutral capsule for filters, suggestions and short actions.
   enum class Kind { ACTION, FILTER }    // What a chip does when it is tapped.
   fun interface OnCheckedChangeListener    // Called when the user checks or unchecks a filter chip.
     fun onCheckedChanged(chip: MalletChip, isChecked: Boolean)
   fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes of [isChecked].
   var text: CharSequence    // The label.
   var kind: Kind    // Whether the chip is pressed like a button or checked like a filter.
-  var hue: MalletHue    // Hue poured into a checked filter chip.
+  var hue: MalletHue    // Hue that fills a checked filter chip.
   var icon: MalletIcon?    // Icon drawn before the label, or `null`.
   var isChecked: Boolean    // Whether a filter chip is checked.
   fun setChecked(checked: Boolean, animate: Boolean)    // Checks or unchecks a filter chip from code, gliding when [animate] is set.
@@ -504,7 +507,7 @@ class MalletPowerSwitch (context: Context, attrs: AttributeSet? = null, defStyle
 ### widget/MalletProgressBar.kt
 
 ```
-class MalletProgressBar (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A slim recessed groove that fills with hue as work completes.
+class MalletProgressBar (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr)    // A slim recessed groove that fills with its hue as work completes.
   var hue: MalletHue    // The hue of the fill.
   var progress: Float    // The completed share of the work, from 0 to 1.
   var isIndeterminate: Boolean    // True when the amount of work is unknown.
@@ -518,8 +521,8 @@ class MalletRadioButton (context: Context, attrs: AttributeSet? = null, defStyle
   fun interface OnCheckedChangeListener    // Called when the user changes the checked state of a radio.
     fun onCheckedChanged(radio: MalletRadioButton, isChecked: Boolean)    // The user changed [radio]; [isChecked] is its new state.
   fun setOnCheckedChangeListener(listener: OnCheckedChangeListener?)    // Listener for user-driven changes:
-  var hue: MalletHue    // Hue poured into the bed while the radio is checked.
-  var text: CharSequence?    // Label drawn to the end of the bed, or `null` for a bare radio.
+  var hue: MalletHue    // Hue that fills the bed while the radio is checked.
+  var text: CharSequence?    // Label drawn to the end of the bed, or `null` for a radio without a label.
   fun setChecked(checked: Boolean, animate: Boolean)    // Sets the state from code; with [animate] the hue and the bead glide in or out.
   companion object
     const val BED_DP: Float    // Diameter of the round bed in dp.
@@ -549,7 +552,7 @@ class MalletSegmentedTrack (context: Context, attrs: AttributeSet? = null, defSt
   var options: List<CharSequence>    // The option labels.
   val selectedIndex: Int get()    // Index of the selected option.
   fun setOptions(vararg labels: CharSequence)    // Replaces the option labels.
-  fun setHues(hues: List<MalletHue>?)    // Sets the hue poured under each option, or `null` to return to the default ordinal scale.
+  fun setHues(hues: List<MalletHue>?)    // Sets the hue under each option, or `null` to return to the default ordinal scale.
   fun select(index: Int, animate: Boolean = true)    // Moves the selection to [index] from code.
   companion object
     const val HEIGHT_DP: Float    // Default height of the view in dp:
@@ -577,7 +580,7 @@ class MalletSkeleton (context: Context, attrs: AttributeSet? = null, defStyleAtt
 ### widget/MalletSlider.kt
 
 ```
-class MalletSlider (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), MalletHorizontalDragOwner    // A slim recessed track with a glazed stretch that runs from the start to a neutral bead.
+class MalletSlider (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : MalletControl(context, attrs, defStyleAttr), MalletHorizontalDragOwner    // A slim recessed track with a coloured stretch that runs from the start to a neutral bead.
   fun interface OnValueChangeListener    // Called when the user changes the value by touch, keyboard or an accessibility action.
     fun onValueChanged(slider: MalletSlider, value: Float)    // The user moved the bead of [slider]; [value] is the new value, already clamped and snapped.
   fun interface OnStopTrackingTouchListener    // Called when a touch that moved the bead ends:
@@ -591,7 +594,7 @@ class MalletSlider (context: Context, attrs: AttributeSet? = null, defStyleAttr:
   var stepSize: Float    // Distance between two stops, counted from [valueFrom]; `0` makes the slider continuous, and so does a negative, NaN or infinite step.
   var hue: MalletHue    // The hue of the stretch behind the bead.
   fun setValue(value: Float, animate: Boolean)    // Sets the value from code, optionally gliding the bead there.
-  fun setHueScale(hues: List<MalletHue>?)    // Hues the stretch with a scale instead of one hue.
+  fun setHueScale(hues: List<MalletHue>?)    // Colours the stretch with a scale of hues instead of one hue.
 ```
 
 ### widget/MalletSpinner.kt
@@ -657,7 +660,7 @@ class MalletStepper (context: Context, attrs: AttributeSet? = null, defStyleAttr
   var decimals: Int    // Number of digits written after the decimal separator (0 to 6).
   var unit: CharSequence?    // Suffix written directly after the number, for example `" ms"` or `"%"`.
   var valueFormatter: ((Float) -> CharSequence)?    // Turns a value into the text written on the thumb and read by accessibility services.
-  var hue: MalletHue    // The hue poured into the track.
+  var hue: MalletHue    // The hue of the track.
   val formattedValue: CharSequence    // The value as it is written on the thumb and announced by accessibility services.
   fun setRange(valueFrom: Float, valueTo: Float)    // Sets both bounds at once; [valueTo] must not be below [valueFrom].
 ```
@@ -875,7 +878,7 @@ object MalletPress    // The Mallet press:
 ### interaction/MalletRevealLayout.kt
 
 ```
-class MalletRevealLayout (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A row inside a card that slides aside to uncover one action, typically "Delete".
+class MalletRevealLayout (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr)    // A row that slides aside to uncover one action, typically "Delete".
   enum class Edge { START, END }    // The edge of the row at which the action strip is uncovered.
   fun interface OnOpenChangeListener    // Told when the user opens or closes the row, and when the user's opening of a sibling closes this one (see [closeSiblings]).
     fun onOpenChanged(layout: MalletRevealLayout, open: Boolean)    // [open] is the state the row is settling to.
@@ -979,7 +982,7 @@ object MalletThemeTransition    // Changes the theme without a flash.
 ### overlay/MalletBottomSheet.kt
 
 ```
-class MalletBottomSheet private constructor(private val context: Context, private val builder: Builder)    // A porcelain sheet that rises from the bottom edge of the window and follows the finger back down.
+class MalletBottomSheet private constructor(private val context: Context, private val builder: Builder)    // A sheet that rises from the bottom edge of the window and follows the finger back down.
   fun interface OnDismissListener    // Told when a sheet has left the screen, whatever made it leave.
     fun onDismiss(sheet: MalletBottomSheet)
   val isShowing: Boolean    // Whether the sheet is on screen, including while it glides in or out.
@@ -1003,7 +1006,7 @@ class MalletBottomSheet private constructor(private val context: Context, privat
 ### overlay/MalletDialog.kt
 
 ```
-class MalletDialog private constructor(private val context: Context, builder: Builder)    // A modal question on a porcelain card:
+class MalletDialog private constructor(private val context: Context, builder: Builder)    // A modal question on a card:
   fun interface OnActionListener    // Called when the user chooses an action.
     fun onAction(dialog: MalletDialog): Boolean    // Returns `true` to close [dialog], `false` to keep it open.
   fun interface OnInputListener    // Called with the text of an input dialog when its positive action is chosen.
@@ -1050,7 +1053,7 @@ class MalletDialog private constructor(private val context: Context, builder: Bu
 ### overlay/MalletFloatingPanel.kt
 
 ```
-open class MalletFloatingPanel (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr), MalletHorizontalDragOwner    // A small porcelain panel that floats above a screen and is moved with the finger:
+open class MalletFloatingPanel (context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : FrameLayout(context, attrs, defStyleAttr), MalletHorizontalDragOwner    // A small panel that floats above a screen and is moved with the finger:
   var isDragging: Boolean    // True while the finger is moving the panel.
   var snapToEdge: Boolean    // Whether the panel glides to the nearer side of its parent when a drag ends.
   fun interface OnPositionChangeListener    // Called when the user has moved the panel.
@@ -1063,8 +1066,8 @@ open class MalletFloatingPanel (context: Context, attrs: AttributeSet? = null, d
   fun bindToWindow(windowManager: WindowManager, params: WindowManager.LayoutParams)    // Makes the panel a window of its own:
   fun remove()    // Takes the panel off the screen:
   companion object
-    const val CONTENT_PADDING_HORIZONTAL_DP: Float    // Space between the sides of the porcelain body and the content, in dp.
-    const val CONTENT_PADDING_VERTICAL_DP: Float    // Space between the top and bottom of the porcelain body and the content, in dp.
+    const val CONTENT_PADDING_HORIZONTAL_DP: Float    // Space between the sides of the body and the content, in dp.
+    const val CONTENT_PADDING_VERTICAL_DP: Float    // Space between the top and bottom of the body and the content, in dp.
     fun attach(activity: Activity, content: View): MalletFloatingPanel    // Adds a floating panel holding [content] to the content view of [activity] and returns it.
     fun overlayLayoutParams(type: Int = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY): WindowManager.LayoutParams = WindowManager.LayoutParams(WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, type, WindowManager.Layout
 ```
@@ -1072,7 +1075,7 @@ open class MalletFloatingPanel (context: Context, attrs: AttributeSet? = null, d
 ### overlay/MalletMenu.kt
 
 ```
-class MalletMenu(context: Context)    // A small porcelain panel of actions that grows out of the control that opened it.
+class MalletMenu(context: Context)    // A small panel of actions that grows out of the control that opened it.
   val itemCount: Int get()    // Number of items; dividers do not count.
   val isShowing: Boolean get()    // Whether the menu is on screen (it still is while it glides away).
   fun add(label: CharSequence, icon: MalletIcon? = null, onClick: Runnable? = null): MalletMenu    // Adds an action with an optional leading [icon].

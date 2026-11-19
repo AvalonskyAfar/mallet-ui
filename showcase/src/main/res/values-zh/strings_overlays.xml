@@ -5,7 +5,7 @@
     <string name="overlays_cancelled">已取消，什么都没有改动。</string>
 
     <string name="overlays_dialogs_title">对话框</string>
-    <string name="overlays_dialogs_detail">瓷面卡片上的一个模态提问。按返回键算取消；点卡片外面默认不起作用。</string>
+    <string name="overlays_dialogs_detail">浮起的卡片上的一个模态提问。按返回键算取消；点卡片外面默认不起作用。</string>
     <string name="overlays_dialog_confirm">确认</string>
     <string name="overlays_dialog_delete">危险操作</string>
     <string name="overlays_dialog_input">输入</string>
@@ -82,7 +82,7 @@
     <string name="overlays_toast_left">提示已离开，没有撤销。</string>
 
     <string name="overlays_panel_title">浮动面板</string>
-    <string name="overlays_panel_detail">浮在屏幕上方的一小块瓷面。可以拖到任何位置，它会报出自己所在的位置。</string>
+    <string name="overlays_panel_detail">浮在屏幕上方的一小块浮层。可以拖到任何位置，它会报出自己所在的位置。</string>
     <string name="overlays_panel_attach">添加浮动面板</string>
     <string name="overlays_panel_remove">移除浮动面板</string>
     <string name="overlays_panel_snap">松手后滑向较近的一侧</string>

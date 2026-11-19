@@ -104,7 +104,7 @@ class MalletBannerTest {
     }
 
     @Test
-    fun `the body is flat porcelain that fills the view`() {
+    fun `the body is a flat surface that fills the view`() {
         val view = banner()
         val bitmap = Snapshots.render(view, 320)
         val surface = MalletTheme.of(context).colors.surface

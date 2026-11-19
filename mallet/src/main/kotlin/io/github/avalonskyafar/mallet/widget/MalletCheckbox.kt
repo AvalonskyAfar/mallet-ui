@@ -32,9 +32,9 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
- * A small recessed bed that fills with hue when it is checked.
+ * A small recessed bed that fills with its hue when it is checked.
  *
- * Unchecked, the box is a neutral well. Checked, it becomes a glazed bed (cobalt unless
+ * Unchecked, the box is a neutral well. Checked, it becomes a coloured bed (cobalt unless
  * [hue] says otherwise) carrying a check mark. Between the two the hue fades in and the
  * check is drawn along its path; with reduced motion the box jumps.
  *
@@ -85,14 +85,14 @@ public class MalletCheckbox @JvmOverloads constructor(
         checkedChangeListener = listener
     }
 
-    /** The hue poured into the box when it is checked. Cobalt by default. */
+    /** The hue that fills the box when it is checked. Cobalt by default. */
     public var hue: MalletHue = theme.hues.cobalt
         set(value) {
             field = value
             invalidate()
         }
 
-    /** The label at the end of the box, or empty for a bare box. */
+    /** The label at the end of the box, or empty for a box without a label. */
     public var text: CharSequence
         get() = label
         set(value) {
@@ -211,7 +211,7 @@ public class MalletCheckbox @JvmOverloads constructor(
         requestLayout()
     }
 
-    /** Places the box: level with the first label line, or in the middle of a bare view. */
+    /** Places the box: level with the first label line, or in the middle of a view without a label. */
     private fun placeBox(layout: StaticLayout?, labelTop: Float) {
         val box = dp(BOX_DP)
         val left: Float
@@ -247,7 +247,7 @@ public class MalletCheckbox @JvmOverloads constructor(
             material.drawWell(canvas, boxBounds, radius, rim, pressed = down)
         }
         if (fade > 0f) {
-            // The hue fades in as one body, shadow and rim included.
+            // The coloured bed fades in as one body, shadow and rim included.
             val save = if (fade < 1f) {
                 canvas.saveLayerAlpha(
                     boxBounds.left - dp(GUTTER_SIDE_DP), boxBounds.top - dp(GUTTER_TOP_DP),

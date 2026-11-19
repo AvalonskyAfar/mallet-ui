@@ -12,11 +12,17 @@ import io.github.avalonskyafar.mallet.widget.MalletSegmentedTrack
 import io.github.avalonskyafar.mallet.widget.MalletSurface
 
 /**
- * Lies above Home: the appearance settings of the showcase itself.
+ * A first-level page, above Home: the appearance settings of the showcase itself.
  *
- * Every row writes one value to [ShowcaseSettings] and asks the host to rebuild the screen.
- * The library reads the settings through `MalletTheme.resolver` (see `ShowcaseApp`), and
- * `MalletThemeTransition` fades the old look over the new one.
+ * Every row writes one value to [ShowcaseSettings]; all but haptics then ask the host to
+ * rebuild the screen. The library reads the settings through `MalletTheme.resolver` (see
+ * `ShowcaseApp`), and `MalletThemeTransition` fades the old look over the new one.
+ *
+ * The settings are grouped in cards, two rows each. The preview is no setting and has no
+ * relatives: its track stands on the canvas, between the groups.
+ *
+ * Device tests and the motion tour find the tracks by position: appearance, hues, the
+ * preview, larger text, high contrast, reduce motion, haptics. Keep that order.
  */
 object AppearancePage : DemoPage("appearance", R.string.page_appearance_title, R.string.page_appearance_summary) {
 
@@ -41,7 +47,7 @@ object AppearancePage : DemoPage("appearance", R.string.page_appearance_title, R
                 settings.appearance = ShowcaseSettings.Appearance.values()[index]
                 page.host.applyAppearance(track)
             }
-            // Each option is poured in the "standard" hue of the set it names.
+            // Each option has the "standard" hue (cobalt) of the set it names.
             choice(
                 page, R.string.appearance_hues, R.string.appearance_hues_detail,
                 listOf(page.str(R.string.appearance_hues_classic), page.str(R.string.appearance_hues_plum)),
@@ -53,18 +59,21 @@ object AppearancePage : DemoPage("appearance", R.string.page_appearance_title, R
             }
         }
 
-        page.section(R.string.appearance_preview_title, R.string.appearance_preview_detail) {
-            val scale = MalletSegmentedTrack(context).apply {
-                setOptions(
-                    page.str(R.string.appearance_level_off),
-                    page.str(R.string.appearance_level_gentle),
-                    page.str(R.string.appearance_level_standard),
-                    page.str(R.string.appearance_level_strict),
-                )
-                select(2, animate = false)
-            }
-            addView(scale, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))
+        // A lone track gets no card: it stands on the canvas under its heading, as wide as the
+        // cards. Nothing listens to it; it is there to be tried with the settings around it.
+        page.heading(R.string.appearance_preview_title, R.string.appearance_preview_detail)
+        val scale = MalletSegmentedTrack(page.context).apply {
+            setOptions(
+                page.str(R.string.appearance_level_off),
+                page.str(R.string.appearance_level_gentle),
+                page.str(R.string.appearance_level_standard),
+                page.str(R.string.appearance_level_strict),
+            )
+            select(2, animate = false)
+            // No row names this track, so it names itself for a screen reader.
+            contentDescription = page.str(R.string.appearance_preview_title)
         }
+        page.loose(scale, topDp = PageScope.HEADING_GAP)
 
         page.section(R.string.appearance_reading_title, R.string.appearance_reading_detail) {
             choice(page, R.string.appearance_large_text, R.string.appearance_large_text_detail, offOn, settings.largeText.index()) { track, index ->

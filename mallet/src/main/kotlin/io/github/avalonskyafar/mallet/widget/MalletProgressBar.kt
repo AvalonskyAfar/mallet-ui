@@ -20,11 +20,11 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
- * A slim recessed groove that fills with hue as work completes.
+ * A slim recessed groove that fills with its hue as work completes.
  *
- * The groove is the neutral, unglazed recess; the fill is poured from the start edge (the
+ * The groove is the neutral, plain recess; the fill grows from the start edge (the
  * right edge in right-to-left layouts) and takes the colour of [hue]. [setProgress] glides
- * to the new amount. When the amount of work is unknown set [isIndeterminate]: a glazed
+ * to the new amount. When the amount of work is unknown set [isIndeterminate]: a coloured
  * segment then travels through the groove and re-enters at the start. With reduced motion the
  * indeterminate bar shows a still, pale, full-width fill instead of moving.
  *
@@ -75,7 +75,7 @@ public class MalletProgressBar @JvmOverloads constructor(
         set(value) = setProgress(value, animate = false)
 
     /**
-     * True when the amount of work is unknown. A glazed segment 30 % of the width then
+     * True when the amount of work is unknown. A coloured segment 30 % of the width then
      * travels from start to end, one pass per 1400 ms. [progress] is kept and shown again
      * when this is switched off.
      */
@@ -160,7 +160,7 @@ public class MalletProgressBar @JvmOverloads constructor(
         )
         if (grooveBounds.width() <= grooveHeight) return
 
-        // The same unglazed recess as the slider: mist in light themes, the plain groove with
+        // The same plain recess as the slider: mist in light themes, the plain groove with
         // the neutral rim in dark ones.
         material.drawTrack(canvas, grooveBounds, theme.neutralBed, theme.neutralBedEdge)
 
@@ -188,7 +188,7 @@ public class MalletProgressBar @JvmOverloads constructor(
         drawFill(canvas, from, to, bed, edge)
     }
 
-    /** Paints the glazed stretch between [from] and [to], measured from the start edge. */
+    /** Paints the coloured stretch between [from] and [to], measured from the start edge. */
     private fun drawFill(canvas: Canvas, from: Float, to: Float, bed: Int, edge: Int) {
         // A stretch shorter than the groove is high keeps its round end and slides in from
         // behind the edge of the groove instead of being squeezed into a sliver.
@@ -289,7 +289,7 @@ public class MalletProgressBar @JvmOverloads constructor(
         const val GROOVE_DP = 10f
         const val DEFAULT_WIDTH_DP = 160f
 
-        // Gutters of a glazed track: the groove sits high, its shadow falls below it.
+        // Gutters of a track: the groove sits high, its shadow falls below it.
         // 4 + 10 + 8 = 22 dp; the shadow needs 6.5 dp of the 8 below.
         const val GUTTER_SIDE_DP = 1.5f
         const val GUTTER_TOP_DP = 4f

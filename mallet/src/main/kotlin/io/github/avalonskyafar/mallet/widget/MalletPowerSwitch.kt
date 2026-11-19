@@ -32,7 +32,7 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
- * The hero switch of a screen: a large glazed capsule whose wide neutral thumb carries a power
+ * The hero switch of a screen: a large coloured capsule whose wide neutral thumb carries a power
  * glyph and the current state, while the free half of the bed names the action a tap performs.
  *
  * The colour of the bed is the state: bronze while off, cobalt while on, blended by the

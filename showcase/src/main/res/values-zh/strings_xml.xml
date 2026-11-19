@@ -39,11 +39,11 @@
     <string name="xml_kotlin_title">剩下的 Kotlin 代码</string>
     <string name="xml_kotlin_detail">加载布局，查找视图，添加监听。</string>
     <string name="xml_theme_title">主题</string>
-    <string name="xml_theme_detail">只需一个父样式，所有组件就有了颜色。每个颜色角色和每种釉色都可以用属性替换。</string>
+    <string name="xml_theme_detail">只需一个父样式，所有组件就有了颜色。每个颜色角色和每种底色都可以用属性替换。</string>
     <string name="xml_theme_note">这些都不是必需的：应用即使不设置任何属性，组件也会跟随所在 Context 的深色模式。像本应用这样把外观保存在自己设置里的应用，则改用代码提供主题。</string>
     <string name="xml_screen_title">一整个界面</string>
     <string name="xml_screen_detail">本应用的邻页 Activity 就是一个布局文件，根节点是 MalletPage。</string>
     <string name="xml_screen_open">打开 XML 界面</string>
 
-    <string name="xml_origin">原应用的每个界面都用 Java 代码搭建，没有布局文件，没有自定义属性，也没有主题属性。各组件的 XML 属性、Theme.Mallet 样式，以及“在行内声明的子视图即成为它的控件”这条规则，都是 Mallet 新增的。</string>
+    <string name="xml_origin">原应用的每个界面都用 Java 代码搭建，没有布局文件，没有自定义属性，也没有自己的主题属性。各组件的 XML 属性、Theme.Mallet 样式，以及“在行内声明的子视图即成为它的控件”这条规则，都是 Mallet 新增的。</string>
 </resources>

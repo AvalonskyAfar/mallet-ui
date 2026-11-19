@@ -35,5 +35,5 @@
 
     <string name="appearance_off">Off</string>
     <string name="appearance_on">On</string>
-    <string name="appearance_provenance">The other five settings, the 1 : 1.35 rows and the fade between themes come from the settings page of the original app. The hue setting and its second set are new: they show that the scale is a token, not a fixed palette.</string>
+    <string name="appearance_provenance">Five settings (appearance, larger text, high contrast, reduce motion, haptics), their 1\u00A0:\u00A01.35 rows and the fade between themes are extracted from the original app. The hue setting, its second set and the preview are new in Mallet: they show that the scale is a token, not a fixed palette.</string>
 </resources>

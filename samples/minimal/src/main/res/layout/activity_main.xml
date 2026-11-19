@@ -50,18 +50,19 @@
             app:malletDetail="@string/exceptions_detail"
             app:malletEntryArrow="end"
             app:malletTitle="@string/exceptions" />
-    </io.github.avalonskyafar.mallet.widget.MalletSurface>
 
-    <io.github.avalonskyafar.mallet.widget.MalletSurface
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        app:malletContentPadding="14dp">
+        <io.github.avalonskyafar.mallet.widget.MalletDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp" />
 
         <io.github.avalonskyafar.mallet.widget.MalletTextField
             android:id="@+id/profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="5dp"
             android:hint="@string/profile_hint"
             app:malletFieldCounter="24"
             app:malletFieldEndAction="clear"
@@ -76,6 +77,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="10dp"
         android:text="@string/status_idle"
+        android:textAlignment="viewStart"
         app:malletTextRole="caption"
         app:malletTone="muted" />
 

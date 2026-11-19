@@ -72,9 +72,14 @@ public class MalletDivider @JvmOverloads constructor(
 }
 
 /**
- * The Mallet card: a porcelain body that groups rows and controls.
+ * The Mallet card: a raised surface that groups rows and controls.
  *
- * It is a [LinearLayout] (vertical unless told otherwise) with the porcelain material as its
+ * A card is a group: it holds at least two rows or blocks that belong together. A lone control
+ * never gets a card of its own: it joins the card of its relatives, or it stands on the canvas
+ * under its heading, without a card. One composite block, such as a list, a state view, a
+ * paragraph or a picture, may have a card to itself.
+ *
+ * It is a [LinearLayout] (vertical unless told otherwise) with the surface material as its
  * background. Four things differ from a plain layout:
  *
  * - The view is slightly larger than the card the eye sees, because the shadow is drawn inside

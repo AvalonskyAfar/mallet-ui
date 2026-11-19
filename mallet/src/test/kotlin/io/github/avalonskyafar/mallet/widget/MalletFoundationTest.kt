@@ -23,11 +23,11 @@ class MalletFoundationTest {
 
     @Test
     fun `hue scale follows the option count`() {
-        val g = MalletTheme.light().hues
-        assertThat(g.scale(2)).containsExactly(g.bronze, g.cobalt).inOrder()
-        assertThat(g.scale(3)).containsExactly(g.bronze, g.ochre, g.cobalt).inOrder()
-        assertThat(g.scale(4)).containsExactly(g.bronze, g.ochre, g.cobalt, g.jade).inOrder()
-        assertThat(g.uniform(3, g.mist)).containsExactly(g.mist, g.mist, g.mist)
+        val hues = MalletTheme.light().hues
+        assertThat(hues.scale(2)).containsExactly(hues.bronze, hues.cobalt).inOrder()
+        assertThat(hues.scale(3)).containsExactly(hues.bronze, hues.ochre, hues.cobalt).inOrder()
+        assertThat(hues.scale(4)).containsExactly(hues.bronze, hues.ochre, hues.cobalt, hues.jade).inOrder()
+        assertThat(hues.uniform(3, hues.mist)).containsExactly(hues.mist, hues.mist, hues.mist)
     }
 
     @Test
@@ -53,7 +53,7 @@ class MalletFoundationTest {
     }
 
     @Test
-    fun `high contrast swaps pale on-hue labels for deep ones`() {
+    fun `high contrast swaps pale labels on a coloured bed for deep ones`() {
         val normal = MalletTheme.light()
         val strong = MalletTheme.light(highContrast = true)
         assertThat(normal.labelOnBed(normal.hues.cobalt)).isEqualTo(Color.WHITE)
@@ -86,10 +86,10 @@ class MalletFoundationTest {
     }
 
     @Test
-    fun `high contrast keeps labels legible on hue and on tinted capsules`() {
+    fun `high contrast keeps labels legible on every hue and on tinted capsules`() {
         for (theme in listOf(MalletTheme.light(true), MalletTheme.dark(true))) {
-            val g = theme.hues
-            for (hue in listOf(g.bronze, g.ochre, g.cobalt, g.jade, g.mist)) {
+            val hues = theme.hues
+            for (hue in listOf(hues.bronze, hues.ochre, hues.cobalt, hues.jade, hues.mist)) {
                 assertThat(MalletColors.contrast(theme.labelOnBed(hue), theme.bedColor(hue))).isAtLeast(4.5f)
             }
             for (tint in listOf(theme.colors.accent, theme.colors.danger, theme.colors.success)) {
@@ -153,8 +153,15 @@ class MalletFoundationTest {
                     .apply { setPadding(px(10), 0, px(10), 0) },
                 params(4),
             )
+            // A card is a group: two rows of one kind, then a divider and a row of another kind.
             val card = MalletSurface(context)
-            card.addView(MalletSegmentedTrack(context).apply { setOptions("Off", "Gentle", "Standard", "Strict"); select(2, false) }, params())
+            val levels = listOf("Off", "Gentle", "Standard", "Strict")
+            for ((title, level) in listOf("Video" to 2, "Live" to 3)) {
+                val row = MalletControlRow(context)
+                row.title = title
+                row.setSegmented(levels, level, null)
+                card.addView(row, params())
+            }
             card.addDivider(5f)
             card.addView(
                 MalletText.create(context, "A row of plain text inside the card", MalletTextRole.SUBHEAD).apply {

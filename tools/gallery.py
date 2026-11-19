@@ -46,12 +46,18 @@ HERO_MARGIN = 48
 HERO_RADIUS = 30
 HERO_GROUND = (236, 233, 227)
 
+# (heading, the lines of a note under it, the keys of its pages)
 PAGE_GROUPS = [
-    ("Home and the four pages around it", ["home", "foundations", "components", "interactions", "appearance"]),
-    ("Foundations", ["f_colour", "f_type", "f_material", "f_icons"]),
-    ("Components", ["c_tracks", "c_choice", "c_numbers", "c_buttons", "c_fields", "c_rows", "c_nav", "c_overlays",
-                    "c_states", "c_reading", "c_xml"]),
-    ("Interactions", ["i_press", "i_follow", "i_spatial", "i_reveal", "i_pager", "i_arbitrate", "i_motion"]),
+    ("Home and the four pages around it", [
+        "Home shows nothing that points at its neighbours: no arrows, no page names at the edges. It",
+        "names the pages around it once, in a row of four entries at its bottom, one for each",
+        "first-level page. A first-level page shows no way back: it is left by dragging back towards",
+        "Home, or with the system's Back.",
+    ], ["home", "foundations", "components", "interactions", "appearance"]),
+    ("Foundations", [], ["f_colour", "f_type", "f_material", "f_icons"]),
+    ("Components", [], ["c_tracks", "c_choice", "c_numbers", "c_buttons", "c_fields", "c_rows", "c_nav", "c_overlays",
+                        "c_states", "c_reading", "c_xml"]),
+    ("Interactions", [], ["i_press", "i_follow", "i_spatial", "i_reveal", "i_pager", "i_arbitrate", "i_motion"]),
 ]
 OVERLAYS = [
     ("overlay_dialog", "A dialog"),
@@ -67,14 +73,15 @@ GESTURES = [
     ("gesture_between_pages", "Between two places: Home leaves upwards while Components arrives from below"),
     ("gesture_track", "A thumb between two options: the hue under it is a blend of the two"),
     ("gesture_power", "The power switch half-way to off"),
-    ("gesture_row_open", "A row that has slid aside for its action"),
+    ("gesture_row_open", "A row that has slid aside and uncovered its action from the rim of the card"),
 ]
 CLIPS = [
-    ("places", "Pages are places: to the page beside Home and back, to the page below, into a page from a row"),
-    ("tracks", "A thumb follows the finger and takes the hue of where it is"),
+    ("places", "Pages are places: to the page beside Home and back, to the page below, and from one of its rows into "
+               "a deeper page"),
+    ("tracks", "A thumb follows the finger; the track takes the hue of where the thumb is"),
     ("switches", "A tap, a drag, and a drag that is taken back"),
     ("sliders", "Sliders: continuous, in steps, and through the hue scale"),
-    ("reveal", "Rows slide aside for one action; sections open in place"),
+    ("reveal", "Rows slide aside and uncover one action from the rim of the card; sections open in place"),
     ("pager", "Two pagers that turn together"),
     ("overlays", "A dialog, a sheet dragged down, a menu, a toast"),
     ("appearance", "The theme changes while the app runs"),
@@ -182,8 +189,11 @@ def write_gallery(have, clips):
         out.append("")
 
     out += ["## Pages", "", "Every page of the app as it opens, in both themes.", ""]
-    for heading, keys in PAGE_GROUPS:
-        out += ["### " + heading, "", "| | Light | Dark |", "|---|:---:|:---:|"]
+    for heading, note, keys in PAGE_GROUPS:
+        out += ["### " + heading, ""]
+        if note:
+            out += note + [""]
+        out += ["| | Light | Dark |", "|---|:---:|:---:|"]
         for key in keys:
             pair(out, "page_" + key, titles.get(key, key), have)
         out.append("")

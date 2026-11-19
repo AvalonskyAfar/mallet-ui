@@ -363,7 +363,7 @@ class MalletRevealLayoutTest {
     }
 
     @Test
-    fun `a clickable row is still dragged and its click is not fired`() {
+    fun `a clickable row is still dragged and its click is not triggered`() {
         val layout = row()
         var rowClicks = 0
         layout.row!!.setOnClickListener { rowClicks++ }

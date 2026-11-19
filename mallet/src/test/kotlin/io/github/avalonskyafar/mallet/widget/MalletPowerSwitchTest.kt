@@ -368,7 +368,7 @@ class MalletPowerSwitchTest {
     }
 
     @Test
-    fun `empty labels leave a bare bed and a lone glyph`() {
+    fun `empty labels leave a bed without text and a lone glyph`() {
         val view = power()
         view.offLabel = ""
         view.turnOnLabel = ""

@@ -1,6 +1,8 @@
 package io.github.avalonskyafar.mallet.showcase.pages
 
+import android.view.View
 import android.widget.LinearLayout
+import androidx.annotation.StringRes
 import io.github.avalonskyafar.mallet.showcase.DemoPage
 import io.github.avalonskyafar.mallet.showcase.PageScope
 import io.github.avalonskyafar.mallet.showcase.R
@@ -26,19 +28,18 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
         page.caption(page.str(R.string.tracks_origin), topDp = 22)
     }
 
-    /** Two, three and four options; under each card a line that names the selection. */
+    /** Two, three and four options in one card; under each track a line that names its selection. */
     private fun segmented(page: PageScope) {
         val (two, twoStatus) = page.namedTrack(R.string.tracks_status_filter, 1, R.string.tracks_off, R.string.tracks_on)
         val (three, threeStatus) = page.namedTrack(
             R.string.tracks_status_range, 1, R.string.tracks_day, R.string.tracks_week, R.string.tracks_month,
         )
         val (four, fourStatus) = page.namedTrack(R.string.tracks_status_level, 2, *LEVELS)
-        page.section(R.string.tracks_segmented_title, R.string.tracks_segmented_detail) { addFull(two) }
-        page.status(twoStatus)
-        page.loose(MalletSurface(page.context).apply { addFull(three) }, topDp = CARD_GAP)
-        page.status(threeStatus)
-        page.loose(MalletSurface(page.context).apply { addFull(four) }, topDp = CARD_GAP)
-        page.status(fourStatus)
+        page.section(R.string.tracks_segmented_title, R.string.tracks_segmented_detail) {
+            block(page, R.string.tracks_two, two, twoStatus)
+            block(page, R.string.tracks_three, three, threeStatus)
+            block(page, R.string.tracks_four, four, fourStatus)
+        }
         page.code("""
             val track = MalletSegmentedTrack(this)
             track.setOptions("Off", "Gentle", "Standard", "Strict")
@@ -98,8 +99,10 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
             }
         }
         show()
-        page.section(R.string.tracks_refuse_title, R.string.tracks_refuse_detail) { addFull(track) }
-        page.status(status)
+        // One track with no relatives in its section: it stands on the canvas, without a card.
+        page.heading(R.string.tracks_refuse_title, R.string.tracks_refuse_detail)
+        page.loose(track, topDp = PageScope.HEADING_GAP)
+        page.status(status, topDp = LOOSE_STATUS_GAP)
         page.code("""
             var previous = track.selectedIndex
             track.setOnSelectionChangeListener { view, index ->
@@ -163,7 +166,7 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
         """)
     }
 
-    /** The hero switch with its own words, and a disabled one with the default words. */
+    /** The hero switch with labels of its own and a disabled one with the default labels, in one card. */
     private fun power(page: PageScope) {
         val status = page.text(page.str(R.string.tracks_power_status_on), MalletTextRole.CAPTION, MalletTextTone.MUTED)
         val shield = MalletPowerSwitch(page.context).apply {
@@ -177,10 +180,10 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
             }
         }
         val disabled = MalletPowerSwitch(page.context).apply { isEnabled = false }
-        page.section(R.string.tracks_power_title, R.string.tracks_power_detail) { addFull(shield) }
-        page.status(status)
-        page.loose(MalletSurface(page.context).apply { addFull(disabled) }, topDp = CARD_GAP)
-        page.caption(page.str(R.string.tracks_power_disabled))
+        page.section(R.string.tracks_power_title, R.string.tracks_power_detail) {
+            block(page, R.string.tracks_power_own, shield, status)
+            block(page, R.string.tracks_power_disabled, disabled)
+        }
         page.code("""
             val shield = MalletPowerSwitch(this)
             shield.onLabel = "Protected"
@@ -194,17 +197,53 @@ object TracksPage : DemoPage("c_tracks", R.string.page_c_tracks_title, R.string.
     }
 }
 
-private const val CARD_GAP = 14
+/**
+ * Air above the label of a block and under its status line, in dp. Two blocks stand twice this
+ * apart: a block here ends in a line of text, which brings no shadow gutter of its own, and with
+ * 18 dp the next label is as far from it as it is from a control on the other pages.
+ */
+private const val BLOCK_AIR = 9
+
+/** How far the label and the status line of a block stand in from the edges of its control, in dp. */
+private const val BLOCK_INSET = 7
+
+/** Space above a status line under a card, in dp. */
+private const val STATUS_GAP = 8
+
+/** The same under a track on the canvas, which brings a gutter for its own shadow. */
+private const val LOOSE_STATUS_GAP = 6
+
 private val LEVELS = intArrayOf(R.string.tracks_off, R.string.tracks_gentle, R.string.tracks_standard, R.string.tracks_strict)
 
 /** Adds [view] across the whole width of the card. */
-private fun MalletSurface.addFull(view: android.view.View) {
+private fun MalletSurface.addFull(view: View) {
     addView(view, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP))
 }
 
-/** Puts a status line under the card above it, aligned with the headings. */
-private fun PageScope.status(line: MalletText) {
-    loose(line, topDp = 8, sideDp = PageScope.TEXT_INSET)
+/**
+ * One labelled block of a card: [label], then [control] across the card and, where the control
+ * has a listener to show, the [status] line that listener writes.
+ */
+private fun MalletSurface.block(page: PageScope, @StringRes label: Int, control: View, status: MalletText? = null) {
+    fun line(topDp: Int, bottomDp: Int = 0) = LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP).apply {
+        topMargin = page.dp(topDp)
+        bottomMargin = page.dp(bottomDp)
+        marginStart = page.dp(BLOCK_INSET)
+        marginEnd = page.dp(BLOCK_INSET)
+    }
+    val name = page.text(page.str(label), MalletTextRole.LABEL).apply { textAlignment = View.TEXT_ALIGNMENT_VIEW_START }
+    addView(name, line(if (childCount == 0) 6 else BLOCK_AIR))
+    addView(control, LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP).apply { topMargin = page.dp(6) })
+    if (status != null) {
+        status.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+        addView(status, line(2, BLOCK_AIR))
+    }
+}
+
+/** Puts a status line on the canvas under the card or the control above it, aligned with the headings. */
+private fun PageScope.status(line: MalletText, topDp: Int = STATUS_GAP) {
+    line.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+    loose(line, topDp = topDp, sideDp = PageScope.TEXT_INSET)
 }
 
 /** A track with [labels], [start] selected, and [hues] under its options (`null`: the ordinal scale). */

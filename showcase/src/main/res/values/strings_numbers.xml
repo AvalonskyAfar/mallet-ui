@@ -23,7 +23,7 @@
     </string-array>
 
     <string name="numbers_progress_title">Progress</string>
-    <string name="numbers_progress_detail">A groove that fills with hue as work completes.</string>
+    <string name="numbers_progress_detail">A groove that fills with its hue as work completes.</string>
     <string name="numbers_progress_follow">Follows the continuous slider</string>
     <string name="numbers_progress_task">A task</string>
     <string name="numbers_progress_run">Run</string>

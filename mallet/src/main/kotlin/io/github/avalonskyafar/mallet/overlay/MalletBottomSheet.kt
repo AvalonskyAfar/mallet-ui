@@ -67,8 +67,7 @@ private const val HEADER_TITLE_GAP_DP = 14f
 private const val SCRIM_ALPHA = 69
 
 /**
- * A porcelain sheet that rises from the bottom edge of the window and follows the finger
- * back down.
+ * A sheet that rises from the bottom edge of the window and follows the finger back down.
  *
  * The sheet lives in a full-window dialog of its own, so it traps focus while it is open. It
  * shows a grabber, an optional centred title and message, and then either any view or a list
@@ -337,7 +336,7 @@ public class MalletBottomSheet private constructor(
         private var lastX = 0f
         private var lastY = 0f
 
-        /** The porcelain body. */
+        /** The body of the sheet. */
         val sheet: SheetView = SheetView(context, owner)
 
         /** Whether the finger currently moves the sheet. */
@@ -615,7 +614,7 @@ public class MalletBottomSheet private constructor(
         }
     }
 
-    /** The sheet itself: porcelain with rounded top corners, a grabber, header and content. */
+    /** The sheet itself: a surface with rounded top corners, a grabber, header and content. */
     @SuppressLint("ViewConstructor")
     internal class SheetView(context: Context, private val owner: MalletBottomSheet) : LinearLayout(context) {
         private val theme = owner.theme

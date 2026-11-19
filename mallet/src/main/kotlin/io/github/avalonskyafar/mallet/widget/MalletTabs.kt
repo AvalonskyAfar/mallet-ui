@@ -42,11 +42,11 @@ import kotlin.math.roundToInt
  * Text tabs for switching between sibling views.
  *
  * Tabs are a different idea from [MalletSegmentedTrack] on purpose. The track selects a *value*
- * and shows it with hue; tabs select a *view* and stay quiet: muted labels on the bare canvas,
- * the selected one in ink, and under it a small accent capsule exactly as wide as the label. The
- * capsule glides to the new label when the selection changes and can follow a continuous
- * position ([setScrollPosition]), so it tracks the finger while a [MalletPager] is dragged. A
- * hairline runs along the bottom edge from one side of the view to the other.
+ * and shows it with a hue; tabs select a *view* and stay quiet: muted labels directly on the
+ * canvas, the selected one in ink, and under it a small accent capsule exactly as wide as the
+ * label. The capsule glides to the new label when the selection changes and can follow a
+ * continuous position ([setScrollPosition]), so it tracks the finger while a [MalletPager] is
+ * dragged. A hairline runs along the bottom edge from one side of the view to the other.
  *
  * ```xml
  * <io.github.avalonskyafar.mallet.widget.MalletTabs

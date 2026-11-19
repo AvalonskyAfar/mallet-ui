@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="material_surface_title">Porcelain</string>
+    <string name="material_surface_title">Surface</string>
     <string name="material_surface_detail">The raised body of cards and capsules: a hairline rim and one soft shadow that falls straight down.</string>
     <string name="material_surface_card">A card. Rim, shadow, 9 dp of padding.</string>
     <string name="material_surface_flat">A flat card. It keeps the rim and gives up the shadow.</string>
     <string name="material_surface_lifted">The same card, lifted. The body drew in a little to leave room for the shadow.</string>
     <string name="material_surface_lift">Lift the flat card</string>
     <string name="material_surface_flatten">Lay it flat</string>
-    <string name="material_surface_tinted">Glazed capsule</string>
-    <string name="material_surface_said">A glazed body sinks like a neutral one. Its colour does not change.</string>
+    <string name="material_surface_tinted">Accent capsule</string>
+    <string name="material_surface_said">A coloured body sinks like a neutral one. Its colour does not change.</string>
 
-    <string name="material_track_title">Glazed track and thumb</string>
-    <string name="material_track_detail">A recessed bed filled with hue, and the neutral bead that rides in it.</string>
+    <string name="material_track_title">Track and thumb</string>
+    <string name="material_track_detail">A recessed bed filled with a hue, and the neutral thumb riding in it.</string>
     <string name="material_track_rest">Rest</string>
     <string name="material_track_pressed">Pressed</string>
     <string name="material_track_rest_note">At rest. The shadows under the track and the thumb are at full length.</string>
@@ -37,5 +37,5 @@
     <string name="material_split_fold">Fold the lower half away</string>
     <string name="material_split_unfold">Bring it back</string>
 
-    <string name="material_origin">Extracted from the original app: porcelain, the glazed track and thumb, the well, the shadow gutter and the split card of its first-launch pages. New in Mallet: the glazed primary capsule, the flat card, and the solid well rims for focus and error.</string>
+    <string name="material_origin">Extracted from the original app: the raised surface, the track and its thumb, the well, the shadow gutter and the split card of its first-launch pages. New in Mallet: the primary capsule in the accent colour, the flat card, and the solid well rims for focus and error.</string>
 </resources>

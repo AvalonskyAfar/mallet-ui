@@ -1,6 +1,7 @@
 package io.github.avalonskyafar.mallet.showcase.pages
 
 import android.text.InputType
+import android.view.View
 import android.widget.LinearLayout
 import io.github.avalonskyafar.mallet.icon.MalletIcon
 import io.github.avalonskyafar.mallet.showcase.DemoPage
@@ -9,13 +10,15 @@ import io.github.avalonskyafar.mallet.showcase.R
 import io.github.avalonskyafar.mallet.theme.MalletTextRole
 import io.github.avalonskyafar.mallet.theme.MalletTextTone
 import io.github.avalonskyafar.mallet.widget.MalletButton
+import io.github.avalonskyafar.mallet.widget.MalletSurface
+import io.github.avalonskyafar.mallet.widget.MalletText
 import io.github.avalonskyafar.mallet.widget.MalletTextField
 
 private const val FIELD_GAP = 16
 private const val MOTTO_LENGTH = 24
 private const val CODE_LENGTH = 6
 
-private const val CONFIG_TEXT = "[kiln]\npeak = 1300\nhold_minutes = 20"
+private const val CONFIG_TEXT = "[unit]\nport = 8080\nidle_minutes = 20"
 
 private const val PARTS_CODE = """
     val name = MalletTextField(this)
@@ -51,6 +54,15 @@ private const val FORMS_CODE = """
 private fun below(page: PageScope, topDp: Int): LinearLayout.LayoutParams =
     LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP).apply { topMargin = page.dp(topDp) }
 
+/** Puts a status line under a full-bleed divider at the foot of the card, clear of its rim. */
+private fun MalletSurface.foot(page: PageScope, line: MalletText) {
+    // The line starts where the labels of the fields start, in right-to-left too.
+    line.textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+    line.setPadding(0, 0, 0, page.dp(4))
+    addDivider(10f)
+    addView(line, below(page, 0))
+}
+
 /** Text fields: the parts of a field, validation, and the multi-line, monospace and disabled forms. */
 object FieldsPage : DemoPage("c_fields", R.string.page_c_fields_title, R.string.page_c_fields_summary) {
     override fun build(page: PageScope) {
@@ -78,7 +90,7 @@ object FieldsPage : DemoPage("c_fields", R.string.page_c_fields_title, R.string.
             val password = MalletTextField(context).apply {
                 label = page.str(R.string.fields_password_label)
                 endAction = MalletTextField.EndAction.PASSWORD_TOGGLE
-                text = "kiln-1300"
+                text = "maple-482"
             }
             val search = MalletTextField(context).apply {
                 hint = page.str(R.string.fields_search_hint)
@@ -94,7 +106,7 @@ object FieldsPage : DemoPage("c_fields", R.string.page_c_fields_title, R.string.
             addView(motto, below(page, FIELD_GAP))
             addView(password, below(page, FIELD_GAP))
             addView(search, below(page, FIELD_GAP))
-            addView(status, below(page, 8))
+            foot(page, status)
         }
         page.code(PARTS_CODE)
     }
@@ -138,7 +150,7 @@ object FieldsPage : DemoPage("c_fields", R.string.page_c_fields_title, R.string.
             result.text = page.str(R.string.fields_code_rejected)
             addView(code, below(page, 0))
             addView(check, below(page, 14))
-            addView(result, below(page, 10))
+            foot(page, result)
         }
         page.code(VALIDATION_CODE)
     }

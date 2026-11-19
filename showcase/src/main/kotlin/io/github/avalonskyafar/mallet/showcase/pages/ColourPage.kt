@@ -10,11 +10,13 @@ import android.view.Gravity
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
+import io.github.avalonskyafar.mallet.material.MalletGutters
 import io.github.avalonskyafar.mallet.material.MalletMaterial
 import io.github.avalonskyafar.mallet.showcase.DemoPage
 import io.github.avalonskyafar.mallet.showcase.PageScope
 import io.github.avalonskyafar.mallet.showcase.R
 import io.github.avalonskyafar.mallet.theme.MalletHue
+import io.github.avalonskyafar.mallet.theme.MalletSpacing
 import io.github.avalonskyafar.mallet.theme.MalletTextRole
 import io.github.avalonskyafar.mallet.theme.MalletTextTone
 import io.github.avalonskyafar.mallet.theme.MalletTheme
@@ -31,7 +33,6 @@ object ColourPage : DemoPage("f_colour", R.string.page_f_colour_title, R.string.
         semantics(page)
         hues(page)
         scale(page)
-        plain(page)
         dayAndNight(page)
         page.caption(page.str(R.string.colour_origin), topDp = 22)
     }
@@ -76,10 +77,10 @@ object ColourPage : DemoPage("f_colour", R.string.page_f_colour_title, R.string.
                     orientation = LinearLayout.VERTICAL
                     setPadding(page.dp(ROW_SIDE), page.dp(11), page.dp(ROW_SIDE), page.dp(11))
                 }
-                row.addView(page.text(page.str(line), MalletTextRole.BODY, tone))
+                row.addView(page.line(page.str(line), MalletTextRole.BODY, tone))
                 val name = "${tone.name.lowercase()}  ${hex(color)}"
                 row.addView(
-                    page.text(name, MalletTextRole.MICRO, MalletTextTone.MUTED),
+                    page.line(name, MalletTextRole.MICRO, MalletTextTone.MUTED),
                     LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP).apply { topMargin = page.dp(3) },
                 )
                 addView(row, cardParams())
@@ -114,7 +115,7 @@ object ColourPage : DemoPage("f_colour", R.string.page_f_colour_title, R.string.
                     setPaddingRelative(page.dp(ROW_SIDE), page.dp(if (index == 0) 8 else 2), page.dp(6), page.dp(2))
                 }
                 row.addView(
-                    page.text(name, MalletTextRole.LABEL),
+                    page.line(name, MalletTextRole.LABEL),
                     LinearLayout.LayoutParams(0, PageScope.WRAP, 2f),
                 )
                 row.addView(
@@ -136,14 +137,24 @@ object ColourPage : DemoPage("f_colour", R.string.page_f_colour_title, R.string.
         """)
     }
 
+    /**
+     * One card with two groups: three tracks that take the scale and, under a divider, one track
+     * whose options have no order. Each group ends with the line its listener writes.
+     */
     private fun scale(page: PageScope) {
-        val status = page.text(page.str(R.string.colour_scale_idle), MalletTextRole.CAPTION, MalletTextTone.MUTED)
+        val theme = page.theme
+        val week = page.str(R.string.colour_opt_week)
+        val status = page.line(page.str(R.string.colour_scale_idle), MalletTextRole.CAPTION, MalletTextTone.MUTED)
+        val grouped = page.line(
+            page.context.getString(R.string.colour_plain_status, week), MalletTextRole.CAPTION, MalletTextTone.MUTED,
+        )
         val sets = listOf(
             listOf(R.string.colour_opt_off, R.string.colour_opt_on),
             listOf(R.string.colour_opt_off, R.string.colour_opt_gentle, R.string.colour_opt_strict),
             listOf(R.string.colour_opt_off, R.string.colour_opt_gentle, R.string.colour_opt_standard, R.string.colour_opt_strict),
         )
         page.section(R.string.colour_scale_title, R.string.colour_scale_detail) {
+            addView(page.line(page.str(R.string.colour_scale_ordered), MalletTextRole.LABEL), lineParams(page))
             sets.forEachIndexed { index, labels ->
                 val track = MalletSegmentedTrack(context).apply {
                     options = labels.map { page.str(it) }
@@ -156,12 +167,20 @@ object ColourPage : DemoPage("f_colour", R.string.page_f_colour_title, R.string.
                 }
                 addView(track, cardParams().apply { topMargin = page.dp(if (index == 0) 0 else 4) })
             }
-            addView(status, cardParams().apply {
-                marginStart = page.dp(ROW_SIDE); marginEnd = page.dp(ROW_SIDE)
-                topMargin = page.dp(6); bottomMargin = page.dp(6)
-            })
+            addView(status, lineParams(page))
+            addDivider(MalletSpacing.DIVIDER_GAP)
+            addView(page.line(page.str(R.string.colour_plain_title), MalletTextRole.LABEL), lineParams(page))
+            val plain = MalletSegmentedTrack(context).apply {
+                setOptions(page.str(R.string.colour_opt_day), week, page.str(R.string.colour_opt_month))
+                select(1, animate = false)
+                setHues(theme.hues.uniform(3, theme.hues.mist))
+                setOnSelectionChangeListener { view, chosen ->
+                    grouped.text = page.context.getString(R.string.colour_plain_status, view.options[chosen])
+                }
+            }
+            addView(plain, cardParams())
+            addView(grouped, lineParams(page))
         }
-        page.caption(page.str(R.string.colour_scale_note))
         page.code("""
             val track = MalletSegmentedTrack(context)
             track.setOptions(
@@ -172,49 +191,36 @@ object ColourPage : DemoPage("f_colour", R.string.page_f_colour_title, R.string.
             track.setOnSelectionChangeListener { _, index ->
                 status.text = track.options[index]
             }
-        """)
-    }
 
-    private fun plain(page: PageScope) {
-        val theme = page.theme
-        val week = page.str(R.string.colour_opt_week)
-        val status = page.text(
-            page.context.getString(R.string.colour_plain_status, week), MalletTextRole.CAPTION, MalletTextTone.MUTED,
-        )
-        page.section(R.string.colour_plain_title, R.string.colour_plain_detail) {
-            val track = MalletSegmentedTrack(context).apply {
-                setOptions(page.str(R.string.colour_opt_day), week, page.str(R.string.colour_opt_month))
-                select(1, animate = false)
-                setHues(theme.hues.uniform(3, theme.hues.mist))
-                setOnSelectionChangeListener { view, chosen ->
-                    status.text = page.context.getString(R.string.colour_plain_status, view.options[chosen])
-                }
-            }
-            addView(track, cardParams())
-            addView(status, cardParams().apply {
-                marginStart = page.dp(ROW_SIDE); marginEnd = page.dp(ROW_SIDE)
-                topMargin = page.dp(6); bottomMargin = page.dp(6)
-            })
-        }
-        page.code("""
             val hues = MalletTheme.of(context).hues
-            track.setOptions("Day", "Week", "Month")
-            track.setHues(hues.uniform(3, hues.mist))
-            track.setHues(null)   // back to the scale
+            val plain = MalletSegmentedTrack(context)
+            plain.setOptions("Day", "Week", "Month")
+            plain.setHues(hues.uniform(3, hues.mist))
+            plain.setHues(null)   // back to the scale
         """)
     }
 
+    /**
+     * The twins stand on the canvas, side by side and without a card around them: each panel is a
+     * piece of the canvas of its own theme.
+     */
     private fun dayAndNight(page: PageScope) {
         val day = ThemedPanel(page, MalletTheme.light(), R.string.colour_day)
         val night = ThemedPanel(page, MalletTheme.dark(), R.string.colour_night)
         day.mirror(night)
         night.mirror(day)
-        page.section(R.string.colour_daynight_title, R.string.colour_daynight_detail) {
-            val pair = LinearLayout(context).apply { orientation = LinearLayout.HORIZONTAL }
-            pair.addView(day.view, LinearLayout.LayoutParams(0, PageScope.WRAP, 1f))
-            pair.addView(night.view, LinearLayout.LayoutParams(0, PageScope.WRAP, 1f).apply { marginStart = page.dp(8) })
-            addView(pair, cardParams())
-        }
+        val pair = LinearLayout(page.context).apply { orientation = LinearLayout.HORIZONTAL }
+        pair.addView(day.view, LinearLayout.LayoutParams(0, PageScope.WRAP, 1f))
+        pair.addView(night.view, LinearLayout.LayoutParams(0, PageScope.WRAP, 1f).apply { marginStart = page.dp(8) })
+        // The pair stands where the body of a card would: inside the gutter a card keeps for its shadow.
+        val density = page.context.resources.displayMetrics.density
+        val side = (MalletGutters.SURFACE_SIDE_DP * density).roundToInt()
+        pair.setPadding(
+            side, (MalletGutters.SURFACE_TOP_DP * density).roundToInt(),
+            side, (MalletGutters.SURFACE_BOTTOM_DP * density).roundToInt(),
+        )
+        page.heading(R.string.colour_daynight_title, R.string.colour_daynight_detail)
+        page.loose(pair, topDp = PageScope.HEADING_GAP)
         page.code("""
             val dark = MalletTheme.dark()
             val night = MalletTheme.wrap(context, dark)
@@ -226,7 +232,10 @@ object ColourPage : DemoPage("f_colour", R.string.page_f_colour_title, R.string.
     }
 }
 
-/** One half of "Day and night": a switch and a track in an explicit theme on that theme's canvas. */
+/**
+ * One half of "Day and night": a switch and a track in an explicit theme on that theme's canvas,
+ * with the rim and the corners of a card, since it stands on the page where a card would.
+ */
 private class ThemedPanel(page: PageScope, theme: MalletTheme, title: Int) {
     private val themed: Context = MalletTheme.wrap(page.context, theme)
     private val toggle = MalletSwitch(themed).apply { setChecked(true, false) }
@@ -237,10 +246,11 @@ private class ThemedPanel(page: PageScope, theme: MalletTheme, title: Int) {
 
     val view: LinearLayout = LinearLayout(themed).apply {
         orientation = LinearLayout.VERTICAL
+        val density = resources.displayMetrics.density
         background = GradientDrawable().apply {
             setColor(theme.colors.canvas)
-            cornerRadius = page.dp(MalletMaterial.RADIUS_MEDIA_DP.roundToInt()).toFloat()
-            setStroke(1, page.theme.colors.hairline)
+            cornerRadius = MalletMaterial.RADIUS_CARD_DP * density
+            setStroke((MalletMaterial.RIM_DP * density).roundToInt().coerceAtLeast(1), theme.colors.hairline)
         }
         setPadding(page.dp(8), page.dp(8), page.dp(8), page.dp(6))
         val head = LinearLayout(themed).apply {
@@ -249,7 +259,9 @@ private class ThemedPanel(page: PageScope, theme: MalletTheme, title: Int) {
             setPaddingRelative(page.dp(4), 0, 0, 0)
         }
         head.addView(
-            MalletText.create(themed, page.str(title), MalletTextRole.LABEL),
+            MalletText.create(themed, page.str(title), MalletTextRole.LABEL).apply {
+                textAlignment = View.TEXT_ALIGNMENT_VIEW_START
+            },
             LinearLayout.LayoutParams(0, PageScope.WRAP, 1f),
         )
         head.addView(toggle, LinearLayout.LayoutParams(PageScope.WRAP, PageScope.WRAP))
@@ -277,9 +289,9 @@ private fun swatchRow(page: PageScope, name: String, use: String, @ColorInt colo
     }
     row.addView(Swatch(page.context, color, page.theme.colors.hairline), LinearLayout.LayoutParams(page.dp(40), page.dp(28)))
     val words = LinearLayout(page.context).apply { orientation = LinearLayout.VERTICAL }
-    words.addView(page.text(name, MalletTextRole.LABEL))
+    words.addView(page.line(name, MalletTextRole.LABEL))
     words.addView(
-        page.text(use, MalletTextRole.MICRO, MalletTextTone.MUTED),
+        page.line(use, MalletTextRole.MICRO, MalletTextTone.MUTED),
         LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP).apply { topMargin = page.dp(2) },
     )
     row.addView(words, LinearLayout.LayoutParams(0, PageScope.WRAP, 1f).apply {
@@ -311,7 +323,7 @@ private class Swatch(context: Context, @ColorInt private val color: Int, @ColorI
     }
 }
 
-/** A short recessed bed poured with one hue, with a label resting on it. */
+/** A short recessed bed filled with one hue, with a label resting on it. */
 @SuppressLint("ViewConstructor") // built in code only
 private class HueBed(
     context: Context,
@@ -348,6 +360,19 @@ private class HueBed(
 }
 
 private const val ROW_SIDE = 7
+
+/**
+ * Text inside a card or a panel. Like the headings of the page it stands at the start edge
+ * whatever language it is written in, so an English line mirrors with the page right to left.
+ */
+private fun PageScope.line(value: CharSequence, role: MalletTextRole, tone: MalletTextTone = MalletTextTone.INK): MalletText =
+    text(value, role, tone).apply { textAlignment = View.TEXT_ALIGNMENT_VIEW_START }
+
+/** Where a label or a status line stands in a card of tracks: as far in as the text of a row. */
+private fun lineParams(page: PageScope) = cardParams().apply {
+    marginStart = page.dp(ROW_SIDE); marginEnd = page.dp(ROW_SIDE)
+    topMargin = page.dp(6); bottomMargin = page.dp(6)
+}
 
 private fun cardParams() = LinearLayout.LayoutParams(PageScope.MATCH, PageScope.WRAP)
 

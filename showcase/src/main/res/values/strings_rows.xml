@@ -11,21 +11,22 @@
     <string name="rows_entries_detail">A row that leads somewhere. The text stays on the centre line whatever sits at the edges.</string>
     <string name="rows_entry_end">Storage</string>
     <string name="rows_entry_end_detail">Chevron at the end: this opens something</string>
-    <string name="rows_entry_start">Back to overview</string>
+    <string name="rows_entry_start">Allowed accounts</string>
+    <string name="rows_entry_start_detail">Chevron at the start: the page lies on that side</string>
     <string name="rows_entry_icon">Notifications</string>
     <string name="rows_entry_value">Language</string>
     <string name="rows_entry_value_detail">Tap to change the value</string>
     <string name="rows_entry_aligned">Privacy</string>
     <string name="rows_entry_aligned_detail">Aligned to the start, for list-like content</string>
     <string name="rows_entry_disabled">Backup</string>
-    <string name="rows_entry_disabled_value">Unavailable</string>
+    <string name="rows_entry_disabled_value">Disabled</string>
     <string-array name="rows_languages">
         <item>English</item>
         <item>中文</item>
         <item>Français</item>
     </string-array>
     <string name="rows_say_end">Storage would open at the end side</string>
-    <string name="rows_say_start">The overview lies at the start side</string>
+    <string name="rows_say_start">Allowed accounts would open at the start side</string>
     <string name="rows_say_icon">Notifications would open</string>
     <string name="rows_say_aligned">Privacy would open</string>
 
@@ -34,7 +35,7 @@
     <string name="rows_sync">Sync</string>
     <string name="rows_sync_detail">Two options</string>
     <string name="rows_density">Density</string>
-    <string name="rows_strength">Protection</string>
+    <string name="rows_strength">Guard</string>
     <string name="rows_haptics">Haptics</string>
     <string name="rows_haptics_detail">A switch as the control</string>
     <string name="rows_columns">Columns</string>
@@ -70,5 +71,5 @@
 
     <string name="rows_facts_title">Facts</string>
     <string name="rows_facts_detail">A read-only list. It shows what the control rows above are set to; tones mark what matters.</string>
-    <string name="rows_note">All five were extracted from the original app. New in Mallet: the page-level heading, the icon, value and start alignment of an entry row, any control in a control row, and a tone for a link or a fact.</string>
+    <string name="rows_note">All five were extracted from the original app; the link with its chevron at the edge exists in its code, but no page there uses it. New in Mallet: the icon, value and start alignment of an entry row, any control in a control row, and a tone chosen by the caller for a link or a fact.</string>
 </resources>

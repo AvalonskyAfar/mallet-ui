@@ -5,7 +5,7 @@
         <attr name="malletHue" />
         <!-- Initial progress, from 0 to 1. -->
         <attr name="malletProgressValue" format="float" />
-        <!-- True when the amount of work is unknown: a glazed segment travels through the groove. -->
+        <!-- True when the amount of work is unknown: a coloured segment travels through the groove. -->
         <attr name="malletProgressIndeterminate" format="boolean" />
         <attr name="android:enabled" />
     </declare-styleable>

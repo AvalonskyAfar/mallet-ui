@@ -2,6 +2,7 @@ package io.github.avalonskyafar.mallet.showcase.pages
 
 import android.content.Context
 import android.view.Gravity
+import android.view.View
 import android.widget.LinearLayout
 import io.github.avalonskyafar.mallet.showcase.DemoPage
 import io.github.avalonskyafar.mallet.showcase.PageScope
@@ -75,7 +76,7 @@ object TypePage : DemoPage("f_type", R.string.page_f_type_title, R.string.page_f
         page.section(R.string.type_reading_title, R.string.type_reading_detail) {
             listOf(MalletTextRole.BODY, MalletTextRole.BODY_COMPACT).forEachIndexed { index, role ->
                 if (index > 0) addDivider(10f)
-                val label = page.text(role.name, MalletTextRole.MICRO, MalletTextTone.MUTED)
+                val label = page.text(role.name, MalletTextRole.MICRO, MalletTextTone.MUTED).atStart()
                 val copy = MalletParagraph(context).apply {
                     this.role = role
                     text = page.str(R.string.type_reading_copy)
@@ -87,7 +88,7 @@ object TypePage : DemoPage("f_type", R.string.page_f_type_title, R.string.page_f
         page.code("""
             val copy = MalletParagraph(context)
             copy.role = MalletTextRole.BODY_COMPACT
-            copy.text = "瓷器上的釉，薄处见胎，厚处见色。"
+            copy.text = "字形重要，行距也重要。"
             copy.protectClosingPunctuation = true
         """)
     }
@@ -125,9 +126,9 @@ object TypePage : DemoPage("f_type", R.string.page_f_type_title, R.string.page_f
             setPaddingRelative(page.dp(INSET), page.dp(6), page.dp(INSET), page.dp(6))
         }
         val mark = page.text(note, MalletTextRole.MICRO, MalletTextTone.MUTED).apply {
-            textAlignment = android.view.View.TEXT_ALIGNMENT_VIEW_END
+            textAlignment = View.TEXT_ALIGNMENT_VIEW_END
         }
-        row.addView(sample, LinearLayout.LayoutParams(0, PageScope.WRAP, 1f))
+        row.addView(sample.atStart(), LinearLayout.LayoutParams(0, PageScope.WRAP, 1f))
         row.addView(mark, LinearLayout.LayoutParams(PageScope.WRAP, PageScope.WRAP).apply { marginStart = page.dp(12) })
         return row
     }
@@ -158,6 +159,12 @@ object TypePage : DemoPage("f_type", R.string.page_f_type_title, R.string.page_f
     internal const val INSET = 7
 }
 
+/**
+ * Text inside a card stands at the start edge whatever language it is written in, as the
+ * headings on the canvas do; without it a Latin line keeps to the left in a right-to-left layout.
+ */
+private fun MalletText.atStart(): MalletText = apply { textAlignment = View.TEXT_ALIGNMENT_VIEW_START }
+
 /** One half of "Larger text": a heading and a switch row in a theme with the given text scale. */
 private class ScaledSample(page: PageScope, private val themed: Context, scale: Float) {
     private val toggle = MalletSwitch(themed).apply { setChecked(true, false) }
@@ -166,8 +173,9 @@ private class ScaledSample(page: PageScope, private val themed: Context, scale: 
         page.context.getString(R.string.type_large_scale, if (scale == 1f) "1.0" else scale.toString()),
         MalletTextRole.MICRO,
         MalletTextTone.MUTED,
-    )
-    private val heading = MalletText.create(themed, page.str(R.string.type_large_heading), MalletTextRole.HEADING)
+    ).atStart()
+    private val heading =
+        MalletText.create(themed, page.str(R.string.type_large_heading), MalletTextRole.HEADING).atStart()
     private val row = MalletControlRow(themed).apply {
         title = page.str(R.string.type_large_row_title)
         detail = page.str(R.string.type_large_row_on)

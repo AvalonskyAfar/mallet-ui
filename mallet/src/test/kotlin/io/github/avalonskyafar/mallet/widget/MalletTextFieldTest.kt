@@ -564,7 +564,7 @@ class MalletTextFieldTest {
             return field
         }
         add { label = "Empty"; hint = "Name shown at the top of the page" }
-        add { label = "Filled"; text = "Porcelain" }
+        add { label = "Filled"; text = "Paper Crane" }
         val focused = add { label = "Focused"; text = "Typing goes here" }
         add { label = "Error"; text = "ab"; helperText = "Helper"; error = "Use at least three characters" }
         add { label = "Helper with counter"; text = "Twelve chars"; helperText = "Shown on your profile"; counterMaxLength = 64 }

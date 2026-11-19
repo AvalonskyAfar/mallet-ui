@@ -67,7 +67,7 @@ class PagesDeviceTest : DeviceTest() {
         thread.quitSafely()
         assertTrue("PixelCopy succeeded", result == PixelCopy.SUCCESS)
 
-        // The home page has a white canvas with ink, a glazed switch and muted labels on it.
+        // The home page has a white canvas with ink, a coloured power switch and muted labels on it.
         val seen = HashSet<Int>()
         var y = 0
         while (y < bitmap.height) {

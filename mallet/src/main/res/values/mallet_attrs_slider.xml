@@ -7,9 +7,9 @@
         <attr name="malletValue" />
         <attr name="malletHue" />
         <!--
-            How the stretch behind the bead is glazed. "single" pours the hue named by
-            malletHue. "scale" blends through bronze, ochre, cobalt and jade as the
-            value rises, for values that read as a strength.
+            How the stretch behind the bead is coloured. "single" fills it with the hue named by
+            malletHue. "scale" blends through bronze, ochre, cobalt and jade as the value rises,
+            for values that read as a strength.
         -->
         <attr name="malletSliderHueMode" format="enum">
             <enum name="single" value="0" />

@@ -67,7 +67,7 @@ Gradle then resolves the AndroidX dependencies by itself and your IDE finds the 
 ### 2.2 From the AAR file
 
 Copy `mallet-<version>.aar` into `app/libs/` and declare the dependencies yourself, because
-a bare AAR carries no dependency information:
+an AAR by itself carries no dependency information:
 
 ```kotlin
 // app/build.gradle.kts
@@ -131,12 +131,25 @@ theme attributes it uses the built-in palette and follows the system's dark mode
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp">
 
-        <io.github.avalonskyafar.mallet.widget.MalletSegmentedTrack
+        <io.github.avalonskyafar.mallet.widget.MalletControlRow
             android:id="@+id/strength"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:malletTitle="Strength"
             app:malletOptions="@array/strength_levels"
             app:malletSelectedIndex="2" />
+
+        <io.github.avalonskyafar.mallet.widget.MalletControlRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:malletTitle="Only on Wi-Fi">
+
+            <io.github.avalonskyafar.mallet.widget.MalletSwitch
+                android:id="@+id/wifi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:malletChecked="true" />
+        </io.github.avalonskyafar.mallet.widget.MalletControlRow>
     </io.github.avalonskyafar.mallet.widget.MalletSurface>
 
     <io.github.avalonskyafar.mallet.widget.MalletButton
@@ -157,8 +170,12 @@ class SettingsActivity : Activity() {
         MalletWindow.apply(this)                       // optional: canvas-coloured window, edge to edge
         setContentView(R.layout.activity_settings)
 
-        val strength = findViewById<MalletSegmentedTrack>(R.id.strength)
-        strength.setOnSelectionChangeListener { _, index -> prefs.strength = index }
+        // The row made its track from app:malletOptions.
+        val strength = findViewById<MalletControlRow>(R.id.strength)
+        strength.track?.setOnSelectionChangeListener { _, index -> prefs.strength = index }
+
+        findViewById<MalletSwitch>(R.id.wifi)
+            .setOnCheckedChangeListener { _, checked -> prefs.wifiOnly = checked }
 
         findViewById<MalletButton>(R.id.restore).setOnClickListener {
             MalletDialog.confirm(this, "Restore all defaults?", "Every setting returns to its original value.",
@@ -167,6 +184,9 @@ class SettingsActivity : Activity() {
     }
 }
 ```
+
+The two settings are the rows of one card, and the button stands on the canvas below it;
+section 4 says when a card is the right container.
 
 The complete list of components, with their XML attributes and code APIs, is in the
 [Component catalog](COMPONENT_CATALOG.md).
@@ -182,14 +202,23 @@ The complete list of components, with their XML attributes and code APIs, is in 
   such as `android:text`, `android:enabled`, `android:hint` and `android:src` are honoured
   where they make sense.
 - A `MalletSurface` (card) is a vertical `LinearLayout`; put rows and a `MalletDivider`
-  between row groups inside it. Dividers stretch from rim to rim by themselves.
+  between row groups inside it. Dividers stretch from rim to rim by themselves. So does a
+  row that slides aside: a `MalletRevealLayout` placed directly in the card is stretched
+  over the cell of its row, from rim to rim and from divider to divider, so that the action
+  it uncovers comes out from the rim of the card
+  ([INTERACTION_GUIDE.md](INTERACTION_GUIDE.md#9-reveal-expand-page)).
+- A card is a group: it holds at least two rows or blocks that belong together. A lone
+  control never gets a card of its own: it joins the card of its relatives, or it stands
+  on the canvas under its heading, directly in the `MalletPage`
+  ([DESIGN_SYSTEM.md](DESIGN_SYSTEM.md#51-page-rhythm)).
 - A card is slightly larger than it looks, because its shadow is drawn inside the view:
   1.4 dp at the sides, 1 dp above, 4.8 dp below. Leave vertical gaps as margins on the card,
   as in the example; the page rhythm is listed in
   [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md#5-space-and-layout).
 - A card does not clip its children, so the shadows of the controls inside it can fade out
   around them. A child that scrolls (`ScrollView`, a list, a `RecyclerView`) is the
-  exception and ends at its own edge. Plain content of your own, a line of text for
+  exception and ends at its own edge; a row that slides aside ends at the edge of its cell,
+  so that it leaves under the rim of the card. Plain content of your own, a line of text for
   instance, sits about 4 dp closer to the lower rim than to the upper one, because the
   lower gutter is the deeper; give it a bottom margin if that shows.
 - Give every view whose state should survive rotation an `android:id`, as with any Android
@@ -206,12 +235,10 @@ attribute can set.
 ```kotlin
 val card = MalletSurface(context)
 
-val track = MalletSegmentedTrack(context).apply {
-    setOptions("Off", "Gentle", "Standard", "Strict")
-    select(2, animate = false)
-    setOnSelectionChangeListener { _, index -> save(index) }
-}
-card.addView(track, LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT))
+card.addView(MalletControlRow(context).apply {
+    title = "Strength"
+    setSegmented(listOf("Off", "Gentle", "Standard", "Strict"), 2) { _, index -> save(index) }
+})
 card.addDivider(verticalMarginDp = 5f)
 card.addView(MalletEntryRow(context).apply {
     title = "Trusted accounts"
@@ -219,6 +246,21 @@ card.addView(MalletEntryRow(context).apply {
     arrow = MalletEntryRow.Arrow.END
     setOnClickListener { host.navigate("accounts") }
 })
+```
+
+The card holds a group: a control row, a divider between the row groups, an entry row. A
+control without relatives gets no card (section 4). Hand it to the page as it is, and it
+stands on the canvas under its heading:
+
+```kotlin
+val page = MalletPage(context)
+
+val power = MalletPowerSwitch(context).apply {
+    setChecked(true, animate = false)
+    setOnCheckedChangeListener { _, on -> setProtected(on) }
+}
+page.addSection("Protection", null, power)                           // a lone control: no card
+page.addSection("Filter", "How strictly content is filtered", card)  // a group: a card
 ```
 
 Two conventions hold for every control and are worth knowing from the start:
@@ -241,7 +283,7 @@ interfaces.
 MalletSegmentedTrack track = new MalletSegmentedTrack(context);
 track.setOptions("Off", "On");
 track.select(1, false);
-track.setOnSelectionChangeListener((view, index) -> prefs.setEnabled(index == 1));
+track.setOnSelectionChangeListener((source, index) -> prefs.setEnabled(index == 1));
 
 MalletTheme theme = MalletTheme.of(context);
 int ink = theme.getColors().getInk();
@@ -274,6 +316,11 @@ high-contrast text settings.
     <item name="malletHighContrast">true</item>
 </style>
 ```
+
+Each hue has three attributes, one for each of its colours: the bed (`malletHueCobalt`), the
+edge of the bed (`malletHueCobaltEdge`) and the labels resting on the bed
+(`malletHueOnCobalt`). Bronze, Ochre, Jade and Mist are named the same way. An attribute
+you leave out keeps its built-in value.
 
 `Theme.Mallet` follows night mode and also colours the window and the system bars (the light
 navigation bar from Android 8.1);
@@ -342,8 +389,8 @@ val hues = MalletHues.default().copy(
 MalletTheme.light().copy(hues = hues)
 ```
 
-A hue is three colours: the bed, a darker edge of the same hue, and the colour of labels
-resting on it. For a single control, set its hue directly (`switch.onHue = …`,
+A hue is always a triple: the bed, a darker edge of the same colour, and the colour of
+labels resting on the bed. For a single control, set its hue directly (`switch.onHue = …`,
 `track.setHues(…)`, `app:malletHue="jade"`).
 
 ---
@@ -466,7 +513,8 @@ with the default optimising configuration and no extra rules.
 |---|---|
 | A card's shadow looks cut off at the bottom | Something sets a fixed height smaller than the content plus the 4.8 dp gutter. Use `wrap_content`, or add the gutter to the height. |
 | Two cards touch | The gap between cards is a margin on the card (22 dp between sections); the gutter alone is not a gap. |
-| Something inside a card draws over the row below it | Cards do not clip their children. Scrolling views are clipped for you; for any other view that draws outside its bounds, set `clipBounds` on it or mark it with `isScrollContainer = true`. |
+| One control looks lost in a card of its own | A card is a group of at least two rows or blocks (section 4). Move the control into the card of its relatives as one more row (a `MalletControlRow` gives it a title), or take the card away and put the control directly into the page, under its heading (`page.addSection(title, detail, control)` in code). |
+| Something inside a card draws over the row below it | Cards do not clip their children. Scrolling views are clipped for you, and a row that slides aside (`MalletRevealLayout`) ends at its cell; for any other view that draws outside its bounds, set `clipBounds` on it or mark it with `isScrollContainer = true`. |
 | The text of some rows is centred and of others not | Entry rows and control rows are centred by default. Set `alignment = Alignment.START` (`app:malletEntryAlignment`, `app:malletControlRowAlignment`) on every row of a card that should read from the edge. |
 | The theme did not change after a setting changed | Views read the theme at construction. Recreate the activity (section 7.3) or rebuild the views. |
 | A listener is not called after `select()` or `setChecked()` | By design: listeners are for user input. Call your own handler after setting the value. |
@@ -474,6 +522,6 @@ with the default optimising configuration and no extra rules.
 | A page host takes a drag that a custom scrolling view should have had, or never takes over at its end | Implement `canScrollVertically` / `canScrollHorizontally` on that view truthfully; the host asks it who should move. |
 | Scrolling content stops short of the top edge of the screen | `MalletPage` ends what scrolls at the status bar on purpose (section 8). For a page inside a container that already keeps clear of the bars, set `fitSystemBars = false`. |
 | A text field is not focused when the screen opens | A page does not hand the focus to a field merely because a window opened, which would scroll to it and raise the keyboard. On a screen that is about typing, call `field.requestFocus()` yourself. |
-| Labels on blue or green tracks are hard to read | The default palette keeps the original white-on-hue look. Turn on `malletHighContrast`; see [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md#12-accessibility). |
+| Labels on blue or green tracks are hard to read | The default palette keeps the original look of white labels on these hues. Turn on `malletHighContrast`; see [DESIGN_SYSTEM.md](DESIGN_SYSTEM.md#12-accessibility). |
 | Manifest merger or duplicate-class errors | Mallet declares nothing in the manifest. Check that the three AndroidX dependencies are not excluded and that `android.useAndroidX=true`. |
 | Build fails on Windows with "path contains non-ASCII characters" | An Android Gradle Plugin check, unrelated to the library. Move the project, or set `android.overridePathCheck=true` in `gradle.properties`. |

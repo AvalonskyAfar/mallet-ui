@@ -13,7 +13,7 @@ import androidx.annotation.ColorInt
 import kotlin.math.roundToInt
 
 /**
- * Room, in dp, that a raised porcelain body leaves around itself for its shadow.
+ * Room, in dp, that a raised body leaves around itself for its shadow.
  *
  * A view that uses [MalletSurfaceDrawable] as its background is therefore a little larger than
  * the card the eye sees: 1.4 dp on each side, 1 dp above and 4.8 dp below.
@@ -28,11 +28,11 @@ public object MalletGutters {
 }
 
 /**
- * Background drawable for porcelain: cards, capsule buttons, dialogs, toasts and panels.
+ * Background drawable for a surface: cards, capsule buttons, dialogs, toasts and panels.
  *
  * @param radiusDp corner radius; ignored when [pill] is set
  * @param pill fully rounded ends, whatever the height
- * @param tint `null` for neutral porcelain, or the colour of a glazed body
+ * @param tint `null` for a neutral surface, or the colour of a coloured body
  * @param shadow whether the body is lifted; a flat body only keeps its rim
  */
 public class MalletSurfaceDrawable @JvmOverloads constructor(
@@ -58,11 +58,11 @@ public class MalletSurfaceDrawable @JvmOverloads constructor(
     private var layerAlpha = 255
 
     /**
-     * Colour of a glazed body, or `null` for neutral porcelain.
+     * Colour of a coloured body, or `null` for a neutral surface.
      *
      * The platform's tint calls end here too: `Drawable.setTint(int)`, [setTintList],
      * `DrawableCompat.setTint` and `android:backgroundTint` of the view that carries this
-     * background all hue the body.
+     * background all colour the body.
      */
     @get:ColorInt
     @setparam:ColorInt
@@ -75,8 +75,8 @@ public class MalletSurfaceDrawable @JvmOverloads constructor(
         }
 
     /**
-     * Hues the body with the default colour of [tint]; `null` returns it to neutral
-     * porcelain. The body has one colour, so the states of the list are not followed.
+     * Colours the body with the default colour of [tint]; `null` returns it to a neutral
+     * surface. The body has one colour, so the states of the list are not followed.
      */
     override fun setTintList(tint: ColorStateList?) {
         this.tint = tint?.defaultColor
@@ -149,7 +149,7 @@ public class MalletSurfaceDrawable @JvmOverloads constructor(
     override fun getAlpha(): Int = layerAlpha
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
-        // Porcelain is drawn from theme colours; a colour filter has no defined meaning here.
+        // Surfaces are drawn from theme colours; a colour filter has no defined meaning here.
     }
 
     @Deprecated("Deprecated in Java")

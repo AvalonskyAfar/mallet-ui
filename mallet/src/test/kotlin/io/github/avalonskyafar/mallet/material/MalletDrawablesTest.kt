@@ -26,7 +26,7 @@ class MalletDrawablesTest {
     }
 
     @Test
-    fun `the platform setTint hues the body and invalidates`() {
+    fun `the platform setTint colours the body and invalidates`() {
         val d = surface()
         val seen = Invalidations()
         d.callback = seen
@@ -37,7 +37,7 @@ class MalletDrawablesTest {
     }
 
     @Test
-    fun `a tint list hues with its default colour and null clears it`() {
+    fun `a tint list colours with its default colour and null clears it`() {
         val d = surface()
         d.setTintList(ColorStateList.valueOf(Color.BLUE))
         assertThat(d.tint).isEqualTo(Color.BLUE)

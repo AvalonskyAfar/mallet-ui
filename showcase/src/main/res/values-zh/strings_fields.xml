@@ -3,13 +3,13 @@
     <string name="fields_parts_title">文本框的组成</string>
     <string name="fields_parts_detail">上面是标签，中间是盛放文字的凹槽，下面是辅助行。每个文本框都可以输入。</string>
     <string name="fields_name_label">显示名称</string>
-    <string name="fields_name_hint">例如：守窑人</string>
+    <string name="fields_name_hint">例如：千纸鹤</string>
     <string name="fields_name_helper">显示在个人页面顶部。</string>
     <string name="fields_motto_label">签名</string>
-    <string name="fields_motto_text">三次入窑</string>
+    <string name="fields_motto_text">做好一件事</string>
     <string name="fields_password_label">密码</string>
-    <string name="fields_search_hint">搜索釉色</string>
-    <string name="fields_search_text">青瓷</string>
+    <string name="fields_search_hint">搜索底色</string>
+    <string name="fields_search_text">青玉</string>
     <string name="fields_search_idle">没有要搜索的内容。文字清空后，叉号也随之消失。</string>
     <string name="fields_search_status">正在搜索“%1$s”。</string>
 
@@ -28,10 +28,10 @@
     <string name="fields_forms_title">其他形态</string>
     <string name="fields_forms_detail">多行文字、用于配置的等宽字体，以及停用的文本框。</string>
     <string name="fields_note_label">备注</string>
-    <string name="fields_note_text">等窑完全冷却后再开。\n釉面遇到冷空气会开裂。</string>
+    <string name="fields_note_text">等机器空闲后再重启。\n中途断电，备份会中断。</string>
     <string name="fields_config_label">配置</string>
     <string name="fields_locked_label">设备名称</string>
-    <string name="fields_locked_text">三号窑</string>
+    <string name="fields_locked_text">三号机</string>
     <string name="fields_locked_helper">由管理员设定。</string>
     <string name="fields_locked_enable">启用文本框</string>
     <string name="fields_locked_disable">停用文本框</string>

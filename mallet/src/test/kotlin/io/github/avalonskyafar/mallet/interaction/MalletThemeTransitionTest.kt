@@ -17,6 +17,7 @@ import io.github.avalonskyafar.mallet.theme.MalletTextRole
 import io.github.avalonskyafar.mallet.theme.MalletTextTone
 import io.github.avalonskyafar.mallet.theme.MalletTheme
 import io.github.avalonskyafar.mallet.widget.MalletButton
+import io.github.avalonskyafar.mallet.widget.MalletControlRow
 import io.github.avalonskyafar.mallet.widget.MalletSegmentedTrack
 import io.github.avalonskyafar.mallet.widget.MalletSurface
 import io.github.avalonskyafar.mallet.widget.MalletText
@@ -97,23 +98,26 @@ class MalletThemeTransitionTest {
         val title = MalletText.create(activity, "Appearance", MalletTextRole.TITLE, MalletTextTone.INK)
         title.gravity = Gravity.CENTER_HORIZONTAL
         page.addView(title, LinearLayout.LayoutParams(-1, -2))
+        // One card for the display settings: utility rows, so that their tracks line up.
         val card = MalletSurface(activity)
-        val label = MalletText.create(activity, "Palette", MalletTextRole.HEADING, MalletTextTone.INK)
-        label.gravity = Gravity.CENTER_HORIZONTAL
-        card.addView(label, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(6) })
-        val track = MalletSegmentedTrack(activity)
-        track.options = listOf("Light", "Dark")
+        fun setting(name: String, options: List<String>, selected: Int): MalletSegmentedTrack {
+            val row = MalletControlRow(activity)
+            row.title = name
+            row.layout = MalletControlRow.Layout.UTILITY
+            card.addView(row, LinearLayout.LayoutParams(-1, -2))
+            return row.setSegmented(options, selected, null)
+        }
+        val track = setting("Palette", listOf("Light", "Dark"), if (theme.isDark) 1 else 0)
         track.setHues(theme.hues.uniform(2, theme.hues.mist))
-        track.select(if (theme.isDark) 1 else 0, animate = false)
         track.id = TRACK_ID
-        card.addView(track, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(8) })
+        setting("Larger text", listOf("Off", "On"), if (theme.textScale > 1f) 1 else 0)
+        page.addView(card, rows())
         val hint = MalletText.create(
             activity, "The page keeps its place while the light changes.",
             MalletTextRole.CAPTION, MalletTextTone.MUTED,
         )
         hint.gravity = Gravity.CENTER_HORIZONTAL
-        card.addView(hint, LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(6) })
-        page.addView(card, rows())
+        page.addView(hint, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(8) })
         val button = MalletButton(activity)
         button.text = "Done"
         button.variant = MalletButton.Variant.PRIMARY
@@ -181,18 +185,18 @@ class MalletThemeTransitionTest {
     @Test
     fun `capture paints the backdrop and refuses empty or oversized content`() {
         val activity = open(MalletTheme.light())
-        val bare = View(activity)
-        assertThat(MalletThemeTransition.capture(bare, Color.RED)).isNull()
+        val blank = View(activity)
+        assertThat(MalletThemeTransition.capture(blank, Color.RED)).isNull()
 
-        bare.layout(0, 0, 40, 30)
-        val small = MalletThemeTransition.capture(bare, Color.rgb(12, 34, 56))!!
+        blank.layout(0, 0, 40, 30)
+        val small = MalletThemeTransition.capture(blank, Color.rgb(12, 34, 56))!!
         assertThat(small.width).isEqualTo(40)
         assertThat(small.height).isEqualTo(30)
         assertThat(small.getPixel(20, 15)).isEqualTo(Color.rgb(12, 34, 56))
 
         // 2048 x 2048 x 4 is exactly the limit; one more row is over it.
-        bare.layout(0, 0, 2048, 2049)
-        assertThat(MalletThemeTransition.capture(bare, Color.RED)).isNull()
+        blank.layout(0, 0, 2048, 2049)
+        assertThat(MalletThemeTransition.capture(blank, Color.RED)).isNull()
     }
 
     @Test

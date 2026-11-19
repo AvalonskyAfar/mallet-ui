@@ -36,7 +36,9 @@ Marks: **Extracted** from the original app, **Extended** from an idea in it, **N
    that direction: a track for horizontal drags, a list for vertical ones, the page for what
    is left. Ownership is handed over when the inner thing reaches its limit.
 7. **A gesture is never the only way.** Whatever a swipe does can also be done with a tap, a
-   key, the Back button or an accessibility action.
+   key, the Back button or an accessibility action. Between pages that is a tap on an entry
+   or a row on the way out and the system's Back on the way back
+   ([5.4](#54-marks-and-their-absence)).
 8. **Feedback confirms, it does not decorate.** A haptic tick marks a committed change and
    nothing else.
 
@@ -139,10 +141,12 @@ platform role.
 **Extracted and generalised.** Origin: `MainActivity.GestureHost`, where the page map was
 hard-coded in `targetFor()`.
 
-In Mallet an app is a map. Each page lies beside, above or below another, and you reach it
-by dragging towards it. The page under the finger and the one it uncovers travel together,
-edge to edge, at finger speed; nothing fades or scales. A chevron on a row points to where
-its page lies, so the row and the motion tell the same story.
+In Mallet an app is a map. Each page lies beside, above or below another, and a drag
+brings it in from the side on which it lies: drag up, and the page below follows the finger.
+The page under the finger and the one it uncovers travel together, edge to edge, at finger
+speed; nothing fades or scales. A chevron on a row points to where its page lies, so the row
+and the motion tell the same story. What else a page shows of the map, and what it leaves
+out on purpose, is in [5.4](#54-marks-and-their-absence).
 
 ### 5.1 Describe the map
 
@@ -198,8 +202,8 @@ process death.
 ### 5.3 What the host does with a finger
 
 1. Inside the touch slop nothing is decided; then the axis is locked for the gesture.
-2. A drag towards a side that has a draggable neighbour starts a move. Any other drag is
-   left alone for the rest of the gesture.
+2. A drag away from a side on which a draggable neighbour lies starts a move: the neighbour
+   follows the finger in. Any other drag is left alone for the rest of the gesture.
 3. Horizontal drags that begin within 24 dp of a screen edge are left to the system's own
    back gesture.
 4. Both pages are translated by the finger offset. The offset cannot leave the travel and
@@ -214,6 +218,66 @@ process death.
    the current page.
 
 Section 10 describes how the host shares the finger with scrolling content and controls.
+
+### 5.4 Marks, and their absence
+
+**Extracted**, in part **Extended**: decision D-23 in
+[DESIGN_DECISIONS.md](DESIGN_DECISIONS.md). Origin: `MainActivity.mainPage`, a centre column
+and a bottom row of three entries; no page of the original has a back control, at any
+depth.
+
+A place carries no signpost. Home, the root page of the map, shows nothing that points at
+its neighbours: no arrows, no page names at the edges. It names the pages around it once, in
+a row of entries at its bottom: an outline icon above a short label, one entry for each
+first-level page, which is a page that lies directly beside, above or below Home. The row is
+the navigation row, `MalletNavBar`, in launcher mode: no bar, nothing selected, every entry
+a shortcut. Have its listener call `host.navigate(key)`: a tapped entry then brings its page
+in from the side on which it lies, as a drag does.
+
+```kotlin
+// Part of Home's own view, at its bottom: the row belongs to that page and travels with it.
+val around = listOf("guide", "settings", "more")     // start side, below, end side
+val entries = MalletNavBar(this).apply {
+    mode = MalletNavBar.Mode.LAUNCHER
+    addItem(MalletIcon.BOOK, getString(R.string.guide))
+    addItem(MalletIcon.SLIDERS, getString(R.string.settings))
+    addItem(MalletIcon.MORE_CIRCLE, getString(R.string.more))
+    setOnItemSelectedListener { _, index -> host.navigate(around[index]) }
+}
+```
+
+List the entries as the map lies: the page at the start side first, the page at the end side
+last, the pages below and above between them. The row mirrors in right-to-left layouts, so
+the first entry stays on the side of its page. It keeps clear of the system navigation bar
+by itself; set `fitNavigationBar = false` where the page is already padded for the system
+bars. *(Extended: the original has three entries for its three first-level pages, says left
+and right where Mallet says start and end, and has no page above its main page; where the
+pages below and above stand in the row is Mallet's.)*
+
+A first-level page shows no way back: no back row, no arrow, no bar. It is left the way it
+was reached, by dragging back towards Home, or with the system's Back. A page without a
+button to tap is how the drag becomes a habit; the original is built this way on purpose. A
+page above or below Home that scrolls hands the drag over only where its scrolling ends
+([section 10](#10-who-owns-the-gesture)), so from the middle of a long page Back is the
+short way.
+
+A deeper page is opened from a row, whose chevron points to the side on which it lies. The
+host adds no control to any page, so what a deeper page shows of the way back is the app's
+choice. The showcase gives each of its deeper pages a quiet way-back row that names the
+parent and leads there with `host.back()`. That row is **New**, an aid for readers of a demo
+with many deeper pages: the original has no back control at any depth.
+
+Without a drag, for a keyboard, a switch or a screen reader, this means:
+
+- **The way out is on screen.** Home's entries are focusable and operable with keys: the
+  Left and Right arrows move from entry to entry, Space or Enter opens the page.
+  Accessibility services get each entry as a button named by its label.
+- **The way back is the system's Back.** On a first-level page nothing on screen offers it,
+  so `MalletBack` ([section 6](#6-system-back)) belongs to every host: without it, or a
+  handler of your own that calls `host.back()`, Back closes the activity.
+- **The host adds nothing of its own.** It has no key and no accessibility action for a
+  move, and it does not announce the page that lands. A page that can only be dragged to is
+  out of reach without a drag: give every page an entry or a row.
 
 ---
 
@@ -236,6 +300,8 @@ override fun onBackPressed() {
 ```
 
 - Back leads to `graph.parentOf(currentKey)`: the page the current one was connected from.
+- **On a first-level page** nothing on screen leads back
+  ([5.4](#54-marks-and-their-absence)), so Back is the one way that needs no drag.
 - **Android 14 and later:** the back swipe *previews* the move. The pages follow the swipe
   for up to 40 % of the way (`MalletSpatialHost.BACK_PREVIEW_FRACTION`), land when the
   gesture completes and glide back when it is cancelled. It is the same movement a finger
@@ -322,23 +388,55 @@ the change is seen to arrive; repeated calls coalesce into one recreation. The f
 
 ### 9.1 `MalletRevealLayout` — a row that slides aside
 
-**Extracted.** Origin: the account rows of `WhitelistAccountsPage`.
+**Extended**; it departs from the original on purpose: decision D-24 in
+[DESIGN_DECISIONS.md](DESIGN_DECISIONS.md). Origin: the account rows of
+`WhitelistAccountsPage`.
 
 ```kotlin
-val reveal = MalletRevealLayout(context)
-reveal.addView(row)
-reveal.setAction(getString(R.string.delete), MalletTextTone.DANGER) { remove(item) }
+val card = MalletSurface(context)                    // vertical: one row above the other
+for ((index, item) in items.withIndex()) {
+    if (index > 0) card.addDivider()                 // a cell ends at a divider
+    val reveal = MalletRevealLayout(context)
+    reveal.addView(rowFor(item))                     // exactly one child, the row
+    reveal.setAction(getString(R.string.delete), MalletTextTone.DANGER, MalletIcon.TRASH) {
+        remove(item)
+    }
+    card.addView(reveal)                             // a direct child of the card
+}
 ```
 
-- Dragging the row towards the open direction uncovers a 78 dp strip holding one action on a
-  recessed coloured bed. The row follows the finger and stops at the strip width.
-- Release opens the row when at least 42 % of the strip is uncovered, otherwise closes it.
-- Opening one row closes its open siblings. A tap on an open row closes it.
+- **The action comes out from the rim of the card.** In a vertical `MalletSurface`, a
+  `MalletRevealLayout` that is a direct child is stretched over the *cell* of its row: from
+  rim to rim, up to the divider above it and down to the divider below it, or to the rim of
+  the card where it is the first or the last child, whose corners it then follows. Beside a
+  neighbour that is not a full-bleed divider, the cell ends at the layout's own edge. The
+  row keeps the place the card's padding gave it.
+- Dragging the row away from its reveal edge uncovers a recessed coloured bed that starts at
+  the rim. The bed shows exactly as far as the row has moved, and the action (an icon above
+  a label) comes out from the edge together with the row. A closed row shows no colour.
+- The row follows the finger and stops after 78 dp, the width of the action strip. Release
+  opens the row when at least 42 % of the strip is uncovered, otherwise closes it.
+- Opening one row closes its open siblings. A tap on an open row closes it. All of the
+  uncovered bed is the touch target of the action; the row stays open after the action has
+  run, so close or remove it in the callback.
 - A switch or track inside the row keeps its own drag: a gesture that starts on it never
   reveals the action.
 - The action is also offered as an accessibility action and through the keyboard, so nobody
-  has to swipe to reach it.
-- The row lives inside its card: it draws a flat fill and adds no rim or shadow of its own.
+  has to swipe to reach it: with the row focused, the arrow that points away from the reveal
+  edge opens it, Enter or Space then runs the action, the opposite arrow or Escape closes it.
+- The reveal edge is the start edge unless `revealEdge` is `MalletRevealLayout.Edge.END`;
+  either way it mirrors in right-to-left layouts.
+- The layout gives the row no fill, rim or shadow of its own. The sliding row is clipped to
+  the cell, so it leaves under the far rim.
+- **Outside a card.** With any other parent, or in a horizontal surface, the layout is its
+  own cell: the bed is flush with the edges of the layout, and padding of the layout insets
+  the row, never the bed. Wrapped in another view inside a card, a row is not stretched.
+
+The original draws the bed as a box inside the card's padding. A coloured box floating
+there is a box in a box; the action should look as if it had been lying under the card and
+the row had been pulled off it. What stays **Extracted**: the 78 dp strip, the 42 %
+threshold, the durations, the white centred label, the recessed paint of the bed, that a tap
+closes the row, and that a switch in the row keeps its own drag.
 
 ### 9.2 `MalletExpandableLayout` — a section that opens
 
