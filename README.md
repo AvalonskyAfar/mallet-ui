@@ -102,8 +102,28 @@ The components
 
 ## Quick start
 
-Mallet UI is not on Maven Central yet. A release carries a ready-made Maven repository:
-unzip `mallet-0.1.0-maven-repo.zip` into your project, for example into `libs/mallet-repo/`.
+Mallet UI is not on Maven Central yet. The simplest way is JitPack, which builds the library
+from this repository's tag:
+
+```kotlin
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+
+// app/build.gradle.kts
+dependencies {
+    implementation("com.github.AvalonskyAfar:mallet-ui:v0.1.0")
+}
+```
+
+Each release also carries a ready-made Maven repository, for projects that would rather not
+depend on JitPack: unzip `mallet-0.1.0-maven-repo.zip` into your project, for example into
+`libs/mallet-repo/`, and point a repository at it.
 
 ```kotlin
 // settings.gradle.kts

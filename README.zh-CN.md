@@ -99,8 +99,26 @@ AAR，不包含任何图片或字体文件。
 
 ## 快速开始
 
-Mallet UI 尚未发布到 Maven Central。每个发行版都附带一个现成的 Maven 仓库：把
-`mallet-0.1.0-maven-repo.zip` 解压到你的工程里，例如 `libs/mallet-repo/`。
+Mallet UI 尚未发布到 Maven Central。最省事的办法是 JitPack，它直接从本仓库的 tag 构建：
+
+```kotlin
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+
+// app/build.gradle.kts
+dependencies {
+    implementation("com.github.AvalonskyAfar:mallet-ui:v0.1.0")
+}
+```
+
+每个发行版另外附一个现成的 Maven 仓库，不想依赖 JitPack 的工程可以用它：把
+`mallet-0.1.0-maven-repo.zip` 解压到你的工程里，例如 `libs/mallet-repo/`，再把这个目录配成仓库。
 
 ```kotlin
 // settings.gradle.kts
