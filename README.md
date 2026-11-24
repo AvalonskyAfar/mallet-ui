@@ -235,7 +235,7 @@ around Home.
 ```
                     Appearance
                         |
-  Foundations  ——  Home  ——  Interactions
+      Foundations  ——  Home  ——  Interactions
                         |
                    Components
 ```
@@ -278,26 +278,6 @@ set, text size, contrast, motion and haptics while it runs.
 | [Verification](docs/VERIFICATION.md) | What was built, run and measured for this release, and what was not |
 | [Licence audit](docs/LICENSE_AUDIT.md) · [Third-party notices](THIRD_PARTY_NOTICES.md) | Licences of the origin and of every dependency |
 | [Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) | |
-
-## Where it comes from
-
-Mallet UI is extracted from the interface of **Gravekeeper (守目人)**, an Android app by the same
-author whose screens are built entirely in Java, without a single layout file, by one class
-tied to that app. The design idea and the interaction model were complete there, but they
-could not be reused, and much of a general toolkit was missing.
-
-Mallet keeps the idea, states it as tokens and rules, rewrites the parts as independent
-components, and fills the gaps in the same language. Every part is marked:
-
-| Mark | Meaning | Examples |
-|---|---|---|
-| **Extracted** | design and numbers taken from the original | segmented track, switches, card, rows, dialog, spatial navigation, press |
-| **Extended** | an original idea generalised or completed | button variants, stepper, text field, navigation row, icons, theme |
-| **New** | designed for Mallet from its materials and rules | checkbox, radio, slider, progress, chips, tabs, top bar, menu, bottom sheet, states, skeleton, banner |
-
-The evidence, with file and line of the original for every extracted part, and the reasons
-for every deliberate difference, is in [Design decisions](docs/DESIGN_DECISIONS.md). The
-library contains none of the original app's business logic, models or artwork.
 
 ## Verified
 
