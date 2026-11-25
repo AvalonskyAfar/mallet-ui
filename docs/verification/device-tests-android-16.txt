@@ -1,7 +1,11 @@
 Mallet showcase: device tests
 device: Google sdk_gphone64_x86_64, Android 16 (API 36), x86_64, Physical size: 1080x2400, Physical density: 420
-date:   2026-11-18 02:16 +0800
+date:   2026-11-25 12:03 +0800
 
+passed   AnimationDeviceTest.thePowerSwitchGlidesOnEveryTap
+passed   AnimationDeviceTest.aSwitchInACardGlidesOnEveryTap
+passed   AnimationDeviceTest.aKeptPageComesBackLaidOut
+passed   AnimationDeviceTest.thePowerSwitchStillGlidesAfterHomeComesBack
 passed   AppearanceDeviceTest.largerTextScalesTheTypeOfTheRebuiltPage
 passed   AppearanceDeviceTest.choosingDarkRebuildsTheScreenInTheDarkPaletteAndLightBringsItBack
 passed   ControlsDeviceTest.aChangeTheListenerRefusesGlidesBack
@@ -21,11 +25,13 @@ passed   GesturesDeviceTest.aSwitchInsideASlidingRowKeepsItsOwnDrag
 passed   GesturesDeviceTest.aRowSlidesAsideAndItsActionRemovesIt
 passed   GesturesDeviceTest.aShortDragLetsTheRowGlideShut
 passed   NavigationDeviceTest.aShortSlowDragGlidesBack
+passed   NavigationDeviceTest.anEntryAtTheBottomOfHomeOpensThePageItNames
 passed   NavigationDeviceTest.theAppStartsOnHomeAndThePowerSwitchAnswersTapAndDrag
 passed   NavigationDeviceTest.draggingTowardsANeighbourTravelsThereAndBackReturns
 passed   NavigationDeviceTest.aPageThatArrivesLaterKeepsClearOfTheSystemBars
 passed   NavigationDeviceTest.aRowOpensItsPageAndBackWalksUpTheMap
 passed   NavigationDeviceTest.aSecondActivityArrivesLikeAPageAndIsSwipedBack
+passed   NavigationDeviceTest.aPageAroundHomeCarriesNoWayBackAndIsLeftByDraggingBack
 passed   NavigationDeviceTest.rotatingTheDeviceKeepsThePage
 passed   OverlaysDeviceTest.aDialogWithThreeActionsReportsTheOneThatWasPicked
 passed   OverlaysDeviceTest.anInputDialogKeepsARejectedNameAndClosesOnAGoodOne
@@ -39,4 +45,4 @@ passed   PagesDeviceTest.everyPageOpensAndDrawsInTheDarkTheme
 passed   PagesDeviceTest.theWindowIsNotBlank
 passed   PagesDeviceTest.everyPageOpensAndDrawsInTheLightTheme
 
-36 tests in 331 s: 36 passed
+42 tests in 378 s: 42 passed

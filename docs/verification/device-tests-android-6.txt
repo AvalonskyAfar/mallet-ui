@@ -1,7 +1,11 @@
 Mallet showcase: device tests
 device: unknown Android SDK built for x86_64, Android 6.0 (API 23), x86_64, Physical size: 1080x1920, Physical density: 420
-date:   2026-11-18 02:38 +0800
+date:   2026-11-25 11:51 +0800
 
+passed   AnimationDeviceTest.thePowerSwitchGlidesOnEveryTap
+passed   AnimationDeviceTest.aSwitchInACardGlidesOnEveryTap
+passed   AnimationDeviceTest.aKeptPageComesBackLaidOut
+passed   AnimationDeviceTest.thePowerSwitchStillGlidesAfterHomeComesBack
 passed   AppearanceDeviceTest.largerTextScalesTheTypeOfTheRebuiltPage
 passed   AppearanceDeviceTest.choosingDarkRebuildsTheScreenInTheDarkPaletteAndLightBringsItBack
 passed   ControlsDeviceTest.aChangeTheListenerRefusesGlidesBack
@@ -21,11 +25,13 @@ passed   GesturesDeviceTest.aSwitchInsideASlidingRowKeepsItsOwnDrag
 passed   GesturesDeviceTest.aRowSlidesAsideAndItsActionRemovesIt
 passed   GesturesDeviceTest.aShortDragLetsTheRowGlideShut
 passed   NavigationDeviceTest.aShortSlowDragGlidesBack
+passed   NavigationDeviceTest.anEntryAtTheBottomOfHomeOpensThePageItNames
 passed   NavigationDeviceTest.theAppStartsOnHomeAndThePowerSwitchAnswersTapAndDrag
 passed   NavigationDeviceTest.draggingTowardsANeighbourTravelsThereAndBackReturns
 passed   NavigationDeviceTest.aPageThatArrivesLaterKeepsClearOfTheSystemBars
 passed   NavigationDeviceTest.aRowOpensItsPageAndBackWalksUpTheMap
 passed   NavigationDeviceTest.aSecondActivityArrivesLikeAPageAndIsSwipedBack
+passed   NavigationDeviceTest.aPageAroundHomeCarriesNoWayBackAndIsLeftByDraggingBack
 passed   NavigationDeviceTest.rotatingTheDeviceKeepsThePage
 passed   OverlaysDeviceTest.aDialogWithThreeActionsReportsTheOneThatWasPicked
 passed   OverlaysDeviceTest.anInputDialogKeepsARejectedNameAndClosesOnAGoodOne
@@ -38,4 +44,4 @@ passed   OverlaysDeviceTest.backClosesADialogWithoutConfirmingAndStaysOnThePage
 passed   PagesDeviceTest.everyPageOpensAndDrawsInTheDarkTheme
 passed   PagesDeviceTest.everyPageOpensAndDrawsInTheLightTheme
 
-35 tests in 229 s: 35 passed
+41 tests in 326 s: 41 passed

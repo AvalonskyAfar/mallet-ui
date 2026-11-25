@@ -75,6 +75,11 @@ public abstract class MalletControl @JvmOverloads constructor(
     /**
      * Animates from [from] to [to] along the Mallet glide and reports every value to
      * [onUpdate]. With reduced motion the end value is applied at once and `null` is returned.
+     *
+     * The glide does not depend on the control having been through a layout pass: a control
+     * that is attached and operated moves. A page that was taken off screen and put back used
+     * to answer "not laid out" to that question and the move became a jump; the host now lays
+     * such a page out before it is shown, and the question is not asked here either way.
      */
     protected fun settle(
         from: Float,
@@ -82,7 +87,7 @@ public abstract class MalletControl @JvmOverloads constructor(
         durationMs: Long = MalletMotion.CONTROL_MS,
         onUpdate: (Float) -> Unit,
     ): ValueAnimator? {
-        if (theme.reduceMotion || from == to || !isLaidOut) {
+        if (theme.reduceMotion || from == to) {
             onUpdate(to)
             invalidate()
             return null

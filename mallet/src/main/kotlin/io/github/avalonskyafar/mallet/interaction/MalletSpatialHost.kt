@@ -234,6 +234,7 @@ public class MalletSpatialHost @JvmOverloads constructor(
         incoming = page
         if (horizontal) page.translationX = -direction * travel() else page.translationY = -direction * travel()
         addView(page, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
+        layOutAgain(page)
         startSettle(complete = true)
     }
 
@@ -309,6 +310,46 @@ public class MalletSpatialHost @JvmOverloads constructor(
         if (key != null && (keep == null || key in keep)) cache[key] = view
     }
 
+    /**
+     * Lays a page out again, with everything inside it, before it is shown.
+     *
+     * A kept page comes back at the size it left. Android then lays nothing out inside it: the
+     * page's frame has not changed and nothing asked for a measure, so the page skips its own
+     * layout and every view in it keeps the state it was given when the page was taken off
+     * screen — "not laid out" — even though the page is attached and on screen. Controls ask
+     * that question before they glide, and a view that is not laid out is refused by more than
+     * controls (transitions, for one), so the page must come back laid out.
+     *
+     * Asking for a layout is not enough on older Androids: the pass can land on the page
+     * without measuring it, and a page that was not measured skips laying out its children. So
+     * the page is measured and placed here, the way this host would do it, once. Sizes and
+     * frames do not change, so the pass costs nothing visible.
+     */
+    private fun layOutAgain(view: View) {
+        markForLayout(view)
+        if (width <= 0 || height <= 0) {
+            // Not measured itself yet: the first real pass will lay the page out from scratch.
+            if (view.parent === this) view.requestLayout()
+            return
+        }
+        val widthSpec = MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY)
+        val heightSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+        measureChildWithMargins(view, widthSpec, 0, heightSpec, 0)
+        val left = view.left
+        val top = view.top
+        val right = if (view.right > left) view.right else left + view.measuredWidth
+        val bottom = if (view.bottom > top) view.bottom else top + view.measuredHeight
+        view.layout(left, top, right, bottom)
+    }
+
+    /** Marks [view] and everything inside it as needing a measure and a layout. */
+    private fun markForLayout(view: View) {
+        view.forceLayout()
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) markForLayout(view.getChildAt(i))
+        }
+    }
+
     private fun replaceWith(key: String, view: View) {
         cancelSettleAnimator()
         val oldKey = current
@@ -320,6 +361,7 @@ public class MalletSpatialHost @JvmOverloads constructor(
         view.translationX = 0f
         view.translationY = 0f
         if (view.parent !== this) addView(view, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
+        layOutAgain(view)
         current = key
         currentView = view
         clearMove()
@@ -627,6 +669,7 @@ public class MalletSpatialHost @JvmOverloads constructor(
         direction = if (delta >= 0f) 1 else -1
         setOffset(page, -direction * travel())
         addView(page, 0, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
+        layOutAgain(page)
         parent?.requestDisallowInterceptTouchEvent(true)
         updateDrag(delta)
     }

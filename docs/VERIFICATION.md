@@ -2,7 +2,10 @@
 
 What was built, run and looked at for version 0.1.0, on which machine, with which result,
 and what was not verified. Every number here was produced by a run on the sources of this
-release; where something was only read, or only looked at, it says so.
+release; where something was only read, or only looked at, it says so. The test figures
+were run again on 2026-11-25 at the commit that fixed animations stopping on a page you
+came back to (see [CHANGELOG](../CHANGELOG.md)); every other figure is the record of the
+release itself.
 
 Contents: [Summary](#summary) · [Environment](#environment) · [Tests on the JVM](#tests-on-the-jvm) ·
 [Static checks](#static-checks) · [Tests on devices](#tests-on-devices) ·
@@ -19,8 +22,8 @@ Contents: [Summary](#summary) · [Environment](#environment) · [Tests on the JV
 | Unit tests of the library (JVM, Robolectric) | 1,045 tests, 0 failures |
 | Unit tests of the showcase (JVM, Robolectric) | 35 tests, 0 failures; 8 more (films) pass when asked for |
 | Android Lint, warnings as errors | no issues in `:mallet`, no issues in `:showcase` |
-| Device tests, Android 16 (API 36) emulator | 36 tests, 0 failures, and 18 with the two tours (54 in all) |
-| Device tests, Android 6.0 (API 23) emulator | 35 tests, 0 failures, and 16 with the two tours (51 in all) |
+| Device tests, Android 16 (API 36) emulator | 42 tests, 0 failures, and 18 with the two tours, run earlier |
+| Device tests, Android 6.0 (API 23) emulator | 41 tests, 0 failures, and 16 with the two tours, run earlier |
 | Shrunk release APK, every page opened on both emulators | 27 of 27 pages on each, no crash |
 | Library used as a binary by a separate Java project | builds shrunk, runs on both emulators |
 | The source archive, unpacked elsewhere, builds and passes its tests | 1,045 + 35 tests, lint without issues, both release builds |
@@ -122,16 +125,18 @@ the window, the view tree. State is read from the views afterwards.
 | `OverlaysDeviceTest` | 8 | dialogs confirmed, cancelled with Back, with three actions, with input that is refused and then accepted; a sheet dragged down; a sheet action; a menu; a toast that leaves by itself |
 | `AppearanceDeviceTest` | 2 | switching to dark and back, and to larger text, while the app runs |
 | `PagesDeviceTest` | 3 | every page opened and scrolled from top to bottom in light and in dark with hardware rendering; every page opens at its top; the window is not blank |
+| `AnimationDeviceTest` | 4 | a power switch tapped five times in a row on Home, and five times over after Home has been left and returned to four times; a kept page comes back laid out, with the switch in it; a switch in a card tapped five times in a row. A glide is a run of frames and a jump is one, so each tap is checked by counting the frames the page draws around it |
 
-**Device A, Android 16: 36 tests, 0 failures**, recorded 2026-11-18
-([report](verification/device-tests-android-16.txt)); the two tours add 18 cases, and the re-run at
-commit `00e76d0` passed all 54.
+**Device A, Android 16: 42 tests, 0 failures**, recorded 2026-11-25
+([report](verification/device-tests-android-16.txt)); 18 more cases come from the two tours,
+run on 2026-11-18.
 
-**Device B, Android 6.0: 35 tests, 0 failures**, recorded 2026-11-18
-([report](verification/device-tests-android-6.txt)); the tours add 16, and the re-run at commit
-`00e76d0` passed all 51. One case, the window-is-not-blank pixel check, needs an API from
-Android 8.0 and does not run there. Every page was also photographed on this
-device in both themes, and the overlays in both themes, and the pictures were looked at.
+**Device B, Android 6.0: 41 tests, 0 failures**, recorded 2026-11-25
+([report](verification/device-tests-android-6.txt)); 16 more cases come from the two tours,
+run on 2026-11-18. One case, the window-is-not-blank pixel check, needs an API from
+Android 8.0 and does not run there, which is why this device runs one case fewer. Every
+page was also photographed on this device in both themes, and the overlays in both
+themes, and the pictures were looked at.
 
 The screenshot tour (8 parts, 159 pictures;
 [report](verification/screenshot-tour-android-16.txt)) and the motion tour (8 clips;

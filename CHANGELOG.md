@@ -4,6 +4,19 @@ All notable changes to Mallet UI are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [Semantic Versioning](https://semver.org/). Until 1.0, a minor version may change the API.
 
+## Unreleased
+
+### Fixed
+
+- Animations no longer stop on a page you come back to. A page the host keeps is taken off
+  screen and put back at the size it left; Android laid nothing out inside it, so every view
+  in it still answered "not laid out", and a control asked that question before it glided, so
+  it applied the new state at once instead. The host now lays such a page out before it is
+  shown (`MalletSpatialHost`), and a control's glide no longer depends on that bookkeeping
+  (`MalletControl.settle`). `AnimationDeviceTest` holds both facts: it counts the frames a
+  page draws around a tap, on the first tap and on every tap after the page has been left
+  and returned to.
+
 ## 0.1.0 — 2026-11-18
 
 The first release of Mallet UI: the design language of the Gravekeeper app, restated as an
