@@ -4,7 +4,7 @@ All notable changes to Mallet UI are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [Semantic Versioning](https://semver.org/). Until 1.0, a minor version may change the API.
 
-## Unreleased
+## 0.1.1 — 2026-11-26
 
 ### Fixed
 

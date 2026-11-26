@@ -8,7 +8,7 @@
   <img alt="许可证：MIT" src="https://img.shields.io/badge/licence-MIT-2E5E8C">
   <img alt="Android 6.0+" src="https://img.shields.io/badge/Android-6.0%2B%20(API%2023)-4C8C6B">
   <img alt="Views：XML、Kotlin、Java" src="https://img.shields.io/badge/Views-XML%20%C2%B7%20Kotlin%20%C2%B7%20Java-B5713C">
-  <img alt="版本 0.1.0" src="https://img.shields.io/badge/version-0.1.0-8A8F98">
+  <img alt="版本 0.1.1" src="https://img.shields.io/badge/version-0.1.1-8A8F98">
 </p>
 
 <p align="center">
@@ -100,7 +100,7 @@ AAR，不包含任何图片或字体文件。
 ## 快速开始
 
 Mallet UI 尚未发布到 Maven Central。每个发行版都附带一个现成的 Maven 仓库：把
-`mallet-0.1.0-maven-repo.zip` 解压到你的工程里，例如 `libs/mallet-repo/`。
+`mallet-0.1.1-maven-repo.zip` 解压到你的工程里，例如 `libs/mallet-repo/`。
 
 ```kotlin
 // settings.gradle.kts
@@ -114,7 +114,7 @@ dependencyResolutionManagement {
 
 // app/build.gradle.kts
 dependencies {
-    implementation("io.github.avalonskyafar:mallet:0.1.0")
+    implementation("io.github.avalonskyafar:mallet:0.1.1")
 }
 ```
 
@@ -302,7 +302,7 @@ tools/       目录与图片生成脚本、设备运行脚本
 
 ## 状态
 
-0.1.0 是第一个版本。API 全库遵循同一套约定，并有测试覆盖，但尚未经历过弃用周期：在 1.0
+0.1.1 是第二个版本，0.1.0 是第一个。API 全库遵循同一套约定，并有测试覆盖，但尚未经历过弃用周期：在 1.0
 之前，次版本号的升级可能会改动 API。
 
 ## 许可证

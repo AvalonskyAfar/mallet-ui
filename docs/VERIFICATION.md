@@ -1,11 +1,11 @@
 # Verification
 
-What was built, run and looked at for version 0.1.0, on which machine, with which result,
+What was built, run and looked at for version 0.1.1, on which machine, with which result,
 and what was not verified. Every number here was produced by a run on the sources of this
 release; where something was only read, or only looked at, it says so. The test figures
 were run again on 2026-11-25 at the commit that fixed animations stopping on a page you
-came back to (see [CHANGELOG](../CHANGELOG.md)); every other figure is the record of the
-release itself.
+came back to, which is the code of 0.1.1 (see [CHANGELOG](../CHANGELOG.md)); every other
+figure is the record of 0.1.0, whose code differs from 0.1.1 by that fix alone.
 
 Contents: [Summary](#summary) · [Environment](#environment) · [Tests on the JVM](#tests-on-the-jvm) ·
 [Static checks](#static-checks) · [Tests on devices](#tests-on-devices) ·
@@ -202,11 +202,11 @@ a working directory, and without the build cache.
 
 | File | What it is | Size |
 |---|---|---|
-| `mallet-0.1.0.aar` | the library | 0.8 MB |
-| `mallet-0.1.0-sources.jar` | its sources, for IDEs | 0.3 MB |
-| `mallet-0.1.0-maven-repo.zip` | a Maven repository with the AAR, its POM, Gradle module metadata and the sources | 1.1 MB |
-| `mallet-showcase-0.1.0.apk` | the demo app, shrunk by R8 | 0.5 MB |
-| `mallet-ui-0.1.0-source.zip` | this project without build output | 23 MB |
+| `mallet-0.1.1.aar` | the library | 0.8 MB |
+| `mallet-0.1.1-sources.jar` | its sources, for IDEs | 0.3 MB |
+| `mallet-0.1.1-maven-repo.zip` | a Maven repository with the AAR, its POM, Gradle module metadata and the sources | 1.1 MB |
+| `mallet-showcase-0.1.1.apk` | the demo app, shrunk by R8 | 0.5 MB |
+| `mallet-ui-0.1.1-source.zip` | this project without build output | 23 MB |
 | `SHA256SUMS.txt` | the checksums of the five files | |
 
 The AAR holds the library's classes and resources only: no image, no font, no native code,
@@ -226,13 +226,13 @@ evaluation; it must not be published to a store as it is.
 ## Integration
 
 - **As a binary.** `samples/minimal` is a project of its own, in Java and XML, with one
-  dependency: `io.github.avalonskyafar:mallet:0.1.0` from the Maven repository that `dist`
+  dependency: `io.github.avalonskyafar:mallet:0.1.1` from the Maven repository that `dist`
   produces. It was built against the repository unpacked from
-  `mallet-0.1.0-maven-repo.zip`, shrunk by R8 without a keep rule (an APK of 0.17 MB),
+  `mallet-0.1.1-maven-repo.zip`, shrunk by R8 without a keep rule (an APK of 0.17 MB),
   installed on both emulators and operated: the screen appears with the hue its theme
   overrides, a save without a name shows the field's error, the track answers, the
   confirmation dialog restores the defaults.
-- **From the source archive.** `mallet-ui-0.1.0-source.zip` was unpacked into an empty
+- **From the source archive.** `mallet-ui-0.1.1-source.zip` was unpacked into an empty
   directory outside the working tree. There
   `./gradlew :mallet:testDebugUnitTest :showcase:testDebugUnitTest :mallet:lintDebug :showcase:lintDebug :mallet:assembleRelease :showcase:assembleRelease --no-build-cache`
   succeeded: the same 1,045 and 35 tests, no lint issue, both release builds.

@@ -8,7 +8,7 @@
   <img alt="Licence: MIT" src="https://img.shields.io/badge/licence-MIT-2E5E8C">
   <img alt="Android 6.0+" src="https://img.shields.io/badge/Android-6.0%2B%20(API%2023)-4C8C6B">
   <img alt="Views: XML, Kotlin, Java" src="https://img.shields.io/badge/Views-XML%20%C2%B7%20Kotlin%20%C2%B7%20Java-B5713C">
-  <img alt="Version 0.1.0" src="https://img.shields.io/badge/version-0.1.0-8A8F98">
+  <img alt="Version 0.1.1" src="https://img.shields.io/badge/version-0.1.1-8A8F98">
 </p>
 
 <p align="center">
@@ -103,7 +103,7 @@ The components
 ## Quick start
 
 Mallet UI is not on Maven Central yet. A release carries a ready-made Maven repository:
-unzip `mallet-0.1.0-maven-repo.zip` into your project, for example into `libs/mallet-repo/`.
+unzip `mallet-0.1.1-maven-repo.zip` into your project, for example into `libs/mallet-repo/`.
 
 ```kotlin
 // settings.gradle.kts
@@ -117,7 +117,7 @@ dependencyResolutionManagement {
 
 // app/build.gradle.kts
 dependencies {
-    implementation("io.github.avalonskyafar:mallet:0.1.0")
+    implementation("io.github.avalonskyafar:mallet:0.1.1")
 }
 ```
 
@@ -312,7 +312,8 @@ tools/       catalog and picture generators, device runner
 
 ## Status
 
-Version 0.1.0 is the first release. The API follows one set of conventions throughout and is
+Version 0.1.1 is the second release, and 0.1.0 the first; the API follows one set of
+conventions throughout and is
 covered by tests, but it has not been through a deprecation cycle yet: until 1.0, a minor
 version may change it.
 

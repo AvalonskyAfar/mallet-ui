@@ -33,5 +33,5 @@ android {
 
 dependencies {
     // The only dependency. AndroidX and the Kotlin standard library follow from its POM.
-    implementation("io.github.avalonskyafar:mallet:0.1.0")
+    implementation("io.github.avalonskyafar:mallet:0.1.1")
 }

@@ -5,7 +5,7 @@ binary from a Maven repository. It is a project of its own, not a module of the 
 build, and it has one dependency:
 
 ```kotlin
-implementation("io.github.avalonskyafar:mallet:0.1.0")
+implementation("io.github.avalonskyafar:mallet:0.1.1")
 ```
 
 - `src/main/res/layout/activity_main.xml` declares the whole screen.
@@ -34,7 +34,7 @@ The first command fills `build/dist-repo` of the main project, which is where th
 looks by default. The APK is written to `build/outputs/apk/release/`.
 
 To use the repository of a downloaded release instead, unzip
-`mallet-0.1.0-maven-repo.zip` anywhere and pass its directory:
+`mallet-0.1.1-maven-repo.zip` anywhere and pass its directory:
 
 ```bash
 ../../gradlew assembleRelease -PmalletRepo=/path/to/unzipped/repo

@@ -58,7 +58,7 @@ dependencyResolutionManagement {
 ```kotlin
 // app/build.gradle.kts
 dependencies {
-    implementation("io.github.avalonskyafar:mallet:0.1.0")
+    implementation("io.github.avalonskyafar:mallet:0.1.1")
 }
 ```
 
@@ -72,7 +72,7 @@ an AAR by itself carries no dependency information:
 ```kotlin
 // app/build.gradle.kts
 dependencies {
-    implementation(files("libs/mallet-0.1.0.aar"))
+    implementation(files("libs/mallet-0.1.1.aar"))
     implementation("androidx.annotation:annotation:1.9.1")
     implementation("androidx.core:core:1.13.1")
     implementation("androidx.customview:customview:1.1.0")
